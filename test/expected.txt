@@ -223,6 +223,9 @@
 || 
 || 2 persons found!
 || ===================================================
+|| Enter command: || [Command entered:  add kfwong p/12345678 e/kfwong@example.com]
+|| New person added: kfwong, Phone: 12345678, Email: kfwong@example.com
+|| ===================================================
 || Enter command: || [Command entered:  clear]
 || Address book has been cleared!
 || ===================================================
