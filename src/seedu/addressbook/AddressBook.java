@@ -395,7 +395,7 @@ public class AddressBook {
      */
     private static String getMessageForSuccessfulAddPerson(Person addedPerson) {
         return String.format(MESSAGE_ADDED,
-                getNameFromPerson(addedPerson), getPhoneFromPerson(addedPerson), getEmailFromPerson(addedPerson));
+                addedPerson.getName(), addedPerson.getPhone(), addedPerson.getEmail());
     }
 
     /**
@@ -441,7 +441,7 @@ public class AddressBook {
     private static ArrayList<Person> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
         final ArrayList<Person> matchedPersons = new ArrayList<>();
         for (Person person : getAllPersonsInAddressBook()) {
-            final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
+            final Set<String> wordsInName = new HashSet<>(splitByWhitespace(person.getName()));
             if (!Collections.disjoint(wordsInName, keywords)) {
                 matchedPersons.add(person);
             }
@@ -625,7 +625,7 @@ public class AddressBook {
      */
     private static String getMessageForFormattedPersonData(Person person) {
         return String.format(MESSAGE_DISPLAY_PERSON_DATA,
-                getNameFromPerson(person), getPhoneFromPerson(person), getEmailFromPerson(person));
+                person.getName(), person.getPhone(), person.getEmail());
     }
 
     /**
@@ -809,42 +809,6 @@ public class AddressBook {
      */
 
     /**
-     * @param person whose name you want
-     * @return person's name
-     */
-    private static String getNameFromPerson(Person person) {
-    	return person.getName();
-    }
-
-    /**
-     * @param person whose phone number you want
-     * @return person's phone number
-     */
-    private static String getPhoneFromPerson(Person person) {
-    	return person.getPhone();
-    }
-
-    /**
-     * @param person whose email you want
-     * @return person's email
-     */
-    private static String getEmailFromPerson(Person person) {
-    	return person.getEmail();
-    }
-
-    /**
-     * Create a person for use in the internal data.
-     *
-     * @param name of person
-     * @param phone without data prefix
-     * @param email without data prefix
-     * @return constructed person
-     */
-    private static Person makePersonFromData(String name, String phone, String email) {
-        return new Person(name, phone, email);
-    }
-
-    /**
      * Encodes a person into a decodable and readable string representation.
      *
      * @param person to be encoded
@@ -852,7 +816,7 @@ public class AddressBook {
      */
     private static String encodePersonToString(Person person) {
         return String.format(PERSON_STRING_REPRESENTATION,
-                getNameFromPerson(person), getPhoneFromPerson(person), getEmailFromPerson(person));
+                person.getName(), person.getPhone(), person.getEmail());
     }
 
     /**
@@ -887,11 +851,7 @@ public class AddressBook {
         if (!isPersonDataExtractableFrom(encoded)) {
             return Optional.empty();
         }
-        final Person decodedPerson = makePersonFromData(
-                extractNameFromPersonString(encoded),
-                extractPhoneFromPersonString(encoded),
-                extractEmailFromPersonString(encoded)
-        );
+        final Person decodedPerson = new Person(extractNameFromPersonString(encoded), extractPhoneFromPersonString(encoded), extractEmailFromPersonString(encoded));
         // check that the constructed person is valid
         return isPersonDataValid(decodedPerson) ? Optional.of(decodedPerson) : Optional.empty();
     }
