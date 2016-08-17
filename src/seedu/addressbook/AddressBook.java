@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.ListIterator;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
@@ -443,7 +444,7 @@ public class AddressBook {
      * @return set of keywords as specified by args
      */
     private static Set<String> extractKeywordsFromFindPersonArgs(String findPersonCommandArgs) {
-        return new HashSet<>(splitByWhitespace(findPersonCommandArgs.trim()));
+        return new HashSet<>(toLowerCaseStrings(splitByWhitespace(findPersonCommandArgs.trim())));
     }
 
     /**
@@ -455,7 +456,7 @@ public class AddressBook {
     private static ArrayList<String[]> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
         for (String[] person : getAllPersonsInAddressBook()) {
-            final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
+            final Set<String> wordsInName = new HashSet<>(toLowerCaseStrings(splitByWhitespace(getNameFromPerson(person))));
             if (!Collections.disjoint(wordsInName, keywords)) {
                 matchedPersons.add(person);
             }
@@ -1181,6 +1182,20 @@ public class AddressBook {
      */
     private static ArrayList<String> splitByWhitespace(String toSplit) {
         return new ArrayList(Arrays.asList(toSplit.trim().split("\\s+")));
+    }
+    
+    /**
+     * Change every element in a list of strings to lower case.
+     *
+     * @param string list of strings
+     * @return the same list of strings all in lowercase
+     */
+    private static ArrayList<String> toLowerCaseStrings(ArrayList<String> strings) {
+    	ListIterator<String> iterator = strings.listIterator();
+        while (iterator.hasNext()) {
+            iterator.set(iterator.next().toLowerCase());
+        }
+        return strings;
     }
 
 }
