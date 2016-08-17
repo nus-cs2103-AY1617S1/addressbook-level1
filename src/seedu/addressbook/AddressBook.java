@@ -203,12 +203,19 @@ public class AddressBook {
         processProgramArgs(args);
         loadDataFromStorage();
         while (true) {
-            String userCommand = getUserInput();
-            echoUserCommand(userCommand);
-            String feedback = executeCommand(userCommand);
-            showResultToUser(feedback);
+            handleUserInput();
         }
     }
+
+	/**
+	 * Handles the user input and output of results.
+	 */
+	private static void handleUserInput() {
+		String userCommand = getUserInput();
+		echoUserCommand(userCommand);
+		String feedback = executeCommand(userCommand);
+		showResultToUser(feedback);
+	}
 
     /*
      * ==============NOTE TO STUDENTS======================================
