@@ -206,7 +206,14 @@ public class AddressBook {
         }
 
         if (args.length == 1) {
-            setupGivenFileForStorage(args[0]);
+            String filePath = args[0];
+            if (!isValidFilePath(filePath)) {
+                showToUser(String.format(MESSAGE_INVALID_FILE, filePath));
+                exitProgram();
+            }
+
+            storageFilePath = filePath;
+            createFileIfMissing(filePath);
         }
 
         if(args.length == 0) {
@@ -247,22 +254,6 @@ public class AddressBook {
      * that is referenced by the method above.
      * ====================================================================
      */
-
-    /**
-     * Sets up the storage file based on the supplied file path.
-     * Creates the file if it is missing.
-     * Exits if the file name is not acceptable.
-     */
-    private static void setupGivenFileForStorage(String filePath) {
-
-        if (!isValidFilePath(filePath)) {
-            showToUser(String.format(MESSAGE_INVALID_FILE, filePath));
-            exitProgram();
-        }
-
-        storageFilePath = filePath;
-        createFileIfMissing(filePath);
-    }
 
     /**
      * Displays the goodbye message and exits the runtime.
