@@ -205,7 +205,7 @@ public class AddressBook {
 
         if (args.length == 1) {
             String filePath = args[0];
-            if (!isValidFilePath(filePath)) {
+            if (!filePath.endsWith(".txt")) {
                 showToUser(String.format(MESSAGE_INVALID_FILE, filePath));
                 exitProgram();
             }
@@ -261,15 +261,6 @@ public class AddressBook {
     private static void exitProgram() {
         showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
         System.exit(0);
-    }
-
-    /**
-     * Returns true if the given file is acceptable.
-     * The file path is acceptable if it ends in '.txt'
-     * TODO: Implement a more rigorous validity checking.
-     */
-    private static boolean isValidFilePath(String filePath) {
-        return filePath.endsWith(".txt");
     }
 
     /**
