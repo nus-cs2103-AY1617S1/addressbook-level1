@@ -40,6 +40,8 @@
   list
   add Esther Potato p/555555 e/esther@notreal.potato
   list
+  add Carol Banana p/666666 e/carol@notreal.banana
+  list
 
 ##########################################################
 # test find persons command
@@ -89,6 +91,15 @@
 
   # listing indexes get updated on next request
   delete 1
+  list
+
+##########################################################
+# test sort command
+##########################################################
+
+  sort
+  delete 2
+  # should have deleted based on last active view's index
   list
 
 ##########################################################
