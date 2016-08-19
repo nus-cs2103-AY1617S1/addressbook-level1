@@ -243,9 +243,22 @@ public class AddressBook {
             final String commandArgs = commandTypeAndParams[1];
             String feedback = null;
             switch (commandType) {
-            case COMMAND_ADD_WORD:
-                feedback = executeAddPerson(commandArgs);
+            case COMMAND_ADD_WORD: {
+                // try decoding a person from the raw args
+                final Optional<String[]> decodeResult = decodePersonFromString(commandArgs);
+
+                // checks if args are valid (decode result will not be present if the person is invalid)
+                if (!decodeResult.isPresent()) {
+                    feedback = getMessageForInvalidCommandInput(COMMAND_ADD_WORD, getUsageInfoForAddCommand());
+                    break;
+                }
+
+                // add the person as specified
+                final String[] personToAdd = decodeResult.get();
+                addPersonToAddressBook(personToAdd);
+                feedback = getMessageForSuccessfulAddPerson(personToAdd);
                 break;
+            }
             case COMMAND_FIND_WORD:
                 feedback = executeFindPersons(commandArgs);
                 break;
@@ -304,28 +317,6 @@ public class AddressBook {
      */
     private static String getMessageForInvalidCommandInput(String userCommand, String correctUsageInfo) {
         return String.format(MESSAGE_INVALID_COMMAND_FORMAT, userCommand, correctUsageInfo);
-    }
-
-    /**
-     * Adds a person (specified by the command args) to the address book.
-     * The entire command arguments string is treated as a string representation of the person to add.
-     *
-     * @param commandArgs full command args string from the user
-     * @return feedback display message for the operation result
-     */
-    private static String executeAddPerson(String commandArgs) {
-        // try decoding a person from the raw args
-        final Optional<String[]> decodeResult = decodePersonFromString(commandArgs);
-
-        // checks if args are valid (decode result will not be present if the person is invalid)
-        if (!decodeResult.isPresent()) {
-            return getMessageForInvalidCommandInput(COMMAND_ADD_WORD, getUsageInfoForAddCommand());
-        }
-
-        // add the person as specified
-        final String[] personToAdd = decodeResult.get();
-        addPersonToAddressBook(personToAdd);
-        return getMessageForSuccessfulAddPerson(personToAdd);
     }
 
     /**
