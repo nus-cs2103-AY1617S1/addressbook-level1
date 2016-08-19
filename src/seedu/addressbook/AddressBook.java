@@ -237,14 +237,9 @@ public class AddressBook {
 
             showToUser("[Command entered:" + userCommand + "]");
             String feedback = executeCommand(userCommand);
-            showResultToUser(feedback);
+            showToUser(feedback, DIVIDER);
         }
     }
-
-    private static void showResultToUser(String result) {
-        showToUser(result, DIVIDER);
-    }
-
 
     /*
      * ==============NOTE TO STUDENTS==========================================
