@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /* ==============NOTE TO STUDENTS======================================
  * This class header comment below is brief because details of how to
@@ -447,16 +448,29 @@ public class AddressBook {
     }
 
     /**
-     * Retrieve all persons in the full model whose names contain some of the specified keywords.
+     * Converts the Strings of the Collection to lower case.
+     *
+     * @param stringCollection Collection containing Strings to be converted.
+     * @return A new Set containing lower-cased strings of stringCollection
+     */
+    private static Set<String> mapStringsToLowerCase(Collection<String> stringCollection) {
+        return stringCollection.stream().map(String::toLowerCase).collect(Collectors.toSet());
+    }
+
+    /**
+     * Retrieve all persons in the full model whose names contain some of the specified keywords, matched
+     * case-insensitively.
      *
      * @param keywords for searching
      * @return list of persons in full model with name containing some of the keywords
      */
     private static ArrayList<String[]> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
+        final Set<String> lowerKeywords = mapStringsToLowerCase(keywords);
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
         for (String[] person : getAllPersonsInAddressBook()) {
-            final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
-            if (!Collections.disjoint(wordsInName, keywords)) {
+            final Collection<String> wordsInName = splitByWhitespace(getNameFromPerson(person));
+            final Set<String> lowerWordsInName = mapStringsToLowerCase(wordsInName);
+            if (!Collections.disjoint(lowerWordsInName, lowerKeywords)) {
                 matchedPersons.add(person);
             }
         }
