@@ -70,7 +70,6 @@ public class AddressBook {
     private static final String MESSAGE_DISPLAY_LIST_ELEMENT_INDEX = "%1$d. ";
     private static final String MESSAGE_GOODBYE = "Exiting Address Book... Good bye!";
     private static final String MESSAGE_INVALID_COMMAND_FORMAT = "Invalid command format: %1$s " + LS + "%2$s";
-    private static final String MESSAGE_INVALID_PERSON_DISPLAYED_INDEX = "The person index provided is invalid";
     private static final String MESSAGE_PERSON_NOT_IN_ADDRESSBOOK = "Person could not be found in address book";
     private static final String MESSAGE_ERROR_CREATING_STORAGE_FILE = "Error: unable to create file: %1$s";
     private static final String MESSAGE_ERROR_MISSING_STORAGE_FILE = "Storage file missing: %1$s";
@@ -272,9 +271,21 @@ public class AddressBook {
                 feedback = getMessageForPersonsDisplayedSummary(toBeDisplayed);
                 break;
             }
-            case COMMAND_DELETE_WORD:
-                feedback = executeDeletePerson(commandArgs);
+            case COMMAND_DELETE_WORD: {
+                if (!isDeletePersonArgsValid(commandArgs)) {
+                    feedback = getMessageForInvalidCommandInput(COMMAND_DELETE_WORD, getUsageInfoForDeleteCommand());
+                    break;
+                }
+                final int targetVisibleIndex = extractTargetIndexFromDeletePersonArgs(commandArgs);
+                if (!isDisplayIndexValidForLastPersonListingView(targetVisibleIndex)) {
+                    feedback = "The person index provided is invalid";
+                    break;
+                }
+                final String[] targetInModel = getPersonByLastVisibleIndex(targetVisibleIndex);
+                feedback = deletePersonFromAddressBook(targetInModel) ? getMessageForSuccessfulDelete(targetInModel) // success
+                                                                  : MESSAGE_PERSON_NOT_IN_ADDRESSBOOK; // not found
                 break;
+            }
             case COMMAND_CLEAR_WORD:
                 feedback = executeClearAddressBook();
                 break;
@@ -373,25 +384,6 @@ public class AddressBook {
             }
         }
         return matchedPersons;
-    }
-
-    /**
-     * Deletes person identified using last displayed index.
-     *
-     * @param commandArgs full command args string from the user
-     * @return feedback display message for the operation result
-     */
-    private static String executeDeletePerson(String commandArgs) {
-        if (!isDeletePersonArgsValid(commandArgs)) {
-            return getMessageForInvalidCommandInput(COMMAND_DELETE_WORD, getUsageInfoForDeleteCommand());
-        }
-        final int targetVisibleIndex = extractTargetIndexFromDeletePersonArgs(commandArgs);
-        if (!isDisplayIndexValidForLastPersonListingView(targetVisibleIndex)) {
-            return MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
-        }
-        final String[] targetInModel = getPersonByLastVisibleIndex(targetVisibleIndex);
-        return deletePersonFromAddressBook(targetInModel) ? getMessageForSuccessfulDelete(targetInModel) // success
-                                                          : MESSAGE_PERSON_NOT_IN_ADDRESSBOOK; // not found
     }
 
     /**
