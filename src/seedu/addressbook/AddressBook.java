@@ -237,7 +237,8 @@ public class AddressBook {
 
             showToUser("[Command entered:" + userCommand + "]");
 
-            final String[] commandTypeAndParams = splitCommandWordAndArgs(userCommand);
+            final String[] split = userCommand.trim().split("\\s+", 2);
+            final String[] commandTypeAndParams = split.length == 2 ? split : new String[] { split[0] , "" };
             final String commandType = commandTypeAndParams[0];
             final String commandArgs = commandTypeAndParams[1];
             String feedback = null;
@@ -294,16 +295,6 @@ public class AddressBook {
      *           COMMAND LOGIC
      * ===========================================
      */
-
-    /**
-     * Splits raw user input into command word and command arguments string
-     *
-     * @return  size 2 array; first element is the command type and second element is the arguments string
-     */
-    private static String[] splitCommandWordAndArgs(String rawUserInput) {
-        final String[] split =  rawUserInput.trim().split("\\s+", 2);
-        return split.length == 2 ? split : new String[] { split[0] , "" }; // else case: no parameters
-    }
 
     /**
      * Constructs a generic feedback message for an invalid command from user, with instructions for correct usage.
