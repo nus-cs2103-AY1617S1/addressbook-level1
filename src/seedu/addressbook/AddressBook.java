@@ -266,9 +266,12 @@ public class AddressBook {
                 feedback = getMessageForPersonsDisplayedSummary(personsFound);
                 break;
             }
-            case COMMAND_LIST_WORD:
-                feedback = executeListAllPersonsInAddressBook();
+            case COMMAND_LIST_WORD: {
+                ArrayList<String[]> toBeDisplayed = getAllPersonsInAddressBook();
+                showToUser(toBeDisplayed);
+                feedback = getMessageForPersonsDisplayedSummary(toBeDisplayed);
                 break;
+            }
             case COMMAND_DELETE_WORD:
                 feedback = executeDeletePerson(commandArgs);
                 break;
@@ -445,17 +448,6 @@ public class AddressBook {
     private static String executeClearAddressBook() {
         clearAddressBook();
         return MESSAGE_ADDRESSBOOK_CLEARED;
-    }
-
-    /**
-     * Displays all persons in the address book to the user; in added order.
-     *
-     * @return feedback display message for the operation result
-     */
-    private static String executeListAllPersonsInAddressBook() {
-        ArrayList<String[]> toBeDisplayed = getAllPersonsInAddressBook();
-        showToUser(toBeDisplayed);
-        return getMessageForPersonsDisplayedSummary(toBeDisplayed);
     }
 
     /**
