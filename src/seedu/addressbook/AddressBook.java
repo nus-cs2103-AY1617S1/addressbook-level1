@@ -128,9 +128,6 @@ public class AddressBook {
     private static final String COMMAND_EXIT_DESC = "Exits the program.";
     private static final String COMMAND_EXIT_EXAMPLE = COMMAND_EXIT_WORD;
 
-    private static final String DIVIDER = "===================================================";
-
-
     /* We use a String array to store details of a single person.
      * The constants given below are the indexes for the different data elements of a person
      * used by the internal String[] storage format.
@@ -199,7 +196,7 @@ public class AddressBook {
      * ====================================================================
      */
     public static void main(String[] args) {
-        String[] message = { DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER };
+        String[] message = { "===================================================", "===================================================", VERSION, MESSAGE_WELCOME, "===================================================" };
 		for (String m : message) {
 		    System.out.println(LINE_PREFIX + m);
 		}
@@ -214,7 +211,7 @@ public class AddressBook {
     }
 
     private static void showResultToUser(String result) {
-        String[] message = { result, DIVIDER };
+        String[] message = { result, "===================================================" };
 		for (String m : message) {
 		    System.out.println(LINE_PREFIX + m);
 		}
@@ -293,7 +290,7 @@ public class AddressBook {
      * Displays the goodbye message and exits the runtime.
      */
     private static void exitProgram() {
-        String[] message = { MESSAGE_GOODBYE, DIVIDER, DIVIDER };
+        String[] message = { MESSAGE_GOODBYE, "===================================================", "===================================================" };
 		for (String m : message) {
 		    System.out.println(LINE_PREFIX + m);
 		}
