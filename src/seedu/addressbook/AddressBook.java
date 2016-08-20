@@ -365,8 +365,8 @@ public class AddressBook {
      * @return  size 2 array; first element is the command type and second element is the arguments string
      */
     private static String[] splitCommandWordAndArgs(String rawUserInput) {
-        final String[] split = generateCommandWordAndArgsArray(rawUserInput);
-        return split.length == 2 ? split : new String[] { split[0] , "" }; // else case: no parameters
+        final String[] commandWordAndArgsArray = generateCommandWordAndArgsArray(rawUserInput);
+        return commandWordAndArgsArray.length == 2 ? commandWordAndArgsArray : new String[] { commandWordAndArgsArray[0] , "" }; // else case: no parameters
     }
 
 	/**
