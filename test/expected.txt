@@ -20,7 +20,11 @@
 || sort: Displays all persons as a list in alphabetical order with index numbers.
 || 	Example: sort
 || 
-|| delete: Deletes a person identified by the index number used in the last find/list call.
+|| edit: Edit a person identified by the index number used in the last find/list/sort call.
+|| 	Parameters: INDEX NAME p/PHONE_NUMBER e/EMAIL
+|| 	Example: edit 1 John p/123 e/john@gmail.com
+|| 
+|| delete: Deletes a person identified by the index number used in the last find/list/sort call.
 || 	Parameters: INDEX
 || 	Example: delete 1
 || 
@@ -165,28 +169,28 @@
 || ===================================================
 || Enter command: || [Command entered:  delete]
 || Invalid command format: delete 
-|| delete: Deletes a person identified by the index number used in the last find/list call.
+|| delete: Deletes a person identified by the index number used in the last find/list/sort call.
 || 	Parameters: INDEX
 || 	Example: delete 1
 || 
 || ===================================================
 || Enter command: || [Command entered:  delete should be only one number]
 || Invalid command format: delete 
-|| delete: Deletes a person identified by the index number used in the last find/list call.
+|| delete: Deletes a person identified by the index number used in the last find/list/sort call.
 || 	Parameters: INDEX
 || 	Example: delete 1
 || 
 || ===================================================
 || Enter command: || [Command entered:  delete -1]
 || Invalid command format: delete 
-|| delete: Deletes a person identified by the index number used in the last find/list call.
+|| delete: Deletes a person identified by the index number used in the last find/list/sort call.
 || 	Parameters: INDEX
 || 	Example: delete 1
 || 
 || ===================================================
 || Enter command: || [Command entered:  delete 0]
 || Invalid command format: delete 
-|| delete: Deletes a person identified by the index number used in the last find/list call.
+|| delete: Deletes a person identified by the index number used in the last find/list/sort call.
 || 	Parameters: INDEX
 || 	Example: delete 1
 || 
@@ -259,6 +263,48 @@
 || 	2. Dickson  Phone Number: 222222  Email: dickson@nus.edu.sg
 || 	3. Charlie  Phone Number: 333333  Email: charlie@nus.edu.sg
 || 	4. Gina  Phone Number: 555555  Email: gina@nus.edu.sg
+|| 
+|| 4 persons found!
+|| ===================================================
+|| Enter command: || [Command entered:  edit 1]
+|| Invalid command format: edit 
+|| edit: Edit a person identified by the index number used in the last find/list/sort call.
+|| 	Parameters: INDEX NAME p/PHONE_NUMBER e/EMAIL
+|| 	Example: edit 1 John p/123 e/john@gmail.com
+|| 
+|| ===================================================
+|| Enter command: || [Command entered:  edit Gina]
+|| Invalid command format: edit 
+|| edit: Edit a person identified by the index number used in the last find/list/sort call.
+|| 	Parameters: INDEX NAME p/PHONE_NUMBER e/EMAIL
+|| 	Example: edit 1 John p/123 e/john@gmail.com
+|| 
+|| ===================================================
+|| Enter command: || [Command entered:  edit 2 Daniel]
+|| Invalid command format: edit 
+|| edit: Edit a person identified by the index number used in the last find/list/sort call.
+|| 	Parameters: INDEX NAME p/PHONE_NUMBER e/EMAIL
+|| 	Example: edit 1 John p/123 e/john@gmail.com
+|| 
+|| ===================================================
+|| Enter command: || [Command entered:  edit -1 Geena e/geena@nus.edu.sg p/55555]
+|| Invalid command format: edit 
+|| edit: Edit a person identified by the index number used in the last find/list/sort call.
+|| 	Parameters: INDEX NAME p/PHONE_NUMBER e/EMAIL
+|| 	Example: edit 1 John p/123 e/john@gmail.com
+|| 
+|| ===================================================
+|| Enter command: || [Command entered:  edit 6 Geena e/geena@nus.edu.sg p/55555]
+|| The person index provided is invalid
+|| ===================================================
+|| Enter command: || [Command entered:  edit 4 Geena e/geena@nus.edu.sg p/55555]
+|| Person updated: Geena, Phone: 55555, Email: geena@nus.edu.sg
+|| ===================================================
+|| Enter command: || [Command entered:  list]
+|| 	1. Emma  Phone Number: 111111  Email: emma@nus.edu.sg
+|| 	2. Dickson  Phone Number: 222222  Email: dickson@nus.edu.sg
+|| 	3. Charlie  Phone Number: 333333  Email: charlie@nus.edu.sg
+|| 	4. Geena  Phone Number: 55555  Email: geena@nus.edu.sg
 || 
 || 4 persons found!
 || ===================================================

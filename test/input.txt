@@ -114,6 +114,25 @@
   # list should display all the persons in added order
   list
 
+##########################################################
+# test edit command
+##########################################################
+
+  # should catch invalid args format
+  edit 1
+  edit Gina
+  edit 2 Daniel
+
+  # should catch invalid index
+  edit -1 Geena e/geena@nus.edu.sg p/55555
+  edit 6 Geena e/geena@nus.edu.sg p/55555
+
+  # should edit correctly
+  edit 4 Geena e/geena@nus.edu.sg p/55555
+
+  # check updated list
+  list
+
   # clear all
   clear
 
