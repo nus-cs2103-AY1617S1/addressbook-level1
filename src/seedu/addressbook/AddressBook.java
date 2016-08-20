@@ -530,11 +530,7 @@ public class AddressBook
 	{
 		try
 		{
-			final int extractedIndex = Integer.parseInt(rawArgs.trim()); // use
-																			// standard
-																			// libraries
-																			// to
-																			// parse
+			final int extractedIndex = Integer.parseInt(rawArgs.trim()); // use standard  libraries  to parse
 			return extractedIndex >= DISPLAYED_INDEX_OFFSET;
 		}
 		catch(NumberFormatException nfe)
@@ -643,17 +639,6 @@ public class AddressBook
 	 * Shows a message to the user
 	 */
 	private static void showToUser(String... message)
-	{
-		for(String m : message)
-		{
-			System.out.println(LINE_PREFIX + m);
-		}
-	}
-
-	/**
-	 * non varargs showtouser
-	 */
-	private static void showToUser2(String[] message)
 	{
 		for(String m : message)
 		{
@@ -874,12 +859,12 @@ public class AddressBook
 	 */
 	private static boolean deletePersonFromAddressBook(HashMap<PersonProperty, String> exactPerson)
 	{
-		final boolean changed = ALL_PERSONS.remove(exactPerson);
-		if(changed)
+		final boolean isChanged = ALL_PERSONS.remove(exactPerson);
+		if(isChanged)
 		{
 			savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
 		}
-		return changed;
+		return isChanged;
 	}
 
 	/**
