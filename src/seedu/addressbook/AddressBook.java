@@ -202,12 +202,7 @@ public class AddressBook {
         showWelcomeMessage();
         processProgramArgs(args);
         loadDataFromStorage();
-        while (true) {
-            String userCommand = getUserInput();
-            echoUserCommand(userCommand);
-            String feedback = executeCommand(userCommand);
-            showResultToUser(feedback);
-        }
+        infiniteInputAndFeedbackLoop();
     }
 
     /*
@@ -319,6 +314,21 @@ public class AddressBook {
      */
     private static void loadDataFromStorage() {
         initialiseAddressBookModel(loadPersonsFromFile(storageFilePath));
+    }
+    
+    /**
+     * A procedure which executes the input and feedback cycle forever until a user types 'exit' and exits the program.
+     * 
+     * @param	no parameters, but user input will be scanned
+     * @return	no return value (procedure)
+     */
+    private static void infiniteInputAndFeedbackLoop() {
+    	while (true) {
+            String userCommand = getUserInput();
+            echoUserCommand(userCommand);
+            String feedback = executeCommand(userCommand);
+            showResultToUser(feedback);
+        }
     }
 
 
