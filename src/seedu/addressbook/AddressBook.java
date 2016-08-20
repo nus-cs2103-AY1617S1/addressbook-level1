@@ -366,8 +366,29 @@ public class AddressBook {
      */
     private static String[] splitCommandWordAndArgs(String rawUserInput) {
         final String[] commandWordAndArgsArray = generateCommandWordAndArgsArray(rawUserInput);
-        return commandWordAndArgsArray.length == 2 ? commandWordAndArgsArray : new String[] { commandWordAndArgsArray[0] , "" }; // else case: no parameters
+        return hasCommandWordAndArgs(commandWordAndArgsArray) ? commandWordAndArgsArray : generateCommandWordArray(commandWordAndArgsArray); // else case: no parameters
     }
+
+	/**
+	 * Check if commandWordAndArgsArray consists of a command word and its arguments
+	 * 
+	 * @param commandWordAndArgsArray the array form of the user input, consisting of the command word and possibly its arguments
+	 * @return boolean representing whether the check is true or false
+	 */
+	private static boolean hasCommandWordAndArgs(final String[] commandWordAndArgsArray) {
+		return commandWordAndArgsArray.length == 2;
+	}
+
+	/**
+	 * Generate string array containing the command word and empty string for command arguments (no command arguments)
+	 * 
+	 * @param commandWordAndArgsArray the generated command word and args array
+	 * @return size 2 array; first element is the command type and second element is the arguments string,
+	 *  which is an empty string in this case since there are no arguments provided
+	 */
+	private static String[] generateCommandWordArray(final String[] commandWordAndArgsArray) {
+		return new String[] { commandWordAndArgsArray[0] , "" };
+	}
 
 	/**
 	 * Generate string array containing the command word and command arguments from raw user input string
