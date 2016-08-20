@@ -365,9 +365,19 @@ public class AddressBook {
      * @return  size 2 array; first element is the command type and second element is the arguments string
      */
     private static String[] splitCommandWordAndArgs(String rawUserInput) {
-        final String[] split =  rawUserInput.trim().split("\\s+", 2);
+        final String[] split = generateCommandWordAndArgsArray(rawUserInput);
         return split.length == 2 ? split : new String[] { split[0] , "" }; // else case: no parameters
     }
+
+	/**
+	 * Generate string array containing the command word and command arguments from raw user input string
+	 * 
+	 * @param rawUserInput the raw user input to generate string[] array from
+	 * @return size 2 array; first element is the command type and second element is the arguments string
+	 */
+	private static String[] generateCommandWordAndArgsArray(String rawUserInput) {
+		return rawUserInput.trim().split("\\s+", 2);
+	}
 
     /**
      * Constructs a generic feedback message for an invalid command from user, with instructions for correct usage.
