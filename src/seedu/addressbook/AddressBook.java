@@ -20,7 +20,7 @@ import java.util.Scanner;
 import java.util.Set;
 
 /* ==============NOTE TO STUDENTS======================================
- * This class header comment below is brief because detaiLINE_SEPERATOR of how to
+ * This class header comment below is brief because details of how to
  * use this class are documented elsewhere.
  * ====================================================================
  */
@@ -898,7 +898,7 @@ public class AddressBook {
      *
      * @param encoded string to be decoded
      * @return if cannot decode: empty Optional
-     *         eLINE_SEPERATORe: Optional containing decoded person
+     *         else: Optional containing decoded person
      */
     private static Optional<String[]> decodePersonFromString(String encoded) {
         // check that we can extract the parts of a person from the encoded string
