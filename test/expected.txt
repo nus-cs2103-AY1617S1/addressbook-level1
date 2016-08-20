@@ -10,12 +10,15 @@
 || 	Parameters: NAME p/PHONE_NUMBER e/EMAIL
 || 	Example: add John Doe p/98765432 e/johnd@gmail.com
 || 
-|| find: Finds all persons whose names contain any of the specified keywords (case-sensitive) and displays them as a list with index numbers.
+|| find: Finds all persons whose names contain any of the specified keywords and displays them as a list with index numbers.
 || 	Parameters: KEYWORD [MORE_KEYWORDS]
 || 	Example: find alice bob charlie
 || 
 || list: Displays all persons as a list with index numbers.
 || 	Example: list
+|| 
+|| sort: Displays all persons as a list in alphabetical order with index numbers.
+|| 	Example: sort
 || 
 || delete: Deletes a person identified by the index number used in the last find/list call.
 || 	Parameters: INDEX
@@ -230,6 +233,37 @@
 || Enter command: || [Command entered:  list]
 || 
 || 0 persons found!
+|| ===================================================
+|| Enter command: || [Command entered:  add Emma e/emma@nus.edu.sg p/111111]
+|| New person added: Emma, Phone: 111111, Email: emma@nus.edu.sg
+|| ===================================================
+|| Enter command: || [Command entered:  add Dickson e/dickson@nus.edu.sg p/222222]
+|| New person added: Dickson, Phone: 222222, Email: dickson@nus.edu.sg
+|| ===================================================
+|| Enter command: || [Command entered:  add Charlie e/charlie@nus.edu.sg p/333333]
+|| New person added: Charlie, Phone: 333333, Email: charlie@nus.edu.sg
+|| ===================================================
+|| Enter command: || [Command entered:  add Gina e/gina@nus.edu.sg p/555555]
+|| New person added: Gina, Phone: 555555, Email: gina@nus.edu.sg
+|| ===================================================
+|| Enter command: || [Command entered:  sort]
+|| 	1. Charlie  Phone Number: 333333  Email: charlie@nus.edu.sg
+|| 	2. Dickson  Phone Number: 222222  Email: dickson@nus.edu.sg
+|| 	3. Emma  Phone Number: 111111  Email: emma@nus.edu.sg
+|| 	4. Gina  Phone Number: 555555  Email: gina@nus.edu.sg
+|| 
+|| 4 persons found!
+|| ===================================================
+|| Enter command: || [Command entered:  list]
+|| 	1. Emma  Phone Number: 111111  Email: emma@nus.edu.sg
+|| 	2. Dickson  Phone Number: 222222  Email: dickson@nus.edu.sg
+|| 	3. Charlie  Phone Number: 333333  Email: charlie@nus.edu.sg
+|| 	4. Gina  Phone Number: 555555  Email: gina@nus.edu.sg
+|| 
+|| 4 persons found!
+|| ===================================================
+|| Enter command: || [Command entered:  clear]
+|| Address book has been cleared!
 || ===================================================
 || Enter command: || [Command entered:  exit]
 || Exiting Address Book... Good bye!

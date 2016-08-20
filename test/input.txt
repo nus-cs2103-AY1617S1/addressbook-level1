@@ -100,6 +100,24 @@
   list
 
 ##########################################################
+# test sort command
+##########################################################
+
+  add Emma e/emma@nus.edu.sg p/111111
+  add Dickson e/dickson@nus.edu.sg p/222222
+  add Charlie e/charlie@nus.edu.sg p/333333
+  add Gina e/gina@nus.edu.sg p/555555
+
+  # sort should display all the persons in alphabetical order (based on their names)
+  sort
+
+  # list should display all the persons in added order
+  list
+
+  # clear all
+  clear
+
+##########################################################
 # test exit command
 ##########################################################
 
