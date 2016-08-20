@@ -137,17 +137,11 @@ public class AddressBook
 	private static final int PERSON_DATA_INDEX_EMAIL = 2;
 	*/
 
-	// Properties of a person, in a hashmap
+	// Properties of a person
 	private enum PersonProperty
 	{
 		NAME, EMAIL, PHONE
 	};
-
-	/**
-	 * The number of data elements for a single person.
-	 
-	private static final int PERSON_DATA_COUNT = 3;
-	*/
 
 	/**
 	 * Offset required to convert between 1-indexing and 0-indexing.COMMAND_
@@ -201,8 +195,15 @@ public class AddressBook
 	 */
 	public static void main(String[] args)
 	{
-		showWelcomeMessage();
-		//processProgramArgs
+		//showWelcomeMessage
+		showToUser(DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER);
+		
+		/**
+		 * Processes the program main method run arguments.
+		 * If a valid storage file is specified, sets up that file for storage.
+		 * Otherwise sets up the default file for storage.
+		 *
+		 */
 		if(args.length >= 2)
 		{
 			showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
@@ -211,86 +212,36 @@ public class AddressBook
 
 		if(args.length == 1)
 		{
-			setupGivenFileForStorage(args[0]);
+			//setupGivenFileForStorage(args[0]);
+			if(!args[0].endsWith(".txt"))
+			{
+				showToUser(String.format(MESSAGE_INVALID_FILE, args[0]));
+				exitProgram();
+			}
+
+			storageFilePath = args[0];
+			createFileIfMissing(args[0]);
 		}
 
 		if(args.length == 0)
 		{
-			setupDefaultFileForStorage();
+			//setupDefaultFileForStorage();
+			showToUser(MESSAGE_USING_DEFAULT_FILE);
+			storageFilePath = DEFAULT_STORAGE_FILEPATH;
+			createFileIfMissing(storageFilePath);
 		}
-		loadDataFromStorage();
-		handleUserInput();
-	}
-	
-	/**
-	 * Gets the command from the user and executes it, until the program ends
-	 */
-	private static void handleUserInput()
-	{
+		
+		//loadDataFromStorage
+		initialiseAddressBookModel(loadPersonsFromFile(storageFilePath));
+		
+		//handleUserInput
 		while(true)
 		{
 			String userCommand = getUserInput();
-			echoUserCommand(userCommand);
+			showToUser("[Command entered:" + userCommand + "]");
 			String feedback = executeCommand(userCommand);
-			showResultToUser(feedback);
+			showToUser(feedback, DIVIDER);
 		}
-	}
-
-	/*
-	 * ==============NOTE TO STUDENTS======================================
-	 * The method header comment can be omitted if the method is trivial
-	 * and the header comment is going to be almost identical to the method
-	 * signature anyway.
-	 * ====================================================================
-	 */
-	private static void showWelcomeMessage()
-	{
-		showToUser(DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER);
-	}
-
-	private static void showResultToUser(String result)
-	{
-		showToUser(result, DIVIDER);
-	}
-
-	/*
-	 * ==============NOTE TO STUDENTS======================================
-	 * Parameter description can be omitted from the method header comment
-	 * if the parameter name is self-explanatory.
-	 * In the method below, '@param userInput' comment has been omitted.
-	 * ====================================================================
-	 */
-	/**
-	 * Echoes the user input back to the user.
-	 */
-	private static void echoUserCommand(String userCommand)
-	{
-		showToUser("[Command entered:" + userCommand + "]");
-	}
-
-	/*
-	 * ==============NOTE TO STUDENTS==========================================
-	 * If the reader wants a deeper understanding of the solution, she can go
-	 * to the next level of abstraction by reading the methods (given below)
-	 * that is referenced by the method above.
-	 * ====================================================================
-	 */
-
-	/**
-	 * Sets up the storage file based on the supplied file path.
-	 * Creates the file if it is missing.
-	 * Exits if the file name is not acceptable.
-	 */
-	private static void setupGivenFileForStorage(String filePath)
-	{
-		if(!isValidFilePath(filePath))
-		{
-			showToUser(String.format(MESSAGE_INVALID_FILE, filePath));
-			exitProgram();
-		}
-
-		storageFilePath = filePath;
-		createFileIfMissing(filePath);
 	}
 
 	/**
@@ -300,37 +251,6 @@ public class AddressBook
 	{
 		showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
 		System.exit(0);
-	}
-
-	/**
-	 * Sets up the storage based on the default file.
-	 * Creates file if missing.
-	 * Exits program if the file cannot be created.
-	 */
-	private static void setupDefaultFileForStorage()
-	{
-		showToUser(MESSAGE_USING_DEFAULT_FILE);
-		storageFilePath = DEFAULT_STORAGE_FILEPATH;
-		createFileIfMissing(storageFilePath);
-	}
-
-	/**
-	 * Returns true if the given file is acceptable.
-	 * The file path is acceptable if it ends in '.txt'
-	 * TODO: Implement a more rigorous validity checking.
-	 */
-	private static boolean isValidFilePath(String filePath)
-	{
-		return filePath.endsWith(".txt");
-	}
-
-	/**
-	 * Initialises the in-memory data using the storage file.
-	 * Assumption: The file exists.
-	 */
-	private static void loadDataFromStorage()
-	{
-		initialiseAddressBookModel(loadPersonsFromFile(storageFilePath));
 	}
 
 	/*
@@ -1114,8 +1034,7 @@ public class AddressBook
 	 */
 	private static boolean isPersonNameValid(String name)
 	{
-		return name.matches("(\\w|\\s)+"); // name is nonempty mixture of
-											// alphabets and whitespace
+		return name.matches("(\\w|\\s)+"); // name is nonempty mixture of alphabets and whitespace
 		// TODO: implement a more permissive validation
 	}
 
@@ -1139,8 +1058,7 @@ public class AddressBook
 	 */
 	private static boolean isPersonEmailValid(String email)
 	{
-		return email.matches("\\S+@\\S+\\.\\S+"); // email is
-													// [non-whitespace]@[non-whitespace].[non-whitespace]
+		return email.matches("\\S+@\\S+\\.\\S+"); // email is [non-whitespace]@[non-whitespace].[non-whitespace]
 		// TODO: implement a more permissive validation
 	}
 
