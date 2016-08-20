@@ -616,11 +616,31 @@ public class AddressBook {
         System.out.print(LINE_PREFIX + "Enter command: ");
         String inputLine = SCANNER.nextLine();
         // silently consume all blank and comment lines
-        while (inputLine.trim().isEmpty() || inputLine.trim().charAt(0) == INPUT_COMMENT_MARKER) {
+        while (isEmptyInput(inputLine) || isCommentInput(inputLine)) {
             inputLine = SCANNER.nextLine();
         }
         return inputLine;
     }
+
+	/**
+	 * Check if input received is a comment
+	 * 
+	 * @param inputLine
+	 * @return
+	 */
+	private static boolean isCommentInput(String inputLine) {
+		return inputLine.trim().charAt(0) == INPUT_COMMENT_MARKER;
+	}
+
+	/**
+	 * Check if input received is empty
+	 * 
+	 * @param inputLine
+	 * @return
+	 */
+	private static boolean isEmptyInput(String inputLine) {
+		return inputLine.trim().isEmpty();
+	}
 
    /* ==============NOTE TO STUDENTS======================================
     * Note how the method below uses Java 'Varargs' feature so that the
