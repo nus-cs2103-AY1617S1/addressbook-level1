@@ -1,9 +1,4 @@
 package seedu.addressbook;
-/* ==============NOTE TO STUDENTS======================================
- * This class is written in a procedural fashion (i.e. not Object-Oriented)
- * Yes, it is possible to write non-OO code using an OO language.
- * ====================================================================
- */
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -19,12 +14,6 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
-
-/* ==============NOTE TO STUDENTS======================================
- * This class header comment below is brief because details of how to
- * use this class are documented elsewhere.
- * ====================================================================
- */
 
 /**
  * This class is used to maintain a list of person data which are saved
@@ -52,14 +41,8 @@ public class AddressBook {
      */
     private static final String LS = System.lineSeparator() + LINE_PREFIX;
 
-    /*
-     * ==============NOTE TO STUDENTS======================================
-     * These messages shown to the user are defined in one place for convenient
-     * editing and proof reading. Such messages are considered part of the UI
-     * and may be subjected to review by UI experts or technical writers. Note
-     * that Some of the strings below include '%1$s' etc to mark the locations
-     * at which java String.format(...) method can insert values.
-     * ====================================================================
+    /**
+     * The following defined messages will prompts for user intervention.
      */
     private static final String MESSAGE_ADDED = "New person added: %1$s, Phone: %2$s, Email: %3$s";
     private static final String MESSAGE_ADDRESSBOOK_CLEARED = "Address book has been cleared!";
@@ -87,7 +70,10 @@ public class AddressBook {
     private static final String MESSAGE_WELCOME = "Welcome to your Address Book!";
     private static final String MESSAGE_USING_DEFAULT_FILE = "Using default storage file : " + DEFAULT_STORAGE_FILEPATH;
 
-    // These are the prefix strings to define the data type of a command parameter
+
+    /**
+     * These are the prefix strings to define the data type of a command parameter
+     */
     private static final String PERSON_DATA_PREFIX_PHONE = "p/";
     private static final String PERSON_DATA_PREFIX_EMAIL = "e/";
 
@@ -154,22 +140,15 @@ public class AddressBook {
      */
     private static final char INPUT_COMMENT_MARKER = '#';
 
-    /*
-     * This variable is declared for the whole class (instead of declaring it
+    /**
+     * This variable SCANNER is declared for the whole class (instead of declaring it
      * inside the readUserCommand() method to facilitate automated testing using
      * the I/O redirection technique. If not, only the first line of the input
      * text file will be processed.
      */
     private static final Scanner SCANNER = new Scanner(System.in);
-    /*
-     * ==============NOTE TO STUDENTS======================================================================
-     * Note that the type of the variable below can also be declared as List<String[]>, as follows:
-     *    private static final List<String[]> ALL_PERSONS = new ArrayList<>()
-     * That is because List is an interface implemented by the ArrayList class.
-     * In this code we use ArrayList instead because we wanted to to stay away from advanced concepts
-     * such as interface inheritance.
-     * ====================================================================================================
-     */
+    
+    
     /**
      * List of all persons in the address book.
      */
@@ -181,19 +160,17 @@ public class AddressBook {
      * This is a subset of the full list. Deleting persons in the pull list does not delete
      * those persons from this list.
      */
-    private static ArrayList<HashMap<PersonProperty, String>> latestPersonListingView = getAllPersonsInAddressBook(); // initial view is of all
+    private static ArrayList<HashMap<PersonProperty, String>> latestPersonListingView = getAllPersonsInAddressBook(); // initial view is of all 
 
     /**
      * The path to the file used for storing person data.
      */
     private static String storageFilePath;
 
-    /*
-     * ==============NOTE TO STUDENTS======================================
-     * Notice how this method solves the whole problem at a very high level.
-     * We can understand the high-level logic of the program by reading this
-     * method alone.
-     * ====================================================================
+    /**
+     * The main method will automatically run when the programme get executed.
+     * 
+     * @param args   will use filepath in args[0] to store data rather than use default file to store it. 
      */
     public static void main(String[] args) {
         showWelcomeMessage();
@@ -207,12 +184,8 @@ public class AddressBook {
         }
     }
 
-    /*
-     * ==============NOTE TO STUDENTS======================================
-     * The method header comment can be omitted if the method is trivial
-     * and the header comment is going to be almost identical to the method
-     * signature anyway.
-     * ====================================================================
+    /**
+     * The method will show the welcome message to user
      */
     private static void showWelcomeMessage() {
     		showToUser(DIVIDER);
@@ -222,18 +195,17 @@ public class AddressBook {
         showToUser(DIVIDER);
     }
 
+    /**
+     * The method will show the message(result) to user
+     * 
+     * @param result The message to show
+     */
     private static void showResultToUser(String result) {
         showToUser(result);
         showToUser(DIVIDER);
     }
 
-    /*
-     * ==============NOTE TO STUDENTS======================================
-     * Parameter description can be omitted from the method header comment
-     * if the parameter name is self-explanatory.
-     * In the method below, '@param userInput' comment has been omitted.
-     * ====================================================================
-     */
+    
     /**
      * Echoes the user input back to the user.
      */
@@ -241,13 +213,6 @@ public class AddressBook {
         showToUser("[Command entered:" + userCommand + "]");
     }
 
-    /*
-     * ==============NOTE TO STUDENTS==========================================
-     * If the reader wants a deeper understanding of the solution, she can go
-     * to the next level of abstraction by reading the methods (given below)
-     * that is referenced by the method above.
-     * ====================================================================
-     */
 
     /**
      * Processes the program main method run arguments.
@@ -595,7 +560,6 @@ public class AddressBook {
     /**
      * Shows the list of persons to the user.
      * The list will be indexed, starting from 1.
-     *
      */
     private static void showToUser(ArrayList<HashMap<PersonProperty, String>> persons) {
         String listAsString = getDisplayString(persons);
@@ -781,14 +745,16 @@ public class AddressBook {
      * @return true if the given person was found and deleted in the model
      */
     private static boolean deletePersonFromAddressBook(HashMap<PersonProperty, String> exactPerson) {
-        final boolean changed = ALL_PERSONS.remove(exactPerson);
-        if (changed) {
+        final boolean isChanged = ALL_PERSONS.remove(exactPerson);
+        if (isChanged) {
             savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
         }
-        return changed;
+        return isChanged;
     }
 
     /**
+     * Get all persons in the address book.
+     * 
      * @return unmodifiable list view of all persons in the address book
      */
     private static ArrayList<HashMap<PersonProperty, String>> getAllPersonsInAddressBook() {
@@ -821,6 +787,8 @@ public class AddressBook {
      */
 
     /**
+     * Get person's name
+     * 
      * @param person whose name you want
      * @return person's name
      */
@@ -829,6 +797,8 @@ public class AddressBook {
     }
 
     /**
+     * Get person's phone number
+     * 
      * @param person whose phone number you want
      * @return person's phone number
      */
@@ -837,6 +807,8 @@ public class AddressBook {
     }
 
     /**
+     * Get person's email
+     * 
      * @param person whose email you want
      * @return person's email
      */
@@ -885,12 +857,6 @@ public class AddressBook {
         return encoded;
     }
 
-    /*
-     * ==============NOTE TO STUDENTS======================================
-     * Note the use of Java's new 'Optional' feature to indicate that
-     * the return value may not always be present.
-     * ====================================================================
-     */
     /**
      * Decodes a person from it's supposed string representation.
      *
@@ -1019,13 +985,7 @@ public class AddressBook {
                 && isPersonEmailValid(person.get(PersonProperty.EMAIL));
     }
 
-    /*
-     * ==============NOTE TO STUDENTS======================================
-     * Note the use of 'regular expressions' in the method below.
-     * Regular expressions can be very useful in checking if a a string
-     * follows a sepcific format.
-     * ====================================================================
-     */
+    
     /**
      * Validates string as a legal person name
      *
