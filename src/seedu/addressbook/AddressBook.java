@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
@@ -480,13 +481,30 @@ public class AddressBook {
 	private static ArrayList<HashMap<PersonProperty, String>> getPersonsWithNameContainingAnyKeyword(
 			Collection<String> keywords) {
 		final ArrayList<HashMap<PersonProperty, String>> matchedPersons = new ArrayList<>();
+		final Collection<String> lowerCaseKeywords = convertToLowerCase(keywords);
+		
 		for (HashMap<PersonProperty, String> person : getAllPersonsInAddressBook()) {
 			final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
-			if (!Collections.disjoint(wordsInName, keywords)) {
+			final Set<String> lowerCaseWordsInName = convertToLowerCase(wordsInName);
+			if (!Collections.disjoint(lowerCaseWordsInName, lowerCaseKeywords)) {
 				matchedPersons.add(person);
 			}
 		}
 		return matchedPersons;
+	}
+	
+	/**
+	 * Convert strings to lowercase
+	 * 
+	 *  @param strings collection of strings to be converted
+	 *  @return hashset of strings in lowercase
+	 */
+	private static Set<String> convertToLowerCase(Collection<String> strings) {
+		final Set<String> lowerCaseStrings = new HashSet<>();
+		for (String string : strings) {
+			lowerCaseStrings.add(string.toLowerCase());
+		}
+		return lowerCaseStrings;
 	}
 
 	/**
