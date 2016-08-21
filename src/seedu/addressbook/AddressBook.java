@@ -205,21 +205,7 @@ public class AddressBook {
 	 */
 	public static void main(String[] args) {
 		showWelcomeMessage();
-		// processProgramArgs(args);
-
-		// Reduce SLAP of method which reduces readability
-		if (args.length >= 2) {
-			showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
-			exitProgram();
-		}
-
-		if (args.length == 1) {
-			setupGivenFileForStorage(args[0]);
-		}
-
-		if (args.length == 0) {
-			setupDefaultFileForStorage();
-		}
+		processProgramArgs(args);
 
 		loadDataFromStorage();
 		while (true) {
@@ -282,23 +268,14 @@ public class AddressBook {
 		}
 
 		if (args.length == 1) {
-			// setupGivenFileForStorage(args[0]);
-			// Refactor by inlining method to make code worse
-			if (!isValidFilePath(args[0])) {
-				showToUser(String.format(MESSAGE_INVALID_FILE, args[0]));
-				exitProgram();
-			}
+			setupGivenFileForStorage(args[0]);
 
 			storageFilePath = args[0];
 			createFileIfMissing(args[0]);
 		}
 
 		if (args.length == 0) {
-			// setupDefaultFileForStorage();
-			// Refactor by inlining method to make code worse
-			showToUser(MESSAGE_USING_DEFAULT_FILE);
-			storageFilePath = DEFAULT_STORAGE_FILEPATH;
-			createFileIfMissing(storageFilePath);
+			setupDefaultFileForStorage();
 		}
 	}
 
@@ -503,8 +480,20 @@ public class AddressBook {
 	private static ArrayList<String[]> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
 		final ArrayList<String[]> matchedPersons = new ArrayList<>();
 		for (String[] person : getAllPersonsInAddressBook()) {
-			final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
-			if (!Collections.disjoint(wordsInName, keywords)) {
+			
+			String[] personInLowerCase = new String[person.length];
+			for(int i = 0; i < person.length; i++) {
+				personInLowerCase[i] = person[i].toLowerCase();
+			}
+			
+			final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(personInLowerCase)));	
+			
+			Collection<String> keywordInLowerCase = new HashSet<String>();
+			for(String keyword: keywords) {
+					keywordInLowerCase.add(keyword.toLowerCase());
+			}
+			
+			if (!Collections.disjoint(wordsInName, keywordInLowerCase)) {
 				matchedPersons.add(person);
 			}
 		}
