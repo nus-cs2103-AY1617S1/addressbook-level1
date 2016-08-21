@@ -101,6 +101,16 @@
   list
 
 ##########################################################
+# test edit command
+##########################################################
+  edit AdmiralBulldog e/bulldong@alliance.gg
+  list
+  edit AdmiralBulldog p/420123
+  list
+  edit AdmiralBulldog e/bulldog@alliance.gg p/123456
+  list
+
+##########################################################
 # test clear command
 ##########################################################
 

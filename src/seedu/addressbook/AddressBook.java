@@ -467,6 +467,8 @@ public class AddressBook {
         toEditPerson[PERSON_DATA_INDEX_PHONE] = (getPhoneFromPerson(editedPersonInfo).equals(RESERVED_PHONE)) ? toEditPerson[PERSON_DATA_INDEX_PHONE] : getPhoneFromPerson(editedPersonInfo) ;
         toEditPerson[PERSON_DATA_INDEX_EMAIL] = (getEmailFromPerson(editedPersonInfo).equals(RESERVED_EMAIL)) ? toEditPerson[PERSON_DATA_INDEX_EMAIL] : getEmailFromPerson(editedPersonInfo) ;
         
+        savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
+        
         return getMessageForSuccessfulEditPerson(toEditPerson) ;
     }
     
