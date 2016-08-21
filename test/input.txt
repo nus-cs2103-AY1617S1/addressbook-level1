@@ -100,6 +100,22 @@
   list
 
 ##########################################################
+# test sort person command
+##########################################################
+  
+  add Zylan Tan p/666666 e/zylantan@abc.com
+  add Out Of Order p/777777 e/outoforder@def.com
+  add Peter Jane Marrison p/888888 e/pjm@ghi.com
+  
+  list
+  sort 
+  
+  # clear everything
+  clear
+  list
+  sort
+
+##########################################################
 # test exit command
 ##########################################################
 
