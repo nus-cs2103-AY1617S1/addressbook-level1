@@ -205,19 +205,13 @@ public class AddressBook {
         ALL_PERSONS.clear();
         ALL_PERSONS.addAll(persons);
         while (true) {
-            handleUserCommand();
+	        	String userCommand = getUserInput();
+	    		echoUserCommand(userCommand);
+	    		String feedback = executeCommand(userCommand);
+	    		showResultToUser(feedback);
         }
     }
 
-    /**
-     * Get user input, process it, and output command result
-     */
-	private static void handleUserCommand() {
-		String userCommand = getUserInput();
-		echoUserCommand(userCommand);
-		String feedback = executeCommand(userCommand);
-		showResultToUser(feedback);
-	}
 
     /**
      * The method will show the message(result) to user
