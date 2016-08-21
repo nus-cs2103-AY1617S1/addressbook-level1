@@ -306,41 +306,41 @@
 || Person info edited: George John Bay, Phone: 543543, Email: gjb@example.com
 || ===================================================
 || Enter command: || [Command entered:  list]
-|| 	1. George Bay  Phone Number: 123123  Email: georgebay@example.com
+|| 	1. Some Dude  Phone Number: 456456  Email: somedude@haha.com
 || 	2. George John Bay  Phone Number: 543543  Email: gjb@example.com
 || 
 || 2 persons found!
 || ===================================================
 || Enter command: || [Command entered:  edit -1 name John]
-|| Invalid command format: edit
+|| Invalid command format: edit 
 || edit: Edit a person identified by the index number used in the last find/list call, giving it a new value for a certain property.
 || 	Parameters: INDEX PROPERTY NEWVALUE
 || 	Example: edit 1 name matthew
 || 
 || ===================================================
 || Enter command: || [Command entered:  edit 2 what what]
-|| Invalid command format: edit
+|| Invalid command format: edit 
 || edit: Edit a person identified by the index number used in the last find/list call, giving it a new value for a certain property.
 || 	Parameters: INDEX PROPERTY NEWVALUE
 || 	Example: edit 1 name matthew
 || 
 || ===================================================
 || Enter command: || [Command entered:  edit 2 name]
-|| Invalid command format: edit
+|| Invalid command format: edit 
 || edit: Edit a person identified by the index number used in the last find/list call, giving it a new value for a certain property.
 || 	Parameters: INDEX PROPERTY NEWVALUE
 || 	Example: edit 1 name matthew
 || 
 || ===================================================
 || Enter command: || [Command entered:  edit 2 phone not_numbers]
-|| Invalid command format: edit
+|| Invalid command format: edit 
 || edit: Edit a person identified by the index number used in the last find/list call, giving it a new value for a certain property.
 || 	Parameters: INDEX PROPERTY NEWVALUE
 || 	Example: edit 1 name matthew
 || 
 || ===================================================
 || Enter command: || [Command entered:  edit 2 email not_valid_address]
-|| Invalid command format: edit
+|| Invalid command format: edit 
 || edit: Edit a person identified by the index number used in the last find/list call, giving it a new value for a certain property.
 || 	Parameters: INDEX PROPERTY NEWVALUE
 || 	Example: edit 1 name matthew
