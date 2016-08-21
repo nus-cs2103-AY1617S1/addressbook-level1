@@ -282,11 +282,23 @@ public class AddressBook {
 		}
 
 		if (args.length == 1) {
-			setupGivenFileForStorage(args[0]);
+			// setupGivenFileForStorage(args[0]);
+			// Refactor by inlining method to make code worse
+			if (!isValidFilePath(args[0])) {
+				showToUser(String.format(MESSAGE_INVALID_FILE, args[0]));
+				exitProgram();
+			}
+
+			storageFilePath = args[0];
+			createFileIfMissing(args[0]);
 		}
 
 		if (args.length == 0) {
-			setupDefaultFileForStorage();
+			// setupDefaultFileForStorage();
+			// Refactor by inlining method to make code worse
+			showToUser(MESSAGE_USING_DEFAULT_FILE);
+			storageFilePath = DEFAULT_STORAGE_FILEPATH;
+			createFileIfMissing(storageFilePath);
 		}
 	}
 
