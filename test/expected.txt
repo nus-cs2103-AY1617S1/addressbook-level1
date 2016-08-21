@@ -20,6 +20,10 @@
 || sort: Displays all persons as a SORTED list with index numbers.
 || 	Example: sort
 || 
+|| edit: Edit a person identified by the index number used in the last find/list call, giving it a new value for a certain property.
+|| 	Parameters: INDEX PROPERTY NEWVALUE
+|| 	Example: edit 1 name matthew
+|| 
 || delete: Deletes a person identified by the index number used in the last find/list call.
 || 	Parameters: INDEX
 || 	Example: delete 1
