@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Scanner;
@@ -62,6 +63,7 @@ public class AddressBook {
      */
     private static final String MESSAGE_ADD_PERSON_SUCCESS = "New person added: %1$s, Phone: %2$s, Email: %3$s";
     private static final String MESSAGE_ADDRESSBOOK_CLEARED = "Address book has been cleared!";
+    private static final String MESSAGE_ADDRESSBOOK_SORTED = "Address book has been sorted by alphabetical order!";
     private static final String MESSAGE_COMMAND_HELP = "%1$s: %2$s";
     private static final String MESSAGE_COMMAND_HELP_PARAMETERS = "\tParameters: %1$s";
     private static final String MESSAGE_COMMAND_HELP_EXAMPLE = "\tExample: %1$s";
@@ -121,8 +123,12 @@ public class AddressBook {
     private static final String COMMAND_CLEAR_DESC = "Clears address book permanently.";
     private static final String COMMAND_CLEAR_EXAMPLE = COMMAND_CLEAR_WORD;
     
+    private static final String COMMAND_SORT_WORD = "sort";
+    private static final String COMMAND_SORT_DESC = "Sorts the address book by alphabetical order.";
+    private static final String COMMAND_SORT_EXAMPLE = COMMAND_SORT_WORD;
+    
     private static final String COMMAND_EDIT_WORD = "edit";
-    private static final String COMMAND_EDIT_DESC = "Edit properties of a specific person (specified by his index)";
+    private static final String COMMAND_EDIT_DESC = "Edit properties of a specific person (specified by his index).";
     private static final String COMMAND_EDIT_EXAMPLE = COMMAND_EDIT_WORD + " 1 n/Alice p/98765432 e/alice@alice.com";
 
     private static final String COMMAND_HELP_WORD = "help";
@@ -354,6 +360,8 @@ public class AddressBook {
 	            return executeDeletePerson(commandArgs);
 	        case COMMAND_CLEAR_WORD:
 	            return executeClearAddressBook();
+	        case COMMAND_SORT_WORD:
+	        	return executeSortAddressBook();
 	        case COMMAND_EDIT_WORD:
 	        	return executeEditPerson(commandArgs);
 	        case COMMAND_HELP_WORD:
@@ -581,6 +589,16 @@ public class AddressBook {
     private static String executeClearAddressBook() {
         clearAddressBook();
         return MESSAGE_ADDRESSBOOK_CLEARED;
+    }
+    
+    /**
+     * 
+     * 
+     */
+    private static String executeSortAddressBook(){
+    	sortAddressBook();
+    	executeListAllPersonsInAddressBook();
+    	return MESSAGE_ADDRESSBOOK_SORTED;
     }
     
     /**
@@ -991,6 +1009,29 @@ public class AddressBook {
     private static void clearAddressBook() {
         ALL_PERSONS.clear();
         savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
+    }
+    
+    /**
+     * Sort the address book and save to file.
+     * 
+     */
+    private static void sortAddressBook(){
+    	String[][] addressBookAsArray = new String[ALL_PERSONS.size()][PERSON_DATA_COUNT];
+    	ALL_PERSONS.toArray(addressBookAsArray);
+    	Arrays.sort(addressBookAsArray, new Comparator<String[]>(){
+
+			@Override
+			public int compare(String[] o1, String[] o2) {
+				String firstName = o1[0], secondName = o2[0];
+				return firstName.compareTo(secondName);
+			}
+    		
+    	});
+    	ALL_PERSONS.clear();
+    	for (String[] person : addressBookAsArray){
+    		ALL_PERSONS.add(person);
+    	}
+    	savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
     }
 
     /**
