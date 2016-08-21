@@ -454,11 +454,22 @@ public class AddressBook {
         final ArrayList<HashMap<PersonProperty, String>> matchedPersons = new ArrayList<>();
         for (HashMap<PersonProperty, String> person : getAllPersonsInAddressBook()) {
             final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
-            if (!Collections.disjoint(wordsInName, keywords)) {
+            if (isKeywordMatch(wordsInName, keywords)) {
                 matchedPersons.add(person);
             }
         }
         return matchedPersons;
+    }
+    
+    private static boolean isKeywordMatch(Collection<String> wordsInName, Collection<String> keywords) {
+        for (String word : wordsInName) {
+            for(String keyword : keywords) {
+                if (word.toLowerCase().contains(keyword.toLowerCase())) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**
