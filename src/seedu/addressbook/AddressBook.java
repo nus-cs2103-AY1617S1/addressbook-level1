@@ -178,7 +178,11 @@ public class AddressBook {
      * @param args   will use filepath in args[0] to store data rather than use default file to store it. 
      */
     public static void main(String[] args) {
-        showWelcomeMessage();
+    	    showToUser(DIVIDER);
+		showToUser(DIVIDER);
+        showToUser(VERSION);
+        showToUser(MESSAGE_WELCOME);
+        showToUser(DIVIDER);
         if (args.length >= 2) {
             showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
             exitProgram();
@@ -206,17 +210,6 @@ public class AddressBook {
 		String feedback = executeCommand(userCommand);
 		showResultToUser(feedback);
 	}
-
-    /**
-     * The method will show the welcome message to user
-     */
-    private static void showWelcomeMessage() {
-    		showToUser(DIVIDER);
-    		showToUser(DIVIDER);
-        showToUser(VERSION);
-        showToUser(MESSAGE_WELCOME);
-        showToUser(DIVIDER);
-    }
 
     /**
      * The method will show the message(result) to user
