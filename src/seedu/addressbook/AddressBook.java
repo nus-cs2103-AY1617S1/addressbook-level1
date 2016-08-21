@@ -560,13 +560,24 @@ public class AddressBook {
      */
     private static String executeListAllPersonsInAddressBook() {
         ArrayList<String[]> toBeDisplayed = getAllPersonsInAddressBook();
-        Collections.sort(toBeDisplayed, new Comparator<String[]>() {
-            public int compare(String[] strings, String[] otherStrings) {
-                return strings[0].compareTo(otherStrings[0]);
-            }
-        });
+        sortPersons(toBeDisplayed, PERSON_DATA_INDEX_NAME);
         showToUser(toBeDisplayed);
         return getMessageForPersonsDisplayedSummary(toBeDisplayed);
+    }
+    
+    /**
+     * Accepts an ArrayList of String arrays and sorts the String arrays by either name, phone or email according to the criterion parameter
+     * 
+     * @param	persons
+     * 			criterion - PERSON_DATA_INDEX_NAME, PERSON_DATA_INDEX_PHONE or PERSON_DATA_INDEX_EMAIL
+     * @return	no return - parameter is passed by reference and is mutated
+     */
+    private static void sortPersons(ArrayList<String[]> persons, int criterion) {
+    	Collections.sort(persons, new Comparator<String[]>() {
+            public int compare(String[] strings, String[] otherStrings) {
+                return strings[criterion].compareTo(otherStrings[criterion]);
+            }
+        });
     }
 
     /*
