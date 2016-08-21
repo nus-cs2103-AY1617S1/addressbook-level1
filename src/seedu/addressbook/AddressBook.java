@@ -218,25 +218,25 @@ public class AddressBook {
 	            final String commandType = commandTypeAndParams[0];
 	            final String commandArgs = commandTypeAndParams[1];
 	            switch (commandType) {
-	            case COMMAND_ADD_WORD:
+	            case "add":
 	            		feedback = executeAddPerson(commandArgs);
 	            		break;
-	            case COMMAND_FIND_WORD:
+	            case "find":
 	            		feedback = executeFindPersons(commandArgs);
 	            		break;
-	            case COMMAND_LIST_WORD:
+	            case "list":
 	            		feedback = executeListAllPersonsInAddressBook();
 	            		break;
-	            case COMMAND_DELETE_WORD:
+	            case "delete":
 	            		feedback = executeDeletePerson(commandArgs);
 	            		break;
-	            case COMMAND_CLEAR_WORD:
+	            case "clear":
 	            		feedback = executeClearAddressBook();
 	            		break;
-	            case COMMAND_HELP_WORD:
+	            case "help":
 	            		feedback = getUsageInfoForAllCommands();
 	            		break;
-	            case COMMAND_EXIT_WORD:
+	            case "exit":
 	                executeExitProgramRequest();
 	                break;
 	            default:
