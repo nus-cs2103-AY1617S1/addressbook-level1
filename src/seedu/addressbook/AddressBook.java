@@ -467,7 +467,7 @@ public class AddressBook {
      * @return set of keywords as specified by args
      */
     private static Set<String> extractKeywordsFromFindPersonArgs(String findPersonCommandArgs) {
-        return new HashSet<>(splitByWhitespace(findPersonCommandArgs.trim()));
+        return new HashSet<String>(splitByWhitespace(findPersonCommandArgs.trim().toLowerCase()));
     }
 
     /**
@@ -477,7 +477,7 @@ public class AddressBook {
      * @return list of persons in full model with name containing some of the keywords
      */
     private static ArrayList<String[]> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
-        final ArrayList<String[]> matchedPersons = new ArrayList<>();
+        final ArrayList<String[]> matchedPersons = new ArrayList<String[]>();
         for (String[] person : getAllPersonsInAddressBook()) {
             final Set<String> wordsInName = generateSetWithWordsInPersonName(person);
             if (!Collections.disjoint(wordsInName, keywords)) {
@@ -494,7 +494,7 @@ public class AddressBook {
 	 * @return set
 	 */
 	private static HashSet<String> generateSetWithWordsInPersonName(String[] person) {
-		return new HashSet<String>(splitByWhitespace(getNameFromPerson(person)));
+		return new HashSet<String>(splitByWhitespace(getNameFromPerson(person).toLowerCase()));
 	}
 
     /**
