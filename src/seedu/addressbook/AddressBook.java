@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Scanner;
@@ -459,7 +460,7 @@ public class AddressBook {
 
     /**
      * Retrieve all persons in the full model whose names contain some of the specified keywords.
-     * Update: Search is no longer case-sensitive via lower-case string matching.
+     * Update T2A5: Search is no longer case-sensitive via lower-case string matching.
      *
      * @param keywords for searching
      * @return list of persons in full model with name containing some of the keywords
@@ -553,11 +554,17 @@ public class AddressBook {
 
     /**
      * Displays all persons in the address book to the user; in added order.
+     * Update T2A5: The display is now sorted by name.
      *
      * @return feedback display message for the operation result
      */
     private static String executeListAllPersonsInAddressBook() {
         ArrayList<String[]> toBeDisplayed = getAllPersonsInAddressBook();
+        Collections.sort(toBeDisplayed, new Comparator<String[]>() {
+            public int compare(String[] strings, String[] otherStrings) {
+                return strings[0].compareTo(otherStrings[0]);
+            }
+        });
         showToUser(toBeDisplayed);
         return getMessageForPersonsDisplayedSummary(toBeDisplayed);
     }
