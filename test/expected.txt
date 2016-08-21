@@ -10,12 +10,19 @@
 || 	Parameters: NAME p/PHONE_NUMBER e/EMAIL
 || 	Example: add John Doe p/98765432 e/johnd@gmail.com
 || 
-|| find: Finds all persons whose names contain any of the specified keywords (case-sensitive) and displays them as a list with index numbers.
+|| find: Finds all persons whose names contain any of the specified keywords (case-insensitive) and displays them as a list with index numbers.
 || 	Parameters: KEYWORD [MORE_KEYWORDS]
 || 	Example: find alice bob charlie
 || 
 || list: Displays all persons as a list with index numbers.
 || 	Example: list
+|| 
+|| sort: Displays all persons as a SORTED list with index numbers.
+|| 	Example: sort
+|| 
+|| edit: Edit a person identified by the index number used in the last find/list call, giving it a new value for a certain property.
+|| 	Parameters: INDEX PROPERTY NEWVALUE
+|| 	Example: edit 1 name matthew
 || 
 || delete: Deletes a person identified by the index number used in the last find/list call.
 || 	Parameters: INDEX
@@ -139,8 +146,9 @@
 || 0 persons found!
 || ===================================================
 || Enter command: || [Command entered:  find betsy]
+|| 	1. Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
 || 
-|| 0 persons found!
+|| 1 persons found!
 || ===================================================
 || Enter command: || [Command entered:  find Betsy]
 || 	1. Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
@@ -227,6 +235,125 @@
 || Address book has been cleared!
 || ===================================================
 || Enter command: || [Command entered:  list]
+|| 
+|| 0 persons found!
+|| ===================================================
+|| Enter command: || [Command entered:  add Zylan Tan p/666666 e/zylantan@abc.com]
+|| New person added: Zylan Tan, Phone: 666666, Email: zylantan@abc.com
+|| ===================================================
+|| Enter command: || [Command entered:  add Out Of Order p/777777 e/outoforder@def.com]
+|| New person added: Out Of Order, Phone: 777777, Email: outoforder@def.com
+|| ===================================================
+|| Enter command: || [Command entered:  add Peter Jane Marrison p/888888 e/pjm@ghi.com]
+|| New person added: Peter Jane Marrison, Phone: 888888, Email: pjm@ghi.com
+|| ===================================================
+|| Enter command: || [Command entered:  list]
+|| 	1. Zylan Tan  Phone Number: 666666  Email: zylantan@abc.com
+|| 	2. Out Of Order  Phone Number: 777777  Email: outoforder@def.com
+|| 	3. Peter Jane Marrison  Phone Number: 888888  Email: pjm@ghi.com
+|| 
+|| 3 persons found!
+|| ===================================================
+|| Enter command: || [Command entered:  sort ]
+|| 	1. Out Of Order  Phone Number: 777777  Email: outoforder@def.com
+|| 	2. Peter Jane Marrison  Phone Number: 888888  Email: pjm@ghi.com
+|| 	3. Zylan Tan  Phone Number: 666666  Email: zylantan@abc.com
+|| 
+|| 3 persons found!
+|| ===================================================
+|| Enter command: || [Command entered:  clear]
+|| Address book has been cleared!
+|| ===================================================
+|| Enter command: || [Command entered:  list]
+|| 
+|| 0 persons found!
+|| ===================================================
+|| Enter command: || [Command entered:  sort]
+|| 
+|| 0 persons found!
+|| ===================================================
+|| Enter command: || [Command entered:  add George Bay p/123123 e/georgebay@example.com]
+|| New person added: George Bay, Phone: 123123, Email: georgebay@example.com
+|| ===================================================
+|| Enter command: || [Command entered:  add Some Dude p/456456 e/somedude@haha.com]
+|| New person added: Some Dude, Phone: 456456, Email: somedude@haha.com
+|| ===================================================
+|| Enter command: || [Command entered:  list]
+|| 	1. George Bay  Phone Number: 123123  Email: georgebay@example.com
+|| 	2. Some Dude  Phone Number: 456456  Email: somedude@haha.com
+|| 
+|| 2 persons found!
+|| ===================================================
+|| Enter command: || [Command entered:  edit 1 name George John Bay]
+|| Person info edited: George John Bay  Phone Number: 123123  Email: georgebay@example.com
+|| ===================================================
+|| Enter command: || [Command entered:  list]
+|| 	1. George John Bay  Phone Number: 123123  Email: georgebay@example.com
+|| 	2. Some Dude  Phone Number: 456456  Email: somedude@haha.com
+|| 
+|| 2 persons found!
+|| ===================================================
+|| Enter command: || [Command entered:  edit 1 phone 543543]
+|| Person info edited: George John Bay  Phone Number: 543543  Email: georgebay@example.com
+|| ===================================================
+|| Enter command: || [Command entered:  list]
+|| 	1. George John Bay  Phone Number: 543543  Email: georgebay@example.com
+|| 	2. Some Dude  Phone Number: 456456  Email: somedude@haha.com
+|| 
+|| 2 persons found!
+|| ===================================================
+|| Enter command: || [Command entered:  edit 1 email gjb@example.com]
+|| Person info edited: George John Bay  Phone Number: 543543  Email: gjb@example.com
+|| ===================================================
+|| Enter command: || [Command entered:  list]
+|| 	1. George John Bay  Phone Number: 543543  Email: gjb@example.com
+|| 	2. Some Dude  Phone Number: 456456  Email: somedude@haha.com
+|| 
+|| 2 persons found!
+|| ===================================================
+|| Enter command: || [Command entered:  edit -1 name John]
+|| Invalid command format: edit 
+|| edit: Edit a person identified by the index number used in the last find/list call, giving it a new value for a certain property.
+|| 	Parameters: INDEX PROPERTY NEWVALUE
+|| 	Example: edit 1 name matthew
+|| 
+|| ===================================================
+|| Enter command: || [Command entered:  edit 1 what what]
+|| Invalid command format: edit 
+|| edit: Edit a person identified by the index number used in the last find/list call, giving it a new value for a certain property.
+|| 	Parameters: INDEX PROPERTY NEWVALUE
+|| 	Example: edit 1 name matthew
+|| 
+|| ===================================================
+|| Enter command: || [Command entered:  edit 1 name]
+|| Invalid command format: edit 
+|| edit: Edit a person identified by the index number used in the last find/list call, giving it a new value for a certain property.
+|| 	Parameters: INDEX PROPERTY NEWVALUE
+|| 	Example: edit 1 name matthew
+|| 
+|| ===================================================
+|| Enter command: || [Command entered:  edit 1 phone not_numbers]
+|| Invalid command format: edit 
+|| edit: Edit a person identified by the index number used in the last find/list call, giving it a new value for a certain property.
+|| 	Parameters: INDEX PROPERTY NEWVALUE
+|| 	Example: edit 1 name matthew
+|| 
+|| ===================================================
+|| Enter command: || [Command entered:  edit 1 email not_valid_address]
+|| Invalid command format: edit 
+|| edit: Edit a person identified by the index number used in the last find/list call, giving it a new value for a certain property.
+|| 	Parameters: INDEX PROPERTY NEWVALUE
+|| 	Example: edit 1 name matthew
+|| 
+|| ===================================================
+|| Enter command: || [Command entered:  clear]
+|| Address book has been cleared!
+|| ===================================================
+|| Enter command: || [Command entered:  list]
+|| 
+|| 0 persons found!
+|| ===================================================
+|| Enter command: || [Command entered:  sort]
 || 
 || 0 persons found!
 || ===================================================
