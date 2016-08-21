@@ -116,6 +116,38 @@
   sort
 
 ##########################################################
+# test edit person command
+##########################################################
+  
+  add George Bay p/123123 e/georgebay@example.com
+  add Some Dude p/456456 e/somedude@haha.com
+  list
+
+  edit 1 name George John Bay
+  # name should be updated
+  list
+  
+  edit 2 phone 543543
+  # phone should be updated
+  list
+    
+  edit 2 email gjb@example.com
+  # email should be updated
+  list
+  
+  # should ignore invalid property or arguments
+  edit -1 name John
+  edit 2 what what
+  edit 2 name
+  edit 2 phone not_numbers
+  edit 2 email not_valid_address
+  
+  # clear everything
+  clear
+  list
+  sort
+
+##########################################################
 # test exit command
 ##########################################################
 
