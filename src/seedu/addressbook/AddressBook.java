@@ -263,6 +263,7 @@ public class AddressBook {
                 }
 
             	break;
+            
             case COMMAND_FIND_WORD:
             	
             	final Set<String> keywords = extractKeywordsFromFindPersonArgs(commandArgs);
@@ -271,6 +272,7 @@ public class AddressBook {
                 feedback = getMessageForPersonsDisplayedSummary(personsFound);
                 
             	break;
+            
             case COMMAND_LIST_WORD:
             	
             	ArrayList<String[]> toBeDisplayed = getAllPersonsInAddressBook();
@@ -278,6 +280,7 @@ public class AddressBook {
                 feedback = getMessageForPersonsDisplayedSummary(toBeDisplayed);
                 
             	break;
+           
             case COMMAND_DELETE_WORD:
             	
             	if (!isDeletePersonArgsValid(commandArgs)) {
@@ -296,19 +299,23 @@ public class AddressBook {
                                                                   : MESSAGE_PERSON_NOT_IN_ADDRESSBOOK; // not found
                 
             	break;
+           
             case COMMAND_CLEAR_WORD:
             	
             	clearAddressBook();
                 feedback = MESSAGE_ADDRESSBOOK_CLEARED;
 
             	break;
+           
             case COMMAND_HELP_WORD:
             	feedback = getUsageInfoForAllCommands();
             	break;
+            
             case COMMAND_EXIT_WORD:
                 executeExitProgramRequest();
+            
             default:
-            	feedback = getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
+            	feedback = String.format(MESSAGE_INVALID_COMMAND_FORMAT, commandType, getUsageInfoForAllCommands());
             }
             
             System.out.println(LINE_PREFIX + feedback) ;
