@@ -32,6 +32,11 @@ import java.util.Set;
 public class AddressBook {
 
     /**
+     * The total number of arguments allowed.
+     */
+    private static final int PROGRAM_TOTAL_ALLOWED_ARGS = 1;
+
+    /**
      * Default file path used if the user doesn't provide the file name.
      */
     private static final String DEFAULT_STORAGE_FILEPATH = "addressbook.txt";
@@ -263,12 +268,12 @@ public class AddressBook {
      * @param args full program arguments passed to application main method
      */
     private static void processProgramArgs(String[] args) {
-        if (args.length >= 2) {
+        if (args.length > PROGRAM_TOTAL_ALLOWED_ARGS) {
             showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
             exitProgram();
         }
 
-        if (args.length == 1) {
+        if (args.length == PROGRAM_TOTAL_ALLOWED_ARGS) {
             setupGivenFileForStorage(args[0]);
         }
 
