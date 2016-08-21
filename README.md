@@ -7,6 +7,8 @@
 * It can be used to achieve a number of beginner-level [learning outcomes](#learning-outcomes) without 
   running into the complications of OOP or GUI programmings.
 
+Sam is making changes for testing. 
+
 **Table of Contents**
 * [User Guide](#user-guide)
 * [Developer Guide](#developer-guide)
