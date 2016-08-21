@@ -247,7 +247,21 @@ public class AddressBook {
             final String commandArgs = commandTypeAndParams[1];
             switch (commandType) {
             case COMMAND_ADD_WORD:
-            	feedback = executeAddPerson(commandArgs);
+            	 // try decoding a person from the raw args
+                final Optional<String[]> decodeResult = decodePersonFromString(commandArgs);
+
+                // checks if args are valid (decode result will not be present if the person is invalid)
+                if (!decodeResult.isPresent()) {
+                	feedback = getMessageForInvalidCommandInput(COMMAND_ADD_WORD, getUsageInfoForAddCommand());
+                
+                } else {
+
+	                // add the person as specified
+	                final String[] personToAdd = decodeResult.get();
+	                addPersonToAddressBook(personToAdd);
+	                feedback = getMessageForSuccessfulAddPerson(personToAdd);
+                }
+
             	break;
             case COMMAND_FIND_WORD:
             	feedback = executeFindPersons(commandArgs);
@@ -274,32 +288,6 @@ public class AddressBook {
         	
         	System.out.println(LINE_PREFIX + DIVIDER) ;
         }
-    }
-
-    /*
-     * ==============NOTE TO STUDENTS======================================
-     * The method header comment can be omitted if the method is trivial
-     * and the header comment is going to be almost identical to the method
-     * signature anyway.
-     * ====================================================================
-     */
-
-    private static void showResultToUser(String result) {
-        showToUser(result, DIVIDER);
-    }
-
-    /*
-     * ==============NOTE TO STUDENTS======================================
-     * Parameter description can be omitted from the method header comment
-     * if the parameter name is self-explanatory.
-     * In the method below, '@param userInput' comment has been omitted.
-     * ====================================================================
-     */
-    /**
-     * Echoes the user input back to the user.
-     */
-    private static void echoUserCommand(String userCommand) {
-        showToUser("[Command entered:" + userCommand + "]");
     }
 
     /*
@@ -354,50 +342,12 @@ public class AddressBook {
         return filePath.endsWith(".txt");
     }
 
-    /**
-     * Initialises the in-memory data using the storage file.
-     * Assumption: The file exists.
-     */
-    private static void loadDataFromStorage() {
-        initialiseAddressBookModel(loadPersonsFromFile(storageFilePath));
-    }
-
 
     /*
      * ===========================================
      *           COMMAND LOGIC
      * ===========================================
      */
-
-    /**
-     * Executes the command as specified by the {@code userInputString}
-     *
-     * @param userInputString  raw input from user
-     * @return  feedback about how the command was executed
-     */
-    public static String executeCommand(String userInputString) {
-        final String[] commandTypeAndParams = splitCommandWordAndArgs(userInputString);
-        final String commandType = commandTypeAndParams[0];
-        final String commandArgs = commandTypeAndParams[1];
-        switch (commandType) {
-        case COMMAND_ADD_WORD:
-            return executeAddPerson(commandArgs);
-        case COMMAND_FIND_WORD:
-            return executeFindPersons(commandArgs);
-        case COMMAND_LIST_WORD:
-            return executeListAllPersonsInAddressBook();
-        case COMMAND_DELETE_WORD:
-            return executeDeletePerson(commandArgs);
-        case COMMAND_CLEAR_WORD:
-            return executeClearAddressBook();
-        case COMMAND_HELP_WORD:
-            return getUsageInfoForAllCommands();
-        case COMMAND_EXIT_WORD:
-            executeExitProgramRequest();
-        default:
-            return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
-        }
-    }
 
     /**
      * Splits raw user input into command word and command arguments string
@@ -417,28 +367,6 @@ public class AddressBook {
      */
     private static String getMessageForInvalidCommandInput(String userCommand, String correctUsageInfo) {
         return String.format(MESSAGE_INVALID_COMMAND_FORMAT, userCommand, correctUsageInfo);
-    }
-
-    /**
-     * Adds a person (specified by the command args) to the address book.
-     * The entire command arguments string is treated as a string representation of the person to add.
-     *
-     * @param commandArgs full command args string from the user
-     * @return feedback display message for the operation result
-     */
-    private static String executeAddPerson(String commandArgs) {
-        // try decoding a person from the raw args
-        final Optional<String[]> decodeResult = decodePersonFromString(commandArgs);
-
-        // checks if args are valid (decode result will not be present if the person is invalid)
-        if (!decodeResult.isPresent()) {
-            return getMessageForInvalidCommandInput(COMMAND_ADD_WORD, getUsageInfoForAddCommand());
-        }
-
-        // add the person as specified
-        final String[] personToAdd = decodeResult.get();
-        addPersonToAddressBook(personToAdd);
-        return getMessageForSuccessfulAddPerson(personToAdd);
     }
 
     /**
@@ -828,16 +756,6 @@ public class AddressBook {
     private static void clearAddressBook() {
         ALL_PERSONS.clear();
         savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
-    }
-
-    /**
-     * Resets the internal model with the given data. Does not save to file.
-     *
-     * @param persons list of persons to initialise the model with
-     */
-    private static void initialiseAddressBookModel(ArrayList<String[]> persons) {
-        ALL_PERSONS.clear();
-        ALL_PERSONS.addAll(persons);
     }
 
 
