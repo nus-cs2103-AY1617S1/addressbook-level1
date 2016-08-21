@@ -66,10 +66,10 @@
 ##########################################################
 
   # should show all persons, sorted ascending lexicographically
-  # list -s
+  list -s
 
   # should show all matched persons, sorted ascending lexicographically
-  # find -s CHarlie Betsy
+  find -s CHarlie Betsy
 
 ##########################################################
 # test delete person command
