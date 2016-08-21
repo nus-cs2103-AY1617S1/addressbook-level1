@@ -381,7 +381,9 @@ public class AddressBook {
         final int maximumElements = 2;
         
 	final String[] split =  rawUserInput.trim().split("\\s+", maximumElements);
-        return split.length == maximumElements ? split : new String[] { split[0] , "" }; // else case: no parameters
+        return split.length == maximumElements 
+        		? split 
+        		: new String[] { split[0] , "" }; // else case: no parameters
     }
 
     /**
@@ -425,7 +427,8 @@ public class AddressBook {
      */
     private static String getMessageForSuccessfulAddPerson(String[] addedPerson) {
         return String.format(MESSAGE_ADDED,
-                getNameFromPerson(addedPerson), getPhoneFromPerson(addedPerson), getEmailFromPerson(addedPerson));
+                getNameFromPerson(addedPerson), getPhoneFromPerson(addedPerson),
+                getEmailFromPerson(addedPerson));
     }
 
     /**
@@ -530,7 +533,8 @@ public class AddressBook {
      * @return whether it is valid
      */
     private static boolean isDisplayIndexValidForLastPersonListingView(int index) {
-        return index >= DISPLAYED_INDEX_OFFSET && index < getLatestPersonListingView().size() + DISPLAYED_INDEX_OFFSET;
+        return index >= DISPLAYED_INDEX_OFFSET 
+        	&& index < getLatestPersonListingView().size() + DISPLAYED_INDEX_OFFSET;
     }
 
     /**
@@ -722,7 +726,9 @@ public class AddressBook {
      * @return the list of decoded persons
      */
     private static ArrayList<String[]> loadPersonsFromFile(String filePath) {
-        final Optional<ArrayList<String[]>> successfullyDecoded = decodePersonsFromStrings(getLinesInFile(filePath));
+        final Optional<ArrayList<String[]>> successfullyDecoded 
+        	= decodePersonsFromStrings(getLinesInFile(filePath));
+        
         if (!successfullyDecoded.isPresent()) {
             showToUser(MESSAGE_INVALID_STORAGE_FILE_CONTENT);
             exitProgram();
