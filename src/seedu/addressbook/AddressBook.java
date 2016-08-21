@@ -182,12 +182,19 @@ public class AddressBook {
         processProgramArgs(args);
         loadDataFromStorage();
         while (true) {
-            String userCommand = getUserInput();
-            echoUserCommand(userCommand);
-            String feedback = executeCommand(userCommand);
-            showResultToUser(feedback);
+            handleUserCommand();
         }
     }
+
+    /**
+     * Get user input, process it, and output command result
+     */
+	private static void handleUserCommand() {
+		String userCommand = getUserInput();
+		echoUserCommand(userCommand);
+		String feedback = executeCommand(userCommand);
+		showResultToUser(feedback);
+	}
 
     /**
      * The method will show the welcome message to user
