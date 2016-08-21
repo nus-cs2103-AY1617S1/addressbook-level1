@@ -115,6 +115,13 @@ public class AddressBook {
     private static final String COMMAND_SORT_DESC = "Displays all persons as a SORTED list with index numbers.";
     private static final String COMMAND_SORT_EXAMPLE = COMMAND_SORT_WORD;
 
+    private static final String COMMAND_EDIT_WORD = "edit";
+    private static final String COMMAND_EDIT_DESC = "Edit a person identified by the index number used in "
+                                                    + "the last find/list call, giving it a new value for a "
+                                                    + "certain property.";
+    private static final String COMMAND_EDIT_PARAMETER = "INDEX PROPERTY NEWVALUE";
+    private static final String COMMAND_EDIT_EXAMPLE = COMMAND_EDIT_WORD + " 1 name matthew";
+
     private static final String COMMAND_DELETE_WORD = "delete";
     private static final String COMMAND_DELETE_DESC = "Deletes a person identified by the index number used in "
                                                     + "the last find/list call.";
@@ -352,6 +359,8 @@ public class AddressBook {
             return executeListAllPersonsInAddressBook();
         case COMMAND_SORT_WORD:
             return executeListAllPersonsInAddressBookInSortedOrder();
+        case COMMAND_EDIT_WORD:
+            return executeEditPerson(commandArgs);
         case COMMAND_DELETE_WORD:
             return executeDeletePerson(commandArgs);
         case COMMAND_CLEAR_WORD:
@@ -363,6 +372,18 @@ public class AddressBook {
         default:
             return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
         }
+    }
+
+    /**
+     * Edits a property of a specific person (specified by the command args) in the address book,
+     * identified using last displayed index.
+     *
+     * @param commandArgs full command args string from the user
+     * @return feedback display message for the operation result
+     */
+    private static String executeEditPerson(String commandArgs) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
     /**
