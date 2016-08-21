@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Scanner;
@@ -593,6 +594,17 @@ public class AddressBook {
 	 */
 	private static String executeListAllPersonsInAddressBook() {
 		ArrayList<String[]> toBeDisplayed = getAllPersonsInAddressBook();
+		Collections.sort(toBeDisplayed, new Comparator<String[]>() {
+			@Override
+			public int compare(String[] o1, String[] o2) {
+				// TODO Auto-generated method stub
+				if (o1[0].toLowerCase().charAt(0) > o2[0].toLowerCase().charAt(0)) {
+					return 1;
+				} else {
+					return -1;
+				}
+			}
+		});
 		showToUser(toBeDisplayed);
 		return getMessageForPersonsDisplayedSummary(toBeDisplayed);
 	}
