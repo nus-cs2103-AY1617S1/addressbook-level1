@@ -1,4 +1,5 @@
 package seedu.addressbook;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -12,608 +13,569 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
+
 public class AddressBook {
-    private static final String DEFAULT_STORAGE_FILEPATH = "addressbook.txt";
-    private static final String VERSION = "AddessBook Level 1 - Version 1.0";
-    public static final String LINE_PREFIX = "|| ";
-    private static final String LS = System.lineSeparator() + LINE_PREFIX;
-    private static final String MESSAGE_ADDED = "New person added: %1$s, Phone: %2$s, Email: %3$s";
-    private static final String MESSAGE_ADDRESSBOOK_CLEARED = "Address book has been cleared!";
-    private static final String MESSAGE_COMMAND_HELP = "%1$s: %2$s";
-    private static final String MESSAGE_COMMAND_HELP_PARAMETERS = "\tParameters: %1$s";
-    private static final String MESSAGE_COMMAND_HELP_EXAMPLE = "\tExample: %1$s";
-    private static final String MESSAGE_DELETE_PERSON_SUCCESS = "Deleted Person: %1$s";
-    private static final String MESSAGE_DISPLAY_PERSON_DATA = "%1$s  Phone Number: %2$s  Email: %3$s";
-    private static final String MESSAGE_DISPLAY_LIST_ELEMENT_INDEX = "%1$d. ";
-    private static final String MESSAGE_GOODBYE = "Exiting Address Book... Good bye!";
-    private static final String MESSAGE_INVALID_COMMAND_FORMAT = "Invalid command format: %1$s " + LS + "%2$s";
-    private static final String MESSAGE_INVALID_FILE = "The given file name [%1$s] is not a valid file name!";
-    private static final String MESSAGE_INVALID_PROGRAM_ARGS = "Too many parameters! Correct program argument format:"
-                                                            + LS + "\tjava AddressBook"
-                                                            + LS + "\tjava AddressBook [custom storage file path]";
-    private static final String MESSAGE_INVALID_PERSON_DISPLAYED_INDEX = "The person index provided is invalid";
-    private static final String MESSAGE_INVALID_STORAGE_FILE_CONTENT = "Storage file has invalid content";
-    private static final String MESSAGE_PERSON_NOT_IN_ADDRESSBOOK = "Person could not be found in address book";
-    private static final String MESSAGE_ERROR_CREATING_STORAGE_FILE = "Error: unable to create file: %1$s";
-    private static final String MESSAGE_ERROR_MISSING_STORAGE_FILE = "Storage file missing: %1$s";
-    private static final String MESSAGE_ERROR_READING_FROM_FILE = "Unexpected error: unable to read from file: %1$s";
-    private static final String MESSAGE_ERROR_WRITING_TO_FILE = "Unexpected error: unable to write to file: %1$s";
-    private static final String MESSAGE_PERSONS_FOUND_OVERVIEW = "%1$d persons found!";
-    private static final String MESSAGE_STORAGE_FILE_CREATED = "Created new empty storage file: %1$s";
-    private static final String MESSAGE_WELCOME = "Welcome to your Address Book!";
-    private static final String MESSAGE_USING_DEFAULT_FILE = "Using default storage file : " + DEFAULT_STORAGE_FILEPATH;
-
     
-    private static final String PERSON_DATA_PREFIX_PHONE = "p/";
-    private static final String PERSON_DATA_PREFIX_EMAIL = "e/";
-
-    private static final String PERSON_STRING_REPRESENTATION = "%1$s " 
-                                                            + PERSON_DATA_PREFIX_PHONE + "%2$s " 
-                                                            + PERSON_DATA_PREFIX_EMAIL + "%3$s"; 
-    private static final String COMMAND_ADD_WORD = "add";
-    private static final String COMMAND_ADD_DESC = "Adds a person to the address book.";
-    private static final String COMMAND_ADD_PARAMETERS = "NAME "
-                                                      + PERSON_DATA_PREFIX_PHONE + "PHONE_NUMBER "
-                                                      + PERSON_DATA_PREFIX_EMAIL + "EMAIL";
-    private static final String COMMAND_ADD_EXAMPLE = COMMAND_ADD_WORD + " John Doe p/98765432 e/johnd@gmail.com";
-
-    private static final String COMMAND_FIND_WORD = "find";
-    private static final String COMMAND_FIND_DESC = "Finds all persons whose names contain any of the specified "
-                                        + "keywords (case-sensitive) and displays them as a list with index numbers.";
-    private static final String COMMAND_FIND_PARAMETERS = "KEYWORD [MORE_KEYWORDS]";
-    private static final String COMMAND_FIND_EXAMPLE = COMMAND_FIND_WORD + " alice bob charlie";
-
-    private static final String COMMAND_LIST_WORD = "list";
-    private static final String COMMAND_LIST_DESC = "Displays all persons as a list with index numbers.";
-    private static final String COMMAND_LIST_EXAMPLE = COMMAND_LIST_WORD;
-
-    private static final String COMMAND_DELETE_WORD = "delete";
-    private static final String COMMAND_DELETE_DESC = "Deletes a person identified by the index number used in "
-                                                    + "the last find/list call.";
-    private static final String COMMAND_DELETE_PARAMETER = "INDEX";
-    private static final String COMMAND_DELETE_EXAMPLE = COMMAND_DELETE_WORD + " 1";
-
-    private static final String COMMAND_CLEAR_WORD = "clear";
-    private static final String COMMAND_CLEAR_DESC = "Clears address book permanently.";
-    private static final String COMMAND_CLEAR_EXAMPLE = COMMAND_CLEAR_WORD;
-
-    private static final String COMMAND_HELP_WORD = "help";
-    private static final String COMMAND_HELP_DESC = "Shows program usage instructions.";
-    private static final String COMMAND_HELP_EXAMPLE = COMMAND_HELP_WORD;
-
-    private static final String COMMAND_EXIT_WORD = "exit";
-    private static final String COMMAND_EXIT_DESC = "Exits the program.";
-    private static final String COMMAND_EXIT_EXAMPLE = COMMAND_EXIT_WORD;
-
-    private static final String DIVIDER = "===================================================";
-    private static final int PERSON_DATA_INDEX_NAME = 0;
-    private static final int PERSON_DATA_INDEX_PHONE = 1;
-    private static final int PERSON_DATA_INDEX_EMAIL = 2;
-    private static final int PERSON_DATA_COUNT = 3;
-    private static final int DISPLAYED_INDEX_OFFSET = 1;
-    private static final char INPUT_COMMENT_MARKER = '#';
-    private static final Scanner SCANNER = new Scanner(System.in);
-    private static final ArrayList<String[]> ALL_PERSONS = new ArrayList<>();
-    private static ArrayList<String[]> latestPersonListingView = getAllPersonsInAddressBook(); 
-    private static String storageFilePath;
     public static void main(String[] args) {
-        showWelcomeMessage();
-        processProgramArgs(args);
-        loadDataFromStorage();
-        while (true) {
-            String userCommand = getUserInput();
-            echoUserCommand(userCommand);
-            String feedback = executeCommand(userCommand);
-            showResultToUser(feedback);
-        }
-    }
-    private static void showWelcomeMessage() {
-        showToUser(DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER);
-    }
-
-    private static void showResultToUser(String result) {
-        showToUser(result, DIVIDER);
-    }
-    private static void echoUserCommand(String userCommand) {
-        showToUser("[Command entered:" + userCommand + "]");
-    }
-
-    private static void processProgramArgs(String[] args) {
+	final Scanner SCANNER = new Scanner(System.in);
+	final ArrayList<String[]> ALL_PERSONS = new ArrayList<>();
+	ArrayList<String[]> latestPersonListingView = ALL_PERSONS; 
+	String storageFilePath = "";
+	    
+	// print welcome message
+        String[] message = { "===================================================", "===================================================", "AddessBook Level 1 - Version 1.0", "Welcome to your Address Book!", "===================================================" };
+	for (String m : message) {
+	    System.out.println("|| " + m);
+	}
+	
+	// ensure that there are no more than 2 arguments
         if (args.length >= 2) {
-            showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
-            exitProgram();
-        }
+	    String[] message1 = { "Too many parameters! Correct program argument format:"
+	                                                            + System.lineSeparator() + "|| " + "\tjava AddressBook"
+	                                                            + System.lineSeparator() + "|| " + "\tjava AddressBook [custom storage file path]" };
+	    for (String m : message1) {
+	        System.out.println("|| " + m);
+	    }
+	    String[] message2 = { "Exiting Address Book... Good bye!", "===================================================", "===================================================" };
+	    for (String m1 : message2) {
+	        System.out.println("|| " + m1);
+	    }
+	    System.exit(0);
+	}
+	
+        // try to load storage file if user has given it
+	if (args.length == 1) {
+	    String filePath = args[0];
+	    // check that path is not invalid
+	    if (!filePath.endsWith(".txt")) {
+	        String[] message1 = { String.format("The given file name [%1$s] is not a valid file name!", filePath) };
+	        for (String m1 : message1) {
+	            System.out.println("|| " + m1);
+	        }
+	        String[] message11 = { "Exiting Address Book... Good bye!", "===================================================", "===================================================" };
+	        for (String m1 : message11) {
+	            System.out.println("|| " + m1);
+	        }
+	        System.exit(0);
+	    }
+	    
+	    storageFilePath = filePath;
 
-        if (args.length == 1) {
-            setupGivenFileForStorage(args[0]);
-        }
-
-        if(args.length == 0) {
-            setupDefaultFileForStorage();
-        }
-    }
-
-    private static void setupGivenFileForStorage(String filePath) {
-
-        if (!isValidFilePath(filePath)) {
-            showToUser(String.format(MESSAGE_INVALID_FILE, filePath));
-            exitProgram();
-        }
-
-        storageFilePath = filePath;
-        createFileIfMissing(filePath);
-    }
-
-    private static void exitProgram() {
-        showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
-        System.exit(0);
-    }
-
-    private static void setupDefaultFileForStorage() {
-        showToUser(MESSAGE_USING_DEFAULT_FILE);
-        storageFilePath = DEFAULT_STORAGE_FILEPATH;
-        createFileIfMissing(storageFilePath);
-    }
-
-    private static boolean isValidFilePath(String filePath) {
-        return filePath.endsWith(".txt");
-    }
-
-    private static void loadDataFromStorage() {
-        initialiseAddressBookModel(loadPersonsFromFile(storageFilePath));
-    }
-
-    public static String executeCommand(String userInputString) {
-        final String[] commandTypeAndParams = splitCommandWordAndArgs(userInputString);
-        final String commandType = commandTypeAndParams[0];
-        final String commandArgs = commandTypeAndParams[1];
-        switch (commandType) {
-        case COMMAND_ADD_WORD:
-            return executeAddPerson(commandArgs);
-        case COMMAND_FIND_WORD:
-            return executeFindPersons(commandArgs);
-        case COMMAND_LIST_WORD:
-            return executeListAllPersonsInAddressBook();
-        case COMMAND_DELETE_WORD:
-            return executeDeletePerson(commandArgs);
-        case COMMAND_CLEAR_WORD:
-            return executeClearAddressBook();
-        case COMMAND_HELP_WORD:
-            return getUsageInfoForAllCommands();
-        case COMMAND_EXIT_WORD:
-            executeExitProgramRequest();
-        default:
-            return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
-        }
-    }
-
-    private static String[] splitCommandWordAndArgs(String rawUserInput) {
-        final String[] split =  rawUserInput.trim().split("\\s+", 2);
-        return split.length == 2 ? split : new String[] { split[0] , "" }; 
-    }
-
-    private static String getMessageForInvalidCommandInput(String userCommand, String correctUsageInfo) {
-        return String.format(MESSAGE_INVALID_COMMAND_FORMAT, userCommand, correctUsageInfo);
-    }
-
-    private static String executeAddPerson(String commandArgs) {
-        
-        final Optional<String[]> decodeResult = decodePersonFromString(commandArgs);
-
-        
-        if (!decodeResult.isPresent()) {
-            return getMessageForInvalidCommandInput(COMMAND_ADD_WORD, getUsageInfoForAddCommand());
-        }
-
-        
-        final String[] personToAdd = decodeResult.get();
-        addPersonToAddressBook(personToAdd);
-        return getMessageForSuccessfulAddPerson(personToAdd);
-    }
-
-    private static String getMessageForSuccessfulAddPerson(String[] addedPerson) {
-        return String.format(MESSAGE_ADDED,
-                getNameFromPerson(addedPerson), getPhoneFromPerson(addedPerson), getEmailFromPerson(addedPerson));
-    }
-
-    private static String executeFindPersons(String commandArgs) {
-        final Set<String> keywords = extractKeywordsFromFindPersonArgs(commandArgs);
-        final ArrayList<String[]> personsFound = getPersonsWithNameContainingAnyKeyword(keywords);
-        showToUser(personsFound);
-        return getMessageForPersonsDisplayedSummary(personsFound);
-    }
-
-    private static String getMessageForPersonsDisplayedSummary(ArrayList<String[]> personsDisplayed) {
-        return String.format(MESSAGE_PERSONS_FOUND_OVERVIEW, personsDisplayed.size());
-    }
-
-    private static Set<String> extractKeywordsFromFindPersonArgs(String findPersonCommandArgs) {
-        return new HashSet<>(splitByWhitespace(findPersonCommandArgs.trim()));
-    }
-
-    private static ArrayList<String[]> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
-        final ArrayList<String[]> matchedPersons = new ArrayList<>();
-        for (String[] person : getAllPersonsInAddressBook()) {
-            final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
-            if (!Collections.disjoint(wordsInName, keywords)) {
-                matchedPersons.add(person);
-            }
-        }
-        return matchedPersons;
-    }
-
-    private static String executeDeletePerson(String commandArgs) {
-        if (!isDeletePersonArgsValid(commandArgs)) {
-            return getMessageForInvalidCommandInput(COMMAND_DELETE_WORD, getUsageInfoForDeleteCommand());
-        }
-        final int targetVisibleIndex = extractTargetIndexFromDeletePersonArgs(commandArgs);
-        if (!isDisplayIndexValidForLastPersonListingView(targetVisibleIndex)) {
-            return MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
-        }
-        final String[] targetInModel = getPersonByLastVisibleIndex(targetVisibleIndex);
-        return deletePersonFromAddressBook(targetInModel) ? getMessageForSuccessfulDelete(targetInModel) 
-                                                          : MESSAGE_PERSON_NOT_IN_ADDRESSBOOK; 
-    }
-
-    private static boolean isDeletePersonArgsValid(String rawArgs) {
-        try {
-            final int extractedIndex = Integer.parseInt(rawArgs.trim()); 
-            return extractedIndex >= DISPLAYED_INDEX_OFFSET;
-        } catch (NumberFormatException nfe) {
-            return false;
-        }
-    }
-
-    private static int extractTargetIndexFromDeletePersonArgs(String rawArgs) {
-        return Integer.parseInt(rawArgs.trim());
-    }
-
-    private static boolean isDisplayIndexValidForLastPersonListingView(int index) {
-        return index >= DISPLAYED_INDEX_OFFSET && index < getLatestPersonListingView().size() + DISPLAYED_INDEX_OFFSET;
-    }
-
-    private static String getMessageForSuccessfulDelete(String[] deletedPerson) {
-        return String.format(MESSAGE_DELETE_PERSON_SUCCESS, getMessageForFormattedPersonData(deletedPerson));
-    }
-
-    private static String executeClearAddressBook() {
-        clearAddressBook();
-        return MESSAGE_ADDRESSBOOK_CLEARED;
-    }
-
-    private static String executeListAllPersonsInAddressBook() {
-        ArrayList<String[]> toBeDisplayed = getAllPersonsInAddressBook();
-        showToUser(toBeDisplayed);
-        return getMessageForPersonsDisplayedSummary(toBeDisplayed);
-    }
-
-    private static void executeExitProgramRequest() {
-        exitProgram();
-    }
-
-    private static String getUserInput() {
-        System.out.print(LINE_PREFIX + "Enter command: ");
-        String inputLine = SCANNER.nextLine();
-        
-        while (inputLine.trim().isEmpty() || inputLine.trim().charAt(0) == INPUT_COMMENT_MARKER) {
-            inputLine = SCANNER.nextLine();
-        }
-        return inputLine;
-    }
-
-    private static void showToUser(String... message) {
-        for (String m : message) {
-            System.out.println(LINE_PREFIX + m);
-        }
-    }
-
-    private static void showToUser(ArrayList<String[]> persons) {
-        String listAsString = getDisplayString(persons);
-        showToUser(listAsString);
-        updateLatestViewedPersonListing(persons);
-    }
-    private static String getDisplayString(ArrayList<String[]> persons) {
-        final StringBuilder messageAccumulator = new StringBuilder();
-        for (int i = 0; i < persons.size(); i++) {
-            final String[] person = persons.get(i);
-            final int displayIndex = i + DISPLAYED_INDEX_OFFSET;
-            messageAccumulator.append('\t')
-                              .append(getIndexedPersonListElementMessage(displayIndex, person))
-                              .append(LS);
-        }
-        return messageAccumulator.toString();
-    }
-
-    private static String getIndexedPersonListElementMessage(int visibleIndex, String[] person) {
-        return String.format(MESSAGE_DISPLAY_LIST_ELEMENT_INDEX, visibleIndex) + getMessageForFormattedPersonData(person);
-    }
-
-    private static String getMessageForFormattedPersonData(String[] person) {
-        return String.format(MESSAGE_DISPLAY_PERSON_DATA,
-                getNameFromPerson(person), getPhoneFromPerson(person), getEmailFromPerson(person));
-    }
-
-    private static void updateLatestViewedPersonListing(ArrayList<String[]> newListing) {
-        
-        latestPersonListingView = new ArrayList<>(newListing);
-    }
-
-    private static String[] getPersonByLastVisibleIndex(int lastVisibleIndex) {
-       return latestPersonListingView.get(lastVisibleIndex - DISPLAYED_INDEX_OFFSET);
-    }
-
-    private static ArrayList<String[]> getLatestPersonListingView() {
-        return latestPersonListingView;
-    }
-
-
-    private static void createFileIfMissing(String filePath) {
-        final File storageFile = new File(filePath);
-        if (storageFile.exists()) {
-            return;
-        }
-
-        showToUser(String.format(MESSAGE_ERROR_MISSING_STORAGE_FILE, filePath));
-
-        try {
-            storageFile.createNewFile();
-            showToUser(String.format(MESSAGE_STORAGE_FILE_CREATED, filePath));
-        } catch (IOException ioe) {
-            showToUser(String.format(MESSAGE_ERROR_CREATING_STORAGE_FILE, filePath));
-            exitProgram();
-        }
-    }
-
-    private static ArrayList<String[]> loadPersonsFromFile(String filePath) {
-        final Optional<ArrayList<String[]>> successfullyDecoded = decodePersonsFromStrings(getLinesInFile(filePath));
-        if (!successfullyDecoded.isPresent()) {
-            showToUser(MESSAGE_INVALID_STORAGE_FILE_CONTENT);
-            exitProgram();
-        }
-        return successfullyDecoded.get();
-    }
-
-    private static ArrayList<String> getLinesInFile(String filePath) {
-        ArrayList<String> lines = null;
-        try {
-            lines = new ArrayList(Files.readAllLines(Paths.get(filePath)));
-        } catch (FileNotFoundException fnfe) {
-            showToUser(String.format(MESSAGE_ERROR_MISSING_STORAGE_FILE, filePath));
-            exitProgram();
-        } catch (IOException ioe) {
-            showToUser(String.format(MESSAGE_ERROR_READING_FROM_FILE, filePath));
-            exitProgram();
-        }
-        return lines;
-    }
-
-    private static void savePersonsToFile(ArrayList<String[]> persons, String filePath) {
-        final ArrayList<String> linesToWrite = encodePersonsToStrings(persons);
-        try {
-            Files.write(Paths.get(storageFilePath), linesToWrite);
-        } catch (IOException ioe) {
-            showToUser(String.format(MESSAGE_ERROR_WRITING_TO_FILE, filePath));
-            exitProgram();
-        }
-    }
-
-
-    private static void addPersonToAddressBook(String[] person) {
-        ALL_PERSONS.add(person);
-        savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
-    }
-
-    private static void deletePersonFromAddressBook(int index) {
-        ALL_PERSONS.remove(index);
-        savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
-    }
-
-    private static boolean deletePersonFromAddressBook(String[] exactPerson) {
-        final boolean changed = ALL_PERSONS.remove(exactPerson);
-        if (changed) {
-            savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
-        }
-        return changed;
-    }
-    private static ArrayList<String[]> getAllPersonsInAddressBook() {
-        return ALL_PERSONS;
-    }
-
-    private static void clearAddressBook() {
+	    // create storage file if it does not exist
+	    final File storageFile = new File(filePath);
+	    if (!storageFile.exists()) {
+	    String[] message1 = { String.format("Storage file missing: %1$s", filePath) };
+	    
+	        for (String m1 : message1) {
+	        System.out.println("|| " + m1);
+	    }
+	    
+	        try {
+	            storageFile.createNewFile();
+	        String[] message12 = { String.format("Created new empty storage file: %1$s", filePath) };
+	            for (String m2 : message12) {
+	            System.out.println("|| " + m2);
+	        }
+	        } catch (IOException ioe) {
+	            String[] message11 = { String.format("Error: unable to create file: %1$s", filePath) };
+	        for (String m3 : message11) {
+	            System.out.println("|| " + m3);
+	        }
+	            String[] message2 = { "Exiting Address Book... Good bye!", "===================================================", "===================================================" };
+	        for (String m1 : message2) {
+	            System.out.println("|| " + m1);
+	        }
+	        System.exit(0);
+	        }
+	    }
+	}
+	
+	// load default if no storage given
+	if(args.length == 0) {
+	    String[] message1 = { "Using default storage file : " + "addressbook.txt" };
+	    for (String m1 : message1) {
+	        System.out.println("|| " + m1);
+	    }
+	    storageFilePath = "addressbook.txt";
+	    
+	    // create storage file if it does not exist
+	    final File storageFile = new File(storageFilePath);
+	    if (!storageFile.exists()) {
+	    String[] message2 = { String.format("Storage file missing: %1$s", storageFilePath) };
+	    
+	        for (String m2 : message2) {
+	        System.out.println("|| " + m2);
+	    }
+	    
+	        try {
+	            storageFile.createNewFile();
+	        String[] message11 = { String.format("Created new empty storage file: %1$s", storageFilePath) };
+	            for (String m3 : message11) {
+	            System.out.println("|| " + m3);
+	        }
+	        } catch (IOException ioe) {
+	            String[] message12 = { String.format("Error: unable to create file: %1$s", storageFilePath) };
+	        for (String m4 : message12) {
+	            System.out.println("|| " + m4);
+	        }
+	            String[] message21 = { "Exiting Address Book... Good bye!", "===================================================", "===================================================" };
+	        for (String m11 : message21) {
+	            System.out.println("|| " + m11);
+	        }
+	        System.exit(0);
+	        }
+	    }
+	}
+	
+	// read all lines in file
         ALL_PERSONS.clear();
-        savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
-    }
+	ArrayList<String> linesInFiles = null;
+	try {
+	    linesInFiles = new ArrayList(Files.readAllLines(Paths.get(storageFilePath)));
+	} catch (FileNotFoundException fnfe) {
+	    String[] message2 = { String.format("Storage file missing: %1$s", storageFilePath) };
+	    for (String m3 : message2) {
+	        System.out.println("|| " + m3);
+	    }
+	    String[] message12 = { "Exiting Address Book... Good bye!", "===================================================", "===================================================" };
+	    for (String m12 : message12) {
+	        System.out.println("|| " + m12);
+	    }
+	    System.exit(0);
+	} catch (IOException ioe) {
+	    String[] message3 = { String.format("Unexpected error: unable to read from file: %1$s", storageFilePath) };
+	    for (String m2 : message3) {
+	        System.out.println("|| " + m2);
+	    }
+	    String[] message13 = { "Exiting Address Book... Good bye!", "===================================================", "===================================================" };
+	    for (String m13 : message13) {
+	        System.out.println("|| " + m13);
+	    }
+	    System.exit(0);
+	}
 
-    private static void initialiseAddressBookModel(ArrayList<String[]> persons) {
-        ALL_PERSONS.clear();
-        ALL_PERSONS.addAll(persons);
-    }
-    private static String getNameFromPerson(String[] person) {
-        return person[PERSON_DATA_INDEX_NAME];
-    }
-
-    private static String getPhoneFromPerson(String[] person) {
-        return person[PERSON_DATA_INDEX_PHONE];
-    }
-
-    private static String getEmailFromPerson(String[] person) {
-        return person[PERSON_DATA_INDEX_EMAIL];
-    }
-
-    private static String[] makePersonFromData(String name, String phone, String email) {
-        final String[] person = new String[PERSON_DATA_COUNT];
-        person[PERSON_DATA_INDEX_NAME] = name;
-        person[PERSON_DATA_INDEX_PHONE] = phone;
-        person[PERSON_DATA_INDEX_EMAIL] = email;
-        return person;
-    }
-
-    private static String encodePersonToString(String[] person) {
-        return String.format(PERSON_STRING_REPRESENTATION,
-                getNameFromPerson(person), getPhoneFromPerson(person), getEmailFromPerson(person));
-    }
-
-    private static ArrayList<String> encodePersonsToStrings(ArrayList<String[]> persons) {
-        final ArrayList<String> encoded = new ArrayList<>();
-        for (String[] person : persons) {
-            encoded.add(encodePersonToString(person));
-        }
-        return encoded;
-    }
-
-    private static Optional<String[]> decodePersonFromString(String encoded) {
-        
-        if (!isPersonDataExtractableFrom(encoded)) {
-            return Optional.empty();
-        }
-        final String[] decodedPerson = makePersonFromData(
-                extractNameFromPersonString(encoded),
-                extractPhoneFromPersonString(encoded),
-                extractEmailFromPersonString(encoded)
-        );
-        
-        return isPersonDataValid(decodedPerson) ? Optional.of(decodedPerson) : Optional.empty();
-    }
-
-    private static Optional<ArrayList<String[]>> decodePersonsFromStrings(ArrayList<String> encodedPersons) {
+	// check integrity of storage file
+	Optional<ArrayList<String[]>> integrityResult = null;
         final ArrayList<String[]> decodedPersons = new ArrayList<>();
-        for (String encodedPerson : encodedPersons) {
-            final Optional<String[]> decodedPerson = decodePersonFromString(encodedPerson);
+        for (String encodedPerson : linesInFiles) {
+            Optional<String[]> decodeResult = null;
+	    
+	    final String matchAnyPersonDataPrefix = "p/" + '|' + "e/";
+	    final String[] splitArgs = encodedPerson.trim().split(matchAnyPersonDataPrefix);
+	    boolean isPersonDataExtractable = splitArgs.length == 3 
+	    && !splitArgs[0].isEmpty() 
+	    && !splitArgs[1].isEmpty()
+	    && !splitArgs[2].isEmpty();
+	    
+	    if (!isPersonDataExtractable) {
+	        decodeResult = Optional.empty();
+	    }
+	    else
+	    {
+	    String name = "";
+	    // extract name from person string
+	    {
+	    final int indexOfPhonePrefix = encodedPerson.indexOf("p/");
+	    final int indexOfEmailPrefix = encodedPerson.indexOf("e/");
+	    
+	    int indexOfFirstPrefix = Math.min(indexOfEmailPrefix, indexOfPhonePrefix);
+	        name =  encodedPerson.substring(0, indexOfFirstPrefix).trim();
+	    }
+	    
+	    // extract phone from person string
+	    String phone = "";
+	    {
+	        final int indexOfPhonePrefix = encodedPerson.indexOf("p/");
+	        final int indexOfEmailPrefix = encodedPerson.indexOf("e/");
+	    
+	        
+	        if (indexOfPhonePrefix > indexOfEmailPrefix) {
+	            // remove prefix
+	    	phone = encodedPerson.substring(indexOfPhonePrefix, encodedPerson.length()).trim().replace("p/", "");
+	    
+	        
+	        } else {
+	            // remove prefix
+	    	phone = encodedPerson.substring(indexOfPhonePrefix, indexOfEmailPrefix).trim().replace("p/", "");
+	        }
+	    }
+	    
+	    // extract email from person string
+	    String email = "";
+	    {
+	        final int indexOfPhonePrefix = encodedPerson.indexOf("p/");
+	        final int indexOfEmailPrefix = encodedPerson.indexOf("e/");
+	    
+	        
+	        if (indexOfEmailPrefix > indexOfPhonePrefix) {
+	            // remove prefix
+	            email = encodedPerson.substring(indexOfEmailPrefix, encodedPerson.length()).trim().replace("e/", "");
+	    
+	        
+	        } else {
+	            // remove prefix
+	            email = encodedPerson.substring(indexOfEmailPrefix, indexOfPhonePrefix).trim().replace("e/", "");
+	        }
+	    }
+	    
+	    final String[] person = new String[3];
+	    person[0] = name;
+	    person[1] = phone;
+	    person[2] = email;
+	    final String[] decodedPerson1 = person;
+	    
+	    // is person data valid?
+	    decodeResult = decodedPerson1[0].matches("(\\w|\\s)+")
+	    && decodedPerson1[1].matches("\\d+")
+	    && decodedPerson1[2].matches("\\S+@\\S+\\.\\S+") ? Optional.of(decodedPerson1) : Optional.empty();
+	    }
+	    final Optional<String[]> decodedPerson = decodeResult;
             if (!decodedPerson.isPresent()) {
-                return Optional.empty();
+        	integrityResult = Optional.empty();
+        	break;
             }
             decodedPersons.add(decodedPerson.get());
         }
-        return Optional.of(decodedPersons);
-    }
-
-    private static boolean isPersonDataExtractableFrom(String personData) {
-        final String matchAnyPersonDataPrefix = PERSON_DATA_PREFIX_PHONE + '|' + PERSON_DATA_PREFIX_EMAIL;
-        final String[] splitArgs = personData.trim().split(matchAnyPersonDataPrefix);
-        return splitArgs.length == 3 
-                && !splitArgs[0].isEmpty() 
-                && !splitArgs[1].isEmpty()
-                && !splitArgs[2].isEmpty();
-    }
-
-    private static String extractNameFromPersonString(String encoded) {
-        final int indexOfPhonePrefix = encoded.indexOf(PERSON_DATA_PREFIX_PHONE);
-        final int indexOfEmailPrefix = encoded.indexOf(PERSON_DATA_PREFIX_EMAIL);
+        if (integrityResult == null)
+            integrityResult = Optional.of(decodedPersons);
         
-        int indexOfFirstPrefix = Math.min(indexOfEmailPrefix, indexOfPhonePrefix);
-        return encoded.substring(0, indexOfFirstPrefix).trim();
-    }
+	final Optional<ArrayList<String[]>> successfullyDecoded = integrityResult;
+	if (!successfullyDecoded.isPresent()) {
+	    String[] message1 = { "Storage file has invalid content" };
+	    for (String m1 : message1) {
+	        System.out.println("|| " + m1);
+	    }
+	    String[] message11 = { "Exiting Address Book... Good bye!", "===================================================", "===================================================" };
+	    for (String m11 : message11) {
+	        System.out.println("|| " + m11);
+	    }
+	    System.exit(0);
+	}
+	
+	// add all to database
+        ArrayList<String[]> personsFromFile = successfullyDecoded.get();
+	ALL_PERSONS.addAll(personsFromFile);
+	
+        while (true) {
+            // get user input
+            System.out.print("|| " + "Enter command: ");
+	    String inputLine = SCANNER.nextLine();
+	    
+	    while (inputLine.trim().isEmpty() || inputLine.trim().charAt(0) == '#') {
+	        inputLine = SCANNER.nextLine();
+	    }
+	    String userCommand = inputLine;
+            
+            // echo commands entered
+            String[] message2 = { "[Command entered:" + userCommand + "]" };
+	    for (String m2 : message2) {
+	        System.out.println("|| " + m2);
+	    }
+            
+	    // execute command
+            String feedback = "";
+            
+	    final String[] split =  userCommand.trim().split("\\s+", 2);
+            final String[] commandTypeAndParams = split.length == 2 ? split : new String[] { split[0] , "" };
+            final String commandType = commandTypeAndParams[0];
+            final String commandArgs = commandTypeAndParams[1];
+            switch (commandType) {
+            case "add":
+		Optional<String[]> decodeResult1 = null;
+		
+		final String matchAnyPersonDataPrefix = "p/" + '|' + "e/";
+		final String[] splitArgs = commandArgs.trim().split(matchAnyPersonDataPrefix);
+		boolean isPersonDataExtractable = splitArgs.length == 3 
+		&& !splitArgs[0].isEmpty() 
+		&& !splitArgs[1].isEmpty()
+		&& !splitArgs[2].isEmpty();
+		
+		if (!isPersonDataExtractable) {
+		    decodeResult1 = Optional.empty();
+		}
+		else
+		{
+		String name = "";
+		// extract name from person string
+		{
+		final int indexOfPhonePrefix = commandArgs.indexOf("p/");
+		final int indexOfEmailPrefix = commandArgs.indexOf("e/");
+		
+		int indexOfFirstPrefix = Math.min(indexOfEmailPrefix, indexOfPhonePrefix);
+		    name =  commandArgs.substring(0, indexOfFirstPrefix).trim();
+		}
+		
+		// extract phone from person string
+		String phone = "";
+		{
+		    final int indexOfPhonePrefix = commandArgs.indexOf("p/");
+		    final int indexOfEmailPrefix = commandArgs.indexOf("e/");
+		
+		    
+		    if (indexOfPhonePrefix > indexOfEmailPrefix) {
+		        // remove prefix
+			phone = commandArgs.substring(indexOfPhonePrefix, commandArgs.length()).trim().replace("p/", "");
+		
+		    
+		    } else {
+		        // remove prefix
+			phone = commandArgs.substring(indexOfPhonePrefix, indexOfEmailPrefix).trim().replace("p/", "");
+		    }
+		}
+		
+		// extract email from person string
+		String email = "";
+		{
+		    final int indexOfPhonePrefix = commandArgs.indexOf("p/");
+		    final int indexOfEmailPrefix = commandArgs.indexOf("e/");
+		
+		    
+		    if (indexOfEmailPrefix > indexOfPhonePrefix) {
+		        // remove prefix
+		        email = commandArgs.substring(indexOfEmailPrefix, commandArgs.length()).trim().replace("e/", "");
+		
+		    
+		    } else {
+		        // remove prefix
+		        email = commandArgs.substring(indexOfEmailPrefix, indexOfPhonePrefix).trim().replace("e/", "");
+		    }
+		}
+		
+		final String[] person4 = new String[3];
+		person4[0] = name;
+		person4[1] = phone;
+		person4[2] = email;
+		final String[] decodedPerson = person4;
+		
+		// is person data valid?
+		decodeResult1 = decodedPerson[0].matches("(\\w|\\s)+")
+		&& decodedPerson[1].matches("\\d+")
+		&& decodedPerson[2].matches("\\S+@\\S+\\.\\S+") ? Optional.of(decodedPerson) : Optional.empty();
+		}                
+                final Optional<String[]> decodeResult = decodeResult1;
+                
+                if (!decodeResult.isPresent()) {
+                    feedback =  String.format("Invalid command format: %1$s " + System.lineSeparator() + "|| " + "%2$s", "add", String.format("%1$s: %2$s", "add", "Adds a person to the address book.") + System.lineSeparator() + "|| "
+        	    + String.format("\tParameters: %1$s", "NAME "
+		                                                      + "p/" + "PHONE_NUMBER "
+		                                                      + "e/" + "EMAIL") + System.lineSeparator() + "|| "
+        	    + String.format("\tExample: %1$s", "add" + " John Doe p/98765432 e/johnd@gmail.com") + System.lineSeparator() + "|| ");
+                }
+                else
+                {                    
+                    final String[] personToAdd = decodeResult.get();
+                    ALL_PERSONS.add(personToAdd);
+		    final ArrayList<String> encoded1 = new ArrayList<>();
+		    for (String[] person1 : ALL_PERSONS) {
+		        encoded1.add(String.format("%1$s " 
+			                                                        + "p/" + "%2$s " 
+			                                                        + "e/" + "%3$s",
+		        person1[0], person1[1], person1[2]));
+		    }
+		    final ArrayList<String> linesToWrite1 = encoded1;
+		    try {
+		        Files.write(Paths.get(storageFilePath), linesToWrite1);
+		    } catch (IOException ioe) {
+		        String[] message4 = { String.format("Unexpected error: unable to write to file: %1$s", storageFilePath) };
+		        for (String m4 : message4) {
+		            System.out.println("|| " + m4);
+		        }
+		        String[] message11 = { "Exiting Address Book... Good bye!", "===================================================", "===================================================" };
+		        for (String m11 : message11) {
+		            System.out.println("|| " + m11);
+		        }
+		        System.exit(0);
+		    }
+                    feedback =  String.format("New person added: %1$s, Phone: %2$s, Email: %3$s",
+		    personToAdd[0], personToAdd[1], personToAdd[2]);
+                }
+        	break;
+            case "find":
+		final Set<String> keywords = new HashSet<>((ArrayList<String>) new ArrayList(Arrays.asList(commandArgs.trim().trim().split("\\s+"))));
+		final ArrayList<String[]> matchedPersons = new ArrayList<>();
+		for (String[] person1 : ALL_PERSONS) {
+		    final Set<String> wordsInName = new HashSet<>((ArrayList<String>) new ArrayList(Arrays.asList(person1[0].trim().split("\\s+"))));
+		    if (!Collections.disjoint(wordsInName, keywords)) {
+		        matchedPersons.add(person1);
+		    }
+		}
+		final ArrayList<String[]> personsFound = matchedPersons;
+		final StringBuilder messageAccumulator = new StringBuilder();
+		for (int i = 0; i < personsFound.size(); i++) {
+		    final String[] person2 = personsFound.get(i);
+		    final int displayIndex = i + 1;
+		    messageAccumulator.append('\t')
+		                      .append(String.format("%1$d. ", displayIndex) + String.format("%1$s  Phone Number: %2$s  Email: %3$s",
+				    person2[0], person2[1], person2[2]))
+		                      .append(System.lineSeparator() + "|| ");
+		}
+		String listAsString = messageAccumulator.toString();
+		String[] message5 = { listAsString };
+		for (String m5 : message5) {
+		    System.out.println("|| " + m5);
+		}
+		latestPersonListingView = new ArrayList<>(personsFound);
+        	feedback =  String.format("%1$d persons found!", personsFound.size());        	
+        	break;
+            case "list":
+		ArrayList<String[]> toBeDisplayed = ALL_PERSONS;
+		final StringBuilder messageAccumulator2 = new StringBuilder();
+		for (int i = 0; i < toBeDisplayed.size(); i++) {
+		    final String[] person3 = toBeDisplayed.get(i);
+		    final int displayIndex = i + 1;
+		    messageAccumulator2.append('\t')
+		                      .append(String.format("%1$d. ", displayIndex) + String.format("%1$s  Phone Number: %2$s  Email: %3$s",
+				    person3[0], person3[1], person3[2]))
+		                      .append(System.lineSeparator() + "|| ");
+		}
+		String listAsString1 = messageAccumulator2.toString();
+		String[] message6 = { listAsString1 };
+		for (String m6 : message6) {
+		    System.out.println("|| " + m6);
+		}
+		latestPersonListingView = new ArrayList<>(toBeDisplayed);
+        	feedback =  String.format("%1$d persons found!", toBeDisplayed.size());
+        	break;
+            case "delete":
+        	boolean deletePersonHasValidArgs = false;
 
-    private static String extractPhoneFromPersonString(String encoded) {
-        final int indexOfPhonePrefix = encoded.indexOf(PERSON_DATA_PREFIX_PHONE);
-        final int indexOfEmailPrefix = encoded.indexOf(PERSON_DATA_PREFIX_EMAIL);
-
-        
-        if (indexOfPhonePrefix > indexOfEmailPrefix) {
-            return removePrefixSign(encoded.substring(indexOfPhonePrefix, encoded.length()).trim(),
-                    PERSON_DATA_PREFIX_PHONE);
-
-        
-        } else {
-            return removePrefixSign(
-                    encoded.substring(indexOfPhonePrefix, indexOfEmailPrefix).trim(),
-                    PERSON_DATA_PREFIX_PHONE);
+                try {
+                    final int extractedIndex = Integer.parseInt(commandArgs.trim()); 
+                    deletePersonHasValidArgs = extractedIndex >= 1;
+                } catch (NumberFormatException nfe) {
+                    deletePersonHasValidArgs = false;
+                }
+                
+                if (!deletePersonHasValidArgs) {
+                    feedback = String.format("Invalid command format: %1$s " + System.lineSeparator() + "|| " + "%2$s", "delete", String.format("%1$s: %2$s", "delete", "Deletes a person identified by the index number used in "
+		                                                    + "the last find/list call.") + System.lineSeparator() + "|| "
+        	    + String.format("\tParameters: %1$s", "INDEX") + System.lineSeparator() + "|| "
+        	    + String.format("\tExample: %1$s", "delete" + " 1") + System.lineSeparator() + "|| ");
+                }
+                else 
+                {
+                    final int targetVisibleIndex = Integer.parseInt(commandArgs.trim());
+                    if (!(targetVisibleIndex >= 1 && targetVisibleIndex < latestPersonListingView.size() + 1)) {
+                        feedback =  "The person index provided is invalid";
+                    }
+                    else {
+                        final String[] targetInModel = latestPersonListingView.get(targetVisibleIndex - 1);
+			final boolean changed = ALL_PERSONS.remove(targetInModel);
+			if (changed) {
+			    final ArrayList<String> encoded1 = new ArrayList<>();
+			    for (String[] person2 : ALL_PERSONS) {
+			        encoded1.add(String.format("%1$s " 
+				                                                        + "p/" + "%2$s " 
+				                                                        + "e/" + "%3$s",
+				person2[0], person2[1], person2[2]));
+			    }
+			    final ArrayList<String> linesToWrite1 = encoded1;
+			    try {
+			        Files.write(Paths.get(storageFilePath), linesToWrite1);
+			    } catch (IOException ioe) {
+			        String[] message4 = { String.format("Unexpected error: unable to write to file: %1$s", storageFilePath) };
+			        for (String m4 : message4) {
+			            System.out.println("|| " + m4);
+			        }
+			        String[] message11 = { "Exiting Address Book... Good bye!", "===================================================", "===================================================" };
+			        for (String m11 : message11) {
+			            System.out.println("|| " + m11);
+			        }
+			        System.exit(0);
+			    }
+			}
+                        boolean isDeletePersonFromAddressBook = changed;
+                        feedback = isDeletePersonFromAddressBook ? String.format("Deleted Person: %1$s", String.format("%1$s  Phone Number: %2$s  Email: %3$s",
+			targetInModel[0], targetInModel[1], targetInModel[2])) 
+                                                                      : "Person could not be found in address book"; 
+                    }
+                }
+        	break;
+            case "clear":
+		ALL_PERSONS.clear();
+		final ArrayList<String> encoded = new ArrayList<>();
+		for (String[] person : ALL_PERSONS) {
+		    encoded.add(String.format("%1$s " 
+		                                                            + "p/" + "%2$s " 
+		                                                            + "e/" + "%3$s",
+		    person[0], person[1], person[2]));
+		}
+		final ArrayList<String> linesToWrite = encoded;
+		try {
+		    Files.write(Paths.get(storageFilePath), linesToWrite);
+		} catch (IOException ioe) {
+		    String[] message4 = { String.format("Unexpected error: unable to write to file: %1$s", storageFilePath) };
+		    for (String m4 : message4) {
+		        System.out.println("|| " + m4);
+		    }
+		    String[] message11 = { "Exiting Address Book... Good bye!", "===================================================", "===================================================" };
+		    for (String m11 : message11) {
+		        System.out.println("|| " + m11);
+		    }
+		    System.exit(0);
+		}
+        	feedback =  "Address book has been cleared!";
+        	break;
+            case "help":
+        	feedback =  String.format("%1$s: %2$s", "add", "Adds a person to the address book.") + System.lineSeparator() + "|| "
+		+ String.format("\tParameters: %1$s", "NAME "
+		                                                  + "p/" + "PHONE_NUMBER "
+		                                                  + "e/" + "EMAIL") + System.lineSeparator() + "|| "
+		+ String.format("\tExample: %1$s", "add" + " John Doe p/98765432 e/johnd@gmail.com") + System.lineSeparator() + "|| " + System.lineSeparator() + "|| "
+		+ String.format("%1$s: %2$s", "find", "Finds all persons whose names contain any of the specified "
+		                                    + "keywords (case-sensitive) and displays them as a list with index numbers.") + System.lineSeparator() + "|| "
+		+ String.format("\tParameters: %1$s", "KEYWORD [MORE_KEYWORDS]") + System.lineSeparator() + "|| "
+		+ String.format("\tExample: %1$s", "find" + " alice bob charlie") + System.lineSeparator() + "|| " + System.lineSeparator() + "|| "
+		+ String.format("%1$s: %2$s", "list", "Displays all persons as a list with index numbers.") + System.lineSeparator() + "|| "
+		+ String.format("\tExample: %1$s", "list") + System.lineSeparator() + "|| " + System.lineSeparator() + "|| "
+		+ String.format("%1$s: %2$s", "delete", "Deletes a person identified by the index number used in "
+		                                                + "the last find/list call.") + System.lineSeparator() + "|| "
+		+ String.format("\tParameters: %1$s", "INDEX") + System.lineSeparator() + "|| "
+		+ String.format("\tExample: %1$s", "delete" + " 1") + System.lineSeparator() + "|| " + System.lineSeparator() + "|| "
+		+ String.format("%1$s: %2$s", "clear", "Clears address book permanently.") + System.lineSeparator() + "|| "
+		+ String.format("\tExample: %1$s", "clear") + System.lineSeparator() + "|| " + System.lineSeparator() + "|| "
+		+ String.format("%1$s: %2$s", "exit", "Exits the program.")
+		+ String.format("\tExample: %1$s", "exit") + System.lineSeparator() + "|| "
+		+ String.format("%1$s: %2$s", "help", "Shows program usage instructions.")
+		+ String.format("\tExample: %1$s", "help");
+        	break;
+            case "exit":
+                String[] message3 = { "Exiting Address Book... Good bye!", "===================================================", "===================================================" };
+		for (String m3 : message3) {
+		    System.out.println("|| " + m3);
+		}
+		System.exit(0);
+		break;
+            default:
+        	feedback = String.format("Invalid command format: %1$s " + System.lineSeparator() + "|| " + "%2$s", commandType, String.format("%1$s: %2$s", "add", "Adds a person to the address book.") + System.lineSeparator() + "|| "
+		+ String.format("\tParameters: %1$s", "NAME "
+		                                                  + "p/" + "PHONE_NUMBER "
+		                                                  + "e/" + "EMAIL") + System.lineSeparator() + "|| "
+		+ String.format("\tExample: %1$s", "add" + " John Doe p/98765432 e/johnd@gmail.com") + System.lineSeparator() + "|| " + System.lineSeparator() + "|| "
+		+ String.format("%1$s: %2$s", "find", "Finds all persons whose names contain any of the specified "
+		                                    + "keywords (case-sensitive) and displays them as a list with index numbers.") + System.lineSeparator() + "|| "
+		+ String.format("\tParameters: %1$s", "KEYWORD [MORE_KEYWORDS]") + System.lineSeparator() + "|| "
+		+ String.format("\tExample: %1$s", "find" + " alice bob charlie") + System.lineSeparator() + "|| " + System.lineSeparator() + "|| "
+		+ String.format("%1$s: %2$s", "list", "Displays all persons as a list with index numbers.") + System.lineSeparator() + "|| "
+		+ String.format("\tExample: %1$s", "list") + System.lineSeparator() + "|| " + System.lineSeparator() + "|| "
+		+ String.format("%1$s: %2$s", "delete", "Deletes a person identified by the index number used in "
+		                                                + "the last find/list call.") + System.lineSeparator() + "|| "
+		+ String.format("\tParameters: %1$s", "INDEX") + System.lineSeparator() + "|| "
+		+ String.format("\tExample: %1$s", "delete" + " 1") + System.lineSeparator() + "|| " + System.lineSeparator() + "|| "
+		+ String.format("%1$s: %2$s", "clear", "Clears address book permanently.") + System.lineSeparator() + "|| "
+		+ String.format("\tExample: %1$s", "clear") + System.lineSeparator() + "|| " + System.lineSeparator() + "|| "
+		+ String.format("%1$s: %2$s", "exit", "Exits the program.")
+		+ String.format("\tExample: %1$s", "exit") + System.lineSeparator() + "|| "
+		+ String.format("%1$s: %2$s", "help", "Shows program usage instructions.")
+		+ String.format("\tExample: %1$s", "help"));
+        	break;
+            }
+            
+            // echo feedback received
+            String[] message1 = { feedback, "===================================================" };
+	    for (String m1 : message1) {
+	        System.out.println("|| " + m1);
+	    }
         }
     }
-
-    private static String extractEmailFromPersonString(String encoded) {
-        final int indexOfPhonePrefix = encoded.indexOf(PERSON_DATA_PREFIX_PHONE);
-        final int indexOfEmailPrefix = encoded.indexOf(PERSON_DATA_PREFIX_EMAIL);
-
-        
-        if (indexOfEmailPrefix > indexOfPhonePrefix) {
-            return removePrefixSign(encoded.substring(indexOfEmailPrefix, encoded.length()).trim(),
-                    PERSON_DATA_PREFIX_EMAIL);
-
-        
-        } else {
-            return removePrefixSign(
-                    encoded.substring(indexOfEmailPrefix, indexOfPhonePrefix).trim(),
-                    PERSON_DATA_PREFIX_EMAIL);
-        }
-    }
-
-    private static boolean isPersonDataValid(String[] person) {
-        return isPersonNameValid(person[PERSON_DATA_INDEX_NAME])
-                && isPersonPhoneValid(person[PERSON_DATA_INDEX_PHONE])
-                && isPersonEmailValid(person[PERSON_DATA_INDEX_EMAIL]);
-    }
-
-    private static boolean isPersonNameValid(String name) {
-        return name.matches("(\\w|\\s)+");  
-        
-    }
-
-    private static boolean isPersonPhoneValid(String phone) {
-        return phone.matches("\\d+");    
-        
-    }
-
-    private static boolean isPersonEmailValid(String email) {
-        return email.matches("\\S+@\\S+\\.\\S+"); 
-        
-    }
-
-    private static String getUsageInfoForAllCommands() {
-        return getUsageInfoForAddCommand() + LS
-                + getUsageInfoForFindCommand() + LS
-                + getUsageInfoForViewCommand() + LS
-                + getUsageInfoForDeleteCommand() + LS
-                + getUsageInfoForClearCommand() + LS
-                + getUsageInfoForExitCommand() + LS
-                + getUsageInfoForHelpCommand();
-    }
-
-    private static String getUsageInfoForAddCommand() {
-        return String.format(MESSAGE_COMMAND_HELP, COMMAND_ADD_WORD, COMMAND_ADD_DESC) + LS
-                + String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_ADD_PARAMETERS) + LS
-                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_ADD_EXAMPLE) + LS;
-    }
-
-    private static String getUsageInfoForFindCommand() {
-        return String.format(MESSAGE_COMMAND_HELP, COMMAND_FIND_WORD, COMMAND_FIND_DESC) + LS
-                + String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_FIND_PARAMETERS) + LS
-                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_FIND_EXAMPLE) + LS;
-    }
-
-    private static String getUsageInfoForDeleteCommand() {
-        return String.format(MESSAGE_COMMAND_HELP, COMMAND_DELETE_WORD, COMMAND_DELETE_DESC) + LS
-                + String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_DELETE_PARAMETER) + LS
-                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_DELETE_EXAMPLE) + LS;
-    }
-
-    private static String getUsageInfoForClearCommand() {
-        return String.format(MESSAGE_COMMAND_HELP, COMMAND_CLEAR_WORD, COMMAND_CLEAR_DESC) + LS
-                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_CLEAR_EXAMPLE) + LS;
-    }
-
-    private static String getUsageInfoForViewCommand() {
-        return String.format(MESSAGE_COMMAND_HELP, COMMAND_LIST_WORD, COMMAND_LIST_DESC) + LS
-                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_LIST_EXAMPLE) + LS;
-    }
-
-    private static String getUsageInfoForHelpCommand() {
-        return String.format(MESSAGE_COMMAND_HELP, COMMAND_HELP_WORD, COMMAND_HELP_DESC)
-                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_HELP_EXAMPLE);
-    }
-
-    private static String getUsageInfoForExitCommand() {
-        return String.format(MESSAGE_COMMAND_HELP, COMMAND_EXIT_WORD, COMMAND_EXIT_DESC)
-                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_EXIT_EXAMPLE);
-    }
-
-
-    private static String removePrefixSign(String s, String sign) {
-        return s.replace(sign, "");
-    }
-
-    private static ArrayList<String> splitByWhitespace(String toSplit) {
-        return new ArrayList(Arrays.asList(toSplit.trim().split("\\s+")));
-    }
-
 }
