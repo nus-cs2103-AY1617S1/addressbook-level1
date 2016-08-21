@@ -127,20 +127,20 @@
   # name should be updated
   list
   
-  edit 2 phone 543543
+  edit 1 phone 543543
   # phone should be updated
   list
     
-  edit 2 email gjb@example.com
+  edit 1 email gjb@example.com
   # email should be updated
   list
   
   # should ignore invalid property or arguments
   edit -1 name John
-  edit 2 what what
-  edit 2 name
-  edit 2 phone not_numbers
-  edit 2 email not_valid_address
+  edit 1 what what
+  edit 1 name
+  edit 1 phone not_numbers
+  edit 1 email not_valid_address
   
   # clear everything
   clear
