@@ -90,6 +90,14 @@
   # listing indexes get updated on next request
   delete 1
   list
+  
+##########################################################
+# test edit command
+##########################################################
+	
+  # edit someone
+  edit 2 n/Edmund Mok        p/98765432      e/edmund@edmund.com
+
 
 ##########################################################
 # test clear command

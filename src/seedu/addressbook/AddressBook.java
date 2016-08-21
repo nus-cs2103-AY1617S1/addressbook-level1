@@ -66,6 +66,7 @@ public class AddressBook {
     private static final String MESSAGE_COMMAND_HELP_PARAMETERS = "\tParameters: %1$s";
     private static final String MESSAGE_COMMAND_HELP_EXAMPLE = "\tExample: %1$s";
     private static final String MESSAGE_DELETE_PERSON_SUCCESS = "Deleted Person: %1$s";
+    private static final String MESSAGE_EDIT_PERSON_SUCCESS = "Editted Person: %1$s";
     private static final String MESSAGE_DISPLAY_PERSON_DATA = "%1$s  Phone Number: %2$s  Email: %3$s";
     private static final String MESSAGE_DISPLAY_LIST_ELEMENT_INDEX = "%1$d. ";
     private static final String MESSAGE_GOODBYE = "Exiting Address Book... Good bye!";
@@ -119,6 +120,10 @@ public class AddressBook {
     private static final String COMMAND_CLEAR_WORD = "clear";
     private static final String COMMAND_CLEAR_DESC = "Clears address book permanently.";
     private static final String COMMAND_CLEAR_EXAMPLE = COMMAND_CLEAR_WORD;
+    
+    private static final String COMMAND_EDIT_WORD = "edit";
+    private static final String COMMAND_EDIT_DESC = "Edit properties of a specific person (specified by his index)";
+    private static final String COMMAND_EDIT_EXAMPLE = COMMAND_EDIT_WORD + " 1 n/Alice p/98765432 e/alice@alice.com";
 
     private static final String COMMAND_HELP_WORD = "help";
     private static final String COMMAND_HELP_DESC = "Shows program usage instructions.";
@@ -337,7 +342,7 @@ public class AddressBook {
     public static String executeCommand(String userInputString) {
         final String[] commandTypeAndParams = splitCommandWordAndArgs(userInputString);
         final String commandType = commandTypeAndParams[0];
-        final String commandArgs = commandTypeAndParams[1];
+        final String commandArgs = extractPropertiesToEditFromArgs(commandTypeAndParams);
         switch (commandType) {
 	        case COMMAND_ADD_WORD:
 	            return executeAddPerson(commandArgs);
@@ -349,6 +354,8 @@ public class AddressBook {
 	            return executeDeletePerson(commandArgs);
 	        case COMMAND_CLEAR_WORD:
 	            return executeClearAddressBook();
+	        case COMMAND_EDIT_WORD:
+	        	return executeEditPerson(commandArgs);
 	        case COMMAND_HELP_WORD:
 	            return getUsageInfoForAllCommands();
 	        case COMMAND_EXIT_WORD:
@@ -561,6 +568,10 @@ public class AddressBook {
     private static String getMessageForSuccessfulDelete(String[] deletedPerson) {
         return String.format(MESSAGE_DELETE_PERSON_SUCCESS, getMessageForFormattedPersonData(deletedPerson));
     }
+    
+    private static String getMessageForSuccessfulEdit(String[] edittedPerson){
+    	return String.format(MESSAGE_EDIT_PERSON_SUCCESS, getMessageForFormattedPersonData(edittedPerson));
+    }
 
     /**
      * Clears all persons in the address book.
@@ -571,8 +582,105 @@ public class AddressBook {
         clearAddressBook();
         return MESSAGE_ADDRESSBOOK_CLEARED;
     }
-
+    
     /**
+     * Edit properties of a person listed in address book, person must already exist in address book
+     */
+    private static String executeEditPerson(String commandArgs){
+    	String[] splitArgsIntoPersonAndProperties = commandArgs.split("\\s+", 2);
+    	final int personIndexToEdit;
+    	String propertiesToEdit;
+    	
+    	try{
+    		personIndexToEdit = extractPersonIndexFromArgs(splitArgsIntoPersonAndProperties);
+    		propertiesToEdit = extractPropertiesToEditFromArgs(splitArgsIntoPersonAndProperties);
+    	}
+    	catch(NumberFormatException e){
+    		// no index of person to edit is provided
+    		return getMessageForInvalidCommandInput(COMMAND_EDIT_WORD, getUsageInfoForEditCommand());
+    	}
+    	catch(ArrayIndexOutOfBoundsException e){
+    		// no properties to edit provided
+    		return getMessageForInvalidCommandInput(COMMAND_EDIT_WORD, getUsageInfoForEditCommand());
+    	}
+    	
+    	
+    	if (!isEditPersonArgsValid(propertiesToEdit))
+    		return getMessageForInvalidCommandInput(COMMAND_EDIT_WORD, getUsageInfoForEditCommand());
+    	
+    	final String[] targetInModel = getPersonByLastVisibleIndex(personIndexToEdit);
+    
+    	return editPersonInAddressBook(targetInModel, propertiesToEdit) ? getMessageForSuccessfulEdit(targetInModel) 
+    												 : MESSAGE_PERSON_NOT_IN_ADDRESSBOOK;
+    }
+
+	/**
+	 * Extract properties to edit for the edit command
+	 * 
+	 * @param splitArgsIntoPersonAndProperties array containing person to edit's index and properties to edit
+	 * @return string containing properties to edit
+	 */
+	private static String extractPropertiesToEditFromArgs(String[] splitArgsIntoPersonAndProperties) {
+		return splitArgsIntoPersonAndProperties[1];
+	}
+
+	/**
+	 * Extract index of the person in the latest viewing for edit
+	 * 
+	 * @param splitArgsIntoPersonAndProperties array containing person to edit's index and properties to edit
+	 * @return int containing index of person user wants to edit
+	 */
+	private static int extractPersonIndexFromArgs(String[] splitArgsIntoPersonAndProperties) {
+		return Integer.parseInt(splitArgsIntoPersonAndProperties[0].trim());
+	}
+    
+    /**
+     * Check if command args for edit command is valid
+     * 
+     * @param commandArgs the command arguments provided by the user with the edit command
+     */
+    private static boolean isEditPersonArgsValid(String commandArgs) {
+    	String[] commandArgsArray = commandArgs.trim().split("(?=n/|p/|e/)");
+    	for (String commandArg : commandArgsArray){
+    		if (!commandArgForNameOrPhoneOrEmail(commandArg) || !validNameOrPhoneOrEmail(commandArg)){
+    			return false;
+    		}
+    	}
+    	return true;
+	}
+
+	private static boolean validNameOrPhoneOrEmail(String commandArg) {
+		boolean nameArg = commandArg.startsWith("n/");
+		boolean phoneArg = commandArg.startsWith(PERSON_DATA_PREFIX_PHONE);
+		boolean emailArg = commandArg.startsWith(PERSON_DATA_PREFIX_EMAIL);
+		String argWithoutPrefix = commandArg.substring(2).trim();
+		
+		if (nameArg){
+			return isPersonNameValid(argWithoutPrefix);
+		}
+		else if (phoneArg){
+			return isPersonPhoneValid(argWithoutPrefix);
+		}
+		else if (emailArg){
+			return isPersonEmailValid(argWithoutPrefix);
+		}
+		else {
+			return false;
+		}
+	}
+
+	/**
+	 * Check if commandArg is for name, phone or email
+	 * 
+	 * @param commandArg
+	 * @return
+	 */
+	private static boolean commandArgForNameOrPhoneOrEmail(String commandArg) {
+		return commandArg.startsWith("n/") || commandArg.startsWith(PERSON_DATA_PREFIX_EMAIL) 
+				|| commandArg.startsWith(PERSON_DATA_PREFIX_PHONE);
+	}
+
+	/**
      * Displays all persons in the address book to the user; in added order.
      *
      * @return feedback display message for the operation result
@@ -843,6 +951,32 @@ public class AddressBook {
         }
         return changed;
     }
+    
+    private static boolean editPersonInAddressBook(String[] exactPerson, String rawPropertiesToEdit) {
+    	String[] personInAddressBook = ALL_PERSONS.get(ALL_PERSONS.indexOf(exactPerson));
+    	if (personInAddressBook == null) return false;
+    	
+    	String[] propertiesToEditArray = rawPropertiesToEdit.split("(?=n/|p/|e/)");
+    	
+    	for (String property : propertiesToEditArray){
+    		String propertyWithoutPrefix = property.substring(2).trim();
+    		
+    		if (property.startsWith("n/")){
+    			personInAddressBook[PERSON_DATA_INDEX_NAME] = propertyWithoutPrefix;
+    		}
+    		else if (property.startsWith(PERSON_DATA_PREFIX_PHONE)){
+    			personInAddressBook[PERSON_DATA_INDEX_PHONE] = propertyWithoutPrefix;
+    		}
+    		else if (property.startsWith(PERSON_DATA_PREFIX_EMAIL)){
+    			personInAddressBook[PERSON_DATA_INDEX_EMAIL] = propertyWithoutPrefix;
+    		}
+    	}
+    	
+    	savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
+    	
+    	
+    	return true;
+	}
 
     /**
      * @return unmodifiable list view of all persons in the address book
@@ -999,7 +1133,7 @@ public class AddressBook {
         final String[] splitArgs = personData.trim().split(matchAnyPersonDataPrefix);
         return splitArgs.length == 3 // 3 arguments
                 && !splitArgs[0].isEmpty() // non-empty arguments
-                && !splitArgs[1].isEmpty()
+                && !extractPropertiesToEditFromArgs(splitArgs).isEmpty()
                 && !splitArgs[2].isEmpty();
     }
 
@@ -1186,6 +1320,15 @@ public class AddressBook {
     private static String getUsageInfoForViewCommand() {
         return String.format(MESSAGE_COMMAND_HELP, COMMAND_LIST_WORD, COMMAND_LIST_DESC) + LINE_SEPARATOR
                 + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_LIST_EXAMPLE) + LINE_SEPARATOR;
+    }
+    
+    /**
+     * Builds string for showing 'edit' command usage instruction
+     * 
+     */
+    private static String getUsageInfoForEditCommand(){
+    	return String.format(MESSAGE_COMMAND_HELP, COMMAND_EDIT_WORD, COMMAND_EDIT_DESC) + LINE_SEPARATOR
+    			+ String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_EDIT_EXAMPLE) + LINE_SEPARATOR;
     }
 
     /**
