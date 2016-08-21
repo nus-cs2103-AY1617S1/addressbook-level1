@@ -67,6 +67,7 @@ public class AddressBook {
     private static final String MESSAGE_COMMAND_HELP_PARAMETERS = "\tParameters: %1$s";
     private static final String MESSAGE_COMMAND_HELP_EXAMPLE = "\tExample: %1$s";
     private static final String MESSAGE_DELETE_PERSON_SUCCESS = "Deleted Person: %1$s";
+    private static final String MESSAGE_EDIT_PERSON_SUCCESS = "Person info edited: %1$s";
     private static final String MESSAGE_DISPLAY_PERSON_DATA = "%1$s  Phone Number: %2$s  Email: %3$s";
     private static final String MESSAGE_DISPLAY_LIST_ELEMENT_INDEX = "%1$d. ";
     private static final String MESSAGE_GOODBYE = "Exiting Address Book... Good bye!";
@@ -405,8 +406,68 @@ public class AddressBook {
             return getMessageForInvalidCommandInput(COMMAND_EDIT_WORD, getUsageInfoForEditCommand());
         }
         
-        // TODO Actual edit implementation
-        return null;
+        String[] arguments = getEditPersonArgs(commandArgs);
+        // TODO Refactor
+        int index = Integer.parseInt(arguments[EDIT_COMMAND_INDEX_INDEX]);
+        String property = arguments[EDIT_COMMAND_INDEX_PROPERTY].trim();
+        String value = arguments[EDIT_COMMAND_INDEX_VALUE].trim();
+
+        if (!isDisplayIndexValidForLastPersonListingView(index)) {
+            return MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
+        }
+        
+        final String[] targetPerson = getPersonByLastVisibleIndex(index);
+        if (!isPersonInAddressbook(targetPerson)) {
+              return MESSAGE_PERSON_NOT_IN_ADDRESSBOOK;
+        }
+
+        setPropertyForPerson(targetPerson, property, value);
+        
+        return getMessageForSuccessfulEdit(targetPerson);
+    }
+    
+    /**
+     * Constructs a feedback message for a successful edit person command execution.
+     *
+     * @see #executeEditPerson(String)
+     * @param targetPerson successfully edited
+     * @return successful edit person feedback message
+     */
+    private static String getMessageForSuccessfulEdit(String[] targetPerson) {
+        return String.format(MESSAGE_EDIT_PERSON_SUCCESS, getMessageForFormattedPersonData(targetPerson));
+    }
+
+    /**
+     * Set the value of a property for a certain person.
+     * @param property to set the value for
+     * @param value to set to
+     */
+    private static boolean setPropertyForPerson(String[] targetPerson, String property, String value) {
+        switch (property)
+        {
+        case EDIT_COMMAND_PROPERTY_NAME:
+            setNameFromPerson(targetPerson, value);
+            return true;
+            
+        case EDIT_COMMAND_PROPERTY_PHONE:
+            setPhoneFromPerson(targetPerson, value);
+            return true;
+            
+        case EDIT_COMMAND_PROPERTY_EMAIL:
+            setEmailFromPerson(targetPerson, value);
+            return true;
+            
+        default:
+            return false;
+        }
+    }
+
+    /**
+     * Determine if person is in address book.
+     * @param targetPerson to check
+     */
+    private static boolean isPersonInAddressbook(String[] targetPerson) {
+        return ALL_PERSONS.contains(targetPerson);
     }
 
     /**
@@ -422,8 +483,8 @@ public class AddressBook {
         }
 
         String index = arguments[EDIT_COMMAND_INDEX_INDEX];
-        String property = arguments[EDIT_COMMAND_INDEX_PROPERTY];
-        String value = arguments[EDIT_COMMAND_INDEX_VALUE];
+        String property = arguments[EDIT_COMMAND_INDEX_PROPERTY].trim();
+        String value = arguments[EDIT_COMMAND_INDEX_VALUE].trim();
 
         if (!isValidDisplayIndex(index)) {
             return false;
@@ -1089,6 +1150,31 @@ public class AddressBook {
     private static String getEmailFromPerson(String[] person) {
         return person[PERSON_DATA_INDEX_EMAIL];
     }
+    
+
+    /**
+     * @param person whose name you want to set 
+     * @param newName of the person
+     */
+    private static void setNameFromPerson(String[] person, String newName) {
+        person[PERSON_DATA_INDEX_NAME] = newName;
+    }
+
+    /**
+     * @param person whose phone number you want to set 
+     * @param newPhone of the person
+     */
+    private static void setPhoneFromPerson(String[] person, String newPhone) {
+        person[PERSON_DATA_INDEX_PHONE] = newPhone;
+    }
+
+    /**
+     * @param person whose email you want to set 
+     * @param newEmail of the person
+     */
+    private static void setEmailFromPerson(String[] person, String newEmail) {
+        person[PERSON_DATA_INDEX_EMAIL] = newEmail;
+    }    
 
     /**
      * Create a person for use in the internal data.
