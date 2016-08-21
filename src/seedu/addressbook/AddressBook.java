@@ -14,9 +14,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
@@ -110,6 +110,10 @@ public class AddressBook {
 	private static final String COMMAND_LIST_WORD = "list";
 	private static final String COMMAND_LIST_DESC = "Displays all persons as a list with index numbers.";
 	private static final String COMMAND_LIST_EXAMPLE = COMMAND_LIST_WORD;
+	
+	private static final String COMMAND_SORT_WORD = "sort";
+	private static final String COMMAND_SORT_DESC = "Displays all persons alphabetically sorted.";
+	private static final String COMMAND_SORT_EXAMPLE = COMMAND_SORT_WORD;
 
 	private static final String COMMAND_DELETE_WORD = "delete";
 	private static final String COMMAND_DELETE_DESC = "Deletes a person identified by the index number used in "
@@ -350,6 +354,8 @@ public class AddressBook {
 			return executeFindPersons(commandArgs);
 		case COMMAND_LIST_WORD :
 			return executeListAllPersonsInAddressBook();
+		case COMMAND_SORT_WORD :
+			return executeSortAllPersonsInAddressBook();
 		case COMMAND_DELETE_WORD :
 			return executeDeletePerson(commandArgs);
 		case COMMAND_CLEAR_WORD :
@@ -602,6 +608,27 @@ public class AddressBook {
 		ArrayList<HashMap<PersonProperty, String>> toBeDisplayed = getAllPersonsInAddressBook();
 		showToUser(toBeDisplayed);
 		return getMessageForPersonsDisplayedSummary(toBeDisplayed);
+	}
+	
+	/**
+	 * Displays all persons in the address book to the user; in sorted order.
+	 * 
+	 * @return feedback display message for the operation result
+	 */
+	private static String executeSortAllPersonsInAddressBook() {
+		ArrayList<HashMap<PersonProperty, String>> toBeDisplayed = getAllPersonsInAddressBook();
+		toBeDisplayed.sort(comparePeopleByName());
+		showToUser(toBeDisplayed);
+		return getMessageForPersonsDisplayedSummary(toBeDisplayed);
+	}
+	
+	/**
+	 * Anonymous comparator that compares the names of two people alphabetically
+	 * 
+	 * @return comparator that compares the names of two people alphabetically
+	 */
+	private static Comparator<? super HashMap<PersonProperty, String>> comparePeopleByName() {
+		return (person1, person2) -> person1.get(PersonProperty.NAME).compareTo(person2.get(PersonProperty.NAME));
 	}
 
 	/**
