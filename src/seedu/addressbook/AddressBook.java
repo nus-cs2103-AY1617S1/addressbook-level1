@@ -205,10 +205,46 @@ public class AddressBook {
         ALL_PERSONS.clear();
         ALL_PERSONS.addAll(persons);
         while (true) {
-	        	String userCommand = getUserInput();
-	    		echoUserCommand(userCommand);
-	    		String feedback = executeCommand(userCommand);
-	    		showResultToUser(feedback);
+        		System.out.print(LINE_PREFIX + "Enter command: ");
+            String inputLine = SCANNER.nextLine();
+            // silently consume all blank and comment lines
+            while (inputLine.trim().isEmpty() || inputLine.trim().charAt(0) == INPUT_COMMENT_MARKER) {
+                inputLine = SCANNER.nextLine();
+            }
+	        	String userCommand = inputLine;
+	        	showToUser("[Command entered:" + userCommand + "]");
+	        	String feedback = "";
+	        	final String[] commandTypeAndParams = splitCommandWordAndArgs(userCommand);
+	            final String commandType = commandTypeAndParams[0];
+	            final String commandArgs = commandTypeAndParams[1];
+	            switch (commandType) {
+	            case COMMAND_ADD_WORD:
+	            		feedback = executeAddPerson(commandArgs);
+	            		break;
+	            case COMMAND_FIND_WORD:
+	            		feedback = executeFindPersons(commandArgs);
+	            		break;
+	            case COMMAND_LIST_WORD:
+	            		feedback = executeListAllPersonsInAddressBook();
+	            		break;
+	            case COMMAND_DELETE_WORD:
+	            		feedback = executeDeletePerson(commandArgs);
+	            		break;
+	            case COMMAND_CLEAR_WORD:
+	            		feedback = executeClearAddressBook();
+	            		break;
+	            case COMMAND_HELP_WORD:
+	            		feedback = getUsageInfoForAllCommands();
+	            		break;
+	            case COMMAND_EXIT_WORD:
+	                executeExitProgramRequest();
+	                break;
+	            default:
+	            		feedback =  getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
+	        }
+	    	
+	        showToUser(feedback);
+	        showToUser(DIVIDER);
         }
     }
 
@@ -222,17 +258,7 @@ public class AddressBook {
         showToUser(result);
         showToUser(DIVIDER);
     }
-
-    
-    /**
-     * Echoes the user input back to the user.
-     */
-    private static void echoUserCommand(String userCommand) {
-        showToUser("[Command entered:" + userCommand + "]");
-    }
-
-
-    
+ 
 
     /**
      * Sets up the storage file based on the supplied file path.
@@ -524,22 +550,6 @@ public class AddressBook {
      *               UI LOGIC
      * ===========================================
      */
-
-    /**
-     * Prompts for the command and reads the text entered by the user.
-     * Ignores lines with first non-whitespace char equal to {@link #INPUT_COMMENT_MARKER} (considered comments)
-     *
-     * @return full line entered by the user
-     */
-    private static String getUserInput() {
-        System.out.print(LINE_PREFIX + "Enter command: ");
-        String inputLine = SCANNER.nextLine();
-        // silently consume all blank and comment lines
-        while (inputLine.trim().isEmpty() || inputLine.trim().charAt(0) == INPUT_COMMENT_MARKER) {
-            inputLine = SCANNER.nextLine();
-        }
-        return inputLine;
-    }
 
    
     /**
