@@ -1016,9 +1016,7 @@ public class AddressBook {
      * 
      */
     private static void sortAddressBook(){
-    	String[][] addressBookAsArray = new String[ALL_PERSONS.size()][PERSON_DATA_COUNT];
-    	ALL_PERSONS.toArray(addressBookAsArray);
-    	Arrays.sort(addressBookAsArray, new Comparator<String[]>(){
+    	Collections.sort(ALL_PERSONS, new Comparator<String[]>(){
 
 			@Override
 			public int compare(String[] o1, String[] o2) {
@@ -1027,10 +1025,6 @@ public class AddressBook {
 			}
     		
     	});
-    	ALL_PERSONS.clear();
-    	for (String[] person : addressBookAsArray){
-    		ALL_PERSONS.add(person);
-    	}
     	savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
     }
 
