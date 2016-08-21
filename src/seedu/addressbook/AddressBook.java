@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Scanner;
@@ -127,6 +128,9 @@ public class AddressBook {
     private static final String COMMAND_EXIT_WORD = "exit";
     private static final String COMMAND_EXIT_DESC = "Exits the program.";
     private static final String COMMAND_EXIT_EXAMPLE = COMMAND_EXIT_WORD;
+    
+    private static final String COMMAND_SORT_WORD = "sort";
+    private static final String COMMAND_SORT_DESC = "List persons in alphabetical order.";
 
     private static final String DIVIDER = "===================================================";
 
@@ -339,6 +343,8 @@ public class AddressBook {
         final String commandType = commandTypeAndParams[0];
         final String commandArgs = commandTypeAndParams[1];
         switch (commandType.toLowerCase()) {
+        case COMMAND_SORT_WORD:
+        	return executeSortPersons();
         case COMMAND_ADD_WORD:
             return executeAddPerson(commandArgs);
         case COMMAND_FIND_WORD:
@@ -376,6 +382,23 @@ public class AddressBook {
      */
     private static String getMessageForInvalidCommandInput(String userCommand, String correctUsageInfo) {
         return String.format(MESSAGE_INVALID_COMMAND_FORMAT, userCommand, correctUsageInfo);
+    }
+    
+    /**
+     * List all current persons in alphabetical order.
+     */
+    
+    private static String executeSortPersons(){
+        ArrayList<String[]> toBeDisplayed = new ArrayList<String[]>(getAllPersonsInAddressBook());
+        		
+        Collections.sort(toBeDisplayed, new Comparator<String[]>(){
+                                        	public int compare(String[] personA, String[] personB){
+                                        		return getNameFromPerson(personA).compareToIgnoreCase(getNameFromPerson(personB));
+                                        	}
+                                        }
+        );
+        showToUser(toBeDisplayed);
+        return getMessageForPersonsDisplayedSummary(toBeDisplayed);
     }
 
     /**
