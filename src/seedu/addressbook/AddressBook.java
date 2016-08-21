@@ -222,7 +222,10 @@ public class AddressBook {
             setupDefaultFileForStorage();
         }
         
-        loadDataFromStorage();
+        // Loads data from storage
+        ALL_PERSONS.clear();
+        ALL_PERSONS.addAll(loadPersonsFromFile(storageFilePath));
+        
         while (true) {
         	
         	// Get user command
@@ -234,11 +237,42 @@ public class AddressBook {
             }
             String userCommand = inputLine;
             
-            echoUserCommand(userCommand);
-            
             System.out.println(LINE_PREFIX + "[Command entered:" + userCommand + "]") ;
-            String feedback = executeCommand(userCommand);
-            showResultToUser(feedback);
+            
+            // Execute Commands
+            String feedback ;
+            
+            final String[] commandTypeAndParams = splitCommandWordAndArgs(userCommand);
+            final String commandType = commandTypeAndParams[0];
+            final String commandArgs = commandTypeAndParams[1];
+            switch (commandType) {
+            case COMMAND_ADD_WORD:
+            	feedback = executeAddPerson(commandArgs);
+            	break;
+            case COMMAND_FIND_WORD:
+            	feedback = executeFindPersons(commandArgs);
+            	break;
+            case COMMAND_LIST_WORD:
+            	feedback = executeListAllPersonsInAddressBook();
+            	break;
+            case COMMAND_DELETE_WORD:
+            	feedback = executeDeletePerson(commandArgs);
+            	break;
+            case COMMAND_CLEAR_WORD:
+            	feedback = executeClearAddressBook();
+            	break;
+            case COMMAND_HELP_WORD:
+            	feedback = getUsageInfoForAllCommands();
+            	break;
+            case COMMAND_EXIT_WORD:
+                executeExitProgramRequest();
+            default:
+            	feedback = getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
+            }
+            
+            System.out.println(LINE_PREFIX + feedback) ;
+        	
+        	System.out.println(LINE_PREFIX + DIVIDER) ;
         }
     }
 
