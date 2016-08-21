@@ -366,6 +366,7 @@ public class AddressBook {
             return getUsageInfoForAllCommands();
         case COMMAND_EXIT_WORD:
             executeExitProgramRequest();
+            // program terminates so no fall-through happens
         default:
             return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
         }
