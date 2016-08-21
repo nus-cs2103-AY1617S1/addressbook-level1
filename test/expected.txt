@@ -226,6 +226,25 @@
 || 
 || 2 persons found!
 || ===================================================
+|| Enter command: || [Command entered:  add AdmiralBulldog e/bulldog@alliance.gg p/123456]
+|| New person added: AdmiralBulldog, Phone: 123456, Email: bulldog@alliance.gg
+|| ===================================================
+|| Enter command: || [Command entered:  sort]
+|| 	1. AdmiralBulldog  Phone Number: 123456  Email: bulldog@alliance.gg
+|| 	2. Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
+|| 	3. Dickson Ee  Phone Number: 444444  Email: dickson@nus.edu.sg
+|| 
+|| 3 persons found!
+|| ===================================================
+|| Enter command: || [Command entered:  delete 2]
+|| Deleted Person: Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
+|| ===================================================
+|| Enter command: || [Command entered:  list]
+|| 	1. AdmiralBulldog  Phone Number: 123456  Email: bulldog@alliance.gg
+|| 	2. Dickson Ee  Phone Number: 444444  Email: dickson@nus.edu.sg
+|| 
+|| 2 persons found!
+|| ===================================================
 || Enter command: || [Command entered:  clear]
 || Address book has been cleared!
 || ===================================================
