@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /* ==============NOTE TO STUDENTS======================================
  * This class header comment below is brief because details of how to
@@ -441,7 +442,7 @@ public class AddressBook {
      * @return set of keywords as specified by args
      */
     private static Set<String> extractKeywordsFromFindPersonArgs(String findPersonCommandArgs) {
-        return new HashSet<>(splitByWhitespace(findPersonCommandArgs.trim()));
+        return new HashSet<>(toLowerCase(splitByWhitespace(findPersonCommandArgs.trim())));
     }
 
     /**
@@ -453,7 +454,7 @@ public class AddressBook {
     private static ArrayList<String[]> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
         for (String[] person : getAllPersonsInAddressBook()) {
-            final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
+            final Set<String> wordsInName = new HashSet<>(toLowerCase(splitByWhitespace(getNameFromPerson(person))));
             if (!Collections.disjoint(wordsInName, keywords)) {
                 matchedPersons.add(person);
             }
@@ -1183,6 +1184,15 @@ public class AddressBook {
      */
     private static ArrayList<String> splitByWhitespace(String toSplit) {
         return new ArrayList(Arrays.asList(toSplit.trim().split("\\s+")));
+    }
+    
+    /*
+     * Convert strings in list to lowercase 
+     *
+     */
+    private static ArrayList<String> toLowerCase(ArrayList<String> list) {
+    	ArrayList<String> result = list.stream().map(String::toLowerCase).collect(Collectors.toCollection(ArrayList::new));
+    	return result;
     }
 
 }
