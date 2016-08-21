@@ -494,7 +494,7 @@ public class AddressBook {
 	 * @return set
 	 */
 	private static HashSet<String> generateSetWithWordsInPersonName(String[] person) {
-		return new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
+		return new HashSet<String>(splitByWhitespace(getNameFromPerson(person)));
 	}
 
     /**
@@ -760,12 +760,12 @@ public class AddressBook {
      * @return the list of decoded persons
      */
     private static ArrayList<String[]> loadPersonsFromFile(String filePath) {
-        final Optional<ArrayList<String[]>> successfullyDecoded = decodePersonsFromStrings(getLinesInFile(filePath));
-        if (!successfullyDecoded.isPresent()) {
+        final Optional<ArrayList<String[]>> decodePersonsAttempt = decodePersonsFromStrings(getLinesInFile(filePath));
+        if (!decodePersonsAttempt.isPresent()) {
             showToUser(MESSAGE_INVALID_STORAGE_FILE_CONTENT);
             exitProgram();
         }
-        return successfullyDecoded.get();
+        return decodePersonsAttempt.get();
     }
 
     /**
