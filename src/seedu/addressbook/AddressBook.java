@@ -203,7 +203,8 @@ public class AddressBook {
 
         if (args.length >= 2) {
             showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
-            exitProgram();
+            showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
+            System.exit(0);
         }
 
         if (args.length == 1) {
@@ -211,7 +212,23 @@ public class AddressBook {
         }
 
         if(args.length == 0) {
-            setupDefaultFileForStorage();
+        	showToUser(MESSAGE_USING_DEFAULT_FILE);
+            storageFilePath = DEFAULT_STORAGE_FILEPATH;
+            final File storageFile = new File(storageFilePath);
+            if (storageFile.exists()) {
+                return;
+            }
+
+            showToUser(String.format(MESSAGE_ERROR_MISSING_STORAGE_FILE, storageFilePath));
+
+            try {
+                storageFile.createNewFile();
+                showToUser(String.format(MESSAGE_STORAGE_FILE_CREATED, storageFilePath));
+            } catch (IOException ioe) {
+                showToUser(String.format(MESSAGE_ERROR_CREATING_STORAGE_FILE, storageFilePath));
+                showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
+                System.exit(0);
+            }
         }
         
         loadDataFromStorage();
@@ -270,7 +287,8 @@ public class AddressBook {
     private static void processProgramArgs(String[] args) {
         if (args.length >= 2) {
             showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
-            exitProgram();
+            showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
+            System.exit(0);
         }
 
         if (args.length == 1) {
@@ -278,7 +296,23 @@ public class AddressBook {
         }
 
         if(args.length == 0) {
-            setupDefaultFileForStorage();
+        	showToUser(MESSAGE_USING_DEFAULT_FILE);
+            storageFilePath = DEFAULT_STORAGE_FILEPATH;
+            final File storageFile = new File(storageFilePath);
+            if (storageFile.exists()) {
+                return;
+            }
+
+            showToUser(String.format(MESSAGE_ERROR_MISSING_STORAGE_FILE, storageFilePath));
+
+            try {
+                storageFile.createNewFile();
+                showToUser(String.format(MESSAGE_STORAGE_FILE_CREATED, storageFilePath));
+            } catch (IOException ioe) {
+                showToUser(String.format(MESSAGE_ERROR_CREATING_STORAGE_FILE, storageFilePath));
+                showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
+                System.exit(0);
+            }
         }
     }
 
@@ -295,7 +329,21 @@ public class AddressBook {
         }
 
         storageFilePath = filePath;
-        createFileIfMissing(filePath);
+        final File storageFile = new File(filePath);
+        if (storageFile.exists()) {
+            return;
+        }
+
+        showToUser(String.format(MESSAGE_ERROR_MISSING_STORAGE_FILE, filePath));
+
+        try {
+            storageFile.createNewFile();
+            showToUser(String.format(MESSAGE_STORAGE_FILE_CREATED, filePath));
+        } catch (IOException ioe) {
+            showToUser(String.format(MESSAGE_ERROR_CREATING_STORAGE_FILE, filePath));
+            showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
+            System.exit(0);
+        }
     }
 
     /**
@@ -304,17 +352,6 @@ public class AddressBook {
     private static void exitProgram() {
         showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
         System.exit(0);
-    }
-
-    /**
-     * Sets up the storage based on the default file.
-     * Creates file if missing.
-     * Exits program if the file cannot be created.
-     */
-    private static void setupDefaultFileForStorage() {
-        showToUser(MESSAGE_USING_DEFAULT_FILE);
-        storageFilePath = DEFAULT_STORAGE_FILEPATH;
-        createFileIfMissing(storageFilePath);
     }
 
     /**
@@ -568,7 +605,8 @@ public class AddressBook {
      * @return feedback display message for the operation result
      */
     private static void executeExitProgramRequest() {
-        exitProgram();
+    	showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
+        System.exit(0);
     }
 
     /*
@@ -690,28 +728,6 @@ public class AddressBook {
      */
 
     /**
-     * Creates storage file if it does not exist. Shows feedback to user.
-     *
-     * @param filePath file to create if not present
-     */
-    private static void createFileIfMissing(String filePath) {
-        final File storageFile = new File(filePath);
-        if (storageFile.exists()) {
-            return;
-        }
-
-        showToUser(String.format(MESSAGE_ERROR_MISSING_STORAGE_FILE, filePath));
-
-        try {
-            storageFile.createNewFile();
-            showToUser(String.format(MESSAGE_STORAGE_FILE_CREATED, filePath));
-        } catch (IOException ioe) {
-            showToUser(String.format(MESSAGE_ERROR_CREATING_STORAGE_FILE, filePath));
-            exitProgram();
-        }
-    }
-
-    /**
      * Converts contents of a file into a list of persons.
      * Shows error messages and exits program if any errors in reading or decoding was encountered.
      *
@@ -722,7 +738,8 @@ public class AddressBook {
         final Optional<ArrayList<String[]>> successfullyDecoded = decodePersonsFromStrings(getLinesInFile(filePath));
         if (!successfullyDecoded.isPresent()) {
             showToUser(MESSAGE_INVALID_STORAGE_FILE_CONTENT);
-            exitProgram();
+            showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
+            System.exit(0);
         }
         return successfullyDecoded.get();
     }
@@ -737,7 +754,8 @@ public class AddressBook {
             lines = new ArrayList(Files.readAllLines(Paths.get(filePath)));
         } catch (FileNotFoundException fnfe) {
             showToUser(String.format(MESSAGE_ERROR_MISSING_STORAGE_FILE, filePath));
-            exitProgram();
+            showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
+            System.exit(0);
         } catch (IOException ioe) {
             showToUser(String.format(MESSAGE_ERROR_READING_FROM_FILE, filePath));
             exitProgram();
@@ -757,7 +775,8 @@ public class AddressBook {
             Files.write(Paths.get(storageFilePath), linesToWrite);
         } catch (IOException ioe) {
             showToUser(String.format(MESSAGE_ERROR_WRITING_TO_FILE, filePath));
-            exitProgram();
+            showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
+            System.exit(0);
         }
     }
 
