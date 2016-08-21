@@ -102,7 +102,7 @@ public class AddressBook {
 
     private static final String COMMAND_FIND_WORD = "find";
     private static final String COMMAND_FIND_DESC = "Finds all persons whose names contain any of the specified "
-                                        + "keywords (case-sensitive) and displays them as a list with index numbers.";
+                                        + "keywords (case-insensitive) and displays them as a list with index numbers.";
     private static final String COMMAND_FIND_PARAMETERS = "KEYWORD [MORE_KEYWORDS]";
     private static final String COMMAND_FIND_EXAMPLE = COMMAND_FIND_WORD + " alice bob charlie";
 
@@ -414,7 +414,7 @@ public class AddressBook {
 
     /**
      * Finds and lists all persons in address book whose name contains any of the argument keywords.
-     * Keyword matching is case sensitive.
+     * Keyword matching is case in-sensitive.
      *
      * @param commandArgs full command args string from the user
      * @return feedback display message for the operation result
@@ -448,19 +448,44 @@ public class AddressBook {
 
     /**
      * Retrieve all persons in the full model whose names contain some of the specified keywords.
+     * 
+     * Keyword matching is case in-sensitive.
      *
      * @param keywords for searching
      * @return list of persons in full model with name containing some of the keywords
      */
     private static ArrayList<String[]> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
+        final Set<String> keywordsInUpperCase = convertToUpperCase(keywords);
+        
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
         for (String[] person : getAllPersonsInAddressBook()) {
             final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
-            if (!Collections.disjoint(wordsInName, keywords)) {
+            
+            final Set<String> wordsInNameInUpperCase 
+                = convertToUpperCase(wordsInName);
+            
+            if (!Collections.disjoint(wordsInNameInUpperCase, keywordsInUpperCase)) {
                 matchedPersons.add(person);
             }
         }
         return matchedPersons;
+    }
+
+    /**
+     * Converts all strings in the collection to all upper case letters.
+     * This is useful for comparing two collections of strings without 
+     * having to care about casing of the letters.
+     * 
+     * @param words to convert to upper cases
+     * @return collection whereby all words are converted to upper cases
+     */
+    private static Set<String> convertToUpperCase(Collection<String> words) {
+        HashSet<String> wordsInUpperCase = new HashSet<String>();
+        for (String w : words) {
+            wordsInUpperCase.add(w.toUpperCase());
+        }
+
+        return wordsInUpperCase;
     }
 
     /**
