@@ -210,6 +210,8 @@ public class AddressBook {
      */
     private static final ArrayList<String[]> ALL_PERSONS = new ArrayList<>();
 
+    private static final int INVALID_INDEX = -1;
+
 
     /**
      * Stores the most recent list of persons shown to the user as a result of a user command.
@@ -407,10 +409,9 @@ public class AddressBook {
         }
         
         String[] arguments = getEditPersonArgs(commandArgs);
-        // TODO Refactor
-        int index = Integer.parseInt(arguments[EDIT_COMMAND_INDEX_INDEX]);
-        String property = arguments[EDIT_COMMAND_INDEX_PROPERTY].trim();
-        String value = arguments[EDIT_COMMAND_INDEX_VALUE].trim();
+        int index = extractIndexFromEditArgs(arguments);
+        String property = extractPropertyFromEditArgs(arguments);
+        String value = extractValueFromEditArgs(arguments);
 
         if (!isDisplayIndexValidForLastPersonListingView(index)) {
             return MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
@@ -424,6 +425,37 @@ public class AddressBook {
         setPropertyForPerson(targetPerson, property, value);
         
         return getMessageForSuccessfulEdit(targetPerson);
+    }
+
+    /**
+     * Extract the value positional argument from edit arguments array.
+     * @param args array
+     * @return the value
+     */
+    private static String extractValueFromEditArgs(String[] args) {
+        return args[EDIT_COMMAND_INDEX_VALUE].trim();
+    }
+
+    /**
+     * Extract the property positional argument from edit arguments array.
+     * @param args array
+     * @return the property
+     */
+    private static String extractPropertyFromEditArgs(String[] args) {
+        return args[EDIT_COMMAND_INDEX_PROPERTY].trim();
+    }
+
+    /**
+     * Extract the index positional argument from edit arguments array.
+     * @param args array
+     * @return the index
+     */
+    private static int extractIndexFromEditArgs(String[] args) {
+        try {
+            return Integer.parseInt(args[EDIT_COMMAND_INDEX_INDEX]);
+        } catch (NumberFormatException nfe) {
+            return INVALID_INDEX;
+        }
     }
     
     /**
@@ -482,9 +514,9 @@ public class AddressBook {
             return false;
         }
 
-        String index = arguments[EDIT_COMMAND_INDEX_INDEX];
-        String property = arguments[EDIT_COMMAND_INDEX_PROPERTY].trim();
-        String value = arguments[EDIT_COMMAND_INDEX_VALUE].trim();
+        String index = String.valueOf(extractIndexFromEditArgs(arguments));
+        String property = extractPropertyFromEditArgs(arguments);
+        String value = extractValueFromEditArgs(arguments);
 
         if (!isValidDisplayIndex(index)) {
             return false;
