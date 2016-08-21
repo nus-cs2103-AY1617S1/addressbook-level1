@@ -219,44 +219,79 @@ public class AddressBook {
 	            final String commandArgs = commandTypeAndParams[1];
 	            switch (commandType) {
 	            case "add":
-	            		feedback = executeAddPerson(commandArgs);
+	            		// try decoding a person from the raw args
+	                final Optional<HashMap<PersonProperty, String>> decodeResult = decodePersonFromString(commandArgs);
+
+	                // checks if args are valid (decode result will not be present if the person is invalid)
+	                if (!decodeResult.isPresent()) {
+	                		feedback = getMessageForInvalidCommandInput(COMMAND_ADD_WORD, getUsageInfoForAddCommand());
+	                		break;
+	                }
+
+	                // add the person as specified
+	                final HashMap<PersonProperty, String> personToAdd = decodeResult.get();
+	                addPersonToAddressBook(personToAdd);
+	                feedback = getMessageForSuccessfulAddPerson(personToAdd);
 	            		break;
 	            case "find":
-	            		feedback = executeFindPersons(commandArgs);
+	            		final Set<String> keywords = extractKeywordsFromFindPersonArgs(commandArgs);
+	                final ArrayList<HashMap<PersonProperty, String>> personsFound = getPersonsWithNameContainingAnyKeyword(keywords);
+	                showToUser(personsFound);
+	                feedback = getMessageForPersonsDisplayedSummary(personsFound);
 	            		break;
 	            case "list":
-	            		feedback = executeListAllPersonsInAddressBook();
+	            		ArrayList<HashMap<PersonProperty, String>> toBeDisplayed = getAllPersonsInAddressBook();
+	                showToUser(toBeDisplayed);
+	                feedback = getMessageForPersonsDisplayedSummary(toBeDisplayed);
 	            		break;
 	            case "delete":
-	            		feedback = executeDeletePerson(commandArgs);
+	            		if (!isDeletePersonArgsValid(commandArgs)) {
+	                    feedback = getMessageForInvalidCommandInput(COMMAND_DELETE_WORD, getUsageInfoForDeleteCommand());
+	                    break;
+	            		}
+	                final int targetVisibleIndex = extractTargetIndexFromDeletePersonArgs(commandArgs);
+	                if (!isDisplayIndexValidForLastPersonListingView(targetVisibleIndex)) {
+	                    feedback = MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
+	                    break;
+	                }
+	                final HashMap<PersonProperty, String> targetInModel = getPersonByLastVisibleIndex(targetVisibleIndex);
+	                feedback = deletePersonFromAddressBook(targetInModel) ? getMessageForSuccessfulDelete(targetInModel) // success
+	                                                                  : MESSAGE_PERSON_NOT_IN_ADDRESSBOOK; // not found
 	            		break;
 	            case "clear":
-	            		feedback = executeClearAddressBook();
+	            		ALL_PERSONS.clear();
+	                savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
+	                feedback = MESSAGE_ADDRESSBOOK_CLEARED;
 	            		break;
 	            case "help":
-	            		feedback = getUsageInfoForAllCommands();
+	            		feedback = getUsageInfoForAddCommand() + LINE_SEPARATOR
+	                            + getUsageInfoForFindCommand() + LINE_SEPARATOR
+	                            + getUsageInfoForViewCommand() + LINE_SEPARATOR
+	                            + getUsageInfoForDeleteCommand() + LINE_SEPARATOR
+	                            + getUsageInfoForClearCommand() + LINE_SEPARATOR
+	                            + getUsageInfoForExitCommand() + LINE_SEPARATOR
+	                            + getUsageInfoForHelpCommand();
 	            		break;
 	            case "exit":
-	                executeExitProgramRequest();
+	            		showToUser(MESSAGE_GOODBYE);
+	                showToUser(DIVIDER);
+	                showToUser(DIVIDER);
+	                System.exit(0);
 	                break;
 	            default:
-	            		feedback =  getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
+	            		String usageInfoForAllCommands = feedback = getUsageInfoForAddCommand() + LINE_SEPARATOR
+	                            + getUsageInfoForFindCommand() + LINE_SEPARATOR
+	                            + getUsageInfoForViewCommand() + LINE_SEPARATOR
+	                            + getUsageInfoForDeleteCommand() + LINE_SEPARATOR
+	                            + getUsageInfoForClearCommand() + LINE_SEPARATOR
+	                            + getUsageInfoForExitCommand() + LINE_SEPARATOR
+	                            + getUsageInfoForHelpCommand();
+	            		feedback =  getMessageForInvalidCommandInput(commandType, usageInfoForAllCommands);
 	        }
 	    	
 	        showToUser(feedback);
 	        showToUser(DIVIDER);
         }
-    }
-
-
-    /**
-     * The method will show the message(result) to user
-     * 
-     * @param result The message to show
-     */
-    private static void showResultToUser(String result) {
-        showToUser(result);
-        showToUser(DIVIDER);
     }
  
 
@@ -314,36 +349,6 @@ public class AddressBook {
      */
 
     /**
-     * Executes the command as specified by the {@code userInputString}
-     *
-     * @param userInputString  raw input from user
-     * @return  feedback about how the command was executed
-     */
-    public static String executeCommand(String userInputString) {
-        final String[] commandTypeAndParams = splitCommandWordAndArgs(userInputString);
-        final String commandType = commandTypeAndParams[0];
-        final String commandArgs = commandTypeAndParams[1];
-        switch (commandType) {
-        case COMMAND_ADD_WORD:
-            return executeAddPerson(commandArgs);
-        case COMMAND_FIND_WORD:
-            return executeFindPersons(commandArgs);
-        case COMMAND_LIST_WORD:
-            return executeListAllPersonsInAddressBook();
-        case COMMAND_DELETE_WORD:
-            return executeDeletePerson(commandArgs);
-        case COMMAND_CLEAR_WORD:
-            return executeClearAddressBook();
-        case COMMAND_HELP_WORD:
-            return getUsageInfoForAllCommands();
-        case COMMAND_EXIT_WORD:
-            executeExitProgramRequest();
-        default:
-            return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
-        }
-    }
-
-    /**
      * Splits raw user input into command word and command arguments string
      *
      * @return  size 2 array; first element is the command type and second element is the arguments string
@@ -399,19 +404,6 @@ public class AddressBook {
                 getPropertyFromPerson(addedPerson, PersonProperty.EMAIL));
     }
 
-    /**
-     * Finds and lists all persons in address book whose name contains any of the argument keywords.
-     * Keyword matching is case sensitive.
-     *
-     * @param commandArgs full command args string from the user
-     * @return feedback display message for the operation result
-     */
-    private static String executeFindPersons(String commandArgs) {
-        final Set<String> keywords = extractKeywordsFromFindPersonArgs(commandArgs);
-        final ArrayList<HashMap<PersonProperty, String>> personsFound = getPersonsWithNameContainingAnyKeyword(keywords);
-        showToUser(personsFound);
-        return getMessageForPersonsDisplayedSummary(personsFound);
-    }
 
     /**
      * Constructs a feedback message to summarise an operation that displayed a listing of persons.
@@ -450,24 +442,6 @@ public class AddressBook {
         return matchedPersons;
     }
 
-    /**
-     * Deletes person identified using last displayed index.
-     *
-     * @param commandArgs full command args string from the user
-     * @return feedback display message for the operation result
-     */
-    private static String executeDeletePerson(String commandArgs) {
-        if (!isDeletePersonArgsValid(commandArgs)) {
-            return getMessageForInvalidCommandInput(COMMAND_DELETE_WORD, getUsageInfoForDeleteCommand());
-        }
-        final int targetVisibleIndex = extractTargetIndexFromDeletePersonArgs(commandArgs);
-        if (!isDisplayIndexValidForLastPersonListingView(targetVisibleIndex)) {
-            return MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
-        }
-        final HashMap<PersonProperty, String> targetInModel = getPersonByLastVisibleIndex(targetVisibleIndex);
-        return deletePersonFromAddressBook(targetInModel) ? getMessageForSuccessfulDelete(targetInModel) // success
-                                                          : MESSAGE_PERSON_NOT_IN_ADDRESSBOOK; // not found
-    }
 
     /**
      * Checks validity of delete person argument string's format.
@@ -515,35 +489,8 @@ public class AddressBook {
         return String.format(MESSAGE_DELETE_PERSON_SUCCESS, getMessageForFormattedPersonData(deletedPerson));
     }
 
-    /**
-     * Clears all persons in the address book.
-     *
-     * @return feedback display message for the operation result
-     */
-    private static String executeClearAddressBook() {
-        clearAddressBook();
-        return MESSAGE_ADDRESSBOOK_CLEARED;
-    }
 
-    /**
-     * Displays all persons in the address book to the user; in added order.
-     *
-     * @return feedback display message for the operation result
-     */
-    private static String executeListAllPersonsInAddressBook() {
-        ArrayList<HashMap<PersonProperty, String>> toBeDisplayed = getAllPersonsInAddressBook();
-        showToUser(toBeDisplayed);
-        return getMessageForPersonsDisplayedSummary(toBeDisplayed);
-    }
-
-    /**
-     * Request to terminate the program.
-     *
-     * @return feedback display message for the operation result
-     */
-    private static void executeExitProgramRequest() {
-        exitProgram();
-    }
+   
 
     /*
      * ===========================================
@@ -736,14 +683,6 @@ public class AddressBook {
      */
     private static ArrayList<HashMap<PersonProperty, String>> getAllPersonsInAddressBook() {
         return ALL_PERSONS;
-    }
-
-    /**
-     * Clears all persons in the address book and saves changes to file.
-     */
-    private static void clearAddressBook() {
-        ALL_PERSONS.clear();
-        savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
     }
 
 
@@ -976,19 +915,6 @@ public class AddressBook {
      *         COMMAND HELP INFO FOR USERS
      * ===============================================
      */
-
-    /**
-     * @return  Usage info for all commands
-     */
-    private static String getUsageInfoForAllCommands() {
-        return getUsageInfoForAddCommand() + LINE_SEPARATOR
-                + getUsageInfoForFindCommand() + LINE_SEPARATOR
-                + getUsageInfoForViewCommand() + LINE_SEPARATOR
-                + getUsageInfoForDeleteCommand() + LINE_SEPARATOR
-                + getUsageInfoForClearCommand() + LINE_SEPARATOR
-                + getUsageInfoForExitCommand() + LINE_SEPARATOR
-                + getUsageInfoForHelpCommand();
-    }
 
     /**
      * Builds string for showing 'add' command usage instruction
