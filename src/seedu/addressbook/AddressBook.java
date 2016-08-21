@@ -202,126 +202,126 @@ public class AddressBook {
     	// Show welcome message to user!
     	System.out.println(LINE_PREFIX + DIVIDER) ;
     	System.out.println(LINE_PREFIX + DIVIDER) ;
-    	
+
     	System.out.println(LINE_PREFIX + VERSION) ;
     	System.out.println(LINE_PREFIX + MESSAGE_WELCOME) ;
-    	
+
     	System.out.println(LINE_PREFIX + DIVIDER) ;
 
     	// Process program arguments
-        if (args.length >= 2) {
-            showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
-            exitProgram();
-        }
+    	if (args.length >= 2) {
+    		showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
+    		exitProgram();
+    	}
 
-        if (args.length == 1) {
-            setupGivenFileForStorage(args[0]);
-        }
+    	if (args.length == 1) {
+    		setupGivenFileForStorage(args[0]);
+    	}
 
-        if(args.length == 0) {
-            setupDefaultFileForStorage();
-        }
-        
-        // Loads data from storage
-        ALL_PERSONS.clear();
-        ALL_PERSONS.addAll(loadPersonsFromFile(storageFilePath));
-        
-        while (true) {
-        	
-        	// Get user command
-        	System.out.print(LINE_PREFIX + "Enter command: ");
-            String inputLine = SCANNER.nextLine();
-            // silently consume all blank and comment lines
-            while (inputLine.trim().isEmpty() || inputLine.trim().charAt(0) == INPUT_COMMENT_MARKER) {
-                inputLine = SCANNER.nextLine();
-            }
-            String userCommand = inputLine;
-            
-            System.out.println(LINE_PREFIX + "[Command entered:" + userCommand + "]") ;
-            
-            // Execute Commands
-            String feedback ;
-            
-            final String[] commandTypeAndParams = splitCommandWordAndArgs(userCommand);
-            final String commandType = commandTypeAndParams[0];
-            final String commandArgs = commandTypeAndParams[1];
-            switch (commandType) {
-            case COMMAND_ADD_WORD:
-            	 // try decoding a person from the raw args
-                final Optional<String[]> decodeResult = decodePersonFromString(commandArgs);
+    	if(args.length == 0) {
+    		setupDefaultFileForStorage();
+    	}
 
-                // checks if args are valid (decode result will not be present if the person is invalid)
-                if (!decodeResult.isPresent()) {
-                	feedback = getMessageForInvalidCommandInput(COMMAND_ADD_WORD, getUsageInfoForAddCommand());
-                
-                } else {
+    	// Loads data from storage
+    	ALL_PERSONS.clear();
+    	ALL_PERSONS.addAll(loadPersonsFromFile(storageFilePath));
 
-	                // add the person as specified
-	                final String[] personToAdd = decodeResult.get();
-	                addPersonToAddressBook(personToAdd);
-	                feedback = getMessageForSuccessfulAddPerson(personToAdd);
-                }
+    	while (true) {
 
-            	break;
-            
-            case COMMAND_FIND_WORD:
-            	
-            	final Set<String> keywords = extractKeywordsFromFindPersonArgs(commandArgs);
-                final ArrayList<String[]> personsFound = getPersonsWithNameContainingAnyKeyword(keywords);
-                showToUser(personsFound);
-                feedback = getMessageForPersonsDisplayedSummary(personsFound);
-                
-            	break;
-            
-            case COMMAND_LIST_WORD:
-            	
-            	ArrayList<String[]> toBeDisplayed = getAllPersonsInAddressBook();
-                showToUser(toBeDisplayed);
-                feedback = getMessageForPersonsDisplayedSummary(toBeDisplayed);
-                
-            	break;
-           
-            case COMMAND_DELETE_WORD:
-            	
-            	if (!isDeletePersonArgsValid(commandArgs)) {
-            		feedback = getMessageForInvalidCommandInput(COMMAND_DELETE_WORD, getUsageInfoForDeleteCommand());
-            		break;
-                }
-            	
-                final int targetVisibleIndex = extractTargetIndexFromDeletePersonArgs(commandArgs);
-                if (!isDisplayIndexValidForLastPersonListingView(targetVisibleIndex)) {
-                	feedback = MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
-                	break;
-                }
-                
-                final String[] targetInModel = getPersonByLastVisibleIndex(targetVisibleIndex);
-                feedback = deletePersonFromAddressBook(targetInModel) ? getMessageForSuccessfulDelete(targetInModel) // success
-                                                                  : MESSAGE_PERSON_NOT_IN_ADDRESSBOOK; // not found
-                
-            	break;
-           
-            case COMMAND_CLEAR_WORD:
-            	
-            	clearAddressBook();
-                feedback = MESSAGE_ADDRESSBOOK_CLEARED;
+    		// Get user command
+    		System.out.print(LINE_PREFIX + "Enter command: ");
+    		String inputLine = SCANNER.nextLine();
+    		// silently consume all blank and comment lines
+    		while (inputLine.trim().isEmpty() || inputLine.trim().charAt(0) == INPUT_COMMENT_MARKER) {
+    			inputLine = SCANNER.nextLine();
+    		}
+    		String userCommand = inputLine;
 
-            	break;
-           
-            case COMMAND_HELP_WORD:
-            	feedback = getUsageInfoForAllCommands();
-            	break;
-            
-            case COMMAND_EXIT_WORD:
-                executeExitProgramRequest();
-            
-            default:
-            	feedback = String.format(MESSAGE_INVALID_COMMAND_FORMAT, commandType, getUsageInfoForAllCommands());
-            }
-            
-            System.out.println(LINE_PREFIX + feedback) ;
-        	
-        	System.out.println(LINE_PREFIX + DIVIDER) ;
-        }
+    		System.out.println(LINE_PREFIX + "[Command entered:" + userCommand + "]") ;
+
+    		// Execute Commands
+    		String feedback ;
+
+    		final String[] commandTypeAndParams = splitCommandWordAndArgs(userCommand);
+    		final String commandType = commandTypeAndParams[0];
+    		final String commandArgs = commandTypeAndParams[1];
+    		switch (commandType) {
+    		case COMMAND_ADD_WORD:
+    			// try decoding a person from the raw args
+    			final Optional<String[]> decodeResult = decodePersonFromString(commandArgs);
+
+    			// checks if args are valid (decode result will not be present if the person is invalid)
+    			if (!decodeResult.isPresent()) {
+    				feedback = getMessageForInvalidCommandInput(COMMAND_ADD_WORD, getUsageInfoForAddCommand());
+
+    			} else {
+
+    				// add the person as specified
+    				final String[] personToAdd = decodeResult.get();
+    				addPersonToAddressBook(personToAdd);
+    				feedback = getMessageForSuccessfulAddPerson(personToAdd);
+    			}
+
+    			break;
+
+    		case COMMAND_FIND_WORD:
+
+    			final Set<String> keywords = extractKeywordsFromFindPersonArgs(commandArgs);
+    			final ArrayList<String[]> personsFound = getPersonsWithNameContainingAnyKeyword(keywords);
+    			showToUser(personsFound);
+    			feedback = getMessageForPersonsDisplayedSummary(personsFound);
+
+    			break;
+
+    		case COMMAND_LIST_WORD:
+
+    			ArrayList<String[]> toBeDisplayed = getAllPersonsInAddressBook();
+    			showToUser(toBeDisplayed);
+    			feedback = getMessageForPersonsDisplayedSummary(toBeDisplayed);
+
+    			break;
+
+    		case COMMAND_DELETE_WORD:
+
+    			if (!isDeletePersonArgsValid(commandArgs)) {
+    				feedback = getMessageForInvalidCommandInput(COMMAND_DELETE_WORD, getUsageInfoForDeleteCommand());
+    				break;
+    			}
+
+    			final int targetVisibleIndex = extractTargetIndexFromDeletePersonArgs(commandArgs);
+    			if (!isDisplayIndexValidForLastPersonListingView(targetVisibleIndex)) {
+    				feedback = MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
+    				break;
+    			}
+
+    			final String[] targetInModel = getPersonByLastVisibleIndex(targetVisibleIndex);
+    			feedback = deletePersonFromAddressBook(targetInModel) ? getMessageForSuccessfulDelete(targetInModel) // success
+    					: MESSAGE_PERSON_NOT_IN_ADDRESSBOOK; // not found
+
+    			break;
+
+    		case COMMAND_CLEAR_WORD:
+
+    			clearAddressBook();
+    			feedback = MESSAGE_ADDRESSBOOK_CLEARED;
+
+    			break;
+
+    		case COMMAND_HELP_WORD:
+    			feedback = getUsageInfoForAllCommands();
+    			break;
+
+    		case COMMAND_EXIT_WORD:
+    			executeExitProgramRequest();
+
+    		default:
+    			feedback = String.format(MESSAGE_INVALID_COMMAND_FORMAT, commandType, getUsageInfoForAllCommands());
+    		}
+
+    		System.out.println(LINE_PREFIX + feedback) ;
+
+    		System.out.println(LINE_PREFIX + DIVIDER) ;
+    	}
     }
 
     /*
