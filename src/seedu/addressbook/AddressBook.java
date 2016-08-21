@@ -48,6 +48,11 @@ public class AddressBook {
 	public static final String LINE_PREFIX = "|| ";
 
 	/**
+	 * Define tab
+	 */
+	public static final String TAB = '\t';
+	
+	/**
 	 * A platform independent line separator.
 	 */
 	private static final String LS = System.lineSeparator() + LINE_PREFIX;
@@ -364,10 +369,7 @@ public class AddressBook {
 	 */
 	private static String[] splitCommandWordAndArgs(String rawUserInput) {
 		final String[] split = rawUserInput.trim().split("\\s+", 2);
-		return split.length == 2 ? split : new String[] { split[0], "" }; // else
-																			// case:
-																			// no
-																			// parameters
+		return split.length == 2 ? split : new String[] { split[0], "" }; // else case: no parameters
 	}
 
 	/**
@@ -509,11 +511,7 @@ public class AddressBook {
 	 */
 	private static boolean isDeletePersonArgsValid(String rawArgs) {
 		try {
-			final int extractedIndex = Integer.parseInt(rawArgs.trim()); // use
-																			// standard
-																			// libraries
-																			// to
-																			// parse
+			final int extractedIndex = Integer.parseInt(rawArgs.trim()); // use standard libraries to parse
 			return extractedIndex >= DISPLAYED_INDEX_OFFSET;
 		} catch (NumberFormatException nfe) {
 			return false;
@@ -642,7 +640,7 @@ public class AddressBook {
 		for (int i = 0; i < persons.size(); i++) {
 			final String[] person = persons.get(i);
 			final int displayIndex = i + DISPLAYED_INDEX_OFFSET;
-			messageAccumulator.append('\t').append(getIndexedPersonListElementMessage(displayIndex, person)).append(LS);
+			messageAccumulator.append(TAB).append(getIndexedPersonListElementMessage(displayIndex, person)).append(LS);
 		}
 		return messageAccumulator.toString();
 	}
