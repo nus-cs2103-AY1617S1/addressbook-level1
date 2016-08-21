@@ -463,18 +463,35 @@ public class AddressBook {
         	return getMessageForInvalidCommandInput(COMMAND_EDIT_WORD, getUsageInfoForEditCommand());
         }
         
-        String[] toEditPerson = personsFound.get(0) ;
-        toEditPerson[PERSON_DATA_INDEX_PHONE] = (getPhoneFromPerson(editedPersonInfo).equals(RESERVED_PHONE)) ? toEditPerson[PERSON_DATA_INDEX_PHONE] : getPhoneFromPerson(editedPersonInfo) ;
-        toEditPerson[PERSON_DATA_INDEX_EMAIL] = (getEmailFromPerson(editedPersonInfo).equals(RESERVED_EMAIL)) ? toEditPerson[PERSON_DATA_INDEX_EMAIL] : getEmailFromPerson(editedPersonInfo) ;
+        String[] person = personsFound.get(0) ;
+        person = modifiyPersonDetails(person, editedPersonInfo) ;
         
         savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
         
-        return getMessageForSuccessfulEditPerson(toEditPerson) ;
+        return getMessageForSuccessfulEditPerson(person) ;
     }
     
     private static String getMessageForSuccessfulEditPerson(String[] addedPerson) {
         return String.format(MESSAGE_EDITED,
                 getNameFromPerson(addedPerson), getPhoneFromPerson(addedPerson), getEmailFromPerson(addedPerson));
+    }
+    
+    /**
+     * Given an original valid String array representing a person, modifiy its details to the given modified string array.
+     * If any of the details in the modified String array is reserved given by the variables RESERVED_PHONE and RESERVED_EMAIL
+     * the contents in the original array will remain unchanged.
+     * 
+     * @param original	The original person array
+     * @param modified	The new person array containing the new details.
+     * @return	the modified person array
+     */
+    private static String[] modifiyPersonDetails (String[] original, String[] modified) {
+    	
+    	original[PERSON_DATA_INDEX_PHONE] = (getPhoneFromPerson(modified).equals(RESERVED_PHONE)) ? original[PERSON_DATA_INDEX_PHONE] : getPhoneFromPerson(modified) ;
+    	original[PERSON_DATA_INDEX_EMAIL] = (getEmailFromPerson(modified).equals(RESERVED_EMAIL)) ? original[PERSON_DATA_INDEX_EMAIL] : getEmailFromPerson(modified) ;
+    	
+    	return original ;
+    	
     }
     
     /**
