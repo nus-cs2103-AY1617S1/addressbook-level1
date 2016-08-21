@@ -279,7 +279,22 @@ public class AddressBook {
                 
             	break;
             case COMMAND_DELETE_WORD:
-            	feedback = executeDeletePerson(commandArgs);
+            	
+            	if (!isDeletePersonArgsValid(commandArgs)) {
+            		feedback = getMessageForInvalidCommandInput(COMMAND_DELETE_WORD, getUsageInfoForDeleteCommand());
+            		break;
+                }
+            	
+                final int targetVisibleIndex = extractTargetIndexFromDeletePersonArgs(commandArgs);
+                if (!isDisplayIndexValidForLastPersonListingView(targetVisibleIndex)) {
+                	feedback = MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
+                	break;
+                }
+                
+                final String[] targetInModel = getPersonByLastVisibleIndex(targetVisibleIndex);
+                feedback = deletePersonFromAddressBook(targetInModel) ? getMessageForSuccessfulDelete(targetInModel) // success
+                                                                  : MESSAGE_PERSON_NOT_IN_ADDRESSBOOK; // not found
+                
             	break;
             case COMMAND_CLEAR_WORD:
             	feedback = executeClearAddressBook();
@@ -425,25 +440,6 @@ public class AddressBook {
             }
         }
         return matchedPersons;
-    }
-
-    /**
-     * Deletes person identified using last displayed index.
-     *
-     * @param commandArgs full command args string from the user
-     * @return feedback display message for the operation result
-     */
-    private static String executeDeletePerson(String commandArgs) {
-        if (!isDeletePersonArgsValid(commandArgs)) {
-            return getMessageForInvalidCommandInput(COMMAND_DELETE_WORD, getUsageInfoForDeleteCommand());
-        }
-        final int targetVisibleIndex = extractTargetIndexFromDeletePersonArgs(commandArgs);
-        if (!isDisplayIndexValidForLastPersonListingView(targetVisibleIndex)) {
-            return MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
-        }
-        final String[] targetInModel = getPersonByLastVisibleIndex(targetVisibleIndex);
-        return deletePersonFromAddressBook(targetInModel) ? getMessageForSuccessfulDelete(targetInModel) // success
-                                                          : MESSAGE_PERSON_NOT_IN_ADDRESSBOOK; // not found
     }
 
     /**
