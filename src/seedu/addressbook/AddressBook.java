@@ -264,7 +264,12 @@ public class AddressBook {
 
             	break;
             case COMMAND_FIND_WORD:
-            	feedback = executeFindPersons(commandArgs);
+            	
+            	final Set<String> keywords = extractKeywordsFromFindPersonArgs(commandArgs);
+                final ArrayList<String[]> personsFound = getPersonsWithNameContainingAnyKeyword(keywords);
+                showToUser(personsFound);
+                feedback = getMessageForPersonsDisplayedSummary(personsFound);
+                
             	break;
             case COMMAND_LIST_WORD:
             	feedback = executeListAllPersonsInAddressBook();
@@ -379,20 +384,6 @@ public class AddressBook {
     private static String getMessageForSuccessfulAddPerson(String[] addedPerson) {
         return String.format(MESSAGE_ADDED,
                 getNameFromPerson(addedPerson), getPhoneFromPerson(addedPerson), getEmailFromPerson(addedPerson));
-    }
-
-    /**
-     * Finds and lists all persons in address book whose name contains any of the argument keywords.
-     * Keyword matching is case sensitive.
-     *
-     * @param commandArgs full command args string from the user
-     * @return feedback display message for the operation result
-     */
-    private static String executeFindPersons(String commandArgs) {
-        final Set<String> keywords = extractKeywordsFromFindPersonArgs(commandArgs);
-        final ArrayList<String[]> personsFound = getPersonsWithNameContainingAnyKeyword(keywords);
-        showToUser(personsFound);
-        return getMessageForPersonsDisplayedSummary(personsFound);
     }
 
     /**
