@@ -50,7 +50,7 @@ public class AddressBook {
      * A platform independent line separator.
      */
     private static final String LS = System.lineSeparator() + LINE_PREFIX;
-
+    
     /*
      * ==============NOTE TO STUDENTS======================================
      * These messages shown to the user are defined in one place for convenient
@@ -721,7 +721,7 @@ public class AddressBook {
     private static ArrayList<String> getLinesInFile(String filePath) {
         ArrayList<String> lines = null;
         try {
-            lines = new ArrayList(Files.readAllLines(Paths.get(filePath)));
+            lines = new ArrayList<>(Files.readAllLines(Paths.get(filePath)));
         } catch (FileNotFoundException fnfe) {
             showToUser(String.format(MESSAGE_ERROR_MISSING_STORAGE_FILE, filePath));
             exitProgram();
@@ -1166,7 +1166,7 @@ public class AddressBook {
      *
      * @param s  Parameter as a string
      * @param sign  Parameter sign to be removed
-     *
+     * 
      * @return  Priority string without p/
      */
     private static String removePrefixSign(String s, String sign) {
@@ -1180,7 +1180,7 @@ public class AddressBook {
      * @return split by whitespace
      */
     private static ArrayList<String> splitByWhitespace(String toSplit) {
-        return new ArrayList(Arrays.asList(toSplit.trim().split("\\s+")));
+        return new ArrayList<>(Arrays.asList(toSplit.trim().split("\\s+")));
     }
 
 }
