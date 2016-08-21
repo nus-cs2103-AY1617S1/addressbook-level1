@@ -151,6 +151,25 @@ public class AddressBook {
     private static final int PERSON_DATA_INDEX_NAME = 0;
     private static final int PERSON_DATA_INDEX_PHONE = 1;
     private static final int PERSON_DATA_INDEX_EMAIL = 2;
+    
+    /*
+     * Used by 'edit' command to specify which property to edit.
+     */
+    private static final String EDIT_COMMAND_PROPERTY_NAME = "name";
+    private static final String EDIT_COMMAND_PROPERTY_PHONE = "phone";
+    private static final String EDIT_COMMAND_PROPERTY_EMAIL = "email";
+    
+    /*
+     * Total arguments allowed by 'edit' command.
+     */
+    private static final int EDIT_COMMAND_TOTAL_ARGUMENTS = 3;
+    
+    /*
+     * The positional arguments of the 'edit' command.
+     */
+    private static final int EDIT_COMMAND_INDEX_INDEX = 0;
+    private static final int EDIT_COMMAND_INDEX_PROPERTY = 1;
+    private static final int EDIT_COMMAND_INDEX_VALUE = 2;
 
     /**
      * The number of data elements for a single person.
@@ -382,10 +401,156 @@ public class AddressBook {
      * @return feedback display message for the operation result
      */
     private static String executeEditPerson(String commandArgs) {
-        // TODO Auto-generated method stub
+        if (!isEditPersonArgsValid(commandArgs)) {
+            return getMessageForInvalidCommandInput(COMMAND_EDIT_WORD, getUsageInfoForEditCommand());
+        }
+        
+        // TODO Actual edit implementation
         return null;
     }
 
+    /**
+     * Checks validity of edit person argument string's format.
+     *
+     * @param rawArgs raw command args string for the edit person command
+     * @return whether the input args string is valid
+     */
+    private static boolean isEditPersonArgsValid(String rawArgs) {
+        String[] arguments = getEditPersonArgs(rawArgs);
+        if (arguments == null) {
+            return false;
+        }
+
+        String index = arguments[EDIT_COMMAND_INDEX_INDEX];
+        String property = arguments[EDIT_COMMAND_INDEX_PROPERTY];
+        String value = arguments[EDIT_COMMAND_INDEX_VALUE];
+
+        if (!isValidDisplayIndex(index)) {
+            return false;
+        }
+
+        if (!isValidProperty(property)) {
+            return false;
+        }
+
+        if (!isValidValue(property, value)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Get the array of 'edit' args from a single string
+     * by splitting the whitespace.
+     * 
+     * @param rawArgs of the entire input
+     * @return an arraylist of arguments of the form INDEX PROPERTY VALUE
+     * (null if the total number of arguments is too little)
+     */
+    private static String[] getEditPersonArgs(String rawArgs) {
+        ArrayList<String> substrings = splitByWhitespace(rawArgs);
+        
+        if (!haveSufficientEditArgs(substrings)) {
+            return null;
+        }
+        
+        String[] result = new String[EDIT_COMMAND_TOTAL_ARGUMENTS];        
+        for (int i = 0; i < result.length - 1; i++) {
+            result[i] = substrings.get(i);
+        }
+
+        final int lastResultIndex = EDIT_COMMAND_TOTAL_ARGUMENTS - 1;
+        final int lastElementIndex = substrings.size() - 1;
+        String lastArgument = joinWithWhitespace(substrings, lastResultIndex, lastElementIndex);
+        
+        result[lastResultIndex] = lastArgument;
+        
+        return result;
+    }
+
+    /**
+     * Do we have sufficient arguments for the 'edit' command?
+     * @param args to check
+     * @return whether we have sufficient arguments
+     */
+    private static boolean haveSufficientEditArgs(ArrayList<String> args) {
+        return args.size() >= EDIT_COMMAND_TOTAL_ARGUMENTS;
+    }
+
+    /**
+     * Join the substrings in the array together with whitespace.
+     * @param substrings in the array
+     * @param firstIndex of the substring in the array to join
+     * @param lastIndex of the substring in the array to join
+     * @return
+     */
+    private static String joinWithWhitespace(ArrayList<String> substrings, 
+            int firstIndex, int lastIndex) {
+        String result = "";
+        for (int i = firstIndex; i <= lastIndex; i++) {
+            result += substrings.get(i) + " ";
+        }
+        
+        return result;
+    }
+
+    /**
+     * Determine if the display index is valid.
+     * @param index to check
+     * @return whether it is valid
+     */
+    private static boolean isValidDisplayIndex(String index) {
+        try {            
+            final int extractedIndex = Integer.parseInt(index.trim());
+            return extractedIndex >= DISPLAYED_INDEX_OFFSET;
+            
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
+    }
+
+    /**
+     * Determine if the property given is a valid person's property
+     * @param property to check
+     * @return whether it is valid
+     */
+    private static boolean isValidProperty(String property) {
+        switch (property.trim()) {
+        
+        case EDIT_COMMAND_PROPERTY_NAME:
+        case EDIT_COMMAND_PROPERTY_EMAIL:
+        case EDIT_COMMAND_PROPERTY_PHONE:
+            return true;
+            
+        default:
+            return false;
+        }
+    }
+
+    /**
+     * Determine if the value is valid given the property stated.
+     * @param property that the value belongs to
+     * @param value to check
+     * @return whether it is valid
+     */
+    private static boolean isValidValue(String property, String value) {
+        switch (property.trim()) {
+        
+        case EDIT_COMMAND_PROPERTY_NAME:
+            return isPersonNameValid(value); 
+            
+        case EDIT_COMMAND_PROPERTY_EMAIL:
+            return isPersonEmailValid(value); 
+            
+        case EDIT_COMMAND_PROPERTY_PHONE:
+            return isPersonPhoneValid(value);
+            
+        default:
+            return false;
+        }
+    }
+    
     /**
      * Splits raw user input into command word and command arguments string
      *
@@ -542,12 +707,7 @@ public class AddressBook {
      * @return whether the input args string is valid
      */
     private static boolean isDeletePersonArgsValid(String rawArgs) {
-        try {
-            final int extractedIndex = Integer.parseInt(rawArgs.trim()); // use standard libraries to parse
-            return extractedIndex >= DISPLAYED_INDEX_OFFSET;
-        } catch (NumberFormatException nfe) {
-            return false;
-        }
+        return isValidDisplayIndex(rawArgs.trim());
     }
 
     /**
