@@ -195,7 +195,15 @@ public class AddressBook {
         if(args.length == 0) {
             setupDefaultFileForStorage();
         }
-        loadDataFromStorage();
+        ArrayList<HashMap<PersonProperty, String>> persons;
+        final Optional<ArrayList<HashMap<PersonProperty, String>>> successfullyDecoded = decodePersonsFromStrings(getLinesInFile(storageFilePath));
+        if (!successfullyDecoded.isPresent()) {
+            showToUser(MESSAGE_INVALID_STORAGE_FILE_CONTENT);
+            exitProgram();
+        }
+        persons = successfullyDecoded.get();
+        ALL_PERSONS.clear();
+        ALL_PERSONS.addAll(persons);
         while (true) {
             handleUserCommand();
         }
@@ -276,14 +284,6 @@ public class AddressBook {
      */
     private static boolean isValidFilePath(String filePath) {
         return filePath.endsWith(".txt");
-    }
-
-    /**
-     * Initialises the in-memory data using the storage file.
-     * Assumption: The file exists.
-     */
-    private static void loadDataFromStorage() {
-        initialiseAddressBookModel(loadPersonsFromFile(storageFilePath));
     }
 
 
@@ -661,22 +661,6 @@ public class AddressBook {
     }
 
     /**
-     * Converts contents of a file into a list of persons.
-     * Shows error messages and exits program if any errors in reading or decoding was encountered.
-     *
-     * @param filePath file to load from
-     * @return the list of decoded persons
-     */
-    private static ArrayList<HashMap<PersonProperty, String>> loadPersonsFromFile(String filePath) {
-        final Optional<ArrayList<HashMap<PersonProperty, String>>> successfullyDecoded = decodePersonsFromStrings(getLinesInFile(filePath));
-        if (!successfullyDecoded.isPresent()) {
-            showToUser(MESSAGE_INVALID_STORAGE_FILE_CONTENT);
-            exitProgram();
-        }
-        return successfullyDecoded.get();
-    }
-
-    /**
      * Gets all lines in the specified file as a list of strings. Line separators are removed.
      * Shows error messages and exits program if unable to read from file.
      */
@@ -758,15 +742,6 @@ public class AddressBook {
         savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
     }
 
-    /**
-     * Resets the internal model with the given data. Does not save to file.
-     *
-     * @param persons list of persons to initialise the model with
-     */
-    private static void initialiseAddressBookModel(ArrayList<HashMap<PersonProperty, String>> persons) {
-        ALL_PERSONS.clear();
-        ALL_PERSONS.addAll(persons);
-    }
 
 
     /*
