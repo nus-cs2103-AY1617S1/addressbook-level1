@@ -126,6 +126,11 @@ public class AddressBook {
     private enum PersonProperty {
     		NAME, EMAIL, PHONE;
     };
+    
+    /**
+     * The number of data elements for a single person.
+     */
+    private static final int PERSON_DATA_COUNT = 3;
 
 
     /**
@@ -907,7 +912,7 @@ public class AddressBook {
     private static boolean isPersonDataExtractableFrom(String personData) {
         final String matchAnyPersonDataPrefix = PERSON_DATA_PREFIX_PHONE + '|' + PERSON_DATA_PREFIX_EMAIL;
         final String[] splitArgs = personData.trim().split(matchAnyPersonDataPrefix);
-        return splitArgs.length == 3 // 3 arguments
+        return splitArgs.length == PERSON_DATA_COUNT
                 && !splitArgs[0].isEmpty() // non-empty arguments
                 && !splitArgs[1].isEmpty()
                 && !splitArgs[2].isEmpty();
