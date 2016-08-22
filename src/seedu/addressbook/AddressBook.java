@@ -439,7 +439,9 @@ public class AddressBook {
         final ArrayList<HashMap<PersonProperty, String>> matchedPersons = new ArrayList<>();
         for (HashMap<PersonProperty, String> person : getAllPersonsInAddressBook()) {
             final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getPropertyFromPerson(person, PersonProperty.NAME)));
-            if (!Collections.disjoint(wordsInName, keywords)) {
+            final Collection<String> keywordsLowercase = changeElementToLowerCase(wordsInName);
+            final Collection<String> wordsInNameLowercase =  changeElementToLowerCase(keywords);
+            if (!Collections.disjoint(keywordsLowercase, wordsInNameLowercase)) {
                 matchedPersons.add(person);
             }
         }
@@ -1129,4 +1131,17 @@ public class AddressBook {
         return new ArrayList<String>(Arrays.asList(toSplit.trim().split("\\s+")));
     }
 
+    /**
+     * Take a collection of string and return the same collection except every element is in lowercase
+     * 
+     * @param collection   the string collection which all element in it would be changed to lowercase
+     * @return the generate collection with all element in lowercase
+     */
+    public static Collection<String> changeElementToLowerCase(Collection<String> collection) {
+    		Collection<String> collectionLowercase = new ArrayList<String>();
+    		for(String element : collection) {
+    			collectionLowercase.add(element.toLowerCase());
+    		}
+    		return collectionLowercase;
+    }
 }
