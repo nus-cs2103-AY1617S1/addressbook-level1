@@ -32,6 +32,10 @@
   list
   add Betsy Choo p/222222 e/benchoo@nus.edu.sg
   list
+  add Low Jian Sheng p/333333 e/e0003162@u.nus.edu
+  list
+  
+  delete 3
 
   # order of phone and email should not matter
   add Charlie Dickson e/charlie.d@nus.edu.sg p/333333
