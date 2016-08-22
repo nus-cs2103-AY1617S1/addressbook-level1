@@ -225,6 +225,16 @@ public class AddressBook {
             showResultToUser(feedbackToPrint);
         }
 	}
+	
+	//STOPPED HERE
+	//STOPPED HERE
+	//STOPPED HERE
+	//STOPPED HERE
+	//STOPPED HERE
+	//STOPPED HERE
+	//STOPPED HERE
+	//STOPPED HERE
+	
 
     /*
      * ==============NOTE TO STUDENTS======================================
@@ -617,7 +627,7 @@ public class AddressBook {
     /**
      * Shows a message to the user
      */
-    private static void showToUser(String[] message) {
+    private static void showToUser(String...message) {
         for (String m : message) {
             System.out.println(LINE_PREFIX + m);
         }
