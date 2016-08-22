@@ -1069,6 +1069,35 @@ public class AddressBook {
                 + getUsageInfoForExitCommand() + LS
                 + getUsageInfoForHelpCommand();
     }
+    
+    /**
+     * Builds string for showing a command usage instruction
+     *
+     * @param Strings
+     *            for command word, command description, command parameters and
+     *            command example
+     * @return corresponding command usage instruction
+     */
+    private static String buildUsageInfoForCommandWithParams(String commandWord, String commandDesc,
+	    String commandParams, String commandExample) {
+	return String.format(MESSAGE_COMMAND_HELP, commandWord, commandDesc) + LS
+		+ String.format(MESSAGE_COMMAND_HELP_PARAMETERS, commandParams) + LS
+		+ String.format(MESSAGE_COMMAND_HELP_EXAMPLE, commandExample) + LS;
+    }
+
+    /**
+     * Builds string for showing a command usage instruction
+     *
+     * @param Strings
+     *            for command word, command description and command example
+     * @return corresponding command usage instruction
+     */
+    private static String buildUsageInfoForCommandWithNoParams(String commandWord, String commandDesc,
+	    String commandExample) {
+	return String.format(MESSAGE_COMMAND_HELP, commandWord, commandDesc) + LS
+		+ String.format(MESSAGE_COMMAND_HELP_EXAMPLE, commandExample) + LS;
+    }
+    
 
     /**
      * Builds string for showing 'add' command usage instruction
@@ -1076,9 +1105,8 @@ public class AddressBook {
      * @return  'add' command usage instruction
      */
     private static String getUsageInfoForAddCommand() {
-        return String.format(MESSAGE_COMMAND_HELP, COMMAND_ADD_WORD, COMMAND_ADD_DESC) + LS
-                + String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_ADD_PARAMETERS) + LS
-                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_ADD_EXAMPLE) + LS;
+        return buildUsageInfoForCommandWithParams(COMMAND_ADD_WORD, COMMAND_ADD_DESC, COMMAND_ADD_PARAMETERS,
+        					COMMAND_ADD_EXAMPLE);
     }
 
     /**
@@ -1087,9 +1115,8 @@ public class AddressBook {
      * @return  'find' command usage instruction
      */
     private static String getUsageInfoForFindCommand() {
-        return String.format(MESSAGE_COMMAND_HELP, COMMAND_FIND_WORD, COMMAND_FIND_DESC) + LS
-                + String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_FIND_PARAMETERS) + LS
-                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_FIND_EXAMPLE) + LS;
+        return buildUsageInfoForCommandWithParams(COMMAND_FIND_WORD, COMMAND_FIND_DESC, COMMAND_FIND_PARAMETERS,
+						COMMAND_FIND_EXAMPLE);
     }
 
     /**
@@ -1098,9 +1125,8 @@ public class AddressBook {
      * @return  'delete' command usage instruction
      */
     private static String getUsageInfoForDeleteCommand() {
-        return String.format(MESSAGE_COMMAND_HELP, COMMAND_DELETE_WORD, COMMAND_DELETE_DESC) + LS
-                + String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_DELETE_PARAMETER) + LS
-                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_DELETE_EXAMPLE) + LS;
+        return buildUsageInfoForCommandWithParams(COMMAND_DELETE_WORD, COMMAND_DELETE_DESC, 
+        					COMMAND_DELETE_PARAMETER, COMMAND_DELETE_EXAMPLE);
     }
 
     /**
@@ -1109,8 +1135,7 @@ public class AddressBook {
      * @return  'clear' command usage instruction
      */
     private static String getUsageInfoForClearCommand() {
-        return String.format(MESSAGE_COMMAND_HELP, COMMAND_CLEAR_WORD, COMMAND_CLEAR_DESC) + LS
-                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_CLEAR_EXAMPLE) + LS;
+        return buildUsageInfoForCommandWithNoParams(COMMAND_CLEAR_WORD, COMMAND_CLEAR_DESC, COMMAND_CLEAR_EXAMPLE);
     }
 
     /**
@@ -1119,8 +1144,7 @@ public class AddressBook {
      * @return  'view' command usage instruction
      */
     private static String getUsageInfoForViewCommand() {
-        return String.format(MESSAGE_COMMAND_HELP, COMMAND_LIST_WORD, COMMAND_LIST_DESC) + LS
-                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_LIST_EXAMPLE) + LS;
+	return buildUsageInfoForCommandWithNoParams(COMMAND_LIST_WORD, COMMAND_LIST_DESC, COMMAND_LIST_EXAMPLE);
     }
 
     /**
@@ -1129,8 +1153,7 @@ public class AddressBook {
      * @return  'help' command usage instruction
      */
     private static String getUsageInfoForHelpCommand() {
-        return String.format(MESSAGE_COMMAND_HELP, COMMAND_HELP_WORD, COMMAND_HELP_DESC)
-                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_HELP_EXAMPLE);
+	return buildUsageInfoForCommandWithNoParams(COMMAND_HELP_WORD, COMMAND_HELP_DESC, COMMAND_HELP_EXAMPLE);
     }
 
     /**
@@ -1139,8 +1162,7 @@ public class AddressBook {
      * @return  'exit' command usage instruction
      */
     private static String getUsageInfoForExitCommand() {
-        return String.format(MESSAGE_COMMAND_HELP, COMMAND_EXIT_WORD, COMMAND_EXIT_DESC)
-                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_EXIT_EXAMPLE);
+	return buildUsageInfoForCommandWithNoParams(COMMAND_EXIT_WORD, COMMAND_EXIT_DESC, COMMAND_EXIT_EXAMPLE);
     }
 
 
