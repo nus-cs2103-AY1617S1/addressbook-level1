@@ -829,15 +829,20 @@ public class AddressBook {
     private static ArrayList<String> getLinesInFile(String filePath) {
     	
         ArrayList<String> linesInFile = null;
+        
         try {
             linesInFile = new ArrayList<String>(Files.readAllLines(Paths.get(filePath)));
+            
         } catch (FileNotFoundException fnfe) {
-            showToUser(new String[]{String.format(MESSAGE_ERROR_MISSING_STORAGE_FILE, filePath)});
+            showToUser(String.format(MESSAGE_ERROR_MISSING_STORAGE_FILE, filePath));
             exitProgram();
+            
         } catch (IOException ioe) {
-            showToUser(new String[]{String.format(MESSAGE_ERROR_READING_FROM_FILE, filePath)});
+            showToUser(String.format(MESSAGE_ERROR_READING_FROM_FILE, filePath));
             exitProgram();
+            
         }
+        
         return linesInFile;
     }
 
@@ -848,12 +853,16 @@ public class AddressBook {
      * @param filePath file for saving
      */
     private static void savePersonsToFile(ArrayList<HashMap<PersonProperty, String>> persons, String filePath) {
-        final ArrayList<String> linesToWrite = encodePersonsToStrings(persons);
-        try {
+        
+    	final ArrayList<String> linesToWrite = encodePersonsToStrings(persons);
+        
+    	try {
             Files.write(Paths.get(storageFilePath), linesToWrite);
+            
         } catch (IOException ioe) {
-            showToUser(new String[]{String.format(MESSAGE_ERROR_WRITING_TO_FILE, filePath)});
+            showToUser(String.format(MESSAGE_ERROR_WRITING_TO_FILE, filePath));
             exitProgram();
+            
         }
     }
 
