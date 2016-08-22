@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Optional;
@@ -330,6 +331,8 @@ public class AddressBook {
             return executeFindPersons(commandArgs);
         case COMMAND_LIST_WORD:
             return executeListAllPersonsInAddressBook();
+        case COMMAND_SORT_WORD:
+        		return executeSortAllPersonsInAddressBook();
         case COMMAND_DELETE_WORD:
             return executeDeletePerson(commandArgs);
         case COMMAND_CLEAR_WORD:
@@ -536,6 +539,19 @@ public class AddressBook {
         ArrayList<HashMap<PersonProperty, String>> toBeDisplayed = getAllPersonsInAddressBook();
         showToUser(toBeDisplayed);
         return getMessageForPersonsDisplayedSummary(toBeDisplayed);
+    }
+    
+    /**
+     * Displays all persons in the address book in alphabetical order to the user;
+     * 
+     * @return feedback display message for the operation result
+     */
+    private static String executeSortAllPersonsInAddressBook() {
+    		ArrayList<HashMap<PersonProperty, String>> toBeDisplayed = new ArrayList<HashMap<PersonProperty, String>>(getAllPersonsInAddressBook());
+    		Comparator<HashMap<PersonProperty, String>> personNameComparator = getPersonNameComparator();
+    		toBeDisplayed.sort(personNameComparator);
+    		showToUser(toBeDisplayed);
+    		return getMessageForPersonsDisplayedSummary(toBeDisplayed);
     }
 
     /**
@@ -1011,6 +1027,23 @@ public class AddressBook {
     private static boolean isPersonEmailValid(String email) {
         return email.matches("\\S+@\\S+\\.\\S+"); // email is [non-whitespace]@[non-whitespace].[non-whitespace]
         //TODO: implement a more permissive validation
+    }
+    
+    /**
+     * Generate a comparator to compare two person's name based on alphabetical order
+     * 
+     * @return the comparator for comparing two persons's name in alphabetical order
+     */
+    private static Comparator<HashMap<PersonProperty, String>> getPersonNameComparator() {
+    		Comparator<HashMap<PersonProperty, String>> personComparatorForName = new Comparator<HashMap<PersonProperty, String>>(){
+    	     	@Override
+    	     	public int compare(HashMap<PersonProperty, String> person1, HashMap<PersonProperty, String> person2)
+    	     	{
+    	         	return getPropertyFromPerson(person1, PersonProperty.NAME).compareTo(
+    	         			getPropertyFromPerson(person2, PersonProperty.NAME));
+    	     	}        
+    	 	};
+    	 	return personComparatorForName;
     }
 
 
