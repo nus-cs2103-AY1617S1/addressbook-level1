@@ -1,0 +1,24 @@
+|| ===================================================
+|| ===================================================
+|| AddessBook Level 1 - Version 1.0
+|| Welcome to your Address Book!
+|| ===================================================
+|| Using default storage file : addressbook.txt
+|| Enter command: || [Command entered:	clear]
+|| Address book has been cleared!
+|| ===================================================
+|| Enter command: || [Command entered:	add John p/12345678 e/a@a.com]
+|| New person added: John, Phone: 12345678, Email: a@a.com
+|| ===================================================
+|| Enter command: || [Command entered:	find john]
+|| 	1. John  Phone Number: 12345678  Email: a@a.com
+|| 
+|| 1 persons found!
+|| ===================================================
+|| Enter command: || [Command entered:	clear]
+|| Address book has been cleared!
+|| ===================================================
+|| Enter command: || [Command entered:	exit]
+|| Exiting Address Book... Good bye!
+|| ===================================================
+|| ===================================================
