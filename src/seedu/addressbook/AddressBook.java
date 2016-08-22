@@ -510,7 +510,7 @@ public class AddressBook {
      */
     private static Set<String> extractKeywordsFromFindPersonArgs(String findPersonCommandArgs) {
         
-        return new HashSet<>(splitByWhitespace((findPersonCommandArgs.toUpperCase() + " " + findPersonCommandArgs.toLowerCase()).trim()));
+        return new HashSet<>(splitByWhitespace(findPersonCommandArgs.trim()));
     }
 
     /**
@@ -520,10 +520,15 @@ public class AddressBook {
      * @return list of persons in full model with name containing some of the keywords
      */
     private static ArrayList<String[]> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
+        Collection<String> keywordsLower = new ArrayList<String>(keywords.size());
+        for (String keyword: keywords){
+            keywordsLower.add(keyword.toLowerCase());
+        }
+        
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
         for (String[] person : getAllPersonsInAddressBook()) {
-            final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
-            if (!Collections.disjoint(wordsInName, keywords)) {
+            final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person).toLowerCase()));
+            if (!Collections.disjoint(wordsInName, keywordsLower)) {
                 matchedPersons.add(person);
             }
         }
