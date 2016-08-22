@@ -63,6 +63,7 @@ public class AddressBook {
      * ====================================================================
      */
     private static final String MESSAGE_ADDED = "New person added: %1$s, Phone: %2$s, Email: %3$s";
+    private static final String MESSAGE_EDITED = "Person information updated: %1$s, Phone: %2$s, Email: %3$s";
     private static final String MESSAGE_ADDRESSBOOK_CLEARED = "Address book has been cleared!";
     private static final String MESSAGE_COMMAND_HELP = "%1$s: %2$s";
     private static final String MESSAGE_COMMAND_HELP_PARAMETERS = "\tParameters: %1$s";
@@ -133,6 +134,14 @@ public class AddressBook {
     private static final String COMMAND_EXIT_WORD = "exit";
     private static final String COMMAND_EXIT_DESC = "Exits the program.";
     private static final String COMMAND_EXIT_EXAMPLE = COMMAND_EXIT_WORD;
+    
+    private static final String COMMAND_EDIT_WORD = "edit";
+	private static final String COMMAND_EDIT_DESC = "Edit property of a specific person identified by index number used "
+			+ "in the last list/sort call.";
+	private static final String COMMAND_EDIT_PARAMETERS = "INDEX NAME "
+            + PERSON_DATA_PREFIX_PHONE + "PHONE_NUMBER "
+            + PERSON_DATA_PREFIX_EMAIL + "EMAIL";
+    private static final String COMMAND_EDIT_EXAMPLE = COMMAND_EDIT_WORD + " 1 John Doe p/98765432 e/johnd@gmail.com";
     
 
     private static final String DIVIDER = "===================================================";
@@ -345,6 +354,8 @@ public class AddressBook {
         switch (commandType) {
         case COMMAND_ADD_WORD:
             return executeAddPerson(commandArgs);
+        case COMMAND_EDIT_WORD:
+        	return executeEditPerson(commandArgs);
         case COMMAND_FIND_WORD:
             return executeFindPersons(commandArgs);
         case COMMAND_LIST_WORD:
@@ -370,6 +381,16 @@ public class AddressBook {
      * @return  size 2 array; first element is the command type and second element is the arguments string
      */
     private static String[] splitCommandWordAndArgs(String rawUserInput) {
+        final String[] split =  rawUserInput.trim().split("\\s+", 2);
+        return split.length == 2 ? split : new String[] { split[0] , "" }; // else case: no parameters
+    }
+    
+    /**
+     * Splits raw user input into index and person property
+     *
+     * @return  size 2 array; first element is the index and second element is the person property
+     */
+    private static String[] splitCommandIndexAndPersonProperty(String rawUserInput) {
         final String[] split =  rawUserInput.trim().split("\\s+", 2);
         return split.length == 2 ? split : new String[] { split[0] , "" }; // else case: no parameters
     }
@@ -407,6 +428,60 @@ public class AddressBook {
     }
 
     /**
+     * Edit a person (specified by the command args) in the address book.
+     * The entire command arguments string is treated as a string representation of the person to add.
+     *
+     * @param commandArgs full command args string from the user
+     * @return feedback display message for the operation result
+     */
+	private static String executeEditPerson(String commandArgs) {
+		final String[] indexAndPersonProperty = splitCommandIndexAndPersonProperty(commandArgs);
+		final String index = indexAndPersonProperty[0];
+		final String personProperty = indexAndPersonProperty[1];
+
+		if (!isEditPersonIndexValid(index)) {
+			return getMessageForInvalidCommandInput(COMMAND_EDIT_WORD, getUsageInfoForEditCommand());
+		}
+
+		if (!isDisplayIndexValidForLastPersonListingView(Integer.parseInt(index))) {
+			return MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
+		}
+
+		// try decoding a person from the raw args
+		final Optional<HashMap<PersonProperty, String>> decodeResult = decodePersonFromString(personProperty);
+
+		// checks if args are valid (decode result will not be present if the
+		// person is invalid)
+		if (!decodeResult.isPresent()) {
+			return getMessageForInvalidCommandInput(COMMAND_EDIT_WORD, getUsageInfoForEditCommand());
+		}
+		
+		// edit the person as specified
+		final HashMap<PersonProperty, String> editedPerson = decodeResult.get();
+		final HashMap<PersonProperty, String> targetInModel = getPersonByLastVisibleIndex(Integer.parseInt(index));
+
+		return editPersonFromAddressBook(targetInModel, editedPerson) ? getMessageForSuccessfulEditPerson(editedPerson) // success
+				: MESSAGE_PERSON_NOT_IN_ADDRESSBOOK; // not found
+	}
+
+    /**
+     * Checks validity of index format
+     * 
+     * @param index extracted index from the command
+     * @return whether it is a valid integer
+     */
+	private static boolean isEditPersonIndexValid(String index) {
+		try {
+			Integer.parseInt(index);
+		} catch (NumberFormatException nfe) {
+			return false;
+		} catch (NullPointerException npe) {
+			return false;
+		}
+		return true;
+	}
+
+	/**
      * Constructs a feedback message for a successful add person command execution.
      *
      * @see #executeAddPerson(String)
@@ -416,6 +491,18 @@ public class AddressBook {
     private static String getMessageForSuccessfulAddPerson(HashMap<PersonProperty, String> addedPerson) {
         return String.format(MESSAGE_ADDED,
                 getNameFromPerson(addedPerson), getPhoneFromPerson(addedPerson), getEmailFromPerson(addedPerson));
+    }
+    
+    /**
+     * Constructs a feedback message for a successful edit person command execution.
+     *
+     * @see #executeEditPerson(String)
+     * @param editedPerson person who was successfully edited
+     * @return successful edit person feedback message
+     */
+    private static String getMessageForSuccessfulEditPerson(HashMap<PersonProperty, String> editedPerson) {
+        return String.format(MESSAGE_EDITED,
+                getNameFromPerson(editedPerson), getPhoneFromPerson(editedPerson), getEmailFromPerson(editedPerson));
     }
 
     /**
@@ -806,6 +893,27 @@ public class AddressBook {
         }
         return hasChanged;
     }
+    
+    /**
+     * Edit the specified person from the addressbook if it is inside. Saves any changes to storage file.
+     *
+     * @param targetPerson the actual person inside the address book
+     * @param editedPerson the new person's information
+     * @return if targetPerson can be found inside the address book
+     */
+	private static boolean editPersonFromAddressBook(HashMap<PersonProperty, String> targetPerson,
+			HashMap<PersonProperty, String> editedPerson) {
+		final int targetedIndex = ALL_PERSONS.indexOf(targetPerson);
+		
+		if(targetedIndex == -1) {
+			return false;
+		}
+		
+		ALL_PERSONS.set(targetedIndex, editedPerson);
+		savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
+		
+		return true;
+	}
 
     /**
      * @return unmodifiable list view of all persons in the address book
@@ -1090,6 +1198,7 @@ public class AddressBook {
      */
     private static String getUsageInfoForAllCommands() {
         return getUsageInfoForAddCommand() + LINE_SEPARATOR
+        		+ getUsageInfoForEditCommand() + LINE_SEPARATOR
                 + getUsageInfoForFindCommand() + LINE_SEPARATOR
                 + getUsageInfoForViewCommand() + LINE_SEPARATOR
                 + getUsageInfoForSortCommand() + LINE_SEPARATOR
@@ -1108,6 +1217,17 @@ public class AddressBook {
         return String.format(MESSAGE_COMMAND_HELP, COMMAND_ADD_WORD, COMMAND_ADD_DESC) + LINE_SEPARATOR
                 + String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_ADD_PARAMETERS) + LINE_SEPARATOR
                 + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_ADD_EXAMPLE) + LINE_SEPARATOR;
+    }
+    
+    /**
+     * Builds string for showing 'add' command usage instruction
+     *
+     * @return  'add' command usage instruction
+     */
+    private static String getUsageInfoForEditCommand() {
+        return String.format(MESSAGE_COMMAND_HELP, COMMAND_EDIT_WORD, COMMAND_EDIT_DESC) + LINE_SEPARATOR
+                + String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_EDIT_PARAMETERS) + LINE_SEPARATOR
+                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_EDIT_EXAMPLE) + LINE_SEPARATOR;
     }
 
     /**
