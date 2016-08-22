@@ -31,7 +31,9 @@ import java.util.Set;
  **/
 public class AddressBook {
 
-    private static final String VALID_FILE_PATH = ".txt";
+    private static final int SPLIT_LENGTH = 2;
+
+	private static final String VALID_FILE_PATH = ".txt";
 
 	private static final int STORAGE_FILE_DEFAULT = 0;
 
@@ -350,6 +352,7 @@ public class AddressBook {
         final String[] commandTypeAndParams = splitCommandWordAndArgs(userInputString);
         final String commandType = commandTypeAndParams[0];
         final String commandArgs = commandTypeAndParams[1];
+        
         switch (commandType) {
         case COMMAND_ADD_WORD:
             return executeAddPerson(commandArgs);
@@ -376,8 +379,8 @@ public class AddressBook {
      * @return  size 2 array; first element is the command type and second element is the arguments string
      */
     private static String[] splitCommandWordAndArgs(String rawUserInput) {
-        final String[] split =  rawUserInput.trim().split("\\s+", 2);
-        return split.length == 2 ? split : new String[] { split[0] , "" }; // else case: no parameters
+        final String[] split =  rawUserInput.trim().split("\\s+", SPLIT_LENGTH);
+        return split.length == SPLIT_LENGTH ? split : new String[] { split[0] , "" }; // else case: no parameters
     }
 
     /**
@@ -455,7 +458,9 @@ public class AddressBook {
      * @return set of keywords as specified by args
      */
     private static Set<String> extractKeywordsFromFindPersonArgs(String findPersonCommandArgs) {
-        return new HashSet<>(splitByWhitespace(findPersonCommandArgs.trim()));
+        String personCommandArgsTrimmed = findPersonCommandArgs.trim();
+		ArrayList<String> splitByWhitespace = splitByWhitespace(personCommandArgsTrimmed);
+		return new HashSet<>(splitByWhitespace);
     }
 
     /**
