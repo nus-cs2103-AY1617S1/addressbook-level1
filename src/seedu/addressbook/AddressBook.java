@@ -229,7 +229,10 @@ public class AddressBook {
             showToUser(message);
             
             String feedback = executeCommand(userCommand);
-            showResultToUser(feedback);
+            
+            String[] result = {feedback, DIVIDER};
+            showToUser(result);
+            
             printNumCommands(numCommands);
         }
     }
@@ -238,12 +241,6 @@ public class AddressBook {
     	System.out.println(number);
     }
     
-
-    private static void showResultToUser(String result) {
-    	String[] message = {result, DIVIDER};
-        showToUser(message);
-    }
-
   
 
     /*
