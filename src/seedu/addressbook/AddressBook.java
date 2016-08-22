@@ -708,14 +708,18 @@ public class AddressBook {
 
         showToUser(String.format(MESSAGE_ERROR_MISSING_STORAGE_FILE, filePath));
 
-        try {
+        createFileExitIfError(filePath, storageFile);
+    }
+
+	private static void createFileExitIfError(String filePath, final File storageFile) {
+		try {
             storageFile.createNewFile();
             showToUser(String.format(MESSAGE_STORAGE_FILE_CREATED, filePath));
         } catch (IOException ioe) {
             showToUser(String.format(MESSAGE_ERROR_CREATING_STORAGE_FILE, filePath));
             exitProgram();
         }
-    }
+	}
 
     /**
      * Converts contents of a file into a list of persons.
