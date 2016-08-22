@@ -246,7 +246,7 @@ public class AddressBook {
      */
     private static void setupGivenFileForStorage(String filePath) {
 
-        if (!isValidFilePath(filePath)) {
+        if (!isValidTextFilePath(filePath)) {
             showToUser(String.format(MESSAGE_INVALID_FILE, filePath));
             exitProgram();
         }
@@ -279,7 +279,7 @@ public class AddressBook {
      * The file path is acceptable if it ends in '.txt'
      * TODO: Implement a more rigorous validity checking.
      */
-    private static boolean isValidFilePath(String filePath) {
+    private static boolean isValidTextFilePath(String filePath) {
         return filePath.endsWith(".txt");
     }
 
