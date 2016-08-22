@@ -31,24 +31,16 @@ import java.util.Set;
  **/
 public class AddressBook {
 
-    /**
-     * Default file path used if the user doesn't provide the file name.
-     */
+    /** Default file path used if the user doesn't provide the file name. */
     private static final String DEFAULT_STORAGE_FILEPATH = "addressbook.txt";
 
-    /**
-     * Version info of the program.
-     */
+    /** Version info of the program. */
     private static final String VERSION = "AddessBook Level 1 - Version 1.0";
 
-    /**
-     * A decorative prefix added to the beginning of lines printed by AddressBook
-     */
+    /** A decorative prefix added to the beginning of lines printed by AddressBook */
     public static final String LINE_PREFIX = "|| ";
 
-    /**
-     * A platform independent line separator.
-     */
+    /** A platform independent line separator. */
     private static final String LS = System.lineSeparator() + LINE_PREFIX;
 
     /*
