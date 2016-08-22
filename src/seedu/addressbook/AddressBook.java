@@ -211,13 +211,20 @@ public class AddressBook {
         showWelcomeMessage();
         processProgramArgs(args);
         loadDataFromStorage();
-        while (true) {
+        startUserCommandFeedbackLoop();
+    }
+
+	/**
+	 * Starts a user input, console output loop for the user
+	 */
+	private static void startUserCommandFeedbackLoop() {
+		while (true) {
             String userCommand = getUserInput();
             echoUserCommand(userCommand);
             String feedback = executeCommand(userCommand);
             showResultToUser(feedback);
         }
-    }
+	}
 
     /*
      * ==============NOTE TO STUDENTS======================================
