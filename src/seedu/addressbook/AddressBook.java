@@ -419,6 +419,8 @@ public class AddressBook {
         return String.format(MESSAGE_INVALID_COMMAND_FORMAT, userCommand, correctUsageInfo);
     }
 
+    
+    
     /**
      * Adds a person (specified by the command args) to the address book.
      * The entire command arguments string is treated as a string representation of the person to add.
@@ -438,20 +440,14 @@ public class AddressBook {
         // add the person as specified
         final String[] personToAdd = decodedResult.get();
         
-        HashMap<PersonProperty, String> personMap = new HashMap<>();
-        personMap.put(PersonProperty.NAME, personToAdd[0]);
-        personMap.put(PersonProperty.PHONE, personToAdd[1]);
-        personMap.put(PersonProperty.EMAIL, personToAdd[2]);
-        
-        final String NAME = "NAME";
-        
-        //Key: string property, value: property
-        HashMap<String, String> personSpecialMap = new HashMap<>();
-        personSpecialMap.put(NAME, "actual name");
+        HashMap<PersonProperty, String> personMapObject = new HashMap<>();
+        personMapObject.put(PersonProperty.NAME, personToAdd[PERSON_DATA_INDEX_NAME]);
+        personMapObject.put(PersonProperty.PHONE, personToAdd[PERSON_DATA_INDEX_PHONE]);
+        personMapObject.put(PersonProperty.EMAIL, personToAdd[PERSON_DATA_INDEX_EMAIL]);
         
         
-        addPersonToAddressBook(personMap);
-        return getMessageForSuccessfulAddPerson(personMap);
+        addPersonToAddressBook(personMapObject);
+        return getMessageForSuccessfulAddPerson(personMapObject);
     }
 
     /**
@@ -466,6 +462,7 @@ public class AddressBook {
                 getNameFromPerson(addedPerson), getPhoneFromPerson(addedPerson), getEmailFromPerson(addedPerson));
     }
 
+    
     /**
      * Finds and lists all persons in address book whose name contains any of the argument keywords.
      * Keyword matching is case sensitive.
@@ -497,7 +494,12 @@ public class AddressBook {
      * @return set of keywords as specified by args
      */
     private static Set<String> extractKeywordsFromFindPersonArgs(String findPersonCommandArgs) {
-        return new HashSet<>(splitByWhitespace(findPersonCommandArgs.trim()));
+    	
+    	String findPersonCommandArgsTrimmed = findPersonCommandArgs.trim();
+    	
+    	ArrayList<String> keywords = splitByWhitespace(findPersonCommandArgsTrimmed);
+    	
+        return new HashSet<>(keywords);
     }
 
     /**
