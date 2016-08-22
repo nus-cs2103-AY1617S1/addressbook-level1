@@ -351,7 +351,18 @@ public class AddressBook {
         final String commandArgs = commandTypeAndParams[1];
         switch (commandType) {
         case COMMAND_ADD_WORD:
-            return executeAddPerson(commandArgs);
+            // try decoding a person from the raw args
+			final Optional<String[]> decodeResult = decodePersonFromString(commandArgs);
+			
+			// checks if args are valid (decode result will not be present if the person is invalid)
+			if (!decodeResult.isPresent()) {
+			    return getMessageForInvalidCommandInput(COMMAND_ADD_WORD, getUsageInfoForAddCommand());
+			}
+			
+			// add the person as specified
+			final String[] personToAdd = decodeResult.get();
+			addPersonToAddressBook(personToAdd);
+			return getMessageForSuccessfulAddPerson(personToAdd);
         case COMMAND_FIND_WORD:
             return executeFindPersons(commandArgs);
         case COMMAND_LIST_WORD:
