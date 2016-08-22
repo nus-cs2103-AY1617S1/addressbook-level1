@@ -509,13 +509,20 @@ public class AddressBook {
      * @return list of persons in full model with name containing some of the keywords
      */
     private static ArrayList<HashMap<PersonProperty, String>> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
-        final ArrayList<HashMap<PersonProperty, String>> matchedPersons = new ArrayList<>();
+        
+    	final ArrayList<HashMap<PersonProperty, String>> matchedPersons = new ArrayList<>();
+        
         for (HashMap<PersonProperty, String> person : getAllPersonsInAddressBook()) {
-            final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
-            if (!Collections.disjoint(wordsInName, keywords)) {
+        	        	
+            final Set<String> splittedNameComponents = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
+            
+            boolean hasNameComponent = !Collections.disjoint(splittedNameComponents, keywords);
+            
+            if (hasNameComponent) {
                 matchedPersons.add(person);
             }
         }
+        
         return matchedPersons;
     }
 
