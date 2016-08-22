@@ -257,17 +257,14 @@ public class AddressBook {
      */
     private static void processProgramArgs(String[] args) {
     	if(args.length == 0) {
-            setupDefaultFileForStorage();
+    		showToUser(MESSAGE_USING_DEFAULT_FILE);
+    		setupGivenFileForStorage(DEFAULT_STORAGE_FILEPATH);
         } else if (args.length == 1) {
-            setupGivenFileForStorage(args[0]);
+        	setupGivenFileForStorage(args[0]);
         } else {
             showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
             exitProgram();
-        }
-
-        
-
-        
+        }        
     }
 
     /**
@@ -286,24 +283,6 @@ public class AddressBook {
         createFileIfMissing(filePath);
     }
 
-    /**
-     * Displays the goodbye message and exits the runtime.
-     */
-    private static void exitProgram() {
-        showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
-        System.exit(0);
-    }
-
-    /**
-     * Sets up the storage based on the default file.
-     * Creates file if missing.
-     * Exits program if the file cannot be created.
-     */
-    private static void setupDefaultFileForStorage() {
-        showToUser(MESSAGE_USING_DEFAULT_FILE);
-        storageFilePath = DEFAULT_STORAGE_FILEPATH;
-        createFileIfMissing(storageFilePath);
-    }
 
     /**
      * Returns true if the given file is acceptable.
@@ -313,7 +292,17 @@ public class AddressBook {
     private static boolean isValidFilePath(String filePath) {
         return filePath.endsWith(".txt");
     }
+    
+    
+    /**
+     * Displays the goodbye message and exits the runtime.
+     */
+    private static void exitProgram() {
+        showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
+        System.exit(0);
+    }
 
+   
     /**
      * Initialises the in-memory data using the storage file.
      * Assumption: The file exists.
