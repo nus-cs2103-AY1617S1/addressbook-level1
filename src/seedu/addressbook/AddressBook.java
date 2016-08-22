@@ -198,7 +198,9 @@ public class AddressBook {
      * ====================================================================
      */
     public static void main(String[] args) {
-        showWelcomeMessage();
+        
+        String[] welcomeMessage = {DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER};
+        showToUser(welcomeMessage);
         
         if (args.length >= 2) {
         	String[] message = {MESSAGE_INVALID_PROGRAM_ARGS};
