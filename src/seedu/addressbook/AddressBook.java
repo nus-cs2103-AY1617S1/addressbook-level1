@@ -1111,7 +1111,9 @@ public class AddressBook {
         return splitArgs.length == 3 // 3 arguments
                 && !splitArgs[0].isEmpty() // non-empty arguments
                 && !splitArgs[1].isEmpty()
-                && !splitArgs[2].isEmpty();
+                && !splitArgs[2].isEmpty()
+                && personData.contains(PERSON_DATA_PREFIX_PHONE)
+                && personData.contains(PERSON_DATA_PREFIX_EMAIL);
     }
 
     /**
