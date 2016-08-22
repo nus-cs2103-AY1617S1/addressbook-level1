@@ -216,6 +216,7 @@ public class AddressBook {
 
 	/**
 	 * Starts a user input, console output loop for the user
+	 * T2A3: Reduce SLAP of Method
 	 */
 	private static void startUserCommandFeedbackLoop() {
 		while (true) {
