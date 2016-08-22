@@ -323,7 +323,7 @@ public class AddressBook {
      * Displays the goodbye message and exits the runtime.
      */
     private static void exitProgram() {
-        showToUser(new String[]{MESSAGE_GOODBYE, DIVIDER, DIVIDER});
+        showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
         System.exit(0);
     }
 
@@ -333,7 +333,7 @@ public class AddressBook {
      * Exits program if the file cannot be created.
      */
     private static void setupDefaultFileForStorage() {
-        showToUser(new String[]{MESSAGE_USING_DEFAULT_FILE});
+        showToUser(MESSAGE_USING_DEFAULT_FILE);
         storageFilePath = DEFAULT_STORAGE_FILEPATH;
         createFileIfMissing(storageFilePath);
     }
@@ -344,7 +344,10 @@ public class AddressBook {
      * TODO: Implement a more rigorous validity checking.
      */
     private static boolean isValidFilePath(String filePath) {
-        return filePath.endsWith(".txt");
+    	
+    	boolean doesEndWithTxt = filePath.endsWith(".txt");
+    	
+        return doesEndWithTxt;
     }
 
     /**
