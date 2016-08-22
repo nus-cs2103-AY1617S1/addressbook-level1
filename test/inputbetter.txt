@@ -18,14 +18,14 @@
 ##########################################################
 
   # should catch invalid args format
-  adD wrong args wrong args
-  aDd Valid Name p/12345 valid@email.butNoPrefix
-  Add Valid Name 12345 e/valid@email.butPhonePrefixMissing
+  add wrong args wrong args
+  add Valid Name p/12345 valid@email.butNoPrefix
+  add Valid Name 12345 e/valid@email.butPhonePrefixMissing
   
   # should catch invalid person data
-  ADD []\[;] p/12345 e/valid@e.mail
-  aDD Valid Name p/not_numbers e/valid@e.mail
-  ADd Valid Name p/12345 e/notAnEmail
+  add []\[;] p/12345 e/valid@e.mail
+  add Valid Name p/not_numbers e/valid@e.mail
+  add Valid Name p/12345 e/notAnEmail
 
   # should add correctly
   add Adam Brown p/111111 e/adam@gmail.com
@@ -46,13 +46,13 @@
 ##########################################################
 
   # should match none with no keywords
-  fiND
+  find
   # should only match full words in person names
-  FInd bet
+  find bet
   # does not match if none have keyword
-  fINd 23912039120
+  find 23912039120
   # matching should be case-sensitive
-  FIND betsy
+  find betsy
 
   # find unique keyword
   find Betsy
@@ -68,12 +68,12 @@
 # last active view: [1] betsy [2] charlie
 
   # should catch invalid args format
-  delETe
-  dELEte should be only one number
+  delete
+  delete should be only one number
 
   # should catch invalid index
-  DELete -1
-  Delete 0
+  delete -1
+  delete 0
   delete 3
 
   # should catch attempt to delete something already deleted
@@ -81,15 +81,15 @@
   delete 2
 
   # should have deleted based on last active view's index
-  LIst
+  list
 
   # deletes correct person
   delete 4
-  List
+  list
 
   # listing indexes get updated on next request
   delete 1
-  liST
+  list
 
 ##########################################################
 # test clear command

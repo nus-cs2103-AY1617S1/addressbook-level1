@@ -30,9 +30,10 @@ import java.util.Set;
  * This class is used to maintain a list of person data which are saved
  * in a text file.
  * 
- * 
+ * 1. Make arguments case insensitive
+ * 2. 
  **/
-public class AddressBook {
+public class BetterAddressBook {
     
     /**
      * Provides an enumeration of person property
@@ -661,7 +662,9 @@ public class AddressBook {
             inputLine = SCANNER.nextLine();
         }
         
-        return inputLine;
+        String smallCaseInput = inputLine.toLowerCase();
+        
+        return smallCaseInput;
     }
 
    /* ==============NOTE TO STUDENTS======================================
