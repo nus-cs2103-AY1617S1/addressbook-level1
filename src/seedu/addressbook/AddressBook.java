@@ -226,16 +226,14 @@ public class AddressBook {
 			    System.out.println(LINE_PREFIX + m);
 			}
             String feedback = executeCommand(userCommand);
-            showResultToUser(feedback);
+            String[] message2 = { feedback, DIVIDER };
+			for (String m1 : message2) {
+			    System.out.println(LINE_PREFIX + m1);
+			}
         }
     }
 
-    private static void showResultToUser(String result) {
-        String[] message = { result, DIVIDER };
-		for (String m : message) {
-		    System.out.println(LINE_PREFIX + m);
-		}
-    }
+    
 
     /*
      * ==============NOTE TO STUDENTS==========================================
