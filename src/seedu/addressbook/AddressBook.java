@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Scanner;
@@ -115,7 +116,11 @@ public class AddressBook {
                                                     + "the last find/list call.";
     private static final String COMMAND_DELETE_PARAMETER = "INDEX";
     private static final String COMMAND_DELETE_EXAMPLE = COMMAND_DELETE_WORD + " 1";
-
+    
+    private static final String COMMAND_SORT_WORD = "sort";
+    private static final String COMMAND_SORT_DESC = "Displays all persons as a alphabetically sorted list with index numbers.";
+    private static final String COMMAND_SORT_EXAMPLE = COMMAND_SORT_WORD;
+    
     private static final String COMMAND_CLEAR_WORD = "clear";
     private static final String COMMAND_CLEAR_DESC = "Clears address book permanently.";
     private static final String COMMAND_CLEAR_EXAMPLE = COMMAND_CLEAR_WORD;
@@ -347,6 +352,8 @@ public class AddressBook {
             return executeListAllPersonsInAddressBook();
         case COMMAND_DELETE_WORD:
             return executeDeletePerson(commandArgs);
+        case COMMAND_SORT_WORD:
+        	return executeListSortedPersonsInAddressBook();
         case COMMAND_CLEAR_WORD:
             return executeClearAddressBook();
         case COMMAND_HELP_WORD:
@@ -358,7 +365,9 @@ public class AddressBook {
         }
     }
 
-    /**
+
+
+	/**
      * Splits raw user input into command word and command arguments string
      *
      * @return  size 2 array; first element is the command type and second element is the arguments string
@@ -548,8 +557,38 @@ public class AddressBook {
         showToUser(toBeDisplayed);
         return getMessageForPersonsDisplayedSummary(toBeDisplayed);
     }
+    
+    /**
+     * Displays all persons in the address book to the user; in alphabetical order.
+     *
+     * @return feedback display message for the operation result
+     */    
+    private static String executeListSortedPersonsInAddressBook() {
+        ArrayList<String[]> toBeDisplayed = sortListAlphabetically(getAllPersonsInAddressBook());
+        showToUser(toBeDisplayed);
+        return getMessageForPersonsDisplayedSummary(toBeDisplayed);
+
+	}
 
     /**
+     * Sort persons in list in alphabetical order.
+     * @param persons 
+     *
+     */      
+    
+    private static ArrayList<String[]> sortListAlphabetically(ArrayList<String[]> personsList ) {
+    	ArrayList<String[]> sortedPersonsList = personsList;
+		
+    	Collections.sort(sortedPersonsList,new Comparator<String[]>() {
+    		public int compare(String[] person, String[] otherPerson) {
+    			return person[PERSON_DATA_INDEX_NAME].toLowerCase().compareTo(otherPerson[PERSON_DATA_INDEX_NAME].toLowerCase());
+    		}
+    	});
+    	
+    	return sortedPersonsList;
+	}
+
+	/**
      * Request to terminate the program.
      *
      * @return feedback display message for the operation result
@@ -1074,7 +1113,8 @@ public class AddressBook {
     private static String getUsageInfoForAllCommands() {
         return getUsageInfoForAddCommand() + LS
                 + getUsageInfoForFindCommand() + LS
-                + getUsageInfoForViewCommand() + LS
+                + getUsageInfoForListCommand() + LS
+                + getUsageInfoForSortCommand() + LS
                 + getUsageInfoForDeleteCommand() + LS
                 + getUsageInfoForClearCommand() + LS
                 + getUsageInfoForExitCommand() + LS
@@ -1125,15 +1165,24 @@ public class AddressBook {
     }
 
     /**
-     * Builds string for showing 'view' command usage instruction
+     * Builds string for showing 'list' command usage instruction
      *
-     * @return  'view' command usage instruction
+     * @return  'list' command usage instruction
      */
-    private static String getUsageInfoForViewCommand() {
+    private static String getUsageInfoForListCommand() {
         return String.format(MESSAGE_COMMAND_HELP, COMMAND_LIST_WORD, COMMAND_LIST_DESC) + LS
                 + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_LIST_EXAMPLE) + LS;
     }
-
+    
+    /**
+     * Builds string for showing 'sort' command usage instruction
+     *
+     * @return  'list' command usage instruction
+     */
+    private static String getUsageInfoForSortCommand() {
+        return String.format(MESSAGE_COMMAND_HELP, COMMAND_SORT_WORD, COMMAND_SORT_DESC) + LS
+                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_SORT_EXAMPLE) + LS;
+    }
     /**
      * Builds string for showing 'help' command usage instruction
      *
