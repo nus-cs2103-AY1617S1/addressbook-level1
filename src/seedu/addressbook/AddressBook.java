@@ -284,17 +284,20 @@ public class AddressBook {
      */
     private static void processProgramArgs(String[] args) {
     	
+    	final int HAS_ONE_ARG = 1;
+    	final int HAS_NO_ARG = 0;
+    	
     	switch (args.length){
-    		case (1) :
+    		case (HAS_ONE_ARG) :
     			setupGivenFileForStorage(args[0]);
     			break;
     			
-    		case (0) :
+    		case (HAS_NO_ARG) :
     			setupDefaultFileForStorage();
     			break;
     		
     		default:
-    			showToUser(new String[]{MESSAGE_INVALID_PROGRAM_ARGS});
+    			showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
     			exitProgram();
     	}
     }
