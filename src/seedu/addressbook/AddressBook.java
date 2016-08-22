@@ -364,7 +364,10 @@ public class AddressBook {
 			addPersonToAddressBook(personToAdd);
 			return getMessageForSuccessfulAddPerson(personToAdd);
         case COMMAND_FIND_WORD:
-            return executeFindPersons(commandArgs);
+            final Set<String> keywords = extractKeywordsFromFindPersonArgs(commandArgs);
+			final ArrayList<String[]> personsFound = getPersonsWithNameContainingAnyKeyword(keywords);
+			showToUser(personsFound);
+			return getMessageForPersonsDisplayedSummary(personsFound);
         case COMMAND_LIST_WORD:
             return executeListAllPersonsInAddressBook();
         case COMMAND_DELETE_WORD:
