@@ -31,6 +31,8 @@ import java.util.Set;
  **/
 public class AddressBook {
 
+	private static final String WHITESPACE_STRING = "\\s+";
+
 	private static final String VALID_PERSON_EMAIL_REGEX_MATCH = "\\S+@\\S+\\.\\S+";
 
 	private static final String VALID_PERSON_PHONE_REGEX_MATCH = "\\d+";
@@ -378,7 +380,7 @@ public class AddressBook {
      * @return  size 2 array; first element is the command type and second element is the arguments string
      */
     private static String[] splitCommandWordAndArgs(String rawUserInput) {
-        final String[] split =  rawUserInput.trim().split("\\s+", 2);
+        final String[] split =  rawUserInput.trim().split(WHITESPACE_STRING, 2);
         if (split.length == 2)
         	return split;
         else
@@ -1202,7 +1204,7 @@ public class AddressBook {
      * @return split by whitespace
      */
     private static ArrayList<String> splitByWhitespace(String toSplit) {
-        return new ArrayList<String>(Arrays.asList(toSplit.trim().split("\\s+")));
+        return new ArrayList<String>(Arrays.asList(toSplit.trim().split(WHITESPACE_STRING)));
     }
 
 }
