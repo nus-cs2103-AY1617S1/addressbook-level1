@@ -200,7 +200,22 @@ public class AddressBook {
      */
     public static void main(String[] args) {
         showWelcomeMessage();
-        processProgramArgs(args);
+        //Inline processProgramArgs(args) method (T2A3)
+        if (args.length >= 2) {
+		    String[] message = { MESSAGE_INVALID_PROGRAM_ARGS };
+			for (String m : message) {
+			    System.out.println(LINE_PREFIX + m);
+			}
+		    exitProgram();
+		}
+		
+		if (args.length == 1) {
+		    setupGivenFileForStorage(args[0]);
+		}
+		
+		if(args.length == 0) {
+		    setupDefaultFileForStorage();
+		}
         loadDataFromStorage();
         while (true) {
             String userCommand = getUserInput();
