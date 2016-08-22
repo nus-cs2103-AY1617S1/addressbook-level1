@@ -53,6 +53,16 @@
   sort
   
 ##########################################################
+# test edit person command
+##########################################################
+
+  # should not edit when format is wrong
+  edit 2134hhib
+  
+  # should edit correctly when format is right
+  edit 2 Alan Wake Up p/2646262 e/alanwakeup@gmail.com
+  
+##########################################################
 # test find persons command
 ##########################################################
 

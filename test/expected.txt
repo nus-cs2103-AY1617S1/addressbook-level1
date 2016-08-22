@@ -156,6 +156,16 @@
 || 
 || 6 persons found!
 || ===================================================
+|| Enter command: || [Command entered:  edit 2134hhib]
+|| Invalid command format: edit 
+|| edit: Edits a person in the address book identified by the index number used in the last find/list/sort call.
+|| 	Parameters: Index NAME p/PHONE_NUMBER e/EMAIL
+|| 	Example: edit 1 John Willow p/98765432 e/johnW@gmail.com
+|| 
+|| ===================================================
+|| Enter command: || [Command entered:  edit 2 Alan Wake Up p/2646262 e/alanwakeup@gmail.com]
+|| Person info updated: Alan Wake Up, Phone: 2646262, Email: alanwakeup@gmail.com
+|| ===================================================
 || Enter command: || [Command entered:  find]
 || 
 || 0 persons found!
@@ -232,7 +242,7 @@
 || 	2. Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
 || 	3. Dickson Ee  Phone Number: 444444  Email: dickson@nus.edu.sg
 || 	4. Esther Potato  Phone Number: 555555  Email: esther@notreal.potato
-|| 	5. Alan Wake  Phone Number: 32131  Email: alanwakem@gmail.com
+|| 	5. Alan Wake Up  Phone Number: 2646262  Email: alanwakeup@gmail.com
 || 
 || 5 persons found!
 || ===================================================
@@ -240,7 +250,7 @@
 || Deleted Person: Esther Potato  Phone Number: 555555  Email: esther@notreal.potato
 || ===================================================
 || Enter command: || [Command entered:  delete 5]
-|| Deleted Person: Alan Wake  Phone Number: 32131  Email: alanwakem@gmail.com
+|| Deleted Person: Alan Wake Up  Phone Number: 2646262  Email: alanwakeup@gmail.com
 || ===================================================
 || Enter command: || [Command entered:  list]
 || 	1. Adam Brown  Phone Number: 111111  Email: adam@gmail.com
