@@ -1063,7 +1063,7 @@ public class AddressBook {
     private static String getUsageInfoForAllCommands() {
         return getUsageInfoForAddCommand() + LS
                 + getUsageInfoForFindCommand() + LS
-                + getUsageInfoForViewCommand() + LS
+                + getUsageInfoForListCommand() + LS
                 + getUsageInfoForDeleteCommand() + LS
                 + getUsageInfoForClearCommand() + LS
                 + getUsageInfoForExitCommand() + LS
@@ -1143,7 +1143,7 @@ public class AddressBook {
      *
      * @return  'view' command usage instruction
      */
-    private static String getUsageInfoForViewCommand() {
+    private static String getUsageInfoForListCommand() {
 	return buildUsageInfoForCommandWithNoParams(COMMAND_LIST_WORD, COMMAND_LIST_DESC, COMMAND_LIST_EXAMPLE);
     }
 
