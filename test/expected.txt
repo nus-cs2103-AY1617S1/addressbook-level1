@@ -10,6 +10,10 @@
 || 	Parameters: NAME p/PHONE_NUMBER e/EMAIL
 || 	Example: add John Doe p/98765432 e/johnd@gmail.com
 || 
+|| edit: Edits a person in the address book identified by the index number used in the last find/list/sort call.
+|| 	Parameters: Index NAME p/PHONE_NUMBER e/EMAIL
+|| 	Example: edit 1 John Willow p/98765432 e/johnW@gmail.com
+|| 
 || find: Finds all persons whose names contain any of the specified keywords (case-sensitive) and displays them as a list with index numbers.
 || 	Parameters: KEYWORD [MORE_KEYWORDS]
 || 	Example: find alice bob charlie
@@ -20,7 +24,7 @@
 || sort: Sorts list in alphabetical order
 || 	Example: sort
 || 
-|| delete: Deletes a person identified by the index number used in the last find/list call.
+|| delete: Deletes a person identified by the index number used in the last find/list/sort call.
 || 	Parameters: INDEX
 || 	Example: delete 1
 || 
@@ -188,28 +192,28 @@
 || ===================================================
 || Enter command: || [Command entered:  delete]
 || Invalid command format: delete 
-|| delete: Deletes a person identified by the index number used in the last find/list call.
+|| delete: Deletes a person identified by the index number used in the last find/list/sort call.
 || 	Parameters: INDEX
 || 	Example: delete 1
 || 
 || ===================================================
 || Enter command: || [Command entered:  delete should be only one number]
 || Invalid command format: delete 
-|| delete: Deletes a person identified by the index number used in the last find/list call.
+|| delete: Deletes a person identified by the index number used in the last find/list/sort call.
 || 	Parameters: INDEX
 || 	Example: delete 1
 || 
 || ===================================================
 || Enter command: || [Command entered:  delete -1]
 || Invalid command format: delete 
-|| delete: Deletes a person identified by the index number used in the last find/list call.
+|| delete: Deletes a person identified by the index number used in the last find/list/sort call.
 || 	Parameters: INDEX
 || 	Example: delete 1
 || 
 || ===================================================
 || Enter command: || [Command entered:  delete 0]
 || Invalid command format: delete 
-|| delete: Deletes a person identified by the index number used in the last find/list call.
+|| delete: Deletes a person identified by the index number used in the last find/list/sort call.
 || 	Parameters: INDEX
 || 	Example: delete 1
 || 
