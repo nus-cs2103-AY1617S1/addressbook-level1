@@ -31,7 +31,13 @@ import java.util.Set;
  **/
 public class AddressBook {
 
-    /**
+    private static final int STORAGE_FILE_DEFAULT = 0;
+
+	private static final int STORAGE_FILE_GIVEN = 1;
+
+	private static final int STORAGE_FILE_INVALID = 2;
+
+	/**
      * Default file path used if the user doesn't provide the file name.
      */
     private static final String DEFAULT_STORAGE_FILEPATH = "addressbook.txt";
@@ -202,10 +208,10 @@ public class AddressBook {
         showWelcomeMessage();
         processProgramArgs(args);
         loadDataFromStorage();
-        startProgramUntilExit();
+        runProgramUntilExit();
     }
 
-	private static void startProgramUntilExit() {
+	private static void runProgramUntilExit() {
 		while (true) {
             String userCommand = getUserInput();
             echoUserCommand(userCommand);
@@ -259,16 +265,16 @@ public class AddressBook {
      * @param args full program arguments passed to application main method
      */
     private static void processProgramArgs(String[] args) {
-        if (args.length >= 2) {
+        if (args.length >= STORAGE_FILE_INVALID) {
             showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
             exitProgram();
         }
 
-        if (args.length == 1) {
+        if (args.length == STORAGE_FILE_GIVEN) {
             setupGivenFileForStorage(args[0]);
         }
 
-        if(args.length == 0) {
+        if(args.length == STORAGE_FILE_DEFAULT) {
             setupDefaultFileForStorage();
         }
     }
