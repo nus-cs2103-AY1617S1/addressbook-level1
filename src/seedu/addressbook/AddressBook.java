@@ -398,6 +398,7 @@ public class AddressBook {
         final String[] personToAdd = decodeResult.get();
         ALL_PERSONS.add(personToAdd);
 		savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
+		
         return getMessageForSuccessfulAddPerson(personToAdd);
     }
 
