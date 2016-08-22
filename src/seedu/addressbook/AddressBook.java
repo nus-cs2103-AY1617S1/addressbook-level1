@@ -203,12 +203,16 @@ public class AddressBook {
         processProgramArgs(args);
         loadDataFromStorage();
         while (true) {
-            String userCommand = getUserInput();
-            echoUserCommand(userCommand);
-            String feedback = executeCommand(userCommand);
-            showResultToUser(feedback);
+            processCommandAndFeedback();
         }
     }
+
+	private static void processCommandAndFeedback() {
+		String userCommand = getUserInput();
+		echoUserCommand(userCommand);
+		String feedback = executeCommand(userCommand);
+		showResultToUser(feedback);
+	}
 
     /*
      * ==============NOTE TO STUDENTS======================================
@@ -352,7 +356,7 @@ public class AddressBook {
         case COMMAND_HELP_WORD:
             return getUsageInfoForAllCommands();
         case COMMAND_EXIT_WORD:
-            executeExitProgramRequest();
+            exitProgram();
         default:
             return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
         }
@@ -422,7 +426,7 @@ public class AddressBook {
     private static String executeFindPersons(String commandArgs) {
         final Set<String> keywords = extractKeywordsFromFindPersonArgs(commandArgs);
         final ArrayList<String[]> personsFound = getPersonsWithNameContainingAnyKeyword(keywords);
-        showToUser(personsFound);
+        showListOfPersonsToUser(personsFound);
         return getMessageForPersonsDisplayedSummary(personsFound);
     }
 
@@ -544,18 +548,9 @@ public class AddressBook {
      * @return feedback display message for the operation result
      */
     private static String executeListAllPersonsInAddressBook() {
-        ArrayList<String[]> toBeDisplayed = getAllPersonsInAddressBook();
-        showToUser(toBeDisplayed);
-        return getMessageForPersonsDisplayedSummary(toBeDisplayed);
-    }
-
-    /**
-     * Request to terminate the program.
-     *
-     * @return feedback display message for the operation result
-     */
-    private static void executeExitProgramRequest() {
-        exitProgram();
+        ArrayList<String[]> personsToBeDisplayed = getAllPersonsInAddressBook();
+        showListOfPersonsToUser(personsToBeDisplayed);
+        return getMessageForPersonsDisplayedSummary(personsToBeDisplayed);
     }
 
     /*
@@ -599,7 +594,7 @@ public class AddressBook {
      * The list will be indexed, starting from 1.
      *
      */
-    private static void showToUser(ArrayList<String[]> persons) {
+    private static void showListOfPersonsToUser(ArrayList<String[]> persons) {
         String listAsString = getDisplayString(persons);
         showToUser(listAsString);
         updateLatestViewedPersonListing(persons);
@@ -856,11 +851,23 @@ public class AddressBook {
      */
     private static String[] makePersonFromData(String name, String phone, String email) {
         final String[] person = new String[PERSON_DATA_COUNT];
-        person[PERSON_DATA_INDEX_NAME] = name;
-        person[PERSON_DATA_INDEX_PHONE] = phone;
-        person[PERSON_DATA_INDEX_EMAIL] = email;
+        setPersonName(name, person);
+        setPersonPhone(phone, person);
+        setPersonEmail(email, person);
         return person;
     }
+
+	private static void setPersonEmail(String email, final String[] person) {
+		person[PERSON_DATA_INDEX_EMAIL] = email;
+	}
+
+	private static void setPersonPhone(String phone, final String[] person) {
+		person[PERSON_DATA_INDEX_PHONE] = phone;
+	}
+
+	private static void setPersonName(String name, final String[] person) {
+		person[PERSON_DATA_INDEX_NAME] = name;
+	}
 
     /**
      * Encodes a person into a decodable and readable string representation.
