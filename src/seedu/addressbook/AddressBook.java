@@ -136,9 +136,7 @@ public class AddressBook {
      * used by the internal String[] storage format.
      * For example, a person's name is stored as the 0th element in the array.
      */
-    private static final int PERSON_DATA_INDEX_NAME = 0;
-    private static final int PERSON_DATA_INDEX_PHONE = 1;
-    private static final int PERSON_DATA_INDEX_EMAIL = 2;
+    private enum PersonProperty {NAME, EMAIL, PHONE};
 
     /**
      * The number of data elements for a single person.
@@ -379,7 +377,9 @@ public class AddressBook {
      */
     private static String getMessageForSuccessfulAddPerson(String[] addedPerson) {
         return String.format(MESSAGE_ADDED,
-                getNameFromPerson(addedPerson), getPhoneFromPerson(addedPerson), getEmailFromPerson(addedPerson));
+                getPropertyFromPerson(addedPerson, PersonProperty.NAME), 
+                getPropertyFromPerson(addedPerson, PersonProperty.PHONE), 
+                getPropertyFromPerson(addedPerson, PersonProperty.EMAIL));
     }
 
     /**
@@ -425,7 +425,8 @@ public class AddressBook {
     private static ArrayList<String[]> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
         for (String[] person : ALL_PERSONS) {
-            final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
+            final Set<String> wordsInName = new HashSet<>(
+            		splitByWhitespace(getPropertyFromPerson(person, PersonProperty.NAME)));
             if (!Collections.disjoint(wordsInName, keywords)) {
                 matchedPersons.add(person);
             }
@@ -602,7 +603,9 @@ public class AddressBook {
      */
     private static String getMessageForFormattedPersonData(String[] person) {
         return String.format(MESSAGE_DISPLAY_PERSON_DATA,
-                getNameFromPerson(person), getPhoneFromPerson(person), getEmailFromPerson(person));
+        		getPropertyFromPerson(person, PersonProperty.NAME), 
+        		getPropertyFromPerson(person, PersonProperty.PHONE), 
+        		getPropertyFromPerson(person, PersonProperty.EMAIL));
     }
 
     /**
@@ -782,24 +785,8 @@ public class AddressBook {
      * @param person whose name you want
      * @return person's name
      */
-    private static String getNameFromPerson(String[] person) {
-        return person[PERSON_DATA_INDEX_NAME];
-    }
-
-    /**
-     * @param person whose phone number you want
-     * @return person's phone number
-     */
-    private static String getPhoneFromPerson(String[] person) {
-        return person[PERSON_DATA_INDEX_PHONE];
-    }
-
-    /**
-     * @param person whose email you want
-     * @return person's email
-     */
-    private static String getEmailFromPerson(String[] person) {
-        return person[PERSON_DATA_INDEX_EMAIL];
+    private static String getPropertyFromPerson(String[] person, PersonProperty property) {
+        return person[property.ordinal()];
     }
 
     /**
@@ -812,9 +799,9 @@ public class AddressBook {
      */
     private static String[] makePersonFromData(String name, String phone, String email) {
         final String[] person = new String[PERSON_DATA_COUNT];
-        person[PERSON_DATA_INDEX_NAME] = name;
-        person[PERSON_DATA_INDEX_PHONE] = phone;
-        person[PERSON_DATA_INDEX_EMAIL] = email;
+        person[PersonProperty.NAME.ordinal()] = name;
+        person[PersonProperty.PHONE.ordinal()] = phone;
+        person[PersonProperty.EMAIL.ordinal()] = email;
         return person;
     }
 
@@ -826,7 +813,9 @@ public class AddressBook {
      */
     private static String encodePersonToString(String[] person) {
         return String.format(PERSON_STRING_REPRESENTATION,
-                getNameFromPerson(person), getPhoneFromPerson(person), getEmailFromPerson(person));
+        		getPropertyFromPerson(person, PersonProperty.NAME), 
+        		getPropertyFromPerson(person, PersonProperty.PHONE), 
+        		getPropertyFromPerson(person, PersonProperty.EMAIL));
     }
 
     /**
@@ -972,9 +961,9 @@ public class AddressBook {
      * @return whether the given person has valid data
      */
     private static boolean isPersonDataValid(String[] person) {
-        return isPersonNameValid(person[PERSON_DATA_INDEX_NAME])
-                && isPersonPhoneValid(person[PERSON_DATA_INDEX_PHONE])
-                && isPersonEmailValid(person[PERSON_DATA_INDEX_EMAIL]);
+        return isPersonNameValid(person[PersonProperty.NAME.ordinal()])
+                && isPersonPhoneValid(person[PersonProperty.PHONE.ordinal()])
+                && isPersonEmailValid(person[PersonProperty.EMAIL.ordinal()]);
     }
 
     /*
