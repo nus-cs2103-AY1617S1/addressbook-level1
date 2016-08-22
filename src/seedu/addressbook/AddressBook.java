@@ -266,20 +266,17 @@ public class AddressBook {
     		showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
             exitProgram();
     	}
-//    	
-//        if (args.length >= 2) {
-//            
-//        }
-//
-//        if (args.length == 1) {
-//            
-//        }
-//
-//        if(args.length == 0) {
-//            setupDefaultFileForStorage();
-//        }
     }
 
+    /**
+     * Displays the goodbye message and exits the runtime.
+     */
+    private static void exitProgram() {
+        showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
+        System.exit(0);
+    }
+    
+    
     /**
      * Sets up the storage file based on the supplied file path.
      * Creates the file if it is missing.
@@ -294,14 +291,6 @@ public class AddressBook {
 
         storageFilePath = filePath;
         createFileIfMissing(filePath);
-    }
-
-    /**
-     * Displays the goodbye message and exits the runtime.
-     */
-    private static void exitProgram() {
-        showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
-        System.exit(0);
     }
 
     /**
