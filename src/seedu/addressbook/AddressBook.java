@@ -87,6 +87,14 @@ public class AddressBook {
                                                       + PERSON_DATA_PREFIX_PHONE + "PHONE_NUMBER "
                                                       + PERSON_DATA_PREFIX_EMAIL + "EMAIL";
     private static final String COMMAND_ADD_EXAMPLE = COMMAND_ADD_WORD + " John Doe p/98765432 e/johnd@gmail.com";
+    
+    private static final String COMMAND_EDIT_WORD = "edit";
+    private static final String COMMAND_EDIT_DESC = "Edit a person identified by the index number used in "
+                                                    + "the last find/list/sort call.";
+    private static final String COMMAND_EDIT_PARAMETERS = "INDEX "
+                                                      + "[" + PERSON_DATA_PREFIX_PHONE + "PHONE_NUMBER]" + " "
+                                                      + "[" + PERSON_DATA_PREFIX_EMAIL + "EMAIL]";
+    private static final String COMMAND_EDIT_EXAMPLE = COMMAND_EDIT_WORD + " 1 p/12345678 e/johnd_test@gamil.com";
 
     private static final String COMMAND_FIND_WORD = "find";
     private static final String COMMAND_FIND_DESC = "Finds all persons whose names contain any of the specified "
@@ -1058,6 +1066,7 @@ public class AddressBook {
      */
     private static String getUsageInfoForAllCommands() {
         return getUsageInfoForAddCommand() + LINE_SEPARATOR
+        		    + getUsageInfoForEditCommand() + LINE_SEPARATOR
                 + getUsageInfoForFindCommand() + LINE_SEPARATOR
                 + getUsageInfoForViewCommand() + LINE_SEPARATOR
                 + getUsageInfoForSortCommand() + LINE_SEPARATOR
@@ -1076,6 +1085,17 @@ public class AddressBook {
         return String.format(MESSAGE_COMMAND_HELP, COMMAND_ADD_WORD, COMMAND_ADD_DESC) + LINE_SEPARATOR
                 + String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_ADD_PARAMETERS) + LINE_SEPARATOR
                 + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_ADD_EXAMPLE) + LINE_SEPARATOR;
+    }
+    
+    /**
+     * Builds string for showing 'edit' command usage instruction
+     *
+     * @return  'edit' command usage instruction
+     */
+    private static String getUsageInfoForEditCommand() {
+        return String.format(MESSAGE_COMMAND_HELP, COMMAND_EDIT_WORD, COMMAND_EDIT_DESC) + LINE_SEPARATOR
+                + String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_EDIT_PARAMETERS) + LINE_SEPARATOR
+                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_EDIT_EXAMPLE) + LINE_SEPARATOR;
     }
 
     /**
