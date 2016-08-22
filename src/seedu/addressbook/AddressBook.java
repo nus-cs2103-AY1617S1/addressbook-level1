@@ -190,20 +190,37 @@ public class AddressBook {
      * ====================================================================
      */
     public static void main(String[] args) {
-        showWelcomeMessage();
+        showToUser(DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER);
         if (args.length >= 2) {
 		    showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
 		    exitProgram();
 		}
 		
 		if (args.length == 1) {
-		    setupGivenFileForStorage(args[0]);
+		    String filePath = args[0];
+			if (!isValidFilePath(filePath)) {
+			    showToUser(String.format(MESSAGE_INVALID_FILE, filePath));
+			    exitProgram();
+			}
+			
+			storageFilePath = filePath;
+			createFileIfMissing(filePath);
 		}
 		
 		if(args.length == 0) {
-		    setupDefaultFileForStorage();
+		    showToUser(MESSAGE_USING_DEFAULT_FILE);
+			storageFilePath = DEFAULT_STORAGE_FILEPATH;
+			createFileIfMissing(storageFilePath);
 		}
-        loadDataFromStorage();
+        ALL_PERSONS.clear();
+        
+        final Optional<ArrayList<HashMap<PersonProperty, String>>> successfullyDecoded = decodePersonsFromStrings(getLinesInFile(storageFilePath));
+        if (!successfullyDecoded.isPresent()) {
+            showToUser(MESSAGE_INVALID_STORAGE_FILE_CONTENT);
+            exitProgram();
+        }
+        
+		ALL_PERSONS.addAll(successfullyDecoded.get());
         while (true) {
             String userCommand = getUserInput();
             echoUserCommand(userCommand);
@@ -211,17 +228,6 @@ public class AddressBook {
             showResultToUser(feedback);
         }
     }
-
-    /*
-     * ==============NOTE TO STUDENTS======================================
-     * The method header comment can be omitted if the method is trivial
-     * and the header comment is going to be almost identical to the method
-     * signature anyway.
-     * ====================================================================
-     */
-	private static void showWelcomeMessage() {
-		showToUser(DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER);
-	}
 
     private static void showResultToUser(String result) {
         showToUser(result, DIVIDER);
@@ -250,38 +256,11 @@ public class AddressBook {
      */
 
     /**
-     * Sets up the storage file based on the supplied file path.
-     * Creates the file if it is missing.
-     * Exits if the file name is not acceptable.
-     */
-    private static void setupGivenFileForStorage(String filePath) {
-
-        if (!isValidFilePath(filePath)) {
-            showToUser(String.format(MESSAGE_INVALID_FILE, filePath));
-            exitProgram();
-        }
-
-        storageFilePath = filePath;
-        createFileIfMissing(filePath);
-    }
-
-    /**
      * Displays the goodbye message and exits the runtime.
      */
     private static void exitProgram() {
         showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
         System.exit(0);
-    }
-
-    /**
-     * Sets up the storage based on the default file.
-     * Creates file if missing.
-     * Exits program if the file cannot be created.
-     */
-    private static void setupDefaultFileForStorage() {
-        showToUser(MESSAGE_USING_DEFAULT_FILE);
-        storageFilePath = DEFAULT_STORAGE_FILEPATH;
-        createFileIfMissing(storageFilePath);
     }
 
     /**
@@ -293,13 +272,7 @@ public class AddressBook {
         return filePath.endsWith(".txt");
     }
 
-    /**
-     * Initialises the in-memory data using the storage file.
-     * Assumption: The file exists.
-     */
-    private static void loadDataFromStorage() {
-        initialiseAddressBookModel(loadPersonsFromFile(storageFilePath));
-    }
+    
 
 
     /*
@@ -670,22 +643,6 @@ public class AddressBook {
     }
 
     /**
-     * Converts contents of a file into a list of persons.
-     * Shows error messages and exits program if any errors in reading or decoding was encountered.
-     *
-     * @param filePath file to load from
-     * @return the list of decoded persons
-     */
-    private static ArrayList<HashMap<PersonProperty, String>> loadPersonsFromFile(String filePath) {
-        final Optional<ArrayList<HashMap<PersonProperty, String>>> successfullyDecoded = decodePersonsFromStrings(getLinesInFile(filePath));
-        if (!successfullyDecoded.isPresent()) {
-            showToUser(MESSAGE_INVALID_STORAGE_FILE_CONTENT);
-            exitProgram();
-        }
-        return successfullyDecoded.get();
-    }
-
-    /**
      * Gets all lines in the specified file as a list of strings. Line separators are removed.
      * Shows error messages and exits program if unable to read from file.
      */
@@ -776,15 +733,7 @@ public class AddressBook {
         savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
     }
 
-    /**
-     * Resets the internal model with the given data. Does not save to file.
-     *
-     * @param persons list of persons to initialise the model with
-     */
-    private static void initialiseAddressBookModel(ArrayList<HashMap<PersonProperty, String>> persons) {
-        ALL_PERSONS.clear();
-        ALL_PERSONS.addAll(persons);
-    }
+    
 
 
     /*
