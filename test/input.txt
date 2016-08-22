@@ -14,7 +14,7 @@
   list
 
 ##########################################################
-# test add person command, setup state for futuer tests
+# test add person command, setup state for future tests
 ##########################################################
 
   # should catch invalid args format
@@ -51,9 +51,9 @@
   find bet
   # does not match if none have keyword
   find 23912039120
-  # matching should be case-sensitive
+  
+  # matching should be case-insensitive
   find betsy
-
   # find unique keyword
   find Betsy
   # find multiple with same keyword
@@ -62,10 +62,34 @@
   find Charlie Betsy
 
 ##########################################################
+# test edit persons command
+##########################################################
+
+  # should catch invalid args format
+  edit
+  edit 1
+  edit Flanagan Pineapple p/666666 e/flagapple@fruit.com
+  
+  # should catch invalid index
+  edit 6 Flanagan Pineapple p/666666 e/flagapple@fruit.com
+  edit 0 Flanagan Pineapple p/666666 e/flagapple@fruit.com
+  # list only certain people, index error should be caught 
+  find Dickson
+  edit 3 Flanagan Pineapple p/666666 e/flagapple@fruit.com
+  
+  # should edit correctly
+  list
+  edit 1 Flanagan Pineapple p/666666 e/flagapple@fruit.com
+  list
+  edit 2 Gory Movie p/777777 e/horror@scary.com
+  list
+
+##########################################################
 # test delete person command
 ##########################################################
 
-# last active view: [1] betsy [2] charlie
+# set up view: [1] flanagan [2] gory
+  find Flanagan Gory
 
   # should catch invalid args format
   delete
@@ -88,7 +112,17 @@
   list
 
   # listing indexes get updated on next request
-  delete 1
+  delete 2
+  list
+
+##########################################################
+# test sort command
+##########################################################
+
+  # should work
+  sort
+ 
+  # should still be sorted
   list
 
 ##########################################################
