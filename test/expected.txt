@@ -129,6 +129,29 @@
 || 
 || 5 persons found!
 || ===================================================
+|| Enter command: || [Command entered:  add Alan Wake p/32131 e/alanwakem@gmail.com]
+|| New person added: Alan Wake, Phone: 32131, Email: alanwakem@gmail.com
+|| ===================================================
+|| Enter command: || [Command entered:  list]
+|| 	1. Adam Brown  Phone Number: 111111  Email: adam@gmail.com
+|| 	2. Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
+|| 	3. Charlie Dickson  Phone Number: 333333  Email: charlie.d@nus.edu.sg
+|| 	4. Dickson Ee  Phone Number: 444444  Email: dickson@nus.edu.sg
+|| 	5. Esther Potato  Phone Number: 555555  Email: esther@notreal.potato
+|| 	6. Alan Wake  Phone Number: 32131  Email: alanwakem@gmail.com
+|| 
+|| 6 persons found!
+|| ===================================================
+|| Enter command: || [Command entered:  sort]
+|| 	1. Adam Brown  Phone Number: 111111  Email: adam@gmail.com
+|| 	2. Alan Wake  Phone Number: 32131  Email: alanwakem@gmail.com
+|| 	3. Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
+|| 	4. Charlie Dickson  Phone Number: 333333  Email: charlie.d@nus.edu.sg
+|| 	5. Dickson Ee  Phone Number: 444444  Email: dickson@nus.edu.sg
+|| 	6. Esther Potato  Phone Number: 555555  Email: esther@notreal.potato
+|| 
+|| 6 persons found!
+|| ===================================================
 || Enter command: || [Command entered:  find]
 || 
 || 0 persons found!
@@ -205,11 +228,15 @@
 || 	2. Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
 || 	3. Dickson Ee  Phone Number: 444444  Email: dickson@nus.edu.sg
 || 	4. Esther Potato  Phone Number: 555555  Email: esther@notreal.potato
+|| 	5. Alan Wake  Phone Number: 32131  Email: alanwakem@gmail.com
 || 
-|| 4 persons found!
+|| 5 persons found!
 || ===================================================
 || Enter command: || [Command entered:  delete 4]
 || Deleted Person: Esther Potato  Phone Number: 555555  Email: esther@notreal.potato
+|| ===================================================
+|| Enter command: || [Command entered:  delete 5]
+|| Deleted Person: Alan Wake  Phone Number: 32131  Email: alanwakem@gmail.com
 || ===================================================
 || Enter command: || [Command entered:  list]
 || 	1. Adam Brown  Phone Number: 111111  Email: adam@gmail.com
