@@ -346,7 +346,14 @@ public class AddressBook {
 			return getMessageForSuccessfulAddPerson(personToAdd);
         case COMMAND_FIND_WORD:
             final Set<String> keywords = extractKeywordsFromFindPersonArgs(commandArgs);
-			final ArrayList<String[]> personsFound = getPersonsWithNameContainingAnyKeyword(keywords);
+			final ArrayList<String[]> matchedPersons = new ArrayList<>();
+			for (String[] person : getAllPersonsInAddressBook()) {
+			    final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
+			    if (!Collections.disjoint(wordsInName, keywords)) {
+			        matchedPersons.add(person);
+			    }
+			}
+			final ArrayList<String[]> personsFound = matchedPersons;
 			String listAsString = getDisplayString(personsFound);
 			String[] message = { listAsString };
 			for (String m : message) {
@@ -419,23 +426,6 @@ public class AddressBook {
      */
     private static Set<String> extractKeywordsFromFindPersonArgs(String findPersonCommandArgs) {
         return new HashSet<>(splitByWhitespace(findPersonCommandArgs.trim()));
-    }
-
-    /**
-     * Retrieve all persons in the full model whose names contain some of the specified keywords.
-     *
-     * @param keywords for searching
-     * @return list of persons in full model with name containing some of the keywords
-     */
-    private static ArrayList<String[]> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
-        final ArrayList<String[]> matchedPersons = new ArrayList<>();
-        for (String[] person : getAllPersonsInAddressBook()) {
-            final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
-            if (!Collections.disjoint(wordsInName, keywords)) {
-                matchedPersons.add(person);
-            }
-        }
-        return matchedPersons;
     }
 
     /**
