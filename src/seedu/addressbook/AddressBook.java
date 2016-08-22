@@ -557,9 +557,9 @@ public class AddressBook {
      * @return feedback display message for the operation result
      */
     private static String executeListAllPersonsInAddressBook() {
-        ArrayList<String[]> toBeDisplayed = getAllPersonsInAddressBook();
-        showToUser(toBeDisplayed);
-        return getMessageForPersonsDisplayedSummary(toBeDisplayed);
+        ArrayList<String[]> displayedPersons = getAllPersonsInAddressBook();
+        showToUser(displayedPersons);
+        return getMessageForPersonsDisplayedSummary(displayedPersons);
     }
 
     /**
