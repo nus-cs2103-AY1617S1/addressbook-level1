@@ -199,44 +199,15 @@ public class AddressBook {
      * ====================================================================
      */
     public static void main(String[] args) {
-        showWelcomeMessage();
+        showToUser(DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER);
         processProgramArgs(args);
         loadDataFromStorage();
         while (true) {
             String userCommand = getUserInput();
-            echoUserCommand(userCommand);
+            showToUser("[Command entered:" + userCommand + "]");
             String feedback = executeCommand(userCommand);
-            showResultToUser(feedback);
+            showToUser(feedback, DIVIDER);
         }
-    }
-
-    /*
-     * ==============NOTE TO STUDENTS======================================
-     * The method header comment can be omitted if the method is trivial
-     * and the header comment is going to be almost identical to the method
-     * signature anyway.
-     * ====================================================================
-     */
-    private static void showWelcomeMessage() {
-        showToUser(DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER);
-    }
-
-    private static void showResultToUser(String result) {
-        showToUser(result, DIVIDER);
-    }
-
-    /*
-     * ==============NOTE TO STUDENTS======================================
-     * Parameter description can be omitted from the method header comment
-     * if the parameter name is self-explanatory.
-     * In the method below, '@param userInput' comment has been omitted.
-     * ====================================================================
-     */
-    /**
-     * Echoes the user input back to the user.
-     */
-    private static void echoUserCommand(String userCommand) {
-        showToUser("[Command entered:" + userCommand + "]");
     }
 
     /*
@@ -352,7 +323,7 @@ public class AddressBook {
         case COMMAND_HELP_WORD:
             return getUsageInfoForAllCommands();
         case COMMAND_EXIT_WORD:
-            executeExitProgramRequest();
+            exitProgram();
         default:
             return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
         }
@@ -549,14 +520,7 @@ public class AddressBook {
         return getMessageForPersonsDisplayedSummary(toBeDisplayed);
     }
 
-    /**
-     * Request to terminate the program.
-     *
-     * @return feedback display message for the operation result
-     */
-    private static void executeExitProgramRequest() {
-        exitProgram();
-    }
+    
 
     /*
      * ===========================================
