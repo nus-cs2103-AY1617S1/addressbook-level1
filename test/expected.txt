@@ -17,6 +17,9 @@
 || list: Displays all persons as a list with index numbers.
 || 	Example: list
 || 
+|| sort: Displays all persons in alphabetical order as a list with index numbers.
+|| 	Example: sort
+|| 
 || delete: Deletes a person identified by the index number used in the last find/list call.
 || 	Parameters: INDEX
 || 	Example: delete 1
@@ -114,6 +117,9 @@
 || 
 || 4 persons found!
 || ===================================================
+|| Enter command: || [Command entered:  add Wei Kang p/999999 e/weikang@gmail.com]
+|| New person added: Wei Kang, Phone: 999999, Email: weikang@gmail.com
+|| ===================================================
 || Enter command: || [Command entered:  add Esther Potato p/555555 e/esther@notreal.potato]
 || New person added: Esther Potato, Phone: 555555, Email: esther@notreal.potato
 || ===================================================
@@ -122,9 +128,20 @@
 || 	2. Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
 || 	3. Charlie Dickson  Phone Number: 333333  Email: charlie.d@nus.edu.sg
 || 	4. Dickson Ee  Phone Number: 444444  Email: dickson@nus.edu.sg
-|| 	5. Esther Potato  Phone Number: 555555  Email: esther@notreal.potato
+|| 	5. Wei Kang  Phone Number: 999999  Email: weikang@gmail.com
+|| 	6. Esther Potato  Phone Number: 555555  Email: esther@notreal.potato
 || 
-|| 5 persons found!
+|| 6 persons found!
+|| ===================================================
+|| Enter command: || [Command entered:  sort]
+|| 	1. Adam Brown  Phone Number: 111111  Email: adam@gmail.com
+|| 	2. Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
+|| 	3. Charlie Dickson  Phone Number: 333333  Email: charlie.d@nus.edu.sg
+|| 	4. Dickson Ee  Phone Number: 444444  Email: dickson@nus.edu.sg
+|| 	5. Esther Potato  Phone Number: 555555  Email: esther@notreal.potato
+|| 	6. Wei Kang  Phone Number: 999999  Email: weikang@gmail.com
+|| 
+|| 6 persons found!
 || ===================================================
 || Enter command: || [Command entered:  find]
 || 
@@ -202,8 +219,9 @@
 || 	2. Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
 || 	3. Dickson Ee  Phone Number: 444444  Email: dickson@nus.edu.sg
 || 	4. Esther Potato  Phone Number: 555555  Email: esther@notreal.potato
+|| 	5. Wei Kang  Phone Number: 999999  Email: weikang@gmail.com
 || 
-|| 4 persons found!
+|| 5 persons found!
 || ===================================================
 || Enter command: || [Command entered:  delete 4]
 || Deleted Person: Esther Potato  Phone Number: 555555  Email: esther@notreal.potato
@@ -212,8 +230,9 @@
 || 	1. Adam Brown  Phone Number: 111111  Email: adam@gmail.com
 || 	2. Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
 || 	3. Dickson Ee  Phone Number: 444444  Email: dickson@nus.edu.sg
+|| 	4. Wei Kang  Phone Number: 999999  Email: weikang@gmail.com
 || 
-|| 3 persons found!
+|| 4 persons found!
 || ===================================================
 || Enter command: || [Command entered:  delete 1]
 || Deleted Person: Adam Brown  Phone Number: 111111  Email: adam@gmail.com
@@ -221,8 +240,9 @@
 || Enter command: || [Command entered:  list]
 || 	1. Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
 || 	2. Dickson Ee  Phone Number: 444444  Email: dickson@nus.edu.sg
+|| 	3. Wei Kang  Phone Number: 999999  Email: weikang@gmail.com
 || 
-|| 2 persons found!
+|| 3 persons found!
 || ===================================================
 || Enter command: || [Command entered:  clear]
 || Address book has been cleared!
