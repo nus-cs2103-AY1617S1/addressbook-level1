@@ -202,12 +202,7 @@ public class AddressBook {
         showWelcomeMessage();
         processProgramArgs(args);
         loadDataFromStorage();
-        while (true) {
-            String userCommand = getUserInput();
-            echoUserCommand(userCommand);
-            String feedback = executeCommand(userCommand);
-            showResultToUser(feedback);
-        }
+        readUserCommandsUntilExit();
     }
 
     /*
@@ -327,7 +322,20 @@ public class AddressBook {
      *           COMMAND LOGIC
      * ===========================================
      */
-
+    
+    /**
+	 * Reads and executes user command in an infinite loop, until user exits.
+	 * Exit loop by typing 'exit' as a command.
+	 */
+	private static void readUserCommandsUntilExit() {
+		while (true) {
+            String userCommand = getUserInput();
+            echoUserCommand(userCommand);
+            String feedback = executeCommand(userCommand);
+            showResultToUser(feedback);
+        }
+	}
+    
     /**
      * Executes the command as specified by the {@code userInputString}
      *
