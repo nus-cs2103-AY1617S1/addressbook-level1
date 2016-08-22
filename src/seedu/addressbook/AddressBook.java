@@ -225,16 +225,6 @@ public class AddressBook {
             showResultToUser(feedbackToPrint);
         }
 	}
-	
-	//STOPPED HERE
-	//STOPPED HERE
-	//STOPPED HERE
-	//STOPPED HERE
-	//STOPPED HERE
-	//STOPPED HERE
-	//STOPPED HERE
-	//STOPPED HERE
-	
 
     /*
      * ==============NOTE TO STUDENTS======================================
@@ -243,13 +233,22 @@ public class AddressBook {
      * signature anyway.
      * ====================================================================
      */
+	
+	/**
+	 * Displays a standard welcome message to user
+	 */
     private static void showWelcomeMessage() {
-        showToUser(new String[]{DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER});
+        showToUser(DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER);
     }
 
+    /**
+     * Shows output to user in a standardized manner
+     * @param result to be printed to user
+     */
     private static void showResultToUser(String result) {
-        showToUser(new String[]{result, DIVIDER});
+        showToUser(result, DIVIDER);
     }
+    
 
     /*
      * ==============NOTE TO STUDENTS======================================
@@ -258,11 +257,14 @@ public class AddressBook {
      * In the method below, '@param userInput' comment has been omitted.
      * ====================================================================
      */
+    
+    
     /**
      * Echoes the user input back to the user.
+     * @param userCommand commands to be echoed back to user
      */
     private static void echoUserCommand(String userCommand) {
-        showToUser(new String[]{"[Command entered:" + userCommand + "]"});
+        showToUser("[Command entered:" + userCommand + "]");
     }
 
     /*
@@ -281,18 +283,20 @@ public class AddressBook {
      * @param args full program arguments passed to application main method
      */
     private static void processProgramArgs(String[] args) {
-        if (args.length >= 2) {
-            showToUser(new String[]{MESSAGE_INVALID_PROGRAM_ARGS});
-            exitProgram();
-        }
-
-        if (args.length == 1) {
-            setupGivenFileForStorage(args[0]);
-        }
-
-        if(args.length == 0) {
-            setupDefaultFileForStorage();
-        }
+    	
+    	switch (args.length){
+    		case (1) :
+    			setupGivenFileForStorage(args[0]);
+    			break;
+    			
+    		case (0) :
+    			setupDefaultFileForStorage();
+    			break;
+    		
+    		default:
+    			showToUser(new String[]{MESSAGE_INVALID_PROGRAM_ARGS});
+    			exitProgram();
+    	}
     }
 
     /**
