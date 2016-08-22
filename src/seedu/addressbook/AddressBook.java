@@ -198,7 +198,9 @@ public class AddressBook {
      * ====================================================================
      */
     public static void main(String[] args) {
-        showWelcomeMessage();
+        
+        String[] welcomeMessage = {DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER};
+        showToUser(welcomeMessage);
         
         if (args.length >= 2) {
         	String[] message = {MESSAGE_INVALID_PROGRAM_ARGS};
@@ -232,17 +234,6 @@ public class AddressBook {
     	System.out.println(number);
     }
     
-    /*
-     * ==============NOTE TO STUDENTS======================================
-     * The method header comment can be omitted if the method is trivial
-     * and the header comment is going to be almost identical to the method
-     * signature anyway.
-     * ====================================================================
-     */
-    private static void showWelcomeMessage() {
-    	String[] message = {DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER};
-        showToUser(message);
-    }
 
     private static void showResultToUser(String result) {
     	String[] message = {result, DIVIDER};
