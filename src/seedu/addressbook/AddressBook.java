@@ -203,12 +203,17 @@ public class AddressBook {
         processProgramArgs(args);
         loadDataFromStorage();
         while (true) {
-            String userCommand = getUserInput();
-            echoUserCommand(userCommand);
-            String feedback = executeCommand(userCommand);
+            String feedback = getFeedback();  //extract getFeedback() method (T2A2)
             showResultToUser(feedback);
         }
     }
+
+	private static String getFeedback() {
+		String userCommand = getUserInput();
+		echoUserCommand(userCommand);
+		String feedback = executeCommand(userCommand);
+		return feedback;
+	}
 
     /*
      * ==============NOTE TO STUDENTS======================================
