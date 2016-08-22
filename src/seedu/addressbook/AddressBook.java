@@ -369,7 +369,9 @@ public class AddressBook {
 			showToUser(personsFound);
 			return getMessageForPersonsDisplayedSummary(personsFound);
         case COMMAND_LIST_WORD:
-            return executeListAllPersonsInAddressBook();
+            ArrayList<String[]> toBeDisplayed = getAllPersonsInAddressBook();
+			showToUser(toBeDisplayed);
+			return getMessageForPersonsDisplayedSummary(toBeDisplayed);
         case COMMAND_DELETE_WORD:
             return executeDeletePerson(commandArgs);
         case COMMAND_CLEAR_WORD:
