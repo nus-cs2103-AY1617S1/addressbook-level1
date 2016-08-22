@@ -198,7 +198,7 @@ public class AddressBook {
      * method alone.
      * ====================================================================
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         showWelcomeMessage();
         processProgramArgs(args);
         loadDataFromStorage();
@@ -253,8 +253,9 @@ public class AddressBook {
      * Otherwise sets up the default file for storage.
      *
      * @param args full program arguments passed to application main method
+     * @throws IOException 
      */
-    private static void processProgramArgs(String[] args) {
+    private static void processProgramArgs(String[] args) throws IOException {
         if (args.length >= 2) {
             showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
             exitProgram();
@@ -271,8 +272,9 @@ public class AddressBook {
      * Sets up the storage file based on the supplied file path.
      * Creates the file if it is missing.
      * Exits if the file name is not acceptable.
+     * @throws IOException 
      */
-    private static void setupGivenFileForStorage(String filePath) {
+    private static void setupGivenFileForStorage(String filePath) throws IOException {
 
         if (!isValidFilePath(filePath)) {
             showToUser(String.format(MESSAGE_INVALID_FILE, filePath));
@@ -295,8 +297,9 @@ public class AddressBook {
      * Sets up the storage based on the default file.
      * Creates file if missing.
      * Exits program if the file cannot be created.
+     * @throws IOException 
      */
-    private static void setupDefaultFileForStorage() {
+    private static void setupDefaultFileForStorage() throws IOException {
         showToUser(MESSAGE_USING_DEFAULT_FILE);
         storageFilePath = DEFAULT_STORAGE_FILEPATH;
         createFileIfMissing(storageFilePath);
@@ -494,7 +497,7 @@ public class AddressBook {
      * @param rawArgs raw command args string for the delete person command
      * @return whether the input args string is valid
      */
-    private static boolean isDeletePersonArgsValid(String rawArgs) {
+    private static boolean isDeletePersonArgsValid(String rawArgs) throws NumberFormatException {
         try {
             final int extractedIndex = Integer.parseInt(rawArgs.trim()); // use standard libraries to parse
             return extractedIndex >= DISPLAYED_INDEX_OFFSET;
@@ -688,7 +691,7 @@ public class AddressBook {
      *
      * @param filePath file to create if not present
      */
-    private static void createFileIfMissing(String filePath) {
+    private static void createFileIfMissing(String filePath) throws IOException {
         final File storageFile = new File(filePath);
         if (storageFile.exists()) {
             return;
