@@ -224,7 +224,10 @@ public class AddressBook {
         while (true) {
         	numCommands++;
             String userCommand = getUserInput();
-            echoUserCommand(userCommand);
+            
+            String[] message = {"[Command entered:" + userCommand + "]"};
+            showToUser(message);
+            
             String feedback = executeCommand(userCommand);
             showResultToUser(feedback);
             printNumCommands(numCommands);
@@ -241,20 +244,7 @@ public class AddressBook {
         showToUser(message);
     }
 
-    /*
-     * ==============NOTE TO STUDENTS======================================
-     * Parameter description can be omitted from the method header comment
-     * if the parameter name is self-explanatory.
-     * In the method below, '@param userInput' comment has been omitted.
-     * ====================================================================
-     */
-    /**
-     * Echoes the user input back to the user.
-     */
-    private static void echoUserCommand(String userCommand) {
-    	String[] message = {"[Command entered:" + userCommand + "]"};
-        showToUser(message);
-    }
+  
 
     /*
      * ==============NOTE TO STUDENTS==========================================
