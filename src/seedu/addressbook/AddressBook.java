@@ -985,9 +985,10 @@ public class AddressBook {
 
     /**
      * Extracts substring from person string representation
+     * This works based on the assumption that we're only interested in phone & email
      *
      * @param encoded person string representation
-     * @return email argument WITHOUT prefix
+     * @return substring WITHOUT prefix
      */
 	private static String extractSubstringFromPersonString(String encoded, boolean isPhone) {
 		final int indexOfPhonePrefix = encoded.indexOf(PERSON_DATA_PREFIX_PHONE);
