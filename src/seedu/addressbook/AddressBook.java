@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Optional;
@@ -31,7 +32,7 @@ import java.util.Set;
  * in a text file.
  **/
 public class AddressBook {
-
+	
     /**
      * Default file path used if the user doesn't provide the file name.
      */
@@ -117,6 +118,10 @@ public class AddressBook {
     private static final String COMMAND_DELETE_PARAMETER = "INDEX";
     private static final String COMMAND_DELETE_EXAMPLE = COMMAND_DELETE_WORD + " 1";
 
+    private static final String COMMAND_SORT_WORD = "sort";
+    private static final String COMMAND_SORT_DESC = "Display all persons sorted alphabetically.";
+    private static final String COMMAND_SORT_EXAMPLE = COMMAND_SORT_WORD;
+    
     private static final String COMMAND_CLEAR_WORD = "clear";
     private static final String COMMAND_CLEAR_DESC = "Clears address book permanently.";
     private static final String COMMAND_CLEAR_EXAMPLE = COMMAND_CLEAR_WORD;
@@ -178,8 +183,7 @@ public class AddressBook {
      * List of all persons in the address book.
      */
     private static final ArrayList<String[]> ALL_PERSONS = new ArrayList<>();
-
-
+    
     /**
      * Stores the most recent list of persons shown to the user as a result of a user command.
      * This is a subset of the full list. Deleting persons in the pull list does not delete
@@ -348,6 +352,8 @@ public class AddressBook {
             return executeListAllPersonsInAddressBook();
         case COMMAND_DELETE_WORD:
             return executeDeletePerson(commandArgs);
+        case COMMAND_SORT_WORD:
+        	return executeSortAllPersonsInAddressBook();
         case COMMAND_CLEAR_WORD:
             return executeClearAddressBook();
         case COMMAND_HELP_WORD:
@@ -558,6 +564,30 @@ public class AddressBook {
     }
 
     /**
+	 * Comparator for Persons
+	 */
+	private static class PersonComparator implements Comparator<String[]> {
+	    @Override
+	    public int compare(String[] o1, String[] o2) {
+	    	String name1 = o1[PERSON_DATA_INDEX_NAME].toLowerCase();
+	    	String name2 = o2[PERSON_DATA_INDEX_NAME].toLowerCase();
+	        return name1.compareTo(name2);
+	    }
+	}
+    
+    /**
+     * Displays all persons in the address book to the user; in added order.
+     *
+     * @return feedback display message for the operation result
+     */
+    private static String executeSortAllPersonsInAddressBook() {
+        ArrayList<String[]> toBeDisplayed = getAllPersonsInAddressBook();
+        Collections.sort(toBeDisplayed, new PersonComparator());
+        showToUser(toBeDisplayed);
+        return getMessageForPersonsDisplayedSummary(toBeDisplayed);
+    }
+
+    /**
      * Displays all persons in the address book to the user; in added order.
      *
      * @return feedback display message for the operation result
@@ -567,7 +597,7 @@ public class AddressBook {
         showToUser(toBeDisplayed);
         return getMessageForPersonsDisplayedSummary(toBeDisplayed);
     }
-
+    
     /**
      * Request to terminate the program.
      *
@@ -1095,6 +1125,7 @@ public class AddressBook {
                 + getUsageInfoForFindCommand() + LS
                 + getUsageInfoForViewCommand() + LS
                 + getUsageInfoForDeleteCommand() + LS
+                + getUsageInfoForSortCommand() + LS
                 + getUsageInfoForClearCommand() + LS
                 + getUsageInfoForExitCommand() + LS
                 + getUsageInfoForHelpCommand();
@@ -1133,6 +1164,16 @@ public class AddressBook {
                 + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_DELETE_EXAMPLE) + LS;
     }
 
+    /**
+     * Builds string for showing 'sort' command usage instruction
+     *
+     * @return  'sort' command usage instruction
+     */
+    private static String getUsageInfoForSortCommand() {
+        return String.format(MESSAGE_COMMAND_HELP, COMMAND_SORT_WORD, COMMAND_SORT_DESC)
+                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_SORT_EXAMPLE);
+    }
+    
     /**
      * Builds string for showing 'clear' command usage instruction
      *

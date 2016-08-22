@@ -6,4 +6,14 @@
 	add John p/12345678 e/a@a.com
 	find john
 	clear
+	
+##########################################################
+# test for sorted input
+##########################################################
+
+	add z p/12345678 e/a@a.com
+	add a p/87654321 e/b@b.com
+	sort
+	clear
+	
 	exit

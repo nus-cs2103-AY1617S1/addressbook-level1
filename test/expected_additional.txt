@@ -18,6 +18,21 @@
 || Enter command: || [Command entered:	clear]
 || Address book has been cleared!
 || ===================================================
+|| Enter command: || [Command entered:	add z p/12345678 e/a@a.com]
+|| New person added: z, Phone: 12345678, Email: a@a.com
+|| ===================================================
+|| Enter command: || [Command entered:	add a p/87654321 e/b@b.com]
+|| New person added: a, Phone: 87654321, Email: b@b.com
+|| ===================================================
+|| Enter command: || [Command entered:	sort]
+|| 	1. a  Phone Number: 87654321  Email: b@b.com
+|| 	2. z  Phone Number: 12345678  Email: a@a.com
+|| 
+|| 2 persons found!
+|| ===================================================
+|| Enter command: || [Command entered:	clear]
+|| Address book has been cleared!
+|| ===================================================
 || Enter command: || [Command entered:	exit]
 || Exiting Address Book... Good bye!
 || ===================================================
