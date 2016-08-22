@@ -85,6 +85,7 @@ public class AddressBook {
     private static final String MESSAGE_STORAGE_FILE_CREATED = "Created new empty storage file: %1$s";
     private static final String MESSAGE_WELCOME = "Welcome to your Address Book!";
     private static final String MESSAGE_USING_DEFAULT_FILE = "Using default storage file : " + DEFAULT_STORAGE_FILEPATH;
+    private static final String MESSAGE_INVALID_COMMAND_HELP = "Type help for program usage instructions.";
 
     // These are the prefix strings to define the data type of a command parameter
     private static final String PERSON_DATA_PREFIX_PHONE = "p/";
@@ -836,21 +837,6 @@ public class AddressBook {
         return person[PERSON_DATA_INDEX_EMAIL];
     }
 
-    /**
-     * Create a person for use in the internal data.
-     *
-     * @param name of person
-     * @param phone without data prefix
-     * @param email without data prefix
-     * @return constructed person
-     */
-    private static String[] makePersonFromData(String name, String phone, String email) {
-        final String[] person = new String[PERSON_DATA_COUNT];
-        person[PERSON_DATA_INDEX_NAME] = name;
-        person[PERSON_DATA_INDEX_PHONE] = phone;
-        person[PERSON_DATA_INDEX_EMAIL] = email;
-        return person;
-    }
 
     /**
      * Encodes a person into a decodable and readable string representation.
@@ -895,11 +881,8 @@ public class AddressBook {
         if (!isPersonDataExtractableFrom(encoded)) {
             return Optional.empty();
         }
-        final String[] decodedPerson = makePersonFromData(
-                extractNameFromPersonString(encoded),
-                extractPhoneFromPersonString(encoded),
-                extractEmailFromPersonString(encoded)
-        );
+        final String[] decodedPerson = extractPersonDataFromString(encoded);
+        
         // check that the constructed person is valid
         return isPersonDataValid(decodedPerson) ? Optional.of(decodedPerson) : Optional.empty();
     }
@@ -931,8 +914,8 @@ public class AddressBook {
      * @return whether format of add command arguments allows parsing into individual arguments
      */
     private static boolean isPersonDataExtractableFrom(String personData) {
-        final String matchAnyPersonDataPrefix = PERSON_DATA_PREFIX_PHONE + '|' + PERSON_DATA_PREFIX_EMAIL;
-        final String[] splitArgs = personData.trim().split(matchAnyPersonDataPrefix);
+    	final String[] splitArgs = splitPersonArgs(personData);
+    	
         return splitArgs.length == 3 // 3 arguments
                 && !splitArgs[0].isEmpty() // non-empty arguments
                 && !splitArgs[1].isEmpty()
@@ -940,65 +923,43 @@ public class AddressBook {
     }
 
     /**
-     * Extracts substring representing person name from person string representation
+     * Extracts person data (email, name, phone etc) from the argument string.
+     * Format is [name] p/[phone] e/[email], phone and email positions can be swapped.
      *
-     * @param encoded person string representation
-     * @return name argument
+     * @param personData person string representation
+     * @return constructed person
      */
-    private static String extractNameFromPersonString(String encoded) {
-        final int indexOfPhonePrefix = encoded.indexOf(PERSON_DATA_PREFIX_PHONE);
-        final int indexOfEmailPrefix = encoded.indexOf(PERSON_DATA_PREFIX_EMAIL);
-        // name is leading substring up to first data prefix symbol
-        int indexOfFirstPrefix = Math.min(indexOfEmailPrefix, indexOfPhonePrefix);
-        return encoded.substring(0, indexOfFirstPrefix).trim();
-    }
-
-    /**
-     * Extracts substring representing phone number from person string representation
-     *
-     * @param encoded person string representation
-     * @return phone number argument WITHOUT prefix
-     */
-    private static String extractPhoneFromPersonString(String encoded) {
-        final int indexOfPhonePrefix = encoded.indexOf(PERSON_DATA_PREFIX_PHONE);
-        final int indexOfEmailPrefix = encoded.indexOf(PERSON_DATA_PREFIX_EMAIL);
-
-        // phone is last arg, target is from prefix to end of string
-        if (indexOfPhonePrefix > indexOfEmailPrefix) {
-            return removePrefixSign(encoded.substring(indexOfPhonePrefix, encoded.length()).trim(),
-                    PERSON_DATA_PREFIX_PHONE);
-
-        // phone is middle arg, target is from own prefix to next prefix
-        } else {
-            return removePrefixSign(
-                    encoded.substring(indexOfPhonePrefix, indexOfEmailPrefix).trim(),
-                    PERSON_DATA_PREFIX_PHONE);
+    private static String[] extractPersonDataFromString(String personData){
+        final String[] splitArgs = splitPersonArgs(personData);
+        
+        for(int i = 0; i < PERSON_DATA_COUNT; i++){
+        	splitArgs[i] = splitArgs[i].trim();
         }
-    }
-
-    /**
-     * Extracts substring representing email from person string representation
-     *
-     * @param encoded person string representation
-     * @return email argument WITHOUT prefix
-     */
-    private static String extractEmailFromPersonString(String encoded) {
-        final int indexOfPhonePrefix = encoded.indexOf(PERSON_DATA_PREFIX_PHONE);
-        final int indexOfEmailPrefix = encoded.indexOf(PERSON_DATA_PREFIX_EMAIL);
-
-        // email is last arg, target is from prefix to end of string
-        if (indexOfEmailPrefix > indexOfPhonePrefix) {
-            return removePrefixSign(encoded.substring(indexOfEmailPrefix, encoded.length()).trim(),
-                    PERSON_DATA_PREFIX_EMAIL);
-
-        // email is middle arg, target is from own prefix to next prefix
-        } else {
-            return removePrefixSign(
-                    encoded.substring(indexOfEmailPrefix, indexOfPhonePrefix).trim(),
-                    PERSON_DATA_PREFIX_EMAIL);
+        
+        //Switch email and phone if they are in incorrect position
+        if(isPersonPhoneValid(splitArgs[PERSON_DATA_INDEX_EMAIL])){
+        	String temp = splitArgs[PERSON_DATA_INDEX_EMAIL];
+        	splitArgs[PERSON_DATA_INDEX_EMAIL] = splitArgs[PERSON_DATA_INDEX_PHONE];
+        	splitArgs[PERSON_DATA_INDEX_PHONE] = temp;
         }
+        
+        return splitArgs;
     }
-
+    
+    /**
+     * Splits person data (email, name, phone etc) from the argument string.
+     * 
+     * @param personData person string representation
+     * @return String array containing split arguments
+     */
+    private static String[] splitPersonArgs(String personData){
+    	final String matchAnyPersonDataPrefix = PERSON_DATA_PREFIX_PHONE + '|' + PERSON_DATA_PREFIX_EMAIL;
+        final String[] splitArgs = personData.trim().split(matchAnyPersonDataPrefix);
+        
+        return splitArgs;
+    }
+    
+    
     /**
      * Validates a person's data fields
      *
@@ -1006,6 +967,7 @@ public class AddressBook {
      * @return whether the given person has valid data
      */
     private static boolean isPersonDataValid(String[] person) {
+    	
         return isPersonNameValid(person[PERSON_DATA_INDEX_NAME])
                 && isPersonPhoneValid(person[PERSON_DATA_INDEX_PHONE])
                 && isPersonEmailValid(person[PERSON_DATA_INDEX_EMAIL]);
