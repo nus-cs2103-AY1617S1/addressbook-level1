@@ -648,12 +648,16 @@ public class AddressBook {
      * @return full line entered by the user
      */
     private static String getUserInput() {
+    	
         System.out.print(LINE_PREFIX + "Enter command: ");
+        
         String inputLine = SCANNER.nextLine();
+        
         // silently consume all blank and comment lines
         while (inputLine.trim().isEmpty() || inputLine.trim().charAt(0) == INPUT_COMMENT_MARKER) {
             inputLine = SCANNER.nextLine();
         }
+        
         return inputLine;
     }
 
@@ -677,8 +681,11 @@ public class AddressBook {
      *
      */
     private static void showToUser(ArrayList<HashMap<PersonProperty, String>> persons) {
-        String listAsString = getDisplayString(persons);
-        showToUser(new String[]{listAsString});
+        
+    	String listAsString = getDisplayString(persons);
+        
+        showToUser(listAsString);
+        
         updateLatestViewedPersonListing(persons);
     }
 
@@ -686,15 +693,18 @@ public class AddressBook {
      * Returns the display string representation of the list of persons.
      */
     private static String getDisplayString(ArrayList<HashMap<PersonProperty, String>> persons) {
-        final StringBuilder messageAccumulator = new StringBuilder();
-        for (int i = 0; i < persons.size(); i++) {
+        
+    	final StringBuilder messageAccumulator = new StringBuilder();
+        
+    	for (int i = 0; i < persons.size(); i++) {
             final HashMap<PersonProperty, String> person = persons.get(i);
             final int displayIndex = i + DISPLAYED_INDEX_OFFSET;
             messageAccumulator.append('\t')
                               .append(getIndexedPersonListElementMessage(displayIndex, person))
                               .append(LINE_SPEPARATOR);
         }
-        return messageAccumulator.toString();
+        
+    	return messageAccumulator.toString();
     }
 
     /**
@@ -705,7 +715,8 @@ public class AddressBook {
      * @return formatted listing message with index
      */
     private static String getIndexedPersonListElementMessage(int visibleIndex, HashMap<PersonProperty, String> person) {
-        return String.format(MESSAGE_DISPLAY_LIST_ELEMENT_INDEX, visibleIndex) + getMessageForFormattedPersonData(person);
+        return String.format(MESSAGE_DISPLAY_LIST_ELEMENT_INDEX, visibleIndex) 
+        		+ getMessageForFormattedPersonData(person);
     }
 
     /**
@@ -759,22 +770,25 @@ public class AddressBook {
      * @param filePath file to create if not present
      */
     private static void createFileIfMissing(String filePath) {
-        final File storageFile = new File(filePath);
+        
+    	final File storageFile = new File(filePath);
         if (storageFile.exists()) {
             return;
         }
 
-        showToUser(new String[]{String.format(MESSAGE_ERROR_MISSING_STORAGE_FILE, filePath)});
+        showToUser(String.format(MESSAGE_ERROR_MISSING_STORAGE_FILE, filePath));
 
         try {
             storageFile.createNewFile();
-            showToUser(new String[]{String.format(MESSAGE_STORAGE_FILE_CREATED, filePath)});
+            showToUser(String.format(MESSAGE_STORAGE_FILE_CREATED, filePath));
+            
         } catch (IOException ioe) {
-            showToUser(new String[]{String.format(MESSAGE_ERROR_CREATING_STORAGE_FILE, filePath)});
+            showToUser(String.format(MESSAGE_ERROR_CREATING_STORAGE_FILE, filePath));
             exitProgram();
         }
     }
 
+    
     /**
      * Converts contents of a file into a list of persons.
      * Shows error messages and exits program if any errors in reading or decoding was encountered.
@@ -783,16 +797,20 @@ public class AddressBook {
      * @return the list of decoded persons
      */
     private static ArrayList<HashMap<PersonProperty, String>> loadPersonsFromFile(String filePath) {
-        final Optional<ArrayList<String[]>> successfullyDecoded = decodePersonsFromStrings(getLinesInFile(filePath));
-        if (!successfullyDecoded.isPresent()) {
+    	
+        final Optional<ArrayList<String[]>> successfullyDecodedObject = decodePersonsFromStrings(getLinesInFile(filePath));
+        
+        if (!successfullyDecodedObject.isPresent()) {
             showToUser(new String[]{MESSAGE_INVALID_STORAGE_FILE_CONTENT});
             exitProgram();
         }
-        ArrayList<String[]> people = successfullyDecoded.get();
+        
+        ArrayList<String[]> people = successfullyDecodedObject.get();
         
         ArrayList<HashMap<PersonProperty, String>> peopleMap = new ArrayList<>();
         
         for (String[] person : people){
+        	
             HashMap<PersonProperty, String> personMap = new HashMap<>();
             personMap.put(PersonProperty.NAME, person[0]);
             personMap.put(PersonProperty.PHONE, person[1]);
@@ -809,9 +827,10 @@ public class AddressBook {
      * Shows error messages and exits program if unable to read from file.
      */
     private static ArrayList<String> getLinesInFile(String filePath) {
-        ArrayList<String> lines = null;
+    	
+        ArrayList<String> linesInFile = null;
         try {
-            lines = new ArrayList(Files.readAllLines(Paths.get(filePath)));
+            linesInFile = new ArrayList<String>(Files.readAllLines(Paths.get(filePath)));
         } catch (FileNotFoundException fnfe) {
             showToUser(new String[]{String.format(MESSAGE_ERROR_MISSING_STORAGE_FILE, filePath)});
             exitProgram();
@@ -819,7 +838,7 @@ public class AddressBook {
             showToUser(new String[]{String.format(MESSAGE_ERROR_READING_FROM_FILE, filePath)});
             exitProgram();
         }
-        return lines;
+        return linesInFile;
     }
 
     /**
