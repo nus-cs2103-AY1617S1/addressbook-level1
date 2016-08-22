@@ -1048,7 +1048,7 @@ public class AddressBook {
      * @return whether the given person has valid data
      */
     private static boolean isPersonDataValid(HashMap<PersonProperty,String> person) {
-        return personNameValid(person.get(PersonProperty.NAME))
+        return isPersonNameValid(person.get(PersonProperty.NAME))
                 && isPersonPhoneValid(person.get(PersonProperty.PHONE))
                 && isPersonEmailValid(person.get(PersonProperty.EMAIL));
     }
@@ -1066,7 +1066,7 @@ public class AddressBook {
      * @param name to be validated
      * @return whether arg is a valid person name
      */
-    private static boolean personNameValid(String name) {
+    private static boolean isPersonNameValid(String name) {
         return name.matches("(\\w|\\s)+");  // name is nonempty mixture of alphabets and whitespace
         //TODO: implement a more permissive validation
     }
