@@ -24,6 +24,9 @@
 || clear: Clears address book permanently.
 || 	Example: clear
 || 
+|| sort: Sorts and displays all persons as a list in alphabetical order.
+|| 	Example: sort
+|| 
 || exit: Exits the program.	Example: exit
 || help: Shows program usage instructions.	Example: help
 || ===================================================
@@ -223,6 +226,23 @@
 || 	2. Dickson Ee  Phone Number: 444444  Email: dickson@nus.edu.sg
 || 
 || 2 persons found!
+|| ===================================================
+|| Enter command: || [Command entered:  add Alpha Ben p/987654 e/alpha@benisreal.potato]
+|| New person added: Alpha Ben, Phone: 987654, Email: alpha@benisreal.potato
+|| ===================================================
+|| Enter command: || [Command entered:  list]
+|| 	1. Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
+|| 	2. Dickson Ee  Phone Number: 444444  Email: dickson@nus.edu.sg
+|| 	3. Alpha Ben  Phone Number: 987654  Email: alpha@benisreal.potato
+|| 
+|| 3 persons found!
+|| ===================================================
+|| Enter command: || [Command entered:  sort]
+|| 	1. Alpha Ben  Phone Number: 987654  Email: alpha@benisreal.potato
+|| 	2. Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
+|| 	3. Dickson Ee  Phone Number: 444444  Email: dickson@nus.edu.sg
+|| 
+|| 3 persons found!
 || ===================================================
 || Enter command: || [Command entered:  clear]
 || Address book has been cleared!
