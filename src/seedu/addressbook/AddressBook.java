@@ -373,7 +373,16 @@ public class AddressBook {
 			showToUser(toBeDisplayed);
 			return getMessageForPersonsDisplayedSummary(toBeDisplayed);
         case COMMAND_DELETE_WORD:
-            return executeDeletePerson(commandArgs);
+            if (!isDeletePersonArgsValid(commandArgs)) {
+			    return getMessageForInvalidCommandInput(COMMAND_DELETE_WORD, getUsageInfoForDeleteCommand());
+			}
+			final int targetVisibleIndex = extractTargetIndexFromDeletePersonArgs(commandArgs);
+			if (!isDisplayIndexValidForLastPersonListingView(targetVisibleIndex)) {
+			    return MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
+			}
+			final String[] targetInModel = getPersonByLastVisibleIndex(targetVisibleIndex);
+			return deletePersonFromAddressBook(targetInModel) ? getMessageForSuccessfulDelete(targetInModel) // success
+			                                                  : MESSAGE_PERSON_NOT_IN_ADDRESSBOOK; // not found
         case COMMAND_CLEAR_WORD:
             return executeClearAddressBook();
         case COMMAND_HELP_WORD:
