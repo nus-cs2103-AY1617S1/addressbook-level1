@@ -214,8 +214,8 @@ public class AddressBook {
             setupDefaultFileForStorage();
         }
         
-        
-        loadDataFromStorage();
+        initialiseAddressBookModel(loadPersonsFromFile(storageFilePath));
+
         // No. of times a command is typed.
         int numCommands = 0;
         while (true) {
@@ -322,13 +322,7 @@ public class AddressBook {
         return filePath.endsWith(TXT_FILE_FORMAT);
     }
 
-    /**
-     * Initialises the in-memory data using the storage file.
-     * Assumption: The file exists.
-     */
-    private static void loadDataFromStorage() {
-        initialiseAddressBookModel(loadPersonsFromFile(storageFilePath));
-    }
+
 
 
     /*
