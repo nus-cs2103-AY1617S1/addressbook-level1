@@ -306,16 +306,17 @@ public class AddressBook {
      * Sets up the storage file based on the supplied file path.
      * Creates the file if it is missing.
      * Exits if the file name is not acceptable.
+     * 
+     * @param storageFilePath location of storage file
      */
-    private static void setupGivenFileForStorage(String filePath) {
+    private static void setupGivenFileForStorage(String storageFilePath) {
 
-        if (!isValidFilePath(filePath)) {
-            showToUser(new String[]{String.format(MESSAGE_INVALID_FILE, filePath)});
+        if (!isValidFilePath(storageFilePath)) {
+            showToUser(String.format(MESSAGE_INVALID_FILE, storageFilePath));
             exitProgram();
         }
 
-        storageFilePath = filePath;
-        createFileIfMissing(filePath);
+        createFileIfMissing(storageFilePath);
     }
 
     /**
