@@ -226,7 +226,12 @@ public class AddressBook {
 		}
 		
 		if(args.length == 0) {
-		    setupDefaultFileForStorage();
+		    String[] message1 = { MESSAGE_USING_DEFAULT_FILE };
+			for (String m1 : message1) {
+			    System.out.println(LINE_PREFIX + m1);
+			}
+			storageFilePath = DEFAULT_STORAGE_FILEPATH;
+			createFileIfMissing(storageFilePath);
 		}
         initialiseAddressBookModel(loadPersonsFromFile(storageFilePath));
         while (true) {
@@ -262,20 +267,6 @@ public class AddressBook {
 		    System.out.println(LINE_PREFIX + m);
 		}
         System.exit(0);
-    }
-
-    /**
-     * Sets up the storage based on the default file.
-     * Creates file if missing.
-     * Exits program if the file cannot be created.
-     */
-    private static void setupDefaultFileForStorage() {
-        String[] message = { MESSAGE_USING_DEFAULT_FILE };
-		for (String m : message) {
-		    System.out.println(LINE_PREFIX + m);
-		}
-        storageFilePath = DEFAULT_STORAGE_FILEPATH;
-        createFileIfMissing(storageFilePath);
     }
 
     /**
