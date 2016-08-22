@@ -31,6 +31,9 @@
 || clear: Clears address book permanently.
 || 	Example: clear
 || 
+|| undo: Undo the previous operation if it is add/edit/delete/clear.
+|| 	Example: undo
+|| 
 || exit: Exits the program.	Example: exit
 || help: Shows program usage instructions.	Example: help
 || ===================================================
@@ -299,6 +302,59 @@
 || ===================================================
 || Enter command: || [Command entered:  edit 4 Geena e/geena@nus.edu.sg p/55555]
 || Person updated: Geena, Phone: 55555, Email: geena@nus.edu.sg
+|| ===================================================
+|| Enter command: || [Command entered:  list]
+|| 	1. Emma  Phone Number: 111111  Email: emma@nus.edu.sg
+|| 	2. Dickson  Phone Number: 222222  Email: dickson@nus.edu.sg
+|| 	3. Charlie  Phone Number: 333333  Email: charlie@nus.edu.sg
+|| 	4. Geena  Phone Number: 55555  Email: geena@nus.edu.sg
+|| 
+|| 4 persons found!
+|| ===================================================
+|| Enter command: || [Command entered:  clear]
+|| Address book has been cleared!
+|| ===================================================
+|| Enter command: || [Command entered:  undo]
+|| The previous clear operation has been undone
+|| ===================================================
+|| Enter command: || [Command entered:  add Temporary e/temp@nus.edu.sg p/121]
+|| New person added: Temporary, Phone: 121, Email: temp@nus.edu.sg
+|| ===================================================
+|| Enter command: || [Command entered:  undo]
+|| The previous add operation has been undone
+|| ===================================================
+|| Enter command: || [Command entered:  list]
+|| 	1. Emma  Phone Number: 111111  Email: emma@nus.edu.sg
+|| 	2. Dickson  Phone Number: 222222  Email: dickson@nus.edu.sg
+|| 	3. Charlie  Phone Number: 333333  Email: charlie@nus.edu.sg
+|| 	4. Geena  Phone Number: 55555  Email: geena@nus.edu.sg
+|| 
+|| 4 persons found!
+|| ===================================================
+|| Enter command: || [Command entered:  undo]
+|| undo: Undo the previous operation if it is add/edit/delete/clear.
+|| 	Example: undo
+|| 
+|| ===================================================
+|| Enter command: || [Command entered:  edit 4 Glena e/glena@nus.edu.sg p/55555]
+|| Person updated: Glena, Phone: 55555, Email: glena@nus.edu.sg
+|| ===================================================
+|| Enter command: || [Command entered:  undo]
+|| The previous edit operation has been undone
+|| ===================================================
+|| Enter command: || [Command entered:  list]
+|| 	1. Emma  Phone Number: 111111  Email: emma@nus.edu.sg
+|| 	2. Dickson  Phone Number: 222222  Email: dickson@nus.edu.sg
+|| 	3. Charlie  Phone Number: 333333  Email: charlie@nus.edu.sg
+|| 	4. Geena  Phone Number: 55555  Email: geena@nus.edu.sg
+|| 
+|| 4 persons found!
+|| ===================================================
+|| Enter command: || [Command entered:  delete 4]
+|| Deleted Person: Geena  Phone Number: 55555  Email: geena@nus.edu.sg
+|| ===================================================
+|| Enter command: || [Command entered:  undo]
+|| The previous delete operation has been undone
 || ===================================================
 || Enter command: || [Command entered:  list]
 || 	1. Emma  Phone Number: 111111  Email: emma@nus.edu.sg

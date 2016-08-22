@@ -137,6 +137,35 @@
   clear
 
 ##########################################################
+# test undo command
+##########################################################
+
+  # undo the previous clear command
+  undo
+
+  add Temporary e/temp@nus.edu.sg p/121
+  # undo the previous add command
+  undo
+
+  list
+  # should not be able to undo since the previous operation is list
+  undo
+
+  edit 4 Glena e/glena@nus.edu.sg p/55555
+  # undo the previous edit command
+  undo
+  # check
+  list
+
+  delete 4
+  #undo the previous delete command
+  undo
+  # check
+  list
+
+  clear
+
+##########################################################
 # test exit command
 ##########################################################
 
