@@ -199,7 +199,22 @@ public class AddressBook {
      */
     public static void main(String[] args) {
         showWelcomeMessage();
-        processProgramArgs(args);
+        
+        if (args.length >= 2) {
+        	String[] message = {MESSAGE_INVALID_PROGRAM_ARGS};
+            showToUser(message);
+            exitProgram();
+        }
+
+        if (args.length == 1) {
+            setupGivenFileForStorage(args[0]);
+        }
+
+        if(args.length == 0) {
+            setupDefaultFileForStorage();
+        }
+        
+        
         loadDataFromStorage();
         // No. of times a command is typed.
         int numCommands = 0;
@@ -257,28 +272,7 @@ public class AddressBook {
      * ====================================================================
      */
 
-    /**
-     * Processes the program main method run arguments.
-     * If a valid storage file is specified, sets up that file for storage.
-     * Otherwise sets up the default file for storage.
-     *
-     * @param args full program arguments passed to application main method
-     */
-    private static void processProgramArgs(String[] args) {
-        if (args.length >= 2) {
-        	String[] message = {MESSAGE_INVALID_PROGRAM_ARGS};
-            showToUser(message);
-            exitProgram();
-        }
-
-        if (args.length == 1) {
-            setupGivenFileForStorage(args[0]);
-        }
-
-        if(args.length == 0) {
-            setupDefaultFileForStorage();
-        }
-    }
+    
 
     /**
      * Sets up the storage file based on the supplied file path.
