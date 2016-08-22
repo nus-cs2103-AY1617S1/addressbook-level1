@@ -542,9 +542,9 @@ public class AddressBook {
      * @return feedback display message for the operation result
      */
     private static String executeListAllPersonsInAddressBook() {
-        ArrayList<String[]> toBeDisplayed = getAllPersonsInAddressBook();
-        showToUser(toBeDisplayed);
-        return getMessageForPersonsDisplayedSummary(toBeDisplayed);
+        ArrayList<String[]> personsToBeDisplayed = getAllPersonsInAddressBook();
+        showToUser(personsToBeDisplayed);
+        return getMessageForPersonsDisplayedSummary(personsToBeDisplayed);
     }
 
     /**
