@@ -92,9 +92,10 @@ public class AddressBook {
     private static final String COMMAND_EDIT_DESC = "Edit a person identified by the index number used in "
                                                     + "the last find/list/sort call.";
     private static final String COMMAND_EDIT_PARAMETERS = "INDEX "
+    													 + "[NAME]" + " "
                                                       + "[" + PERSON_DATA_PREFIX_PHONE + "PHONE_NUMBER]" + " "
                                                       + "[" + PERSON_DATA_PREFIX_EMAIL + "EMAIL]";
-    private static final String COMMAND_EDIT_EXAMPLE = COMMAND_EDIT_WORD + " 1 p/12345678 e/johnd_test@gamil.com";
+    private static final String COMMAND_EDIT_EXAMPLE = COMMAND_EDIT_WORD + " 1 John Doe's New Name p/12345678 e/johnd_new@gamil.com";
 
     private static final String COMMAND_FIND_WORD = "find";
     private static final String COMMAND_FIND_DESC = "Finds all persons whose names contain any of the specified "
