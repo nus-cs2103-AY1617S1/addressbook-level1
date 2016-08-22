@@ -31,6 +31,8 @@ import java.util.Set;
  **/
 public class AddressBook {
 
+	private static final String EMPTY_STRING = "";
+
 	/**
 	 * This is the file extension of the text file used to validate
 	 * the file path.
@@ -374,7 +376,7 @@ public class AddressBook {
         if (split.length == 2)
         	return split;
         else
-        	return new String[] { split[0] , "" }; // else case: no parameters 
+        	return new String[] { split[0] , EMPTY_STRING }; // else case: no parameters 
     }
 
     /**
@@ -1184,7 +1186,7 @@ public class AddressBook {
      * @return  Priority string without p/
      */
     private static String removePrefixSign(String s, String sign) {
-        return s.replace(sign, "");
+        return s.replace(sign, EMPTY_STRING);
     }
 
     /**
