@@ -31,7 +31,8 @@ import java.util.Set;
  * in a text file.
  * 
  * 1. Make arguments case insensitive
- * 2. 
+ * 2. Make find keywords case insensitive
+ * 3. Sort find outcomes in alphabetical order
  **/
 public class BetterAddressBook {
     
@@ -499,9 +500,9 @@ public class BetterAddressBook {
      */
     private static Set<String> extractKeywordsFromFindPersonArgs(String findPersonCommandArgs) {
     	
-    	String findPersonCommandArgsTrimmed = findPersonCommandArgs.trim();
+    	String findPersonCommandArgsTrimmedSmallCase = findPersonCommandArgs.trim().toLowerCase();
     	
-    	ArrayList<String> keywords = splitByWhitespace(findPersonCommandArgsTrimmed);
+    	ArrayList<String> keywords = splitByWhitespace(findPersonCommandArgsTrimmedSmallCase);
     	
         return new HashSet<>(keywords);
     }
@@ -518,7 +519,7 @@ public class BetterAddressBook {
         
         for (HashMap<PersonProperty, String> person : getAllPersonsInAddressBook()) {
         	        	
-            final Set<String> splittedNameComponents = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
+            final Set<String> splittedNameComponents = new HashSet<>(splitByWhitespace(getNameFromPerson(person).toLowerCase()));
             
             boolean hasNameComponent = !Collections.disjoint(splittedNameComponents, keywords);
             
