@@ -94,6 +94,19 @@
   list
 
 ##########################################################
+# test edit command
+##########################################################
+  # should catch invalid args format
+  edit
+  
+  # should catch invalid index
+  edit -1 Wei Kang e/weikang@mailinator.com p/123456
+
+  # should edit the 1st index of list
+  edit 1 Wei Kang e/weikang@mailinator.com p/123456
+  list
+
+##########################################################
 # test clear command
 ##########################################################
 

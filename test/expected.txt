@@ -10,7 +10,11 @@
 || 	Parameters: NAME p/PHONE_NUMBER e/EMAIL
 || 	Example: add John Doe p/98765432 e/johnd@gmail.com
 || 
-|| find: Finds all persons whose names contain any of the specified keywords (case-sensitive) and displays them as a list with index numbers.
+|| edit: Edit property of a specific person identified by index number used in the last list/sort call.
+|| 	Parameters: INDEX NAME p/PHONE_NUMBER e/EMAIL
+|| 	Example: edit 1 John Doe p/98765432 e/johnd@gmail.com
+|| 
+|| find: Finds all persons whose names contain any of the specified keywords (case-insensitive) and displays them as a list with index numbers.
 || 	Parameters: KEYWORD [MORE_KEYWORDS]
 || 	Example: find alice bob charlie
 || 
@@ -239,6 +243,26 @@
 || ===================================================
 || Enter command: || [Command entered:  list]
 || 	1. Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
+|| 	2. Dickson Ee  Phone Number: 444444  Email: dickson@nus.edu.sg
+|| 	3. Wei Kang  Phone Number: 999999  Email: weikang@gmail.com
+|| 
+|| 3 persons found!
+|| ===================================================
+|| Enter command: || [Command entered:  edit]
+|| Invalid command format: edit 
+|| edit: Edit property of a specific person identified by index number used in the last list/sort call.
+|| 	Parameters: INDEX NAME p/PHONE_NUMBER e/EMAIL
+|| 	Example: edit 1 John Doe p/98765432 e/johnd@gmail.com
+|| 
+|| ===================================================
+|| Enter command: || [Command entered:  edit -1 Wei Kang e/weikang@mailinator.com p/123456]
+|| The person index provided is invalid
+|| ===================================================
+|| Enter command: || [Command entered:  edit 1 Wei Kang e/weikang@mailinator.com p/123456]
+|| Person information updated: Wei Kang, Phone: 123456, Email: weikang@mailinator.com
+|| ===================================================
+|| Enter command: || [Command entered:  list]
+|| 	1. Wei Kang  Phone Number: 123456  Email: weikang@mailinator.com
 || 	2. Dickson Ee  Phone Number: 444444  Email: dickson@nus.edu.sg
 || 	3. Wei Kang  Phone Number: 999999  Email: weikang@gmail.com
 || 
