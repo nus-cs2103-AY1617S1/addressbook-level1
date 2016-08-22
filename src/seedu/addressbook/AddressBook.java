@@ -31,6 +31,10 @@ import java.util.Set;
  **/
 public class AddressBook {
 
+	/**
+	 * This is the file extension of the text file used to validate
+	 * the file path.
+	 */
     private static final String FILE_EXTENSION = ".txt";
 
 	/**
