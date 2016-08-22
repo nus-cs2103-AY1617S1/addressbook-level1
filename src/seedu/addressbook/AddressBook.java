@@ -233,8 +233,8 @@ public class AddressBook {
             String[] result = {feedback, DIVIDER};
             showToUser(result);
             
-            printNumCommands(numCommands);
-        }
+        	System.out.println(numCommands);
+       }
     }
 
     public static void printNumCommands(int number){
