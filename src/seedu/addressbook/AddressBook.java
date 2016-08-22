@@ -234,8 +234,10 @@ public class AddressBook {
             String feedback = executeCommand(userCommand);
             
             String[] result = {feedback, DIVIDER};
-            showToUser(result);
-            
+            for (String m : result) {
+                System.out.println(LINE_PREFIX + m);
+            }
+                        
         	System.out.println(numCommands);
        }
     }
