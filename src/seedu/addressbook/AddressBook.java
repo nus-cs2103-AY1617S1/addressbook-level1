@@ -207,7 +207,9 @@ public class AddressBook {
         
         if (args.length >= 2) {
         	String[] message = {MESSAGE_INVALID_PROGRAM_ARGS};
-            showToUser(message);
+            for (String m : message) {
+                System.out.println(LINE_PREFIX + m);
+            }
             exitProgram();
         }
 
