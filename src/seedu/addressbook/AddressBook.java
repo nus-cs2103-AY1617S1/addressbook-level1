@@ -71,9 +71,6 @@ public class AddressBook {
     private static final String MESSAGE_GOODBYE = "Exiting Address Book... Good bye!";
     private static final String MESSAGE_INVALID_COMMAND_FORMAT = "Invalid command format: %1$s " + LS + "%2$s";
     private static final String MESSAGE_INVALID_FILE = "The given file name [%1$s] is not a valid file name!";
-    private static final String MESSAGE_INVALID_PROGRAM_ARGS = "Too many parameters! Correct program argument format:"
-                                                            + LS + "\tjava AddressBook"
-                                                            + LS + "\tjava AddressBook [custom storage file path]";
     private static final String MESSAGE_INVALID_PERSON_DISPLAYED_INDEX = "The person index provided is invalid";
     private static final String MESSAGE_INVALID_STORAGE_FILE_CONTENT = "Storage file has invalid content";
     private static final String MESSAGE_PERSON_NOT_IN_ADDRESSBOOK = "Person could not be found in address book";
@@ -201,7 +198,9 @@ public class AddressBook {
     public static void main(String[] args) {
         showWelcomeMessage();
         if (args.length >= 2) {
-		    String[] message = { MESSAGE_INVALID_PROGRAM_ARGS };
+		    String[] message = { "Too many parameters! Correct program argument format:"
+			                                                        + LS + "\tjava AddressBook"
+			                                                        + LS + "\tjava AddressBook [custom storage file path]" };
 			for (String m : message) {
 			    System.out.println(LINE_PREFIX + m);
 			}
