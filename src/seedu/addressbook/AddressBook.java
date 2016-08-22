@@ -131,6 +131,9 @@ public class AddressBook {
     
     private static final String COMMAND_SORT_WORD = "sort";
     private static final String COMMAND_SORT_DESC = "List persons in alphabetical order.";
+    
+    private static final String COMMAND_EDIT_WORD = "edit";
+    private static final String COMMAND_EDIT_DESC = "Edits properties of a specific person";
 
     private static final String DIVIDER = "===================================================";
 
@@ -343,6 +346,8 @@ public class AddressBook {
         final String commandType = commandTypeAndParams[0];
         final String commandArgs = commandTypeAndParams[1];
         switch (commandType.toLowerCase()) {
+        case COMMAND_EDIT_WORD:
+            return executeEditPerson(commandArgs);
         case COMMAND_SORT_WORD:
         	return executeSortPersons();
         case COMMAND_ADD_WORD:
@@ -399,6 +404,44 @@ public class AddressBook {
         );
         showToUser(toBeDisplayed);
         return getMessageForPersonsDisplayedSummary(toBeDisplayed);
+    }
+    
+    /**
+     * Edits a person's properties
+     * Deletes the person and adds him again with the new properties
+     * 
+     * User suppose to list all persons first to specify index of person to edit.
+     * User keys in existing person's index, then will be prompted to enter new informations in the same format as add.
+     * 
+     * @param commandArgs
+     * @return
+     */
+    
+    private static String executeEditPerson(String commandArgs){
+        executeDeletePerson(commandArgs);
+        
+        String newProperties = "dummy " + getNewProperties();
+        
+        String[] propertyArray = splitCommandWordAndArgs(newProperties);
+        //String commandType = commandTypeAndParams[0];
+        String finalProperties = propertyArray[1];
+        
+        return executeAddPerson(finalProperties);
+    }
+    
+    /**
+     * sub-method for executeEditPerson, to get new properties of specified person from the user.
+     * User suppose to enter same format as adding new person.
+     * @return
+     */
+    private static String getNewProperties() {
+        System.out.print(LINE_PREFIX + "Enter new properties for person: ");
+        String inputLine = SCANNER.nextLine();
+        // silently consume all blank and comment lines
+        while (inputLine.trim().isEmpty() || inputLine.trim().charAt(0) == INPUT_COMMENT_MARKER) {
+            inputLine = SCANNER.nextLine();
+        }
+        return inputLine;
     }
 
     /**
