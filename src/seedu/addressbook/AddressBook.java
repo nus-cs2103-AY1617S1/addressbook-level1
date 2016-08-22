@@ -345,7 +345,7 @@ public class AddressBook {
         final String[] commandTypeAndParams = splitCommandWordAndArgs(userInputString);
         final String commandType = commandTypeAndParams[0];
         final String commandArgs = commandTypeAndParams[1];
-        switch (commandType.toLowerCase()) {
+        switch (commandType) {
         case COMMAND_EDIT_WORD:
             return executeEditPerson(commandArgs);
         case COMMAND_SORT_WORD:
@@ -509,7 +509,8 @@ public class AddressBook {
      * @return set of keywords as specified by args
      */
     private static Set<String> extractKeywordsFromFindPersonArgs(String findPersonCommandArgs) {
-        return new HashSet<>(splitByWhitespace(findPersonCommandArgs.trim()));
+        
+        return new HashSet<>(splitByWhitespace((findPersonCommandArgs.toUpperCase() + " " + findPersonCommandArgs.toLowerCase()).trim()));
     }
 
     /**
