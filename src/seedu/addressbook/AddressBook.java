@@ -226,7 +226,10 @@ public class AddressBook {
             String userCommand = getUserInput();
             
             String[] message = {"[Command entered:" + userCommand + "]"};
-            showToUser(message);
+            for (String m : message) {
+                System.out.println(LINE_PREFIX + m);
+            }
+            
             
             String feedback = executeCommand(userCommand);
             
