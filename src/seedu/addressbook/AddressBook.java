@@ -401,11 +401,12 @@ public class AddressBook {
     /**
      * Splits raw user input into command word and command arguments string
      *
+     * @param rawUserInput to split
      * @return  size 2 array; first element is the command type and second element is the arguments string
      */
     private static String[] splitCommandWordAndArgs(String rawUserInput) {
-        final String[] split =  rawUserInput.trim().split("\\s+", 2);
-        return split.length == 2 ? split : new String[] { split[0] , "" }; // else case: no parameters
+        final String[] splittedParams =  rawUserInput.trim().split("\\s+", 2);
+        return splittedParams.length == 2 ? splittedParams : new String[] { splittedParams[0] , "" }; // else case: no parameters
     }
 
     /**
