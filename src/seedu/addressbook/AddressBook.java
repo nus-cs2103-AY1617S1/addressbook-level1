@@ -31,7 +31,9 @@ import java.util.Set;
  **/
 public class AddressBook {
 
-    private static final int STORAGE_FILE_DEFAULT = 0;
+    private static final String VALID_FILE_PATH = ".txt";
+
+	private static final int STORAGE_FILE_DEFAULT = 0;
 
 	private static final int STORAGE_FILE_GIVEN = 1;
 
@@ -320,7 +322,7 @@ public class AddressBook {
      * TODO: Implement a more rigorous validity checking.
      */
     private static boolean isValidFilePath(String filePath) {
-        return filePath.endsWith(".txt");
+        return filePath.endsWith(VALID_FILE_PATH);
     }
 
     /**
