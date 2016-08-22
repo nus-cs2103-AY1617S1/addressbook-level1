@@ -200,7 +200,10 @@ public class AddressBook {
     public static void main(String[] args) {
         
         String[] welcomeMessage = {DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER};
-        showToUser(welcomeMessage);
+        for (String m : welcomeMessage) {
+            System.out.println(LINE_PREFIX + m);
+        }
+        
         
         if (args.length >= 2) {
         	String[] message = {MESSAGE_INVALID_PROGRAM_ARGS};
