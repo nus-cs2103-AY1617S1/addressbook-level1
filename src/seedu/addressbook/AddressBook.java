@@ -347,7 +347,12 @@ public class AddressBook {
         case COMMAND_FIND_WORD:
             final Set<String> keywords = extractKeywordsFromFindPersonArgs(commandArgs);
 			final ArrayList<String[]> personsFound = getPersonsWithNameContainingAnyKeyword(keywords);
-			showToUser(personsFound);
+			String listAsString = getDisplayString(personsFound);
+			String[] message = { listAsString };
+			for (String m : message) {
+			    System.out.println(LINE_PREFIX + m);
+			}
+			updateLatestViewedPersonListing(personsFound);
 			return getMessageForPersonsDisplayedSummary(personsFound);
         case COMMAND_LIST_WORD:
             return executeListAllPersonsInAddressBook();
@@ -515,7 +520,12 @@ public class AddressBook {
      */
     private static String executeListAllPersonsInAddressBook() {
         ArrayList<String[]> toBeDisplayed = getAllPersonsInAddressBook();
-        showToUser(toBeDisplayed);
+        String listAsString = getDisplayString(toBeDisplayed);
+		String[] message = { listAsString };
+		for (String m : message) {
+		    System.out.println(LINE_PREFIX + m);
+		}
+		updateLatestViewedPersonListing(toBeDisplayed);
         return getMessageForPersonsDisplayedSummary(toBeDisplayed);
     }
 
@@ -551,20 +561,6 @@ public class AddressBook {
     }
 
    /**
-     * Shows the list of persons to the user.
-     * The list will be indexed, starting from 1.
-     *
-     */
-    private static void showToUser(ArrayList<String[]> persons) {
-        String listAsString = getDisplayString(persons);
-		String[] message = { listAsString };
-        for (String m : message) {
-		    System.out.println(LINE_PREFIX + m);
-		}
-        updateLatestViewedPersonListing(persons);
-    }
-
-    /**
      * Returns the display string representation of the list of persons.
      */
     private static String getDisplayString(ArrayList<String[]> persons) {
