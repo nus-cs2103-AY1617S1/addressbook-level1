@@ -193,13 +193,20 @@ public class AddressBook {
         showWelcomeMessage();
         processProgramArgs(args);
         loadDataFromStorage();
-        while (true) {
+        executeCommandsUntilExit();
+    }
+
+	/**
+	 * Executes user's input until the user input a "exit" command.
+	 */
+	private static void executeCommandsUntilExit() {
+		while (true) {
             String userCommand = getUserInput();
             echoUserCommand(userCommand);
             String feedback = executeCommand(userCommand);
             showResultToUser(feedback);
         }
-    }
+	}
 
     /*
      * ==============NOTE TO STUDENTS======================================
