@@ -46,7 +46,6 @@ public class DisgustingAddressBook {
     private static final String MESSAGE_DELETE_PERSON_SUCCESS = "Deleted Person: %1$s";
     private static final String MESSAGE_DISPLAY_PERSON_DATA = "%1$s  Phone Number: %2$s  Email: %3$s";
     private static final String MESSAGE_DISPLAY_LIST_ELEMENT_INDEX = "%1$d. ";
-    private static final String MESSAGE_GOODBYE = "Exiting Address Book... Good bye!";
     private static final String MESSAGE_INVALID_COMMAND_FORMAT = "Invalid command format: %1$s " + System.lineSeparator() + "|| " + "%2$s";
     private static final String MESSAGE_INVALID_FILE = "The given file name [%1$s] is not a valid file name!";
     private static final String MESSAGE_INVALID_PROGRAM_ARGS = "Too many parameters! Correct program argument format:"
@@ -98,14 +97,6 @@ public class DisgustingAddressBook {
     private static final String COMMAND_EXIT_WORD = "exit";
     private static final String COMMAND_EXIT_DESC = "Exits the program.";
     private static final String COMMAND_EXIT_EXAMPLE = COMMAND_EXIT_WORD;
-
-    private static final String DIVIDER = "===================================================";
-
-
-    /**
-     * The number of data elements for a single person.
-     */
-    private static final int PERSON_DATA_COUNT = 3;
 
     /**
      * Offset required to convert between 1-indexing and 0-indexing.COMMAND_
@@ -162,7 +153,7 @@ public class DisgustingAddressBook {
      */
     public static void main(String[] args) {
     	
-        String[] message = { DIVIDER, DIVIDER, "AddessBook Level 1 - Version 1.0", MESSAGE_WELCOME, DIVIDER }; //Displays a standard welcome message to user
+        String[] message = { "===================================================", "===================================================", "AddessBook Level 1 - Version 1.0", MESSAGE_WELCOME, "===================================================" }; //Displays a standard welcome message to user
 		for (String m : message) {
 		    System.out.println("|| " + m);
 		} 
@@ -177,7 +168,7 @@ public class DisgustingAddressBook {
 					for (String m : message1) {
 					    System.out.println("|| " + m);
 					}
-				    String[] message2 = { MESSAGE_GOODBYE, DIVIDER, DIVIDER };
+				    String[] message2 = { "Exiting Address Book... Good bye!", "===================================================", "===================================================" };
 					for (String m1 : message2) {
 					    System.out.println("|| " + m1);
 					}
@@ -201,7 +192,7 @@ public class DisgustingAddressBook {
 				for (String m : message1) {
 			    System.out.println("|| " + m);
 			}
-			String[] message2 = { MESSAGE_GOODBYE, DIVIDER, DIVIDER };
+			String[] message2 = { "Exiting Address Book... Good bye!", "===================================================", "===================================================" };
 			for (String m1 : message2) {
 			    System.out.println("|| " + m1);
 			}
@@ -213,7 +204,7 @@ public class DisgustingAddressBook {
 		    for (String m3 : new String[]{MESSAGE_INVALID_STORAGE_FILE_CONTENT}) {
 			    System.out.println("|| " + m3);
 			}
-		    String[] message4 = { MESSAGE_GOODBYE, DIVIDER, DIVIDER };
+		    String[] message4 = { "Exiting Address Book... Good bye!", "===================================================", "===================================================" };
 			for (String m11 : message4) {
 			    System.out.println("|| " + m11);
 			}
@@ -256,7 +247,7 @@ public class DisgustingAddressBook {
 			
 		    String feedbackToPrint = executeCommand(userCommand);
 		    
-		    String[] message5 = { feedbackToPrint, DIVIDER };
+		    String[] message5 = { feedbackToPrint, "===================================================" };
 			for (String m4 : message5) {
 			    System.out.println("|| " + m4);
 			}
@@ -281,8 +272,25 @@ public class DisgustingAddressBook {
         
     	switch ((userInputString.trim().split("\\s+", 2).length == 2 ? userInputString.trim().split("\\s+", 2) : new String[] { userInputString.trim().split("\\s+", 2)[0] , "" })[0]) {
 	        case COMMAND_ADD_WORD:
+			String encoded = (userInputString.trim().split("\\s+", 2).length == 2 ? userInputString.trim().split("\\s+", 2) : new String[] { userInputString.trim().split("\\s+", 2)[0] , "" })[1];
 				// try decoding a person from the raw args
-				final Optional<String[]> decodedResult = decodePersonFromString((userInputString.trim().split("\\s+", 2).length == 2 ? userInputString.trim().split("\\s+", 2) : new String[] { userInputString.trim().split("\\s+", 2)[0] , "" })[1]);
+				final Optional<String[]> decodedResult = (!(encoded.trim().split("p/" + '|' + "e/").length == 3 // 3 arguments
+				&& !encoded.trim().split("p/" + '|' + "e/")[0].isEmpty() // non-empty arguments
+				&& !encoded.trim().split("p/" + '|' + "e/")[1].isEmpty()
+				&& !encoded.trim().split("p/" + '|' + "e/")[2].isEmpty())) ? Optional.empty() :
+				
+				// check that the constructed person is valid
+				new String[] {encoded.substring(0, Math.min(encoded.indexOf("e/"), encoded.indexOf("p/"))).trim(), (encoded.indexOf("p/") > encoded.indexOf("e/")) ? encoded.substring(encoded.indexOf("p/"), encoded.length()).trim().replace("p/", "")
+				: encoded.substring(encoded.indexOf("p/"), encoded.indexOf("e/")).trim().replace("p/", ""), (encoded.indexOf("e/") > encoded.indexOf("p/")) ?  encoded.substring(encoded.indexOf("e/"), encoded.length()).trim().replace("e/", "")
+				:encoded.substring(encoded.indexOf("e/"), encoded.indexOf("p/")).trim().replace("e/", "")}[0].matches("(\\w|\\s)+")
+				&& new String[] {encoded.substring(0, Math.min(encoded.indexOf("e/"), encoded.indexOf("p/"))).trim(), (encoded.indexOf("p/") > encoded.indexOf("e/")) ? encoded.substring(encoded.indexOf("p/"), encoded.length()).trim().replace("p/", "")
+				: encoded.substring(encoded.indexOf("p/"), encoded.indexOf("e/")).trim().replace("p/", ""), (encoded.indexOf("e/") > encoded.indexOf("p/")) ?  encoded.substring(encoded.indexOf("e/"), encoded.length()).trim().replace("e/", "")
+				:encoded.substring(encoded.indexOf("e/"), encoded.indexOf("p/")).trim().replace("e/", "")}[1].matches("\\d+")
+				&& new String[] {encoded.substring(0, Math.min(encoded.indexOf("e/"), encoded.indexOf("p/"))).trim(), (encoded.indexOf("p/") > encoded.indexOf("e/")) ? encoded.substring(encoded.indexOf("p/"), encoded.length()).trim().replace("p/", "")
+				: encoded.substring(encoded.indexOf("p/"), encoded.indexOf("e/")).trim().replace("p/", ""), (encoded.indexOf("e/") > encoded.indexOf("p/")) ?  encoded.substring(encoded.indexOf("e/"), encoded.length()).trim().replace("e/", "")
+				:encoded.substring(encoded.indexOf("e/"), encoded.indexOf("p/")).trim().replace("e/", "")}[2].matches("\\S+@\\S+\\.\\S+") ? Optional.of(new String[] {encoded.substring(0, Math.min(encoded.indexOf("e/"), encoded.indexOf("p/"))).trim(), (encoded.indexOf("p/") > encoded.indexOf("e/")) ? encoded.substring(encoded.indexOf("p/"), encoded.length()).trim().replace("p/", "")
+				: encoded.substring(encoded.indexOf("p/"), encoded.indexOf("e/")).trim().replace("p/", ""), (encoded.indexOf("e/") > encoded.indexOf("p/")) ?  encoded.substring(encoded.indexOf("e/"), encoded.length()).trim().replace("e/", "")
+				:encoded.substring(encoded.indexOf("e/"), encoded.indexOf("p/")).trim().replace("e/", "")}) : Optional.empty();
 				
 				// checks if args are valid (decode result will not be present if the person is invalid)
 				if (!decodedResult.isPresent()) {
@@ -314,7 +322,7 @@ public class DisgustingAddressBook {
 					for (String m3 : message3) {
 					    System.out.println("|| " + m3);
 					}
-				    String[] message11 = { MESSAGE_GOODBYE, DIVIDER, DIVIDER };
+				    String[] message11 = { "Exiting Address Book... Good bye!", "===================================================", "===================================================" };
 					for (String m11 : message11) {
 					    System.out.println("|| " + m11);
 					}
@@ -359,13 +367,14 @@ public class DisgustingAddressBook {
 				
 				final int targetVisibleIndex = Integer.parseInt((userInputString.trim().split("\\s+", 2).length == 2 ? userInputString.trim().split("\\s+", 2) : new String[] { userInputString.trim().split("\\s+", 2)[0] , "" })[1].trim());
 				
-				if (!(targetVisibleIndex >= DISPLAYED_INDEX_OFFSET && targetVisibleIndex < getLatestPersonListingView().size() + DISPLAYED_INDEX_OFFSET)) {
+				if (!(targetVisibleIndex >= DISPLAYED_INDEX_OFFSET && targetVisibleIndex < latestPersonListingView.size() + DISPLAYED_INDEX_OFFSET)) {
 				    return MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
 				}
 				
 				final HashMap<PersonProperty, String> targetInModel = latestPersonListingView.get(targetVisibleIndex - DISPLAYED_INDEX_OFFSET);
 				
-				return deletePersonFromAddressBook(targetInModel) ? String.format(MESSAGE_DELETE_PERSON_SUCCESS, getMessageForFormattedPersonData(targetInModel)) // success
+				return deletePersonFromAddressBook(targetInModel) ? String.format(MESSAGE_DELETE_PERSON_SUCCESS, String.format(MESSAGE_DISPLAY_PERSON_DATA,
+				targetInModel.get(PersonProperty.NAME), targetInModel.get(PersonProperty.PHONE), targetInModel.get(PersonProperty.EMAIL))) // success
 				                                                  : MESSAGE_PERSON_NOT_IN_ADDRESSBOOK; // not found
 	        case COMMAND_CLEAR_WORD:
 				ALL_PERSONS.clear();
@@ -384,7 +393,7 @@ public class DisgustingAddressBook {
 				    for (String m1 : new String[] { String.format(MESSAGE_ERROR_WRITING_TO_FILE, storageFilePath) }) {
 					    System.out.println("|| " + m1);
 					}
-				    for (String m1 : new String[] { MESSAGE_GOODBYE, DIVIDER, DIVIDER }) {
+				    for (String m1 : new String[] { "Exiting Address Book... Good bye!", "===================================================", "===================================================" }) {
 					    System.out.println("|| " + m1);
 					}
 					System.exit(0);
@@ -410,7 +419,7 @@ public class DisgustingAddressBook {
 				+ String.format("%1$s: %2$s", COMMAND_HELP_WORD, COMMAND_HELP_DESC)
 				+ String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_HELP_EXAMPLE);
 	        case COMMAND_EXIT_WORD:
-	        	for (String m : new String[] { MESSAGE_GOODBYE, DIVIDER, DIVIDER }) {
+	        	for (String m : new String[] { "Exiting Address Book... Good bye!", "===================================================", "===================================================" }) {
 				    System.out.println("|| " + m);
 				}
 				System.exit(0);
@@ -466,42 +475,16 @@ public class DisgustingAddressBook {
             final HashMap<PersonProperty, String> person = persons.get(i);
             final int displayIndex = i + DISPLAYED_INDEX_OFFSET;
             messageAccumulator.append('\t')
-                              .append(getIndexedPersonListElementMessage(displayIndex, person))
+                              .append(String.format(MESSAGE_DISPLAY_LIST_ELEMENT_INDEX, displayIndex) 
+							+ String.format(MESSAGE_DISPLAY_PERSON_DATA,
+							person.get(PersonProperty.NAME), person.get(PersonProperty.PHONE), person.get(PersonProperty.EMAIL)))
                               .append(System.lineSeparator() + "|| ");
         }
         
     	return messageAccumulator.toString();
     }
 
-    /**
-     * Constructs a prettified listing element message to represent a person and their data.
-     *
-     * @param visibleIndex visible index for this listing
-     * @param person to show
-     * @return formatted listing message with index
-     */
-    private static String getIndexedPersonListElementMessage(int visibleIndex, HashMap<PersonProperty, String> person) {
-        return String.format(MESSAGE_DISPLAY_LIST_ELEMENT_INDEX, visibleIndex) 
-        		+ getMessageForFormattedPersonData(person);
-    }
-
-    /**
-     * Constructs a prettified string to show the user a person's data.
-     *
-     * @param person to show
-     * @return formatted message showing internal state
-     */
-    private static String getMessageForFormattedPersonData(HashMap<PersonProperty, String> person) {
-        return String.format(MESSAGE_DISPLAY_PERSON_DATA,
-                person.get(PersonProperty.NAME), person.get(PersonProperty.PHONE), person.get(PersonProperty.EMAIL));
-    }
-
-    /**
-     * @return unmodifiable list view of the last person listing view
-     */
-    private static ArrayList<HashMap<PersonProperty, String>> getLatestPersonListingView() {
-        return latestPersonListingView;
-    }
+    
 
 
     /*
@@ -521,7 +504,7 @@ public class DisgustingAddressBook {
         if (storageFile.exists()) {
             return;
         }
-		String[] message = { String.format(MESSAGE_ERROR_MISSING_STORAGE_FILE, filePath) };
+		String[] message = { String.format("Storage file missing: %1$s", filePath) };
 
         for (String m : message) {
 		    System.out.println("|| " + m);
@@ -529,17 +512,17 @@ public class DisgustingAddressBook {
 
         try {
             storageFile.createNewFile();
-			String[] message1 = { String.format(MESSAGE_STORAGE_FILE_CREATED, filePath) };
+			String[] message1 = { String.format("Created new empty storage file: %1$s", filePath) };
             for (String m : message1) {
 			    System.out.println("|| " + m);
 			}
             
         } catch (IOException ioe) {
-            String[] message1 = { String.format(MESSAGE_ERROR_CREATING_STORAGE_FILE, filePath) };
+            String[] message1 = { String.format("Error: unable to create file: %1$s", filePath) };
 			for (String m : message1) {
 			    System.out.println("|| " + m);
 			}
-            String[] message2 = { MESSAGE_GOODBYE, DIVIDER, DIVIDER };
+            String[] message2 = { "Exiting Address Book... Good bye!", "===================================================", "===================================================" };
 			for (String m1 : message2) {
 			    System.out.println("|| " + m1);
 			}
@@ -560,22 +543,22 @@ public class DisgustingAddressBook {
             linesInFile = new ArrayList<String>(Files.readAllLines(Paths.get(filePath)));
             
         } catch (FileNotFoundException fnfe) {
-            String[] message = { String.format(MESSAGE_ERROR_MISSING_STORAGE_FILE, filePath) };
+            String[] message = { String.format("Storage file missing: %1$s", filePath) };
 			for (String m : message) {
 			    System.out.println("|| " + m);
 			}
-            String[] message1 = { MESSAGE_GOODBYE, DIVIDER, DIVIDER };
+            String[] message1 = { "Exiting Address Book... Good bye!", "===================================================", "===================================================" };
 			for (String m1 : message1) {
 			    System.out.println("|| " + m1);
 			}
 			System.exit(0);
             
         } catch (IOException ioe) {
-            String[] message = { String.format(MESSAGE_ERROR_READING_FROM_FILE, filePath) };
+            String[] message = { String.format("Unexpected error: unable to read from file: %1$s", filePath) };
 			for (String m : message) {
 			    System.out.println("|| " + m);
 			}
-            String[] message1 = { MESSAGE_GOODBYE, DIVIDER, DIVIDER };
+            String[] message1 = { "Exiting Address Book... Good bye!", "===================================================", "===================================================" };
 			for (String m1 : message1) {
 			    System.out.println("|| " + m1);
 			}
@@ -591,39 +574,6 @@ public class DisgustingAddressBook {
      *        INTERNAL ADDRESS BOOK DATA METHODS
      * ================================================================================
      */
-
-    /**
-     * Deletes a person from the address book, target is identified by it's absolute index in the full list.
-     * Saves changes to storage file.
-     *
-     * @param index absolute index of person to delete (index within {@link #ALL_PERSONS})
-     */
-    private static void deletePersonFromAddressBook(int index) {
-        ALL_PERSONS.remove(index);
-        for (HashMap<PersonProperty, String> person : ALL_PERSONS) {
-		    new ArrayList<>().add(String.format("%1$s " // name
-			            + "p/" + "%2$s " // phone
-			            + "e/" + "%3$s",
-			person.get(PersonProperty.NAME), person.get(PersonProperty.PHONE), person.get(PersonProperty.EMAIL)));
-		}
-		final ArrayList<String> linesToWrite = new ArrayList<>();
-		
-		try {
-		    Files.write(Paths.get(storageFilePath), linesToWrite);
-		    
-		} catch (IOException ioe) {
-		    String[] message = { String.format(MESSAGE_ERROR_WRITING_TO_FILE, storageFilePath) };
-			for (String m : message) {
-			    System.out.println("|| " + m);
-			}
-		    String[] message1 = { MESSAGE_GOODBYE, DIVIDER, DIVIDER };
-			for (String m1 : message1) {
-			    System.out.println("|| " + m1);
-			}
-			System.exit(0);
-		    
-		}
-    }
 
     /**
      * Deletes the specified person from the addressbook if it is inside. Saves any changes to storage file.
@@ -651,7 +601,7 @@ public class DisgustingAddressBook {
 				for (String m : message) {
 				    System.out.println("|| " + m);
 				}
-			    String[] message1 = { MESSAGE_GOODBYE, DIVIDER, DIVIDER };
+			    String[] message1 = { "Exiting Address Book... Good bye!", "===================================================", "===================================================" };
 				for (String m1 : message1) {
 				    System.out.println("|| " + m1);
 				}
@@ -664,68 +614,6 @@ public class DisgustingAddressBook {
     }
 
     /**
-     * Create a person for use in the internal data.
-     *
-     * @param name of person
-     * @param phone without data prefix
-     * @param email without data prefix
-     * @return constructed person
-     */
-    private static String[] makePersonFromData(String name, String phone, String email) {
-        final String[] person = new String[PERSON_DATA_COUNT];
-        person[0] = name;
-        person[1] = phone;
-        person[2] = email;
-        return person;
-    }
-
-    
-    /**
-     * Decodes a person from it's supposed string representation.
-     *
-     * @param encoded string to be decoded
-     * @return if cannot decode: empty Optional
-     *         else: Optional containing decoded person
-     */
-    private static Optional<String[]> decodePersonFromString(String encoded) {
-        // check that we can extract the parts of a person from the encoded string
-        if (!(encoded.trim().split("p/" + '|' + "e/").length == 3 // 3 arguments
-		&& !encoded.trim().split("p/" + '|' + "e/")[0].isEmpty() // non-empty arguments
-		&& !encoded.trim().split("p/" + '|' + "e/")[1].isEmpty()
-		&& !encoded.trim().split("p/" + '|' + "e/")[2].isEmpty())) {
-            return Optional.empty();
-        }
-        // check that the constructed person is valid
-        return makePersonFromData(
-                encoded.substring(0, Math.min(encoded.indexOf("e/"), encoded.indexOf("p/"))).trim(),
-                (encoded.indexOf("p/") > encoded.indexOf("e/")) ? encoded.substring(encoded.indexOf("p/"), encoded.length()).trim().replace("p/", "")
-				: encoded.substring(encoded.indexOf("p/"), encoded.indexOf("e/")).trim().replace("p/", ""),
-                (encoded.indexOf("e/") > encoded.indexOf("p/")) ?  encoded.substring(encoded.indexOf("e/"), encoded.length()).trim().replace("e/", "")
-				:encoded.substring(encoded.indexOf("e/"), encoded.indexOf("p/")).trim().replace("e/", "")
-        )[0].matches("(\\w|\\s)+")
-		&& makePersonFromData(
-                encoded.substring(0, Math.min(encoded.indexOf("e/"), encoded.indexOf("p/"))).trim(),
-                (encoded.indexOf("p/") > encoded.indexOf("e/")) ? encoded.substring(encoded.indexOf("p/"), encoded.length()).trim().replace("p/", "")
-				: encoded.substring(encoded.indexOf("p/"), encoded.indexOf("e/")).trim().replace("p/", ""),
-                (encoded.indexOf("e/") > encoded.indexOf("p/")) ?  encoded.substring(encoded.indexOf("e/"), encoded.length()).trim().replace("e/", "")
-				:encoded.substring(encoded.indexOf("e/"), encoded.indexOf("p/")).trim().replace("e/", "")
-        )[1].matches("\\d+")
-		&& makePersonFromData(
-                encoded.substring(0, Math.min(encoded.indexOf("e/"), encoded.indexOf("p/"))).trim(),
-                (encoded.indexOf("p/") > encoded.indexOf("e/")) ? encoded.substring(encoded.indexOf("p/"), encoded.length()).trim().replace("p/", "")
-				: encoded.substring(encoded.indexOf("p/"), encoded.indexOf("e/")).trim().replace("p/", ""),
-                (encoded.indexOf("e/") > encoded.indexOf("p/")) ?  encoded.substring(encoded.indexOf("e/"), encoded.length()).trim().replace("e/", "")
-				:encoded.substring(encoded.indexOf("e/"), encoded.indexOf("p/")).trim().replace("e/", "")
-        )[2].matches("\\S+@\\S+\\.\\S+") ? Optional.of(makePersonFromData(
-                encoded.substring(0, Math.min(encoded.indexOf("e/"), encoded.indexOf("p/"))).trim(),
-                (encoded.indexOf("p/") > encoded.indexOf("e/")) ? encoded.substring(encoded.indexOf("p/"), encoded.length()).trim().replace("p/", "")
-				: encoded.substring(encoded.indexOf("p/"), encoded.indexOf("e/")).trim().replace("p/", ""),
-                (encoded.indexOf("e/") > encoded.indexOf("p/")) ?  encoded.substring(encoded.indexOf("e/"), encoded.length()).trim().replace("e/", "")
-				:encoded.substring(encoded.indexOf("e/"), encoded.indexOf("p/")).trim().replace("e/", "")
-        )) : Optional.empty();
-    }
-
-    /**
      * Decode persons from a list of string representations.
      *
      * @param encodedPersons strings to be decoded
@@ -734,10 +622,42 @@ public class DisgustingAddressBook {
      */
     private static Optional<ArrayList<String[]>> decodePersonsFromStrings(ArrayList<String> encodedPersons) {
         for (String encodedPerson : encodedPersons) {
-            if (!decodePersonFromString(encodedPerson).isPresent()) {
+            if (!((!(encodedPerson.trim().split("p/" + '|' + "e/").length == 3 // 3 arguments
+			&& !encodedPerson.trim().split("p/" + '|' + "e/")[0].isEmpty() // non-empty arguments
+			&& !encodedPerson.trim().split("p/" + '|' + "e/")[1].isEmpty()
+			&& !encodedPerson.trim().split("p/" + '|' + "e/")[2].isEmpty())) ? Optional.empty() :
+			
+			// check that the constructed person is valid
+			new String[] {encodedPerson.substring(0, Math.min(encodedPerson.indexOf("e/"), encodedPerson.indexOf("p/"))).trim(), (encodedPerson.indexOf("p/") > encodedPerson.indexOf("e/")) ? encodedPerson.substring(encodedPerson.indexOf("p/"), encodedPerson.length()).trim().replace("p/", "")
+			: encodedPerson.substring(encodedPerson.indexOf("p/"), encodedPerson.indexOf("e/")).trim().replace("p/", ""), (encodedPerson.indexOf("e/") > encodedPerson.indexOf("p/")) ?  encodedPerson.substring(encodedPerson.indexOf("e/"), encodedPerson.length()).trim().replace("e/", "")
+			:encodedPerson.substring(encodedPerson.indexOf("e/"), encodedPerson.indexOf("p/")).trim().replace("e/", "")}[0].matches("(\\w|\\s)+")
+			&& new String[] {encodedPerson.substring(0, Math.min(encodedPerson.indexOf("e/"), encodedPerson.indexOf("p/"))).trim(), (encodedPerson.indexOf("p/") > encodedPerson.indexOf("e/")) ? encodedPerson.substring(encodedPerson.indexOf("p/"), encodedPerson.length()).trim().replace("p/", "")
+			: encodedPerson.substring(encodedPerson.indexOf("p/"), encodedPerson.indexOf("e/")).trim().replace("p/", ""), (encodedPerson.indexOf("e/") > encodedPerson.indexOf("p/")) ?  encodedPerson.substring(encodedPerson.indexOf("e/"), encodedPerson.length()).trim().replace("e/", "")
+			:encodedPerson.substring(encodedPerson.indexOf("e/"), encodedPerson.indexOf("p/")).trim().replace("e/", "")}[1].matches("\\d+")
+			&& new String[] {encodedPerson.substring(0, Math.min(encodedPerson.indexOf("e/"), encodedPerson.indexOf("p/"))).trim(), (encodedPerson.indexOf("p/") > encodedPerson.indexOf("e/")) ? encodedPerson.substring(encodedPerson.indexOf("p/"), encodedPerson.length()).trim().replace("p/", "")
+			: encodedPerson.substring(encodedPerson.indexOf("p/"), encodedPerson.indexOf("e/")).trim().replace("p/", ""), (encodedPerson.indexOf("e/") > encodedPerson.indexOf("p/")) ?  encodedPerson.substring(encodedPerson.indexOf("e/"), encodedPerson.length()).trim().replace("e/", "")
+			:encodedPerson.substring(encodedPerson.indexOf("e/"), encodedPerson.indexOf("p/")).trim().replace("e/", "")}[2].matches("\\S+@\\S+\\.\\S+") ? Optional.of(new String[] {encodedPerson.substring(0, Math.min(encodedPerson.indexOf("e/"), encodedPerson.indexOf("p/"))).trim(), (encodedPerson.indexOf("p/") > encodedPerson.indexOf("e/")) ? encodedPerson.substring(encodedPerson.indexOf("p/"), encodedPerson.length()).trim().replace("p/", "")
+			: encodedPerson.substring(encodedPerson.indexOf("p/"), encodedPerson.indexOf("e/")).trim().replace("p/", ""), (encodedPerson.indexOf("e/") > encodedPerson.indexOf("p/")) ?  encodedPerson.substring(encodedPerson.indexOf("e/"), encodedPerson.length()).trim().replace("e/", "")
+			:encodedPerson.substring(encodedPerson.indexOf("e/"), encodedPerson.indexOf("p/")).trim().replace("e/", "")}) : Optional.empty()).isPresent()) {
                 return Optional.empty();
             }
-            new ArrayList<>().add(decodePersonFromString(encodedPerson).get());
+            new ArrayList<>().add(((!(encodedPerson.trim().split("p/" + '|' + "e/").length == 3 // 3 arguments
+			&& !encodedPerson.trim().split("p/" + '|' + "e/")[0].isEmpty() // non-empty arguments
+			&& !encodedPerson.trim().split("p/" + '|' + "e/")[1].isEmpty()
+			&& !encodedPerson.trim().split("p/" + '|' + "e/")[2].isEmpty())) ? Optional.empty() :
+			
+			// check that the constructed person is valid
+			new String[] {encodedPerson.substring(0, Math.min(encodedPerson.indexOf("e/"), encodedPerson.indexOf("p/"))).trim(), (encodedPerson.indexOf("p/") > encodedPerson.indexOf("e/")) ? encodedPerson.substring(encodedPerson.indexOf("p/"), encodedPerson.length()).trim().replace("p/", "")
+			: encodedPerson.substring(encodedPerson.indexOf("p/"), encodedPerson.indexOf("e/")).trim().replace("p/", ""), (encodedPerson.indexOf("e/") > encodedPerson.indexOf("p/")) ?  encodedPerson.substring(encodedPerson.indexOf("e/"), encodedPerson.length()).trim().replace("e/", "")
+			:encodedPerson.substring(encodedPerson.indexOf("e/"), encodedPerson.indexOf("p/")).trim().replace("e/", "")}[0].matches("(\\w|\\s)+")
+			&& new String[] {encodedPerson.substring(0, Math.min(encodedPerson.indexOf("e/"), encodedPerson.indexOf("p/"))).trim(), (encodedPerson.indexOf("p/") > encodedPerson.indexOf("e/")) ? encodedPerson.substring(encodedPerson.indexOf("p/"), encodedPerson.length()).trim().replace("p/", "")
+			: encodedPerson.substring(encodedPerson.indexOf("p/"), encodedPerson.indexOf("e/")).trim().replace("p/", ""), (encodedPerson.indexOf("e/") > encodedPerson.indexOf("p/")) ?  encodedPerson.substring(encodedPerson.indexOf("e/"), encodedPerson.length()).trim().replace("e/", "")
+			:encodedPerson.substring(encodedPerson.indexOf("e/"), encodedPerson.indexOf("p/")).trim().replace("e/", "")}[1].matches("\\d+")
+			&& new String[] {encodedPerson.substring(0, Math.min(encodedPerson.indexOf("e/"), encodedPerson.indexOf("p/"))).trim(), (encodedPerson.indexOf("p/") > encodedPerson.indexOf("e/")) ? encodedPerson.substring(encodedPerson.indexOf("p/"), encodedPerson.length()).trim().replace("p/", "")
+			: encodedPerson.substring(encodedPerson.indexOf("p/"), encodedPerson.indexOf("e/")).trim().replace("p/", ""), (encodedPerson.indexOf("e/") > encodedPerson.indexOf("p/")) ?  encodedPerson.substring(encodedPerson.indexOf("e/"), encodedPerson.length()).trim().replace("e/", "")
+			:encodedPerson.substring(encodedPerson.indexOf("e/"), encodedPerson.indexOf("p/")).trim().replace("e/", "")}[2].matches("\\S+@\\S+\\.\\S+") ? Optional.of(new String[] {encodedPerson.substring(0, Math.min(encodedPerson.indexOf("e/"), encodedPerson.indexOf("p/"))).trim(), (encodedPerson.indexOf("p/") > encodedPerson.indexOf("e/")) ? encodedPerson.substring(encodedPerson.indexOf("p/"), encodedPerson.length()).trim().replace("p/", "")
+			: encodedPerson.substring(encodedPerson.indexOf("p/"), encodedPerson.indexOf("e/")).trim().replace("p/", ""), (encodedPerson.indexOf("e/") > encodedPerson.indexOf("p/")) ?  encodedPerson.substring(encodedPerson.indexOf("e/"), encodedPerson.length()).trim().replace("e/", "")
+			:encodedPerson.substring(encodedPerson.indexOf("e/"), encodedPerson.indexOf("p/")).trim().replace("e/", "")}) : Optional.empty()).get());
         }
         return Optional.of(new ArrayList<>());
     }
