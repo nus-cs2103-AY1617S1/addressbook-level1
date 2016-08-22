@@ -455,13 +455,26 @@ public class AddressBook {
     private static ArrayList<String[]> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
         for (String[] person : getAllPersonsInAddressBook()) {
-            final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
-            if (!Collections.disjoint(wordsInName, keywords)) {
+            if (hasNameMatchingKeywords(keywords,person)) {
                 matchedPersons.add(person);
             }
         }
         return matchedPersons;
     }
+    
+    /**
+     * Check if the specified person's name matched any of the keywords
+     *
+     * @param keywords
+     *            for searching, person for comparison
+     * @return true if person's name contain some of the
+     *         keywords
+     */
+    private static boolean hasNameMatchingKeywords(Collection<String> keywords, String[] person) {
+	final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
+	return !Collections.disjoint(wordsInName, keywords);
+    }
+    
 
     /**
      * Deletes person identified using last displayed index.
