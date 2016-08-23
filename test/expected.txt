@@ -244,6 +244,16 @@
 || 
 || 3 persons found!
 || ===================================================
+|| Enter command: || [Command entered:  edit Amanda Bynes p/222222 e/amanda@notreal.potato]
+|| Not very new person edited: Amanda Bynes, Phone: 222222, Email: amanda@notreal.potato
+|| ===================================================
+|| Enter command: || [Command entered:  list]
+|| 	1. Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
+|| 	2. Dickson Ee  Phone Number: 444444  Email: dickson@nus.edu.sg
+|| 	3. Amanda Bynes  Phone Number: 222222  Email: amanda@notreal.potato
+|| 
+|| 3 persons found!
+|| ===================================================
 || Enter command: || [Command entered:  clear]
 || Address book has been cleared!
 || ===================================================
