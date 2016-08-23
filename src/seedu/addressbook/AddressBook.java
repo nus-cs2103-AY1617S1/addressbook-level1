@@ -232,7 +232,12 @@ public class AddressBook {
 			}
 		}
 		initialiseAddressBookModel(loadPersonsFromFile(storageFilePath));
-		run();
+		while (true) {
+			String userCommand = getUserInput();
+			echoUserCommand(userCommand);
+			String feedback = executeCommand(userCommand);
+			showResultToUser(feedback);
+		}
 	}
 
 	/**
