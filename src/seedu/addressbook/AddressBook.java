@@ -454,15 +454,27 @@ public class AddressBook {
      */
     private static ArrayList<String[]> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
+
         for (String[] person : getAllPersonsInAddressBook()) {
             final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
-            if (!Collections.disjoint(wordsInName, keywords)) {
-                matchedPersons.add(person);
+            if (!Collections.disjoint(toUpperCaseSet(wordsInName), toUpperCaseSet(keywords))) {
+            	matchedPersons.add(person);
             }
         }
         return matchedPersons;
     }
 
+
+    private static Set<String> toUpperCaseSet(Collection<String> strings) {
+    	String[] stringArray = new String[strings.size()];
+    	strings.toArray(stringArray);
+    	for (int i = 0; i < stringArray.length; i++) {
+    		stringArray[i] = stringArray[i].toUpperCase(); 
+    	}
+    	return new HashSet<String>(Arrays.asList(stringArray)); 
+    }
+    
+    
     /**
      * Deletes person identified using last displayed index.
      *
