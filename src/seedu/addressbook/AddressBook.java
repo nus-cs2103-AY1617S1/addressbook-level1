@@ -113,6 +113,10 @@ public class AddressBook {
 	private static final Object COMMAND_SORT_DESC = "Sorts all persons either by ascending or descending";
 	private static final Object COMMAND_SORT_EXAMPLE = COMMAND_SORT_WORD + " a";
 	
+	private static final String COMMAND_EDIT_WORD = "edit";
+	private static final Object COMMAND_EDIT_DESC = "Sorts all persons either by ascending or descending";
+	private static final Object COMMAND_EDIT_EXAMPLE = COMMAND_SORT_WORD + " a";	
+	
     private static final String COMMAND_LIST_WORD = "list";
     private static final String COMMAND_LIST_DESC = "Displays all persons as a list with index numbers.";
     private static final String COMMAND_LIST_EXAMPLE = COMMAND_LIST_WORD;
@@ -156,8 +160,6 @@ public class AddressBook {
      * Offset required to convert between 1-indexing and 0-indexing.COMMAND_
      */
     private static final int DISPLAYED_INDEX_OFFSET = 1;
-
-
 
     /**
      * If the first non-whitespace character in a user's input line is this, that line will be ignored.
@@ -351,6 +353,8 @@ public class AddressBook {
             return executeFindPersons(commandArgs);
         case COMMAND_SORT_WORD:
         	return executeSortPersons(commandArgs);
+        case COMMAND_EDIT_WORD:
+        	return executeEditPersons(commandArgs);
         case COMMAND_LIST_WORD:
             return executeListAllPersonsInAddressBook();
         case COMMAND_DELETE_WORD:
@@ -365,6 +369,10 @@ public class AddressBook {
             return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
         }
     }
+
+	private static String executeEditPersons(String commandArgs) {
+		return null;
+	}
 
 	/**
      * Splits raw user input into command word and command arguments string
