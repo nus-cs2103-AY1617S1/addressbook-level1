@@ -329,19 +329,51 @@ public class AddressBook {
         final String commandArgs = commandTypeAndParams[1];
         switch (commandType) {
         case COMMAND_ADD_WORD:
-            return executeAddPerson(commandArgs);
+            // try decoding a person from the raw args
+			final Optional<String[]> decodeResult = decodePersonFromString(commandArgs);
+			
+			// checks if args are valid (decode result will not be present if the person is invalid)
+			if (!decodeResult.isPresent()) {
+			    return getMessageForInvalidCommandInput(COMMAND_ADD_WORD, getUsageInfoForAddCommand());
+			}
+			
+			// add the person as specified
+			final String[] personToAdd = decodeResult.get();
+			addPersonToAddressBook(personToAdd);
+			return getMessageForSuccessfulAddPerson(personToAdd);
         case COMMAND_FIND_WORD:
-            return executeFindPersons(commandArgs);
+            final Set<String> keywords = extractKeywordsFromFindPersonArgs(commandArgs);
+			final ArrayList<String[]> personsFound = getPersonsWithNameContainingAnyKeyword(keywords);
+			showToUser(personsFound);
+			return getMessageForPersonsDisplayedSummary(personsFound);
         case COMMAND_LIST_WORD:
-            return executeListAllPersonsInAddressBook();
+            ArrayList<String[]> toBeDisplayed = getAllPersonsInAddressBook();
+			showToUser(toBeDisplayed);
+			return getMessageForPersonsDisplayedSummary(toBeDisplayed);
         case COMMAND_DELETE_WORD:
-            return executeDeletePerson(commandArgs);
+            if (!isDeletePersonArgsValid(commandArgs)) {
+			    return getMessageForInvalidCommandInput(COMMAND_DELETE_WORD, getUsageInfoForDeleteCommand());
+			}
+			final int targetVisibleIndex = extractTargetIndexFromDeletePersonArgs(commandArgs);
+			if (!isDisplayIndexValidForLastPersonListingView(targetVisibleIndex)) {
+			    return MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
+			}
+			final String[] targetInModel = getPersonByLastVisibleIndex(targetVisibleIndex);
+			return deletePersonFromAddressBook(targetInModel) ? getMessageForSuccessfulDelete(targetInModel) // success
+			                                                  : MESSAGE_PERSON_NOT_IN_ADDRESSBOOK; // not found
         case COMMAND_CLEAR_WORD:
-            return executeClearAddressBook();
+            clearAddressBook();
+			return MESSAGE_ADDRESSBOOK_CLEARED;
         case COMMAND_HELP_WORD:
-            return getUsageInfoForAllCommands();
+            return getUsageInfoForAddCommand() + LS
+			+ getUsageInfoForFindCommand() + LS
+			+ getUsageInfoForViewCommand() + LS
+			+ getUsageInfoForDeleteCommand() + LS
+			+ getUsageInfoForClearCommand() + LS
+			+ getUsageInfoForExitCommand() + LS
+			+ getUsageInfoForHelpCommand();
         case COMMAND_EXIT_WORD:
-            executeExitProgramRequest();
+            exitProgram();
         default:
             return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
         }
@@ -368,28 +400,6 @@ public class AddressBook {
     }
 
     /**
-     * Adds a person (specified by the command args) to the address book.
-     * The entire command arguments string is treated as a string representation of the person to add.
-     *
-     * @param commandArgs full command args string from the user
-     * @return feedback display message for the operation result
-     */
-    private static String executeAddPerson(String commandArgs) {
-        // try decoding a person from the raw args
-        final Optional<String[]> decodeResult = decodePersonFromString(commandArgs);
-
-        // checks if args are valid (decode result will not be present if the person is invalid)
-        if (!decodeResult.isPresent()) {
-            return getMessageForInvalidCommandInput(COMMAND_ADD_WORD, getUsageInfoForAddCommand());
-        }
-
-        // add the person as specified
-        final String[] personToAdd = decodeResult.get();
-        addPersonToAddressBook(personToAdd);
-        return getMessageForSuccessfulAddPerson(personToAdd);
-    }
-
-    /**
      * Constructs a feedback message for a successful add person command execution.
      *
      * @see #executeAddPerson(String)
@@ -399,20 +409,6 @@ public class AddressBook {
     private static String getMessageForSuccessfulAddPerson(String[] addedPerson) {
         return String.format(MESSAGE_ADDED,
                 getNameFromPerson(addedPerson), getPhoneFromPerson(addedPerson), getEmailFromPerson(addedPerson));
-    }
-
-    /**
-     * Finds and lists all persons in address book whose name contains any of the argument keywords.
-     * Keyword matching is case sensitive.
-     *
-     * @param commandArgs full command args string from the user
-     * @return feedback display message for the operation result
-     */
-    private static String executeFindPersons(String commandArgs) {
-        final Set<String> keywords = extractKeywordsFromFindPersonArgs(commandArgs);
-        final ArrayList<String[]> personsFound = getPersonsWithNameContainingAnyKeyword(keywords);
-        showToUser(personsFound);
-        return getMessageForPersonsDisplayedSummary(personsFound);
     }
 
     /**
@@ -525,17 +521,6 @@ public class AddressBook {
     private static String executeClearAddressBook() {
         clearAddressBook();
         return MESSAGE_ADDRESSBOOK_CLEARED;
-    }
-
-    /**
-     * Displays all persons in the address book to the user; in added order.
-     *
-     * @return feedback display message for the operation result
-     */
-    private static String executeListAllPersonsInAddressBook() {
-        ArrayList<String[]> toBeDisplayed = getAllPersonsInAddressBook();
-        showToUser(toBeDisplayed);
-        return getMessageForPersonsDisplayedSummary(toBeDisplayed);
     }
 
     /**
