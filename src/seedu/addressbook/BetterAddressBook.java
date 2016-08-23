@@ -30,9 +30,7 @@ import java.util.Set;
  * This class is used to maintain a list of person data which are saved
  * in a text file.
  * 
- * 1. Make arguments case insensitive
- * 2. Make find keywords case insensitive
- * 3. Sort find outcomes in alphabetical order
+ * Make arguments case insensitive
  **/
 public class BetterAddressBook {
     
