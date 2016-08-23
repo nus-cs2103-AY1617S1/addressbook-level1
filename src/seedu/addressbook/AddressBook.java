@@ -188,13 +188,15 @@ public class AddressBook {
 		showToUser(DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER);
 		if (args.length >= 2) {
 			showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
-			exitProgram();
+			showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
+			System.exit(0);
 		}
 
 		if (args.length == 1) {
 			if (!isValidFilePath(args[0])) {
 				showToUser(String.format(MESSAGE_INVALID_FILE, args[0]));
-				exitProgram();
+				showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
+				System.exit(0);
 			}
 
 			final File storageFile = new File(args[0]);
@@ -209,7 +211,8 @@ public class AddressBook {
 				showToUser(String.format(MESSAGE_STORAGE_FILE_CREATED, args[0]));
 			} catch (IOException ioe) {
 				showToUser(String.format(MESSAGE_ERROR_CREATING_STORAGE_FILE, args[0]));
-				exitProgram();
+				showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
+				System.exit(0);
 			}
 		}
 
@@ -228,7 +231,8 @@ public class AddressBook {
 				showToUser(String.format(MESSAGE_STORAGE_FILE_CREATED, DEFAULT_STORAGE_FILEPATH));
 			} catch (IOException ioe) {
 				showToUser(String.format(MESSAGE_ERROR_CREATING_STORAGE_FILE, DEFAULT_STORAGE_FILEPATH));
-				exitProgram();
+				showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
+				System.exit(0);
 			}
 		}
 		initialiseAddressBookModel(loadPersonsFromFile(storageFilePath));
