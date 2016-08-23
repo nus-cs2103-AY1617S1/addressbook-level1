@@ -292,34 +292,9 @@ public class AddressBook {
      * Exits program if the file cannot be created.
      */
     private static void setupDefaultFileForStorage() {
-        String[] message1 = { MESSAGE_USING_DEFAULT_FILE };
-		for (String m1 : message1) {
-		    System.out.println(LINE_PREFIX + m1);
-		}
+        showToUser(MESSAGE_USING_DEFAULT_FILE);
         storageFilePath = DEFAULT_STORAGE_FILEPATH;
-        String filePath = storageFilePath;
-        final File storageFile = new File(filePath);
-        if (storageFile.exists()) return;
-		String[] message = { String.format(MESSAGE_ERROR_MISSING_STORAGE_FILE, filePath) };
-
-        for (String m : message) {
-		    System.out.println(LINE_PREFIX + m);
-		}
-
-        try {
-            storageFile.createNewFile();
-			String[] message2 = { String.format(MESSAGE_STORAGE_FILE_CREATED, filePath) };
-            for (String m2 : message2) {
-			    System.out.println(LINE_PREFIX + m2);
-			}
-        } catch (IOException ioe) {
-            String[] message2 = { String.format(MESSAGE_ERROR_CREATING_STORAGE_FILE, filePath) };
-			for (String m2 : message2) {
-			    System.out.println(LINE_PREFIX + m2);
-			}
-            showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
-			System.exit(0);
-        }
+        createFileIfMissing(storageFilePath);
     }
 
     /**
