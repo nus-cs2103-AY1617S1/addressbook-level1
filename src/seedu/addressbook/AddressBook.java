@@ -200,7 +200,20 @@ public class AddressBook {
      */
     public static void main(String[] args) {
         showWelcomeMessage();
-        processProgramArgs(args);
+        if (args.length >= 2) {
+            showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
+            exitProgram();
+        } else if (args.length == 1) {
+            if (!isValidFilePath(args[0])) {
+                showToUser(String.format(MESSAGE_INVALID_FILE, args[0]));
+                exitProgram();
+            }
+
+            storageFilePath = args[0];
+            createFileIfMissing(args[0]);
+        } else {
+            setupDefaultFileForStorage();
+        };
         loadDataFromStorage();
         while (true) {
             String userCommand = getUserInput();
@@ -254,33 +267,6 @@ public class AddressBook {
      *
      * @param args full program arguments passed to application main method
      */
-    // Combined the if-else statements as it is not mutually exclusive
-    private static void processProgramArgs(String[] args) {
-        if (args.length >= 2) {
-            showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
-            exitProgram();
-        } else if (args.length == 1) {
-            setupGivenFileForStorage(args[0]);
-        } else {
-            setupDefaultFileForStorage();
-        }
-    }
-
-    /**
-     * Sets up the storage file based on the supplied file path.
-     * Creates the file if it is missing.
-     * Exits if the file name is not acceptable.
-     */
-    private static void setupGivenFileForStorage(String filePath) {
-
-        if (!isValidFilePath(filePath)) {
-            showToUser(String.format(MESSAGE_INVALID_FILE, filePath));
-            exitProgram();
-        }
-
-        storageFilePath = filePath;
-        createFileIfMissing(filePath);
-    }
 
     /**
      * Displays the goodbye message and exits the runtime.
@@ -467,11 +453,11 @@ public class AddressBook {
      * @return feedback display message for the operation result
      */
     private static String executeDeletePerson(String commandArgs) {
-        if (!isDeletePersonArgsValid(commandArgs)) {
+        if (!DeletePersonArgsValid(commandArgs)) {
             return getMessageForInvalidCommandInput(COMMAND_DELETE_WORD, getUsageInfoForDeleteCommand());
         }
         final int targetVisibleIndex = extractTargetIndexFromDeletePersonArgs(commandArgs);
-        if (!isDisplayIndexValidForLastPersonListingView(targetVisibleIndex)) {
+        if (!DisplayIndexValidForLastPersonListingView(targetVisibleIndex)) {
             return MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
         }
         final String[] targetInModel = getPersonByLastVisibleIndex(targetVisibleIndex);
@@ -485,7 +471,7 @@ public class AddressBook {
      * @param rawArgs raw command args string for the delete person command
      * @return whether the input args string is valid
      */
-    private static boolean isDeletePersonArgsValid(String rawArgs) {
+    private static boolean DeletePersonArgsValid(String rawArgs) {
         try {
             final int extractedIndex = Integer.parseInt(rawArgs.trim()); // use standard libraries to parse
             return extractedIndex >= DISPLAYED_INDEX_OFFSET;
@@ -510,7 +496,7 @@ public class AddressBook {
      * @param index to check
      * @return whether it is valid
      */
-    private static boolean isDisplayIndexValidForLastPersonListingView(int index) {
+    private static boolean DisplayIndexValidForLastPersonListingView(int index) {
         return index >= DISPLAYED_INDEX_OFFSET && index < getLatestPersonListingView().size() + DISPLAYED_INDEX_OFFSET;
     }
 
@@ -816,7 +802,7 @@ public class AddressBook {
      * @return person's name
      */
     private static String getNameFromPerson(String[] person) {
-        return person[PERSON_DATA_INDEX_NAME];
+        return person[0];
     }
 
     /**
@@ -824,7 +810,7 @@ public class AddressBook {
      * @return person's phone number
      */
     private static String getPhoneFromPerson(String[] person) {
-        return person[PERSON_DATA_INDEX_PHONE];
+        return person[1];
     }
 
     /**
@@ -832,7 +818,7 @@ public class AddressBook {
      * @return person's email
      */
     private static String getEmailFromPerson(String[] person) {
-        return person[PERSON_DATA_INDEX_EMAIL];
+        return person[2];
     }
 
     /**
@@ -844,10 +830,10 @@ public class AddressBook {
      * @return constructed person
      */
     private static String[] makePersonFromData(String name, String phone, String email) {
-        final String[] person = new String[PERSON_DATA_COUNT];
-        person[PERSON_DATA_INDEX_NAME] = name;
-        person[PERSON_DATA_INDEX_PHONE] = phone;
-        person[PERSON_DATA_INDEX_EMAIL] = email;
+        final String[] person = new String[3];
+        person[0] = name;
+        person[1] = phone;
+        person[2] = email;
         return person;
     }
 
@@ -933,10 +919,10 @@ public class AddressBook {
     private static boolean isPersonDataExtractableFrom(String personData) {
         final String matchAnyPersonDataPrefix = PERSON_DATA_PREFIX_PHONE + '|' + PERSON_DATA_PREFIX_EMAIL;
         final String[] splitArgs = personData.trim().split(matchAnyPersonDataPrefix);
-        return splitArgs.length == PERSON_DATA_COUNT // 3 arguments
-                && !splitArgs[PERSON_DATA_INDEX_NAME].isEmpty() // non-empty arguments
-                && !splitArgs[PERSON_DATA_INDEX_PHONE].isEmpty()
-                && !splitArgs[PERSON_DATA_INDEX_EMAIL].isEmpty();
+        return splitArgs.length == 3 // 3 arguments
+                && !splitArgs[0].isEmpty() // non-empty arguments
+                && !splitArgs[1].isEmpty()
+                && !splitArgs[2].isEmpty();
     }
 
     /**
@@ -1006,9 +992,9 @@ public class AddressBook {
      * @return whether the given person has valid data
      */
     private static boolean isPersonDataValid(String[] person) {
-        return isPersonNameValid(person[PERSON_DATA_INDEX_NAME])
-                && isPersonPhoneValid(person[PERSON_DATA_INDEX_PHONE])
-                && isPersonEmailValid(person[PERSON_DATA_INDEX_EMAIL]);
+        return isPersonNameValid(person[0])
+                && isPersonPhoneValid(person[1])
+                && isPersonEmailValid(person[2]);
     }
 
     /*
