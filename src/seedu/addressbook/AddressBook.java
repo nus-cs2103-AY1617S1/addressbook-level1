@@ -908,7 +908,9 @@ public class AddressBook {
                 extractEmailFromPersonString(encoded)
         );
         // check that the constructed person is valid
-        return isPersonDataValid(decodedPerson) ? Optional.of(decodedPerson) : Optional.empty();
+        return isValidPersonName(decodedPerson[PERSON_DATA_INDEX_NAME])
+		&& isValidPersonPhone(decodedPerson[PERSON_DATA_INDEX_PHONE])
+		&& isValidPersonEmail(decodedPerson[PERSON_DATA_INDEX_EMAIL]) ? Optional.of(decodedPerson) : Optional.empty();
     }
 
     /**
@@ -1004,18 +1006,6 @@ public class AddressBook {
                     encoded.substring(indexOfEmailPrefix, indexOfPhonePrefix).trim(),
                     PERSON_DATA_PREFIX_EMAIL);
         }
-    }
-
-    /**
-     * Validates a person's data fields
-     *
-     * @param person String array representing the person (used in internal data)
-     * @return whether the given person has valid data
-     */
-    private static boolean isPersonDataValid(String[] person) {
-        return isValidPersonName(person[PERSON_DATA_INDEX_NAME])
-                && isValidPersonPhone(person[PERSON_DATA_INDEX_PHONE])
-                && isValidPersonEmail(person[PERSON_DATA_INDEX_EMAIL]);
     }
 
     /*
