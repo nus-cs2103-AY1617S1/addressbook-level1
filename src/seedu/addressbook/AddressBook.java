@@ -1020,7 +1020,7 @@ public class AddressBook {
      * @return whether the given person has valid data
      */
     private static boolean isPersonDataValid(String[] person) {
-        return isPersonNameValid(person[PERSON_DATA_INDEX_NAME])
+        return isValidPersonName(person[PERSON_DATA_INDEX_NAME])
                 && isPersonPhoneValid(person[PERSON_DATA_INDEX_PHONE])
                 && isPersonEmailValid(person[PERSON_DATA_INDEX_EMAIL]);
     }
@@ -1038,7 +1038,7 @@ public class AddressBook {
      * @param name to be validated
      * @return whether arg is a valid person name
      */
-    private static boolean isPersonNameValid(String name) {
+    private static boolean isValidPersonName(String name) {
         return name.matches("(\\w|\\s)+");  // name is nonempty mixture of alphabets and whitespace
         //TODO: implement a more permissive validation
     }
