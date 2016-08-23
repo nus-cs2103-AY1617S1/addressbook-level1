@@ -332,6 +332,9 @@
 || 	Example: edit 1 John Doe's New Name p/12345678 e/johnd_new@gamil.com
 || 
 || ===================================================
+|| Enter command: || [Command entered:  edit 10000 xp]
+|| The person index provided is invalid
+|| ===================================================
 || Enter command: || [Command entered:  list]
 || 	1. Davin  Phone Number: 12345555  Email: davin1@gmail.com
 || 	2. Adam Brown  Phone Number: 111111  Email: beechoo1@gmail.com

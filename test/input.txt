@@ -84,6 +84,7 @@
 
   # should catch error if index is invalid
   edit -1 Xiao Pu
+  edit 10000 xp
   list
   edit 6 Xiao Pu
 
