@@ -455,8 +455,8 @@ public class AddressBook {
     private static ArrayList<String[]> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
         for (String[] person : getAllPersonsInAddressBook()) {
-            final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
-            if (!Collections.disjoint(wordsInName, keywords)) {
+            final Set<String> wordsInName = new HashSet<>(stringCollectionToLowerCase(splitByWhitespace(getNameFromPerson(person))));
+            if (!Collections.disjoint(wordsInName, stringCollectionToLowerCase(keywords))) {
                 matchedPersons.add(person);
             }
         }
@@ -1181,6 +1181,20 @@ public class AddressBook {
      */
     private static ArrayList<String> splitByWhitespace(String toSplit) {
         return new ArrayList(Arrays.asList(toSplit.trim().split("\\s+")));
+    }
+    
+    /**
+     * Converts a collection of strings into lower case strings.
+     * 
+     * @param col source collection  
+     * @return Collection of lower case strings
+     */
+    private static Collection<String> stringCollectionToLowerCase(Collection<String> col) {
+    	ArrayList<String> lowerCaseStrings = new ArrayList<String>();
+    	for (String s : col) {
+    		lowerCaseStrings.add(s.toLowerCase());
+    	}
+    	return lowerCaseStrings;
     }
 
 }
