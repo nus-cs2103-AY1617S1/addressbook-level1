@@ -371,6 +371,12 @@ public class AddressBook {
     }
 
 	private static String executeEditPersons(String commandArgs) {
+        final Optional<String[]> decodePartialResult = decodePartialPersonFromString(commandArgs);
+
+        // checks if args are valid (decode result will not be present if the person is invalid)
+        if (!decodePartialResult.isPresent()) {
+            return getMessageForInvalidCommandInput(COMMAND_EDIT_WORD, getUsageInfoForAddCommand());
+        }
 		return null;
 	}
 
@@ -452,6 +458,12 @@ public class AddressBook {
         return String.format(MESSAGE_PERSONS_FOUND_OVERVIEW, personsDisplayed.size());
     }
     
+    /**
+     * Sorts a persons list according to either ascending or descending
+     *  
+     * @param commandArgs either a for ascending or d for descending
+     * @return feedback display message for successful sort
+     */
     private static String executeSortPersons(String commandArgs) {
     	if (!isSortPersonArgsValid(commandArgs)) {
     		return getMessageForInvalidCommandInput(COMMAND_SORT_WORD, getUsageInfoForSortCommand());
@@ -463,6 +475,13 @@ public class AddressBook {
 		return getMessageForPersonsDisplayedSummary(personsSorted);
 	}
 
+    /**
+     * Helper method to decide if the persons list is to be sorted is in ascending
+     * or descending
+     * 
+     * @param commandArgs chooses the type of sorting
+     * @return list of persons sorted in ascending or descending
+     */
     private static ArrayList<String[]> sortPersonsByArgs(String commandArgs) {
     	String trimmedCommand = commandArgs.trim();
     	ArrayList<String[]> sortedPersons = null;
@@ -479,23 +498,43 @@ public class AddressBook {
 		return sortedPersons;
 	}
 
+    /**
+     * Compares the name of the persons and sorts it in descening order
+     * 
+     * @return list of persons in descending order
+     */
 	private static ArrayList<String[]> sortDescendingByName() {
 		ArrayList<String[]> personsToSort = new ArrayList<String[]>(getAllPersonsInAddressBook());
 		Collections.sort(personsToSort, new CustomPersonSorterDescending());		
 		return personsToSort;
 	}
 
+	/**
+	 * Compares the name of the persons and sorts it in ascending order
+	 * 
+	 * @return list of persons in ascending order
+	 */
 	private static ArrayList<String[]> sortAscendingByName() {
 		ArrayList<String[]> personsToSort = new ArrayList<String[]>(getAllPersonsInAddressBook());
 		Collections.sort(personsToSort, new CustomPersonSorterAscending());
 		return personsToSort;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	private static String getUsageInfoForSortCommand() {
         return String.format(MESSAGE_COMMAND_HELP, COMMAND_SORT_WORD, COMMAND_SORT_DESC) + LS
                 + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_SORT_EXAMPLE) + LS;
     }
 
+	/**
+	 * Checks if sorting command given is valid
+	 * 
+	 * @param commandArgs provided by the user
+	 * @return true if the sorting command is valid, false if not
+	 */
 	private static boolean isSortPersonArgsValid(String commandArgs) {
 		String sortType = commandArgs.trim();
 		if ( sortType.equals("a") || sortType.equals("d")) {
@@ -985,6 +1024,16 @@ public class AddressBook {
         // check that the constructed person is valid
         return isPersonDataValid(decodedPerson) ? Optional.of(decodedPerson) : Optional.empty();
     }
+    
+	private static Optional<String[]> decodePartialPersonFromString(String encoded) {
+		if (!isPersonPartialDataExtractableFrom(encoded)){
+			return Optional.empty();
+		}
+		
+		// 
+		
+		return null;
+	}
 
     /**
      * Decode persons from a list of string representations.
@@ -1020,7 +1069,21 @@ public class AddressBook {
                 && !splitArgs[1].isEmpty()
                 && !splitArgs[2].isEmpty();
     }
-
+    
+    /**
+     * Checks whether person partial data ( email or phone or both ) can be extracted from the argument string
+     * 
+     * @param personData person string data representation
+     * @return whether format of edit command argument allows parsing into individual arguments
+     */
+    private static boolean isPersonPartialDataExtractableFrom(String personData) {
+        final String matchAnyPersonDataPrefix = PERSON_DATA_PREFIX_PHONE + '|' + PERSON_DATA_PREFIX_EMAIL;
+        final String[] splitArgs = personData.trim().split(matchAnyPersonDataPrefix);
+        return splitArgs.length >= 2 // 3 arguments
+                && !splitArgs[0].isEmpty() // non-empty arguments
+                && !splitArgs[1].isEmpty();  
+    }
+    
     /**
      * Extracts substring representing person name from person string representation
      *
