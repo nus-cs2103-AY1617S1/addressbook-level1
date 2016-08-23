@@ -1169,8 +1169,11 @@ public class AddressBook {
      *
      * @return  Priority string without p/
      */
+    // Week 3, Used refractor extract local variable to field.
     private static String removePrefixSign(String s, String sign) {
-        return s.replace(sign, "");
+
+        String removedPrefix = s.replace(sign, "");
+		return removedPrefix;
     }
 
     /**
