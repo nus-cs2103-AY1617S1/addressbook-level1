@@ -176,7 +176,7 @@ public class AddressBook {
     /**
      * List of all persons in the address book.
      */
-    private static final ArrayList<String[]> ALL_PERSONS = new ArrayList<>();
+    private static final ArrayList<String[]> PERSONS = new ArrayList<>();
 
 
     /**
@@ -761,7 +761,7 @@ public class AddressBook {
      * @param person to add
      */
     private static void addPersonToAddressBook(String[] person) {
-        ALL_PERSONS.add(person);
+        PERSONS.add(person);
         savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
     }
 
@@ -769,10 +769,10 @@ public class AddressBook {
      * Deletes a person from the address book, target is identified by it's absolute index in the full list.
      * Saves changes to storage file.
      *
-     * @param index absolute index of person to delete (index within {@link #ALL_PERSONS})
+     * @param index absolute index of person to delete (index within {@link #PERSONS})
      */
     private static void deletePersonFromAddressBook(int index) {
-        ALL_PERSONS.remove(index);
+        PERSONS.remove(index);
         savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
     }
 
@@ -783,7 +783,7 @@ public class AddressBook {
      * @return true if the given person was found and deleted in the model
      */
     private static boolean deletePersonFromAddressBook(String[] exactPerson) {
-        final boolean changed = ALL_PERSONS.remove(exactPerson);
+        final boolean changed = PERSONS.remove(exactPerson);
         if (changed) {
             savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
         }
@@ -794,14 +794,14 @@ public class AddressBook {
      * @return unmodifiable list view of all persons in the address book
      */
     private static ArrayList<String[]> getAllPersonsInAddressBook() {
-        return ALL_PERSONS;
+        return PERSONS;
     }
 
     /**
      * Clears all persons in the address book and saves changes to file.
      */
     private static void clearAddressBook() {
-        ALL_PERSONS.clear();
+        PERSONS.clear();
         savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
     }
 
@@ -811,8 +811,8 @@ public class AddressBook {
      * @param persons list of persons to initialise the model with
      */
     private static void initialiseAddressBookModel(ArrayList<String[]> persons) {
-        ALL_PERSONS.clear();
-        ALL_PERSONS.addAll(persons);
+        PERSONS.clear();
+        PERSONS.addAll(persons);
     }
 
 
