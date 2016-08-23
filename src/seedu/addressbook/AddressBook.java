@@ -703,11 +703,15 @@ public class AddressBook {
             return;
         }
 
-        showToUser(String.format(MESSAGE_ERROR_MISSING_STORAGE_FILE, filePath));
+        for (String m : String.format(MESSAGE_ERROR_MISSING_STORAGE_FILE, filePath)) {
+            System.out.println(LINE_PREFIX + m);
+        }
 
         try {
             storageFile.createNewFile();
-            showToUser(String.format(MESSAGE_STORAGE_FILE_CREATED, filePath));
+            for (String m : (String.format(MESSAGE_STORAGE_FILE_CREATED, filePath))) {
+                System.out.println(LINE_PREFIX + m);
+            }
         } catch (IOException ioe) {
             showToUser(String.format(MESSAGE_ERROR_CREATING_STORAGE_FILE, filePath));
             exitProgram();
