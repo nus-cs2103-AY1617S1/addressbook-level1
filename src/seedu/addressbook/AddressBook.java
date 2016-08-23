@@ -208,7 +208,8 @@ public class AddressBook {
 						"===================================================");
 				System.exit(0);
 			}
-
+			
+			storageFilePath = args[0];
 			final File storageFile = new File(args[0]);
 			if (storageFile.exists()) {
 				return;
