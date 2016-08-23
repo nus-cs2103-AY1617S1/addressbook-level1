@@ -1442,7 +1442,7 @@ public class AddressBook {
      * @param collection   the string collection which all element in it would be changed to lowercase
      * @return the generate collection with all element in lowercase
      */
-    public static Collection<String> changeElementToLowerCase(Collection<String> collection) {
+    private static Collection<String> changeElementToLowerCase(Collection<String> collection) {
     		Collection<String> collectionLowercase = new ArrayList<String>();
     		for(String element : collection) {
     			collectionLowercase.add(element.toLowerCase());
