@@ -258,15 +258,15 @@ public class AddressBook {
         if (args.length >= 2) {
             showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
             exitProgram();
+            return;
         }
 
         if (args.length == 1) {
             setupGivenFileForStorage(args[0]);
+            return;
         }
 
-        if(args.length == 0) {
-            setupDefaultFileForStorage();
-        }
+        setupDefaultFileForStorage();
     }
 
     /**
