@@ -40,6 +40,10 @@
   list
   add Esther Potato p/555555 e/esther@notreal.potato
   list
+  
+  # sort should sort properly
+  sort a
+  sort d
 
 ##########################################################
 # test find persons command

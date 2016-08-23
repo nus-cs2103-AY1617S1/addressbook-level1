@@ -472,13 +472,13 @@ public class AddressBook {
 	}
 
 	private static ArrayList<String[]> sortDescendingByName() {
-		ArrayList<String[]> personsToSort = getAllPersonsInAddressBook();
+		ArrayList<String[]> personsToSort = new ArrayList<String[]>(getAllPersonsInAddressBook());
 		Collections.sort(personsToSort, new CustomPersonSorterDescending());		
 		return personsToSort;
 	}
 
 	private static ArrayList<String[]> sortAscendingByName() {
-		ArrayList<String[]> personsToSort = getAllPersonsInAddressBook();
+		ArrayList<String[]> personsToSort = new ArrayList<String[]>(getAllPersonsInAddressBook());
 		Collections.sort(personsToSort, new CustomPersonSorterAscending());
 		return personsToSort;
 	}
