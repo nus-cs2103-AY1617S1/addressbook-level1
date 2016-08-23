@@ -364,7 +364,8 @@ public class AddressBook {
      * @return  size 2 array; first element is the command type and second element is the arguments string
      */
     private static String[] splitCommandWordAndArgs(String rawUserInput) {
-        final String[] split =  rawUserInput.trim().split("\\s+", 2);
+    	final String WHITESPACE = "\\s+";
+        final String[] split =  rawUserInput.trim().split(WHITESPACE, 2);
         return split.length == 2 ? split : new String[] { split[0] , "" }; // else case: no parameters
     }
 
@@ -1035,7 +1036,8 @@ public class AddressBook {
      * @return whether arg is a valid person name
      */
     private static boolean isPersonNameValid(String name) {
-        return name.matches("(\\w|\\s)+");  // name is nonempty mixture of alphabets and whitespace
+    	final String NONEMPTYALPHAWHITESPACE = "(\\w|\\s)+";
+        return name.matches(NONEMPTYALPHAWHITESPACE);
         //TODO: implement a more permissive validation
     }
 
@@ -1046,7 +1048,8 @@ public class AddressBook {
      * @return whether arg is a valid person phone number
      */
     private static boolean isPersonPhoneValid(String phone) {
-        return phone.matches("\\d+");    // phone nonempty sequence of digits
+    	final String NONEMPTYDIGITS = "\\d+";
+        return phone.matches(NONEMPTYDIGITS);
         //TODO: implement a more permissive validation
     }
 
@@ -1057,7 +1060,8 @@ public class AddressBook {
      * @return whether arg is a valid person email
      */
     private static boolean isPersonEmailValid(String email) {
-        return email.matches("\\S+@\\S+\\.\\S+"); // email is [non-whitespace]@[non-whitespace].[non-whitespace]
+    	final String VALIDEMAIL = "\\S+@\\S+\\.\\S+"; // email is [non-whitespace]@[non-whitespace].[non-whitespace]
+        return email.matches(VALIDEMAIL);
         //TODO: implement a more permissive validation
     }
 
@@ -1180,7 +1184,8 @@ public class AddressBook {
      * @return split by whitespace
      */
     private static ArrayList<String> splitByWhitespace(String toSplit) {
-        return new ArrayList(Arrays.asList(toSplit.trim().split("\\s+")));
+    	final String WHITESPACE = "\\s+";
+        return new ArrayList(Arrays.asList(toSplit.trim().split(WHITESPACE)));
     }
 
 }
