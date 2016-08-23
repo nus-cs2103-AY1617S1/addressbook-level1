@@ -128,6 +128,11 @@ public class AddressBook {
     private static final String COMMAND_EXIT_WORD = "exit";
     private static final String COMMAND_EXIT_DESC = "Exits the program.";
     private static final String COMMAND_EXIT_EXAMPLE = COMMAND_EXIT_WORD;
+    
+    private static final String COMMAND_SORT_WORD = "sort";
+    private static final String COMMAND_SORT_DESC = "Sort and list the persons in alphabetical order.";
+    private static final String COMMAND_SORT_EXAMPLE = COMMAND_SORT_WORD;
+    		
 
     private static final String DIVIDER = "===================================================";
 
@@ -335,13 +340,16 @@ public class AddressBook {
         case COMMAND_FIND_WORD:
             return executeFindPersons(commandArgs);
         case COMMAND_LIST_WORD:
-            return executeListAllPersonsInAddressBook();
+            return executeListAllPersonsInAddressBook(false);
+        case COMMAND_SORT_WORD:
+        	return executeListAllPersonsInAddressBook(true);
         case COMMAND_DELETE_WORD:
             return executeDeletePerson(commandArgs);
         case COMMAND_CLEAR_WORD:
             return executeClearAddressBook();
         case COMMAND_HELP_WORD:
             return getUsageInfoForAllCommands();
+        
         case COMMAND_EXIT_WORD:
             exitProgram();
         default:
@@ -454,6 +462,7 @@ public class AddressBook {
         return matchedPersons;
     }
 
+  
     /**
      * Deletes person identified using last displayed index.
      *
@@ -534,9 +543,15 @@ public class AddressBook {
      *
      * @return feedback display message for the operation result
      */
-    private static String executeListAllPersonsInAddressBook() {
+    private static String executeListAllPersonsInAddressBook(boolean wantSorted) {
         ArrayList<String[]> toBeDisplayed = getAllPersonsInAddressBook();
+        
+        if(wantSorted){
+        	Collections.sort(toBeDisplayed, (a, b) -> a[0].compareTo(b[0]));
+        }
+        
         showToUser(toBeDisplayed);
+ 
         return getMessageForPersonsDisplayedSummary(toBeDisplayed);
     }
 
