@@ -613,9 +613,7 @@ public class AddressBook {
         for (int i = 0; i < persons.size(); i++) {
             final String[] person = persons.get(i);
             final int displayIndex = i + DISPLAYED_INDEX_OFFSET;
-            messageAccumulator.append('\t')
-                              .append(getIndexedPersonListElementMessage(displayIndex, person))
-                              .append(LS);
+            messageAccumulator.append('\t').append(getIndexedPersonListElementMessage(displayIndex, person)).append(LS);  //removed stacking
         }
         return messageAccumulator.toString();
     }
@@ -721,7 +719,7 @@ public class AddressBook {
     private static ArrayList<String> getLinesInFile(String filePath) {
         ArrayList<String> lines = null;
         try {
-            lines = new ArrayList(Files.readAllLines(Paths.get(filePath)));
+            lines = new ArrayList<String>(Files.readAllLines(Paths.get(filePath)));
         } catch (FileNotFoundException fnfe) {
             showToUser(String.format(MESSAGE_ERROR_MISSING_STORAGE_FILE, filePath));
             exitProgram();
@@ -870,7 +868,7 @@ public class AddressBook {
      */
     private static String encodePersonToString(String[] person) {
         return String.format(PERSON_STRING_REPRESENTATION,
-                getNameFromPerson(person), getPhoneFromPerson(person), getEmailFromPerson(person));
+                			getNameFromPerson(person), getPhoneFromPerson(person), getEmailFromPerson(person));    //align with the beginning of the parent element
     }
 
     /**
@@ -905,11 +903,9 @@ public class AddressBook {
         if (!isPersonDataExtractableFrom(encoded)) {
             return Optional.empty();
         }
-        final String[] decodedPerson = makePersonFromData(
-                extractNameFromPersonString(encoded),
-                extractPhoneFromPersonString(encoded),
-                extractEmailFromPersonString(encoded)
-        );
+        final String[] decodedPerson = makePersonFromData(extractNameFromPersonString(encoded),
+        												  extractPhoneFromPersonString(encoded),
+        												  extractEmailFromPersonString(encoded)); //alignment
         // check that the constructed person is valid
         return isPersonDataValid(decodedPerson) ? Optional.of(decodedPerson) : Optional.empty();
     }
@@ -944,7 +940,7 @@ public class AddressBook {
         final String matchAnyPersonDataPrefix = PERSON_DATA_PREFIX_PHONE + '|' + PERSON_DATA_PREFIX_EMAIL;
         final String[] splitArgs = personData.trim().split(matchAnyPersonDataPrefix);
         return splitArgs.length == 3 // 3 arguments
-                && !splitArgs[0].isEmpty() // non-empty arguments
+        		&& !splitArgs[0].isEmpty() // non-empty arguments
                 && !splitArgs[1].isEmpty()
                 && !splitArgs[2].isEmpty();
     }
@@ -976,13 +972,12 @@ public class AddressBook {
         // phone is last arg, target is from prefix to end of string
         if (indexOfPhonePrefix > indexOfEmailPrefix) {
             return removePrefixSign(encoded.substring(indexOfPhonePrefix, encoded.length()).trim(),
-                    PERSON_DATA_PREFIX_PHONE);
+                    			    PERSON_DATA_PREFIX_PHONE);		//alignment
 
         // phone is middle arg, target is from own prefix to next prefix
         } else {
-            return removePrefixSign(
-                    encoded.substring(indexOfPhonePrefix, indexOfEmailPrefix).trim(),
-                    PERSON_DATA_PREFIX_PHONE);
+            return removePrefixSign(encoded.substring(indexOfPhonePrefix, indexOfEmailPrefix).trim(),
+                    				PERSON_DATA_PREFIX_PHONE);		//alignment
         }
     }
 
@@ -999,13 +994,12 @@ public class AddressBook {
         // email is last arg, target is from prefix to end of string
         if (indexOfEmailPrefix > indexOfPhonePrefix) {
             return removePrefixSign(encoded.substring(indexOfEmailPrefix, encoded.length()).trim(),
-                    PERSON_DATA_PREFIX_EMAIL);
+                    				PERSON_DATA_PREFIX_EMAIL);		//alignment
 
         // email is middle arg, target is from own prefix to next prefix
         } else {
-            return removePrefixSign(
-                    encoded.substring(indexOfEmailPrefix, indexOfPhonePrefix).trim(),
-                    PERSON_DATA_PREFIX_EMAIL);
+            return removePrefixSign(encoded.substring(indexOfEmailPrefix, indexOfPhonePrefix).trim(),
+                    				PERSON_DATA_PREFIX_EMAIL);		//alignment
         }
     }
 
