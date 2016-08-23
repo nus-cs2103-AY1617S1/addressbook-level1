@@ -20,6 +20,10 @@
 || sort: Displays all persons as a list in alphabetical order.
 || 	Example: sort
 || 
+|| edit: Edits a person's particulars.
+|| 	Parameters: NAME p/PHONE_NUMBER e/EMAIL
+|| 	Example: edit John Doe p/98765432 e/johnd@gmail.com
+|| 
 || delete: Deletes a person identified by the index number used in the last find/list call.
 || 	Parameters: INDEX
 || 	Example: delete 1
@@ -186,6 +190,32 @@
 || 
 || 2 persons found!
 || ===================================================
+|| Enter command: || [Command entered:  edit ]
+|| Invalid command format: add 
+|| add: Adds a person to the address book.
+|| 	Parameters: NAME p/PHONE_NUMBER e/EMAIL
+|| 	Example: add John Doe p/98765432 e/johnd@gmail.com
+|| 
+|| ===================================================
+|| Enter command: || [Command entered:  edit Dickson p/123 e/hello@world.com]
+|| Person could not be found in address book
+|| ===================================================
+|| Enter command: || [Command entered:  edit Dickson Ee p/987 e/world@hello.com  ]
+|| Dickson Ee has been edited, Phone: 987, Email: world@hello.com
+|| ===================================================
+|| Enter command: || [Command entered:  list ]
+|| 	1. Adam Brown  Phone Number: 111111  Email: adam@gmail.com
+|| 	2. Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
+|| 	3. Charlie Dickson  Phone Number: 333333  Email: charlie.d@nus.edu.sg
+|| 	4. Dickson Ee  Phone Number: 987  Email: world@hello.com
+|| 	5. Esther Potato  Phone Number: 555555  Email: esther@notreal.potato
+|| 	6. Abigial Brown  Phone Number: 666666  Email: abigial@helloworld.com
+|| 
+|| 6 persons found!
+|| ===================================================
+|| Enter command: || [Command entered:  edit Dickson Ee p/444444 e/dickson@nus.edu.sg]
+|| Dickson Ee has been edited, Phone: 444444, Email: dickson@nus.edu.sg
+|| ===================================================
 || Enter command: || [Command entered:  delete]
 || Invalid command format: delete 
 || delete: Deletes a person identified by the index number used in the last find/list call.
@@ -214,18 +244,18 @@
 || 	Example: delete 1
 || 
 || ===================================================
-|| Enter command: || [Command entered:  delete 3]
+|| Enter command: || [Command entered:  delete 7]
 || The person index provided is invalid
 || ===================================================
 || Enter command: || [Command entered:  delete 2]
-|| Deleted Person: Charlie Dickson  Phone Number: 333333  Email: charlie.d@nus.edu.sg
+|| Deleted Person: Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
 || ===================================================
 || Enter command: || [Command entered:  delete 2]
 || Person could not be found in address book
 || ===================================================
 || Enter command: || [Command entered:  list]
 || 	1. Adam Brown  Phone Number: 111111  Email: adam@gmail.com
-|| 	2. Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
+|| 	2. Charlie Dickson  Phone Number: 333333  Email: charlie.d@nus.edu.sg
 || 	3. Dickson Ee  Phone Number: 444444  Email: dickson@nus.edu.sg
 || 	4. Esther Potato  Phone Number: 555555  Email: esther@notreal.potato
 || 	5. Abigial Brown  Phone Number: 666666  Email: abigial@helloworld.com
@@ -237,7 +267,7 @@
 || ===================================================
 || Enter command: || [Command entered:  list]
 || 	1. Adam Brown  Phone Number: 111111  Email: adam@gmail.com
-|| 	2. Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
+|| 	2. Charlie Dickson  Phone Number: 333333  Email: charlie.d@nus.edu.sg
 || 	3. Dickson Ee  Phone Number: 444444  Email: dickson@nus.edu.sg
 || 	4. Abigial Brown  Phone Number: 666666  Email: abigial@helloworld.com
 || 
@@ -247,7 +277,7 @@
 || Deleted Person: Adam Brown  Phone Number: 111111  Email: adam@gmail.com
 || ===================================================
 || Enter command: || [Command entered:  list]
-|| 	1. Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
+|| 	1. Charlie Dickson  Phone Number: 333333  Email: charlie.d@nus.edu.sg
 || 	2. Dickson Ee  Phone Number: 444444  Email: dickson@nus.edu.sg
 || 	3. Abigial Brown  Phone Number: 666666  Email: abigial@helloworld.com
 || 
