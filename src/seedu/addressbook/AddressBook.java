@@ -463,7 +463,7 @@ public class AddressBook {
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
         for (String[] person : getAllPersonsInAddressBook()) {
             final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
-            if (!isMatched(keywords, wordsInName)) {
+            if (isMatched(keywords, wordsInName)) {
                 matchedPersons.add(person);
             }
         }
@@ -477,7 +477,7 @@ public class AddressBook {
 	 * @return
 	 */
 	private static boolean isMatched(Collection<String> keywords, final Set<String> wordsInName) {
-		return Collections.disjoint(wordsInName, keywords);
+		return ! (Collections.disjoint(wordsInName, keywords));
 	}
 
     /**
