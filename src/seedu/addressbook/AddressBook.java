@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
@@ -455,15 +456,25 @@ public class AddressBook {
     private static ArrayList<String[]> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
         for (String[] person : getAllPersonsInAddressBook()) {
-            final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
-            if (!Collections.disjoint(wordsInName, keywords)) {
+            final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person).toLowerCase()));
+            Collection<String> newKeywords= changeAllStringsToLowerCase(keywords);
+            if (!Collections.disjoint(wordsInName, newKeywords)) {
                 matchedPersons.add(person);
             }
         }
         return matchedPersons;
     }
 
-    /**
+    private static Collection<String> changeAllStringsToLowerCase(Collection<String> keywords) {
+		Collection<String> newKeywords = new ArrayList<String>();
+		Iterator<String> iter = keywords.iterator();
+		while (iter.hasNext()){
+			newKeywords.add(iter.next().toLowerCase());
+		}
+		return newKeywords;
+	}
+
+	/**
      * Deletes person identified using last displayed index.
      *
      * @param commandArgs full command args string from the user
