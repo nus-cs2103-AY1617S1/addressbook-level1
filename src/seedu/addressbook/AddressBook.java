@@ -402,8 +402,8 @@ public class AddressBook {
 	 * @return successful add person feedback message
 	 */
 	private static String getMessageForSuccessfulAddPerson(HashMap<PersonProperty, String> addedPerson) {
-		return String.format(MESSAGE_ADDED, getNameFromPerson(addedPerson), getPhoneFromPerson(addedPerson),
-				getEmailFromPerson(addedPerson));
+		return String.format(MESSAGE_ADDED, getPersonName(addedPerson), getPersonPhone(addedPerson),
+				getPersonEmail(addedPerson));
 	}
 
 	/**
@@ -460,7 +460,7 @@ public class AddressBook {
 			Collection<String> keywords) {
 		final ArrayList<HashMap<PersonProperty, String>> matchedPersons = new ArrayList<>();
 		for (HashMap<PersonProperty, String> person : getAllPersonsInAddressBook()) {
-			final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
+			final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getPersonName(person)));
 			if (!Collections.disjoint(wordsInName, keywords)) {
 				matchedPersons.add(person);
 			}
@@ -658,8 +658,8 @@ public class AddressBook {
 	 * @return formatted message showing internal state
 	 */
 	private static String getMessageForFormattedPersonData(HashMap<PersonProperty, String> person) {
-	    return String.format(MESSAGE_DISPLAY_PERSON_DATA, getNameFromPerson(person), getPhoneFromPerson(person),
-				getEmailFromPerson(person));
+	    return String.format(MESSAGE_DISPLAY_PERSON_DATA, getPersonName(person), getPersonPhone(person),
+				getPersonEmail(person));
 	}
 
 	/**
@@ -858,7 +858,7 @@ public class AddressBook {
 	 *            whose name you want
 	 * @return person's name
 	 */
-	private static String getNameFromPerson(HashMap<PersonProperty, String> person) {
+	private static String getPersonName(HashMap<PersonProperty, String> person) {
 		return person.get(PersonProperty.NAME);
 	}
 
@@ -867,7 +867,7 @@ public class AddressBook {
 	 *            whose phone number you want
 	 * @return person's phone number
 	 */
-	private static String getPhoneFromPerson(HashMap<PersonProperty, String> person) {
+	private static String getPersonPhone(HashMap<PersonProperty, String> person) {
 		return person.get(PersonProperty.PHONE);
 	}
 
@@ -876,7 +876,7 @@ public class AddressBook {
 	 *            whose email you want
 	 * @return person's email
 	 */
-	private static String getEmailFromPerson(HashMap<PersonProperty, String> person) {
+	private static String getPersonEmail(HashMap<PersonProperty, String> person) {
 		return person.get(PersonProperty.EMAIL);
 	}
 
@@ -907,8 +907,8 @@ public class AddressBook {
 	 * @return encoded string
 	 */
 	private static String encodePersonToString(HashMap<PersonProperty, String> person) {
-		return String.format(PERSON_STRING_REPRESENTATION, getNameFromPerson(person), getPhoneFromPerson(person),
-				getEmailFromPerson(person));
+		return String.format(PERSON_STRING_REPRESENTATION, getPersonName(person), getPersonPhone(person),
+				getPersonEmail(person));
 	}
 
 	/**
