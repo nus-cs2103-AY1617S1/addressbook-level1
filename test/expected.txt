@@ -251,8 +251,8 @@
 || 
 || ===================================================
 || Enter command: || [Command entered:  edit 1 Davin p/12345678 e/davin@gmail.com]
-|| Person : Betsy Choo, Phone: 222222, Email: benchoo@nus.edu.sg
-|| Updated to Person : Davin, Phone: 12345678, Email: davin@gmail.com
+|| Person : Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
+|| Updated to Person : Davin  Phone Number: 12345678  Email: davin@gmail.com
 || ===================================================
 || Enter command: || [Command entered:  list]
 || 	1. Davin  Phone Number: 12345678  Email: davin@gmail.com
@@ -264,8 +264,8 @@
 || 5 persons found!
 || ===================================================
 || Enter command: || [Command entered:  edit 5 Xiao Pu p/666666 e/xp@gmail.com]
-|| Person : Dickson Ee, Phone: 444444, Email: dickson@nus.edu.sg
-|| Updated to Person : Xiao Pu, Phone: 666666, Email: xp@gmail.com
+|| Person : Dickson Ee  Phone Number: 444444  Email: dickson@nus.edu.sg
+|| Updated to Person : Xiao Pu  Phone Number: 666666  Email: xp@gmail.com
 || ===================================================
 || Enter command: || [Command entered:  list]
 || 	1. Davin  Phone Number: 12345678  Email: davin@gmail.com
@@ -277,8 +277,8 @@
 || 5 persons found!
 || ===================================================
 || Enter command: || [Command entered:  edit 4 Ester Egg]
-|| Person : Esther Potato, Phone: 555555, Email: esther@notreal.potato
-|| Updated to Person : Ester Egg, Phone: 555555, Email: esther@notreal.potato
+|| Person : Esther Potato  Phone Number: 555555  Email: esther@notreal.potato
+|| Updated to Person : Ester Egg  Phone Number: 555555  Email: esther@notreal.potato
 || ===================================================
 || Enter command: || [Command entered:  list]
 || 	1. Davin  Phone Number: 12345678  Email: davin@gmail.com
@@ -290,8 +290,8 @@
 || 5 persons found!
 || ===================================================
 || Enter command: || [Command entered:  edit 3 p/123456]
-|| Person : Charlie Dickson, Phone: 333333, Email: charlie.d@nus.edu.sg
-|| Updated to Person : Charlie Dickson, Phone: 123456, Email: charlie.d@nus.edu.sg
+|| Person : Charlie Dickson  Phone Number: 333333  Email: charlie.d@nus.edu.sg
+|| Updated to Person : Charlie Dickson  Phone Number: 123456  Email: charlie.d@nus.edu.sg
 || ===================================================
 || Enter command: || [Command entered:  list]
 || 	1. Davin  Phone Number: 12345678  Email: davin@gmail.com
@@ -303,8 +303,8 @@
 || 5 persons found!
 || ===================================================
 || Enter command: || [Command entered:  edit 2 e/beechoo1@gmail.com]
-|| Person : Adam Brown, Phone: 111111, Email: adam@gmail.com
-|| Updated to Person : Adam Brown, Phone: 111111, Email: beechoo1@gmail.com
+|| Person : Adam Brown  Phone Number: 111111  Email: adam@gmail.com
+|| Updated to Person : Adam Brown  Phone Number: 111111  Email: beechoo1@gmail.com
 || ===================================================
 || Enter command: || [Command entered:  list]
 || 	1. Davin  Phone Number: 12345678  Email: davin@gmail.com
@@ -316,8 +316,8 @@
 || 5 persons found!
 || ===================================================
 || Enter command: || [Command entered:  edit 1 e/davin1@gmail.com p/12345555]
-|| Person : Davin, Phone: 12345678, Email: davin@gmail.com
-|| Updated to Person : Davin, Phone: 12345555, Email: davin1@gmail.com
+|| Person : Davin  Phone Number: 12345678  Email: davin@gmail.com
+|| Updated to Person : Davin  Phone Number: 12345555  Email: davin1@gmail.com
 || ===================================================
 || Enter command: || [Command entered:  list]
 || 	1. Davin  Phone Number: 12345555  Email: davin1@gmail.com
@@ -329,8 +329,8 @@
 || 5 persons found!
 || ===================================================
 || Enter command: || [Command entered:  edit 5 Xiao Pu e/xp1@gmail.com]
-|| Person : Xiao Pu, Phone: 666666, Email: xp@gmail.com
-|| Updated to Person : Xiao Pu, Phone: 666666, Email: xp1@gmail.com
+|| Person : Xiao Pu  Phone Number: 666666  Email: xp@gmail.com
+|| Updated to Person : Xiao Pu  Phone Number: 666666  Email: xp1@gmail.com
 || ===================================================
 || Enter command: || [Command entered:  list]
 || 	1. Davin  Phone Number: 12345555  Email: davin1@gmail.com
@@ -342,8 +342,8 @@
 || 5 persons found!
 || ===================================================
 || Enter command: || [Command entered:  edit 4 Ester Egg Two p/6666667]
-|| Person : Ester Egg, Phone: 555555, Email: esther@notreal.potato
-|| Updated to Person : Ester Egg Two, Phone: 6666667, Email: esther@notreal.potato
+|| Person : Ester Egg  Phone Number: 555555  Email: esther@notreal.potato
+|| Updated to Person : Ester Egg Two  Phone Number: 6666667  Email: esther@notreal.potato
 || ===================================================
 || Enter command: || [Command entered:  list]
 || 	1. Davin  Phone Number: 12345555  Email: davin1@gmail.com
@@ -396,12 +396,12 @@
 || Person could not be found in address book
 || ===================================================
 || Enter command: || [Command entered:  edit 1 betsy]
-|| Person : Davin, Phone: 12345555, Email: davin1@gmail.com
-|| Updated to Person : betsy, Phone: 12345555, Email: davin1@gmail.com
+|| Person : Davin  Phone Number: 12345555  Email: davin1@gmail.com
+|| Updated to Person : betsy  Phone Number: 12345555  Email: davin1@gmail.com
 || ===================================================
 || Enter command: || [Command entered:  edit 2 Adam Dickson]
-|| Person : Adam Brown, Phone: 111111, Email: beechoo1@gmail.com
-|| Updated to Person : Adam Dickson, Phone: 111111, Email: beechoo1@gmail.com
+|| Person : Adam Brown  Phone Number: 111111  Email: beechoo1@gmail.com
+|| Updated to Person : Adam Dickson  Phone Number: 111111  Email: beechoo1@gmail.com
 || ===================================================
 || Enter command: || [Command entered:  add Xiao Pu Test p/88888888 e/xp8888@gmail.com]
 || New person added: Xiao Pu Test, Phone: 88888888, Email: xp8888@gmail.com
