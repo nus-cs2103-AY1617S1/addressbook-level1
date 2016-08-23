@@ -122,12 +122,12 @@ public class AddressBook {
     private static final String COMMAND_CLEAR_DESC = "Clears address book permanently.";
     private static final String COMMAND_CLEAR_EXAMPLE = COMMAND_CLEAR_WORD;
 
-	private static final String COMMAND_SORT_WORD = "sort";
-	private static final String COMMAND_SORT_DESC = "Sorts address book and list all persons";
+    private static final String COMMAND_SORT_WORD = "sort";
+    private static final String COMMAND_SORT_DESC = "Sorts address book and list all persons";
     private static final String COMMAND_SORT_EXAMPLE = COMMAND_SORT_WORD;
-    
-	private static final String COMMAND_EDIT_WORD = "edit";
-	private static final String COMMAND_EDIT_DESC = "Edit properties of a specific person";
+
+    private static final String COMMAND_EDIT_WORD = "edit";
+    private static final String COMMAND_EDIT_DESC = "Edit properties of a specific person";
     private static final String COMMAND_EDIT_EXAMPLE = COMMAND_EDIT_WORD;
     
     private static final String COMMAND_HELP_WORD = "help";
@@ -379,61 +379,61 @@ public class AddressBook {
      * @return  feedback display messgae for the operation result
      */
     private static String executeEditPerson(String commandArgs) {
-		//TODO: Add check for input validity
-    	String[] details = commandArgs.split(" ");
-    	String personName = details[0];
-    	String type = details[1];
-    	String change = details[2];
-    	changePersonDetail(personName, type, change);
-    	savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
-		return MESSAGE_EDIT_PERSON_SUCCESS;
-	}
+        //TODO: Add check for input validity
+        String[] details = commandArgs.split(" ");
+        String personName = details[0];
+        String type = details[1];
+        String change = details[2];
+        changePersonDetail(personName, type, change);
+        savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
+        return MESSAGE_EDIT_PERSON_SUCCESS;
+    }
 
-	/**
-	 * @param person name
-	 * @param type of change, phone or email
-	 * @param new detail after change
-	 */
-	private static void changePersonDetail(String personName, String type, String change) {
-		if (type.equals("p")) {
-    		for (String[] person: ALL_PERSONS) {
-    			if (person[0].equals(personName)) {
-    				person[1] = change;
-    				return;
-    			}
-    		}
-    	} else if (type.equals("e")) {
-    		for (String[] person: ALL_PERSONS) {
-    			if (person[0].equals(personName)) {
-    				person[2] = change;
-    				return;
-    			}
-    		}
-    	}
-	}
-
-	/**
-     * Sorts address book and executes list command.
-     *
-     * @return  feedback display messgae for the operation result
+    /**
+     * @param person name
+     * @param type of change, phone or email
+     * @param new detail after change
      */
+    private static void changePersonDetail(String personName, String type, String change) {
+        if (type.equals("p")) {
+            for (String[] person : ALL_PERSONS) {
+                if (person[0].equals(personName)) {
+                    person[1] = change;
+                    return;
+                }
+            }
+        } else if (type.equals("e")) {
+            for (String[] person : ALL_PERSONS) {
+                if (person[0].equals(personName)) {
+                    person[2] = change;
+                    return;
+                }
+            }
+        }
+    }
+
+    /**
+    * Sorts address book and executes list command.
+    *
+    * @return  feedback display messgae for the operation result
+    */
     private static String executeSortAddressBookAndList() {
-		sortAddressBook();
-		savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
-		return executeListAllPersonsInAddressBook();
-	}
+        sortAddressBook();
+        savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
+        return executeListAllPersonsInAddressBook();
+    }
 
     /**
      * Sorts address book based on user name, in non-decreasing order
      *
      */
-	private static void sortAddressBook() {
-		Collections.sort(ALL_PERSONS, new Comparator<String[]>() {
-			public int compare(String[] o1, String[] o2) {
-				return o1[0].toLowerCase().compareTo(o2[0].toLowerCase());
-			}
-		});
-	}
+    private static void sortAddressBook() {
+        Collections.sort(ALL_PERSONS, new Comparator<String[]>() {
+            public int compare(String[] o1, String[] o2) {
+                return o1[0].toLowerCase().compareTo(o2[0].toLowerCase());
+            }
+        });
+    }
 
 	/**
      * Splits raw user input into command word and command arguments string
