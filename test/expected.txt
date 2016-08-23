@@ -230,7 +230,22 @@
 || 
 || 0 persons found!
 || ===================================================
+|| Enter command: || [Command entered:  add TEST p/12345678 e/TEST@gmail.com]
+|| New person added: TEST, Phone: 12345678, Email: TEST@gmail.com
+|| ===================================================
+|| Enter command: || [Command entered:  list]
+|| 	1. TEST  Phone Number: 12345678  Email: TEST@gmail.com
+|| 
+|| 1 persons found!
+|| ===================================================
+|| Enter command: || [Command entered:  delete 1]
+|| Deleted Person: TEST  Phone Number: 12345678  Email: TEST@gmail.com
+|| ===================================================
+|| Enter command: || [Command entered:  list]
+|| 
+|| 0 persons found!
+|| ===================================================
 || Enter command: || [Command entered:  exit]
-|| Exiting Address Book... Good bye!
+|| Exiting Address Book... Good bye and Good luck!
 || ===================================================
 || ===================================================
