@@ -642,8 +642,8 @@ public class AddressBook {
      * @return formatted message showing internal state
      */
     private static String getMessageForFormattedPersonData(String[] person) {
-        return String.format(MESSAGE_DISPLAY_PERSON_DATA,
-                getNameFromPerson(person), getPhoneFromPerson(person), getEmailFromPerson(person));
+        return String.format(MESSAGE_DISPLAY_PERSON_DATA, getNameFromPerson(person), 
+        		getPhoneFromPerson(person), getEmailFromPerson(person));
     }
 
     /**
