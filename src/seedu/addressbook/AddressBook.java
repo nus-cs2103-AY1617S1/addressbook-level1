@@ -149,6 +149,12 @@ public class AddressBook {
      * Offset required to convert between 1-indexing and 0-indexing.COMMAND_
      */
     private static final int DISPLAYED_INDEX_OFFSET = 1;
+    
+    /**
+     * The size of the command with one parameter. It is used to differentiate commands with or without parameters.
+     */
+    
+    public static final int INPUT_SIZE_HAS_PAR = 2;
 
 
 
@@ -276,7 +282,6 @@ public class AddressBook {
         System.exit(0);
     }
     
-    
     /**
      * Sets up the storage file based on the supplied file path.
      * Creates the file if it is missing.
@@ -363,9 +368,11 @@ public class AddressBook {
      *
      * @return  size 2 array; first element is the command type and second element is the arguments string
      */
+    
+    
     private static String[] splitCommandWordAndArgs(String rawUserInput) {
-        final String[] split =  rawUserInput.trim().split("\\s+", 2);
-        return split.length == 2 ? split : new String[] { split[0] , "" }; // else case: no parameters
+        final String[] split =  rawUserInput.trim().split("\\s+", INPUT_SIZE_HAS_PAR);
+        return split.length == INPUT_SIZE_HAS_PAR ? split : new String[] { split[0] , "" }; // else case: no parameters
     }
 
     /**
