@@ -51,7 +51,7 @@
   find bet
   # does not match if none have keyword
   find 23912039120
-  # matching should be case-sensitive
+  # matching should not be case-sensitive
   find betsy
 
   # find unique keyword
@@ -89,6 +89,23 @@
 
   # listing indexes get updated on next request
   delete 1
+  list
+
+##########################################################
+# test sort persons command
+##########################################################
+
+  add Amanda Bynes p/111111 e/amanda@notreal.tomato
+  list
+
+  # should show amanda bynes as 2nd person
+  sort
+
+##########################################################
+# test edit person command
+##########################################################
+
+  edit Amanda Bynes p/222222 e/amanda@notreal.potato
   list
 
 ##########################################################
