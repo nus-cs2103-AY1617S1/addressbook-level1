@@ -173,7 +173,26 @@ public class AddressBook {
         }
 
         if (args.length == 1) {
-            setupGivenFileForStorage(args[0]);
+        	    if (!isValidFilePath(args[0])) {
+                showToUser(String.format(MESSAGE_INVALID_FILE, args[0]));
+                exitProgram();
+            }
+
+            storageFilePath = args[0];
+            final File storageFile = new File(args[0]);
+            if (storageFile.exists()) {
+                return;
+            }
+
+            showToUser(String.format(MESSAGE_ERROR_MISSING_STORAGE_FILE, args[0]));
+
+            try {
+                storageFile.createNewFile();
+                showToUser(String.format(MESSAGE_STORAGE_FILE_CREATED, args[0]));
+            } catch (IOException ioe) {
+                showToUser(String.format(MESSAGE_ERROR_CREATING_STORAGE_FILE, args[0]));
+                exitProgram();
+            }
         }
 
         if(args.length == 0) {
@@ -279,21 +298,6 @@ public class AddressBook {
     }
  
 
-    /**
-     * Sets up the storage file based on the supplied file path.
-     * Creates the file if it is missing.
-     * Exits if the file name is not acceptable.
-     */
-    private static void setupGivenFileForStorage(String filePath) {
-
-        if (!isValidFilePath(filePath)) {
-            showToUser(String.format(MESSAGE_INVALID_FILE, filePath));
-            exitProgram();
-        }
-
-        storageFilePath = filePath;
-        createFileIfMissing(filePath);
-    }
 
     /**
      * Displays the goodbye message and exits the runtime.
@@ -313,7 +317,25 @@ public class AddressBook {
     private static void setupDefaultFileForStorage() {
         showToUser(MESSAGE_USING_DEFAULT_FILE);
         storageFilePath = DEFAULT_STORAGE_FILEPATH;
-        createFileIfMissing(storageFilePath);
+        if (!isValidFilePath(storageFilePath)) {
+            showToUser(String.format(MESSAGE_INVALID_FILE, storageFilePath));
+            exitProgram();
+        }
+
+        final File storageFile = new File(storageFilePath);
+        if (storageFile.exists()) {
+            return;
+        }
+
+        showToUser(String.format(MESSAGE_ERROR_MISSING_STORAGE_FILE, storageFilePath));
+
+        try {
+            storageFile.createNewFile();
+            showToUser(String.format(MESSAGE_STORAGE_FILE_CREATED, storageFilePath));
+        } catch (IOException ioe) {
+            showToUser(String.format(MESSAGE_ERROR_CREATING_STORAGE_FILE, storageFilePath));
+            exitProgram();
+        }
     }
 
     /**
@@ -551,27 +573,6 @@ public class AddressBook {
      * ===========================================
      */
 
-    /**
-     * Creates storage file if it does not exist. Shows feedback to user.
-     *
-     * @param filePath file to create if not present
-     */
-    private static void createFileIfMissing(String filePath) {
-        final File storageFile = new File(filePath);
-        if (storageFile.exists()) {
-            return;
-        }
-
-        showToUser(String.format(MESSAGE_ERROR_MISSING_STORAGE_FILE, filePath));
-
-        try {
-            storageFile.createNewFile();
-            showToUser(String.format(MESSAGE_STORAGE_FILE_CREATED, filePath));
-        } catch (IOException ioe) {
-            showToUser(String.format(MESSAGE_ERROR_CREATING_STORAGE_FILE, filePath));
-            exitProgram();
-        }
-    }
 
     /**
      * Gets all lines in the specified file as a list of strings. Line separators are removed.
