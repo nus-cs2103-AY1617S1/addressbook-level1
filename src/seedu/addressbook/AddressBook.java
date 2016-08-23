@@ -463,12 +463,22 @@ public class AddressBook {
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
         for (String[] person : getAllPersonsInAddressBook()) {
             final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
-            if (!Collections.disjoint(wordsInName, keywords)) {
+            if (!isMatched(keywords, wordsInName)) {
                 matchedPersons.add(person);
             }
         }
         return matchedPersons;
     }
+
+	/**
+	 * Check if a person matched the key word searched. 
+	 * @param keywords
+	 * @param wordsInName
+	 * @return
+	 */
+	private static boolean isMatched(Collection<String> keywords, final Set<String> wordsInName) {
+		return Collections.disjoint(wordsInName, keywords);
+	}
 
     /**
      * Deletes person identified using last displayed index.
