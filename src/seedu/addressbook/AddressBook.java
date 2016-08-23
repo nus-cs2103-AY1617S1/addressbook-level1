@@ -365,7 +365,8 @@ public class AddressBook {
      */
     private static String[] splitCommandWordAndArgs(String rawUserInput) {
         final String[] split =  rawUserInput.trim().split("\\s+", 2);
-        return split.length == 2 ? split : new String[] { split[0] , "" }; // else case: no parameters
+        final boolean isThereAnyArguments = split.length == 2;
+		return isThereAnyArguments ? split : new String[] { split[0] , "" }; // else case: no parameters
     }
 
     /**
