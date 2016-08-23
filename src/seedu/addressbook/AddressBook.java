@@ -210,7 +210,11 @@ public class AddressBook {
 			
 			// checks if args are valid (decode result will not be present if the person is invalid)
 			if (!decodeResult.isPresent()) {
-			    return getMessageForInvalidCommandInput("add", getUsageInfoForAddCommand());
+			    return getMessageForInvalidCommandInput("add", String.format("%1$s: %2$s", "add", "Adds a person to the address book.") + System.lineSeparator() + "|| "
+				+ String.format("\tParameters: %1$s", "NAME "
+				                                                  + "p/" + "PHONE_NUMBER "
+				                                                  + "e/" + "EMAIL") + System.lineSeparator() + "|| "
+				+ String.format("\tExample: %1$s", "add" + " John Doe p/98765432 e/johnd@gmail.com") + System.lineSeparator() + "|| ");
 			}
 			
 			// add the person as specified
@@ -228,7 +232,10 @@ public class AddressBook {
 			return getMessageForPersonsDisplayedSummary(toBeDisplayed);
         case "delete":
             if (!isDeletePersonArgsValid(commandArgs)) {
-			    return getMessageForInvalidCommandInput("delete", getUsageInfoForDeleteCommand());
+			    return getMessageForInvalidCommandInput("delete", String.format("%1$s: %2$s", "delete", "Deletes a person identified by the index number used in "
+				                                        + "the last find/list call.") + System.lineSeparator() + "|| "
+				+ String.format("\tParameters: %1$s", "INDEX") + System.lineSeparator() + "|| "
+				+ String.format("\tExample: %1$s", "delete" + " 1") + System.lineSeparator() + "|| ");
 			}
 			final int targetVisibleIndex = extractTargetIndexFromDeletePersonArgs(commandArgs);
 			if (!isDisplayIndexValidForLastPersonListingView(targetVisibleIndex)) {
@@ -241,13 +248,27 @@ public class AddressBook {
             clearAddressBook();
 			return "Address book has been cleared!";
         case "help":
-            return getUsageInfoForAddCommand() + System.lineSeparator() + "|| "
-			+ getUsageInfoForFindCommand() + System.lineSeparator() + "|| "
-			+ getUsageInfoForViewCommand() + System.lineSeparator() + "|| "
-			+ getUsageInfoForDeleteCommand() + System.lineSeparator() + "|| "
-			+ getUsageInfoForClearCommand() + System.lineSeparator() + "|| "
-			+ getUsageInfoForExitCommand() + System.lineSeparator() + "|| "
-			+ getUsageInfoForHelpCommand();
+            return String.format("%1$s: %2$s", "add", "Adds a person to the address book.") + System.lineSeparator() + "|| "
+			+ String.format("\tParameters: %1$s", "NAME "
+			                                                  + "p/" + "PHONE_NUMBER "
+			                                                  + "e/" + "EMAIL") + System.lineSeparator() + "|| "
+			+ String.format("\tExample: %1$s", "add" + " John Doe p/98765432 e/johnd@gmail.com") + System.lineSeparator() + "|| " + System.lineSeparator() + "|| "
+			+ String.format("%1$s: %2$s", "find", "Finds all persons whose names contain any of the specified "
+			                            + "keywords (case-sensitive) and displays them as a list with index numbers.") + System.lineSeparator() + "|| "
+			+ String.format("\tParameters: %1$s", "KEYWORD [MORE_KEYWORDS]") + System.lineSeparator() + "|| "
+			+ String.format("\tExample: %1$s", "find" + " alice bob charlie") + System.lineSeparator() + "|| " + System.lineSeparator() + "|| "
+			+ String.format("%1$s: %2$s", "list", "Displays all persons as a list with index numbers.") + System.lineSeparator() + "|| "
+			+ String.format("\tExample: %1$s", "list") + System.lineSeparator() + "|| " + System.lineSeparator() + "|| "
+			+ String.format("%1$s: %2$s", "delete", "Deletes a person identified by the index number used in "
+			                                        + "the last find/list call.") + System.lineSeparator() + "|| "
+			+ String.format("\tParameters: %1$s", "INDEX") + System.lineSeparator() + "|| "
+			+ String.format("\tExample: %1$s", "delete" + " 1") + System.lineSeparator() + "|| " + System.lineSeparator() + "|| "
+			+ String.format("%1$s: %2$s", "clear", "Clears address book permanently.") + System.lineSeparator() + "|| "
+			+ String.format("\tExample: %1$s", "clear") + System.lineSeparator() + "|| " + System.lineSeparator() + "|| "
+			+ String.format("%1$s: %2$s", "exit", "Exits the program.")
+			+ String.format("\tExample: %1$s", "exit") + System.lineSeparator() + "|| "
+			+ String.format("%1$s: %2$s", "help", "Shows program usage instructions.")
+			+ String.format("\tExample: %1$s", "help");
         case "exit":
             exitProgram();
         default:
@@ -332,7 +353,10 @@ public class AddressBook {
      */
     private static String executeDeletePerson(String commandArgs) {
         if (!isDeletePersonArgsValid(commandArgs)) {
-            return getMessageForInvalidCommandInput("delete", getUsageInfoForDeleteCommand());
+            return getMessageForInvalidCommandInput("delete", String.format("%1$s: %2$s", "delete", "Deletes a person identified by the index number used in "
+			                                        + "the last find/list call.") + System.lineSeparator() + "|| "
+			+ String.format("\tParameters: %1$s", "INDEX") + System.lineSeparator() + "|| "
+			+ String.format("\tExample: %1$s", "delete" + " 1") + System.lineSeparator() + "|| ");
         }
         final int targetVisibleIndex = extractTargetIndexFromDeletePersonArgs(commandArgs);
         if (!isDisplayIndexValidForLastPersonListingView(targetVisibleIndex)) {
@@ -924,91 +948,30 @@ public class AddressBook {
      * @return  Usage info for all commands
      */
     private static String getUsageInfoForAllCommands() {
-        return getUsageInfoForAddCommand() + System.lineSeparator() + "|| "
-                + getUsageInfoForFindCommand() + System.lineSeparator() + "|| "
-                + getUsageInfoForViewCommand() + System.lineSeparator() + "|| "
-                + getUsageInfoForDeleteCommand() + System.lineSeparator() + "|| "
-                + getUsageInfoForClearCommand() + System.lineSeparator() + "|| "
-                + getUsageInfoForExitCommand() + System.lineSeparator() + "|| "
-                + getUsageInfoForHelpCommand();
-    }
-
-    /**
-     * Builds string for showing 'add' command usage instruction
-     *
-     * @return  'add' command usage instruction
-     */
-    private static String getUsageInfoForAddCommand() {
         return String.format("%1$s: %2$s", "add", "Adds a person to the address book.") + System.lineSeparator() + "|| "
-                + String.format("\tParameters: %1$s", "NAME "
-				                                                  + "p/" + "PHONE_NUMBER "
-				                                                  + "e/" + "EMAIL") + System.lineSeparator() + "|| "
-                + String.format("\tExample: %1$s", "add" + " John Doe p/98765432 e/johnd@gmail.com") + System.lineSeparator() + "|| ";
+		+ String.format("\tParameters: %1$s", "NAME "
+		                                                  + "p/" + "PHONE_NUMBER "
+		                                                  + "e/" + "EMAIL") + System.lineSeparator() + "|| "
+		+ String.format("\tExample: %1$s", "add" + " John Doe p/98765432 e/johnd@gmail.com") + System.lineSeparator() + "|| " + System.lineSeparator() + "|| "
+                + String.format("%1$s: %2$s", "find", "Finds all persons whose names contain any of the specified "
+				                            + "keywords (case-sensitive) and displays them as a list with index numbers.") + System.lineSeparator() + "|| "
+				+ String.format("\tParameters: %1$s", "KEYWORD [MORE_KEYWORDS]") + System.lineSeparator() + "|| "
+				+ String.format("\tExample: %1$s", "find" + " alice bob charlie") + System.lineSeparator() + "|| " + System.lineSeparator() + "|| "
+                + String.format("%1$s: %2$s", "list", "Displays all persons as a list with index numbers.") + System.lineSeparator() + "|| "
+				+ String.format("\tExample: %1$s", "list") + System.lineSeparator() + "|| " + System.lineSeparator() + "|| "
+                + String.format("%1$s: %2$s", "delete", "Deletes a person identified by the index number used in "
+				                                        + "the last find/list call.") + System.lineSeparator() + "|| "
+				+ String.format("\tParameters: %1$s", "INDEX") + System.lineSeparator() + "|| "
+				+ String.format("\tExample: %1$s", "delete" + " 1") + System.lineSeparator() + "|| " + System.lineSeparator() + "|| "
+                + String.format("%1$s: %2$s", "clear", "Clears address book permanently.") + System.lineSeparator() + "|| "
+				+ String.format("\tExample: %1$s", "clear") + System.lineSeparator() + "|| " + System.lineSeparator() + "|| "
+                + String.format("%1$s: %2$s", "exit", "Exits the program.")
+				+ String.format("\tExample: %1$s", "exit") + System.lineSeparator() + "|| "
+                + String.format("%1$s: %2$s", "help", "Shows program usage instructions.")
+				+ String.format("\tExample: %1$s", "help");
     }
 
-    /**
-     * Builds string for showing 'find' command usage instruction
-     *
-     * @return  'find' command usage instruction
-     */
-    private static String getUsageInfoForFindCommand() {
-        return String.format("%1$s: %2$s", "find", "Finds all persons whose names contain any of the specified "
-		                                    + "keywords (case-sensitive) and displays them as a list with index numbers.") + System.lineSeparator() + "|| "
-                + String.format("\tParameters: %1$s", "KEYWORD [MORE_KEYWORDS]") + System.lineSeparator() + "|| "
-                + String.format("\tExample: %1$s", "find" + " alice bob charlie") + System.lineSeparator() + "|| ";
-    }
-
-    /**
-     * Builds string for showing 'delete' command usage instruction
-     *
-     * @return  'delete' command usage instruction
-     */
-    private static String getUsageInfoForDeleteCommand() {
-        return String.format("%1$s: %2$s", "delete", "Deletes a person identified by the index number used in "
-		                                                + "the last find/list call.") + System.lineSeparator() + "|| "
-                + String.format("\tParameters: %1$s", "INDEX") + System.lineSeparator() + "|| "
-                + String.format("\tExample: %1$s", "delete" + " 1") + System.lineSeparator() + "|| ";
-    }
-
-    /**
-     * Builds string for showing 'clear' command usage instruction
-     *
-     * @return  'clear' command usage instruction
-     */
-    private static String getUsageInfoForClearCommand() {
-        return String.format("%1$s: %2$s", "clear", "Clears address book permanently.") + System.lineSeparator() + "|| "
-                + String.format("\tExample: %1$s", "clear") + System.lineSeparator() + "|| ";
-    }
-
-    /**
-     * Builds string for showing 'view' command usage instruction
-     *
-     * @return  'view' command usage instruction
-     */
-    private static String getUsageInfoForViewCommand() {
-        return String.format("%1$s: %2$s", "list", "Displays all persons as a list with index numbers.") + System.lineSeparator() + "|| "
-                + String.format("\tExample: %1$s", "list") + System.lineSeparator() + "|| ";
-    }
-
-    /**
-     * Builds string for showing 'help' command usage instruction
-     *
-     * @return  'help' command usage instruction
-     */
-    private static String getUsageInfoForHelpCommand() {
-        return String.format("%1$s: %2$s", "help", "Shows program usage instructions.")
-                + String.format("\tExample: %1$s", "help");
-    }
-
-    /**
-     * Builds string for showing 'exit' command usage instruction
-     *
-     * @return  'exit' command usage instruction
-     */
-    private static String getUsageInfoForExitCommand() {
-        return String.format("%1$s: %2$s", "exit", "Exits the program.")
-                + String.format("\tExample: %1$s", "exit");
-    }
+    
 
 
     /*
