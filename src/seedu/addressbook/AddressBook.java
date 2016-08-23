@@ -353,24 +353,34 @@ public class AddressBook {
         final String commandType = commandTypeAndParams[0];
         final String commandArgs = commandTypeAndParams[1];
         
+        String messageOutput = null;
         switch (commandType) {
         case COMMAND_ADD_WORD:
-            return executeAddPerson(commandArgs);
+            messageOutput = executeAddPerson(commandArgs);
+            break;
         case COMMAND_FIND_WORD:
-            return executeFindPersons(commandArgs);
+            messageOutput = executeFindPersons(commandArgs);
+            break;
         case COMMAND_LIST_WORD:
-            return executeListAllPersonsInAddressBook();
+            messageOutput = executeListAllPersonsInAddressBook();
+            break;
         case COMMAND_DELETE_WORD:
-            return executeDeletePerson(commandArgs);
+            messageOutput = executeDeletePerson(commandArgs);
+            break;
         case COMMAND_CLEAR_WORD:
-            return executeClearAddressBook();
+            messageOutput = executeClearAddressBook();
+            break;
         case COMMAND_HELP_WORD:
-            return getUsageInfoForAllCommands();
+            messageOutput = getUsageInfoForAllCommands();
+            break;
         case COMMAND_EXIT_WORD:
-            executeExitProgramRequest();
+            exitProgram();
+            break;
         default:
-            return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
+            messageOutput = getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
         }
+        
+        return messageOutput;
     }
 
     /**
