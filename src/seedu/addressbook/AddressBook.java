@@ -412,8 +412,8 @@ public class AddressBook {
      * @return successful add person feedback message
      */
     private static String getMessageForSuccessfulAddPerson(String[] addedPerson) {
-        return String.format(MESSAGE_ADDED,
-                getNameFromPerson(addedPerson), getPhoneFromPerson(addedPerson), getEmailFromPerson(addedPerson));
+        return String.format(MESSAGE_ADDED, getNameFromPerson(addedPerson), 
+        		getPhoneFromPerson(addedPerson), getEmailFromPerson(addedPerson));
     }
 
     /**
