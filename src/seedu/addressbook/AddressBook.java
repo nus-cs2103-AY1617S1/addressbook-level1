@@ -200,6 +200,7 @@ public class AddressBook {
      */
     public static void main(String[] args) {
         showToUser(DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER);
+        
         if (args.length >= 2) {
 		    showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
 		    exitProgram();
@@ -212,7 +213,10 @@ public class AddressBook {
 		if(args.length == 0) {
 		    setupDefaultFileForStorage();
 		}
-        loadDataFromStorage();
+		
+        ALL_PERSONS.clear();
+		ALL_PERSONS.addAll(loadPersonsFromFile(storageFilePath));
+        
         while (true) {
             String userCommand = getUserInput();
             echoUserCommand(userCommand);
@@ -282,15 +286,6 @@ public class AddressBook {
     private static boolean isValidFilePath(String filePath) {
         return filePath.endsWith(".txt");
     }
-
-    /**
-     * Initialises the in-memory data using the storage file.
-     * Assumption: The file exists.
-     */
-    private static void loadDataFromStorage() {
-        initialiseAddressBookModel(loadPersonsFromFile(storageFilePath));
-    }
-
 
     /*
      * ===========================================
@@ -775,15 +770,7 @@ public class AddressBook {
         savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
     }
 
-    /**
-     * Resets the internal model with the given data. Does not save to file.
-     *
-     * @param persons list of persons to initialise the model with
-     */
-    private static void initialiseAddressBookModel(ArrayList<String[]> persons) {
-        ALL_PERSONS.clear();
-        ALL_PERSONS.addAll(persons);
-    }
+    
 
 
     /*
