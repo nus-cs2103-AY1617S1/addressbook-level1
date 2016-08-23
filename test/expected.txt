@@ -126,6 +126,24 @@
 || 
 || 5 persons found!
 || ===================================================
+|| Enter command: || [Command entered:	sort]
+|| Invalid command format: sort 
+|| sort: Sorts all persons either by ascending or descending
+|| 	Example: sort a
+|| 
+|| ===================================================
+|| Enter command: || [Command entered:	sort b]
+|| Invalid command format: sort 
+|| sort: Sorts all persons either by ascending or descending
+|| 	Example: sort a
+|| 
+|| ===================================================
+|| Enter command: || [Command entered:	sort baba]
+|| Invalid command format: sort 
+|| sort: Sorts all persons either by ascending or descending
+|| 	Example: sort a
+|| 
+|| ===================================================
 || Enter command: || [Command entered:  sort a]
 || 	1. Adam Brown  Phone Number: 111111  Email: adam@gmail.com
 || 	2. Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
