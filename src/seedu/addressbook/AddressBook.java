@@ -215,7 +215,17 @@ public class AddressBook {
         }
 
         if (args.length == 1) {
-            setupGivenFileForStorage(args[0]);
+            String filePath = args[0];
+			if (!isValidFilePath(filePath)) {
+			    System.out.println(LINE_PREFIX + String.format(MESSAGE_INVALID_FILE, filePath));
+			    System.out.println(LINE_PREFIX + MESSAGE_GOODBYE);
+				System.out.println(LINE_PREFIX + DIVIDER);
+				System.out.println(LINE_PREFIX + DIVIDER);
+				System.exit(0);
+			}
+			
+			storageFilePath = filePath;
+			createFileIfMissing(filePath);
         }
 
         if(args.length == 0) {
@@ -275,31 +285,22 @@ public class AddressBook {
         }
 
         if (args.length == 1) {
-            setupGivenFileForStorage(args[0]);
+            String filePath = args[0];
+			if (!isValidFilePath(filePath)) {
+			    System.out.println(LINE_PREFIX + String.format(MESSAGE_INVALID_FILE, filePath));
+			    System.out.println(LINE_PREFIX + MESSAGE_GOODBYE);
+				System.out.println(LINE_PREFIX + DIVIDER);
+				System.out.println(LINE_PREFIX + DIVIDER);
+				System.exit(0);
+			}
+			
+			storageFilePath = filePath;
+			createFileIfMissing(filePath);
         }
 
         if(args.length == 0) {
             setupDefaultFileForStorage();
         }
-    }
-
-    /**
-     * Sets up the storage file based on the supplied file path.
-     * Creates the file if it is missing.
-     * Exits if the file name is not acceptable.
-     */
-    private static void setupGivenFileForStorage(String filePath) {
-
-        if (!isValidFilePath(filePath)) {
-            System.out.println(LINE_PREFIX + String.format(MESSAGE_INVALID_FILE, filePath));
-            System.out.println(LINE_PREFIX + MESSAGE_GOODBYE);
-			System.out.println(LINE_PREFIX + DIVIDER);
-			System.out.println(LINE_PREFIX + DIVIDER);
-			System.exit(0);
-        }
-
-        storageFilePath = filePath;
-        createFileIfMissing(filePath);
     }
 
     /**
