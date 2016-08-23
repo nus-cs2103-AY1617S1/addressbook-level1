@@ -46,6 +46,9 @@ public class AddressBook {
      * The following defined messages will prompts for user intervention.
      */
     private static final String MESSAGE_ADDED = "New person added: %1$s, Phone: %2$s, Email: %3$s";
+    private static final String MESSAGE_EDITED_DESC = "%1$s, Phone: %2$s, Email: %3$s";
+    private static final String MESSAGE_EDITED = "Person : %1$s, Phone: %2$s, Email: %3$s" + LINE_SEPARATOR
+    		                                                   + "Updated to Person : %4$s, Phone: %5$s, Email: %6$s";
     private static final String MESSAGE_ADDRESSBOOK_CLEARED = "Address book has been cleared!";
     private static final String MESSAGE_COMMAND_HELP = "%1$s: %2$s";
     private static final String MESSAGE_COMMAND_HELP_PARAMETERS = "\tParameters: %1$s";
@@ -336,6 +339,8 @@ public class AddressBook {
         switch (commandType) {
         case COMMAND_ADD_WORD:
             return executeAddPerson(commandArgs);
+        case COMMAND_EDIT_WORD:
+        	    return executeEditPerson(commandArgs);
         case COMMAND_FIND_WORD:
             return executeFindPersons(commandArgs);
         case COMMAND_LIST_WORD:
@@ -396,7 +401,7 @@ public class AddressBook {
         addPersonToAddressBook(personToAdd);
         return getMessageForSuccessfulAddPerson(personToAdd);
     }
-
+    
     /**
      * Constructs a feedback message for a successful add person command execution.
      *
@@ -410,6 +415,87 @@ public class AddressBook {
                 getPropertyFromPerson(addedPerson, PersonProperty.PHONE), 
                 getPropertyFromPerson(addedPerson, PersonProperty.EMAIL));
     }
+    
+    /**
+     * Edit a person identified using last displayed index with properties (specific by the commandArgs).
+     * The entire command arguments string except the INDEX is treated as properties of the person to edit.
+     * 
+     * @param commandArgs command args string from the user
+     * @return feedback display message for the operation result
+     */
+    private static String executeEditPerson(String commandArgs) {
+    		if (!isEditPersonIndexArgsValid(commandArgs)) {
+            return getMessageForInvalidCommandInput(COMMAND_EDIT_WORD, getUsageInfoForEditCommand());
+        }
+        final int targetVisibleIndex = extractTargetIndexFromEditPersonArgs(commandArgs);
+        if (!isDisplayIndexValidForLastPersonListingView(targetVisibleIndex)) {
+            return MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
+        }
+       
+        final HashMap<PersonProperty, String> targetInLastView = getPersonByLastVisibleIndex(targetVisibleIndex);
+        final Optional<HashMap<PersonProperty, String>> targetInAddressBookOptional = getPersonInAddressBookByPersonEntity(targetInLastView);
+        if (!targetInAddressBookOptional.isPresent()) {
+        		return MESSAGE_PERSON_NOT_IN_ADDRESSBOOK;
+        }
+        final HashMap<PersonProperty, String> targetInAddressBook = targetInAddressBookOptional.get();
+        final HashMap<PersonProperty, String> beforeUpdatePersonProperties = new HashMap<PersonProperty, String>(targetInAddressBook);
+        final String encodedPersonProperties = removeIndexFromCommandArgs(commandArgs);
+        final Optional<HashMap<PersonProperty, String>> updatedPropertiesOptional = decodePersonPropertiesFromString(encodedPersonProperties);
+        if (!updatedPropertiesOptional.isPresent()) {
+            return getMessageForInvalidCommandInput(COMMAND_EDIT_WORD, getUsageInfoForEditCommand());
+        }
+        final HashMap<PersonProperty, String> updatedProperties = updatedPropertiesOptional.get();
+        
+        editPersonProperty(targetInAddressBook, updatedProperties);
+        return getMessageForSuccessfulEditPerson(beforeUpdatePersonProperties, targetInAddressBook);
+    }
+    
+
+    /**
+     * Checks validity of edit person argument for index part.
+     *
+     * @param rawArgs raw command args string for the edit person command
+     * @return whether the input args string is valid
+     */
+    private static boolean isEditPersonIndexArgsValid(String rawArgs) {
+    		try {
+    			final String IndexPart = splitByWhitespace(rawArgs).get(0);
+            final int extractedIndex = Integer.parseInt(IndexPart.trim()); // use standard libraries to parse
+            return extractedIndex >= DISPLAYED_INDEX_OFFSET;
+        } catch (NumberFormatException nfe) {
+            return false;
+        } catch (IndexOutOfBoundsException iob) {
+        		return false;
+        }
+    }
+    
+    /**
+     * Extracts the target's index from the raw edit person args string
+     *
+     * @param rawArgs raw command args string for the edit person command
+     * @return extracted index
+     */
+    private static int extractTargetIndexFromEditPersonArgs(String rawArgs) {
+        return Integer.parseInt(splitByWhitespace(rawArgs).get(0));
+    }
+    
+    /**
+     * Constructs a feedback message for a successful edit person command execution.
+     *
+     * @see #executeEditPerson(String)
+     * @param editedPerson person information who was successfully edited
+     * @return successful add person feedback message
+     */
+    private static String getMessageForSuccessfulEditPerson(HashMap<PersonProperty, String> oldPerson, HashMap<PersonProperty, String> editedPerson) {
+        return String.format(MESSAGE_EDITED,
+        			getPropertyFromPerson(oldPerson, PersonProperty.NAME), 
+                getPropertyFromPerson(oldPerson, PersonProperty.PHONE), 
+                getPropertyFromPerson(oldPerson, PersonProperty.EMAIL),
+                getPropertyFromPerson(editedPerson, PersonProperty.NAME), 
+                getPropertyFromPerson(editedPerson, PersonProperty.PHONE), 
+                getPropertyFromPerson(editedPerson, PersonProperty.EMAIL));
+    }
+    
 
     /**
      * Finds and lists all persons in address book whose name contains any of the argument keywords.
@@ -668,7 +754,24 @@ public class AddressBook {
      * @return the actual person object in the last shown person listing
      */
     private static HashMap<PersonProperty, String> getPersonByLastVisibleIndex(int lastVisibleIndex) {
-       return latestPersonListingView.get(lastVisibleIndex - DISPLAYED_INDEX_OFFSET);
+        return latestPersonListingView.get(lastVisibleIndex - DISPLAYED_INDEX_OFFSET);
+    }
+    
+    /**
+     * Retrieves the person in ALL_PERONS by a given person entity
+     * As the latestPersonListingView and ALL_PERSONS is not sync something, we need to get the entity in ALL_PERSON
+     * to update the change and store it globally
+     * 
+     * @param person
+     * @return
+     */
+    private static Optional<HashMap<PersonProperty, String>> getPersonInAddressBookByPersonEntity(HashMap<PersonProperty, String> person) {
+    	    int matchedIndexInAddressBook = ALL_PERSONS.indexOf(person);
+    	    if (matchedIndexInAddressBook == -1) {
+    	    		return Optional.empty();
+    	    } else {
+    	    		return Optional.of(ALL_PERSONS.get(matchedIndexInAddressBook));
+    	    }
     }
 
     /**
@@ -875,6 +978,107 @@ public class AddressBook {
         }
         return encoded;
     }
+    
+    /**
+     * Decodes a person properties from it's string representation with optional name/phone/email.
+     * 
+     * @param encoded
+     * @return
+     */
+    private static Optional<HashMap<PersonProperty, String>> decodePersonPropertiesFromString(String encoded) {
+        final Optional<String> personNameOptional = extractNameFromPersonStringWithOptionalProperty(encoded);
+        final Optional<String> personPhoneOptional = extractPhoneFromPersonStringWithOptionalProperty(encoded);
+        final Optional<String> personEmailOptional = extractEmailFromPersonStringWithOptionalProperty(encoded);
+        
+        if (personNameOptional.isPresent() || personPhoneOptional.isPresent() || personEmailOptional.isPresent()) {
+        		final HashMap<PersonProperty, String> personProperties = new HashMap<PersonProperty, String>();
+        		if (personNameOptional.isPresent()) {
+        			personProperties.put(PersonProperty.NAME, personNameOptional.get());
+        		}
+        		if (personPhoneOptional.isPresent()) {
+        			personProperties.put(PersonProperty.PHONE, personPhoneOptional.get());
+        		}
+        		if (personEmailOptional.isPresent()) {
+        			personProperties.put(PersonProperty.EMAIL, personEmailOptional.get());
+        		}
+        		return isPersonPropertiesValid(personProperties) ? Optional.of(personProperties) : Optional.empty();
+        } else {
+        		return Optional.empty();
+        }
+    }
+    
+    /**
+     * Extracts substring representing person name from person string representation with optional property
+     *
+     * @param encoded person string representation
+     * @return name argument
+     */
+    private static Optional<String> extractNameFromPersonStringWithOptionalProperty(String encoded) {
+        int indexOfPhonePrefix = encoded.indexOf(PERSON_DATA_PREFIX_PHONE);
+        int indexOfEmailPrefix = encoded.indexOf(PERSON_DATA_PREFIX_EMAIL);
+        int lengthOfString = encoded.length();
+        // adjust the index to value bigger than indexOfLastCharacter if the target string cannot be found
+        indexOfPhonePrefix = indexOfPhonePrefix == -1 ? encoded.length() + 1 : indexOfPhonePrefix;
+        indexOfEmailPrefix = indexOfEmailPrefix == -1 ? encoded.length() + 1 : indexOfEmailPrefix;
+        // name is leading substring up to first data prefix symbol
+        int indexToTerminate = Math.min(Math.min(indexOfEmailPrefix, indexOfPhonePrefix), lengthOfString);
+        String personName = encoded.substring(0, indexToTerminate).trim();
+        return personName.length() == 0 ? Optional.empty() : Optional.of(personName);
+    }
+    
+    /**
+     * Extracts substring representing person name from person string representation with optional property
+     *
+     * @param encoded person string representation
+     * @return name argument
+     */
+    private static Optional<String> extractPhoneFromPersonStringWithOptionalProperty(String encoded) {
+    		int indexOfPhonePrefix = encoded.indexOf(PERSON_DATA_PREFIX_PHONE);
+        int indexOfEmailPrefix = encoded.indexOf(PERSON_DATA_PREFIX_EMAIL);
+         
+        if (indexOfPhonePrefix == -1) {
+        		return Optional.empty();
+        }
+        
+        String personPhone;
+        if (indexOfEmailPrefix == -1 || indexOfEmailPrefix < indexOfPhonePrefix) {
+        		personPhone = removePrefixSign(encoded.substring(indexOfPhonePrefix, encoded.length()).trim(),
+        					PERSON_DATA_PREFIX_PHONE);
+        } else {
+        		personPhone = removePrefixSign(encoded.substring(indexOfPhonePrefix, indexOfEmailPrefix).trim(),
+					PERSON_DATA_PREFIX_PHONE);
+        }
+        
+        return personPhone.length() == 0 ? Optional.empty() : Optional.of(personPhone);
+    }
+    
+    /**
+     * Extracts substring representing email number from person string representation with optional property
+     *
+     * @param encoded person string representation
+     * @return eamil argument WITHOUT prefix
+     */
+    private static Optional<String> extractEmailFromPersonStringWithOptionalProperty(String encoded) {
+    		int indexOfPhonePrefix = encoded.indexOf(PERSON_DATA_PREFIX_PHONE);
+        int indexOfEmailPrefix = encoded.indexOf(PERSON_DATA_PREFIX_EMAIL);
+         
+        if (indexOfEmailPrefix == -1) {
+        		return Optional.empty();
+        }
+        
+        String personEmail;
+        if (indexOfPhonePrefix == -1 || indexOfPhonePrefix < indexOfEmailPrefix) {
+        		personEmail = removePrefixSign(encoded.substring(indexOfEmailPrefix, encoded.length()).trim(),
+        					PERSON_DATA_PREFIX_EMAIL);
+        } else {
+        		personEmail = removePrefixSign(encoded.substring(indexOfEmailPrefix, indexOfPhonePrefix).trim(),
+        				PERSON_DATA_PREFIX_EMAIL);
+        }
+        
+        return personEmail.length() == 0 ? Optional.empty() : Optional.of(personEmail);
+    }
+    
+    
 
     /**
      * Decodes a person from it's supposed string representation.
@@ -991,6 +1195,25 @@ public class AddressBook {
                     PERSON_DATA_PREFIX_EMAIL);
         }
     }
+    
+    /**
+     * Validates a person's data fields, some fileds is optional
+     *
+     * @param person String array representing the person (used in internal data)
+     * @return whether the given person has valid data
+     */
+    private static boolean isPersonPropertiesValid(HashMap<PersonProperty, String> person) {
+    		if (person.containsKey(PersonProperty.NAME) && !isPersonNameValid(person.get(PersonProperty.NAME))) {
+    			return false;
+    		}
+    		if (person.containsKey(PersonProperty.PHONE) && !isPersonPhoneValid(person.get(PersonProperty.PHONE))) {
+    			return false;
+    		}
+    		if (person.containsKey(PersonProperty.EMAIL) && !isPersonEmailValid(person.get(PersonProperty.EMAIL))) {
+    			return false;
+    		}
+    		return true;
+    }
 
     /**
      * Validates a person's data fields
@@ -1003,6 +1226,7 @@ public class AddressBook {
                 && isPersonPhoneValid(person.get(PersonProperty.PHONE))
                 && isPersonEmailValid(person.get(PersonProperty.EMAIL));
     }
+   
 
     
     /**
@@ -1053,6 +1277,27 @@ public class AddressBook {
     	     	}        
     	 	};
     	 	return personComparatorForName;
+    }
+    
+    /**
+     * Update a person with given personProperties
+     * 
+     * @param person      the person that is being updated
+     * @param properties  the personProperties provided
+     * @return
+     */
+    private static HashMap<PersonProperty, String> editPersonProperty(HashMap<PersonProperty, String> person, HashMap<PersonProperty, String> properties) {
+    		if (properties.containsKey(PersonProperty.NAME)) {
+    			person.put(PersonProperty.NAME, properties.get(PersonProperty.NAME));
+    		}
+    		if (properties.containsKey(PersonProperty.PHONE)) {
+    			person.put(PersonProperty.PHONE, properties.get(PersonProperty.PHONE));
+    		}
+    		if (properties.containsKey(PersonProperty.EMAIL)) {
+    			person.put(PersonProperty.EMAIL, properties.get(PersonProperty.EMAIL));
+    		}
+    		savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
+    		return person;
     }
 
 
@@ -1188,6 +1433,19 @@ public class AddressBook {
      */
     private static String removePrefixSign(String s, String sign) {
         return s.replace(sign, "");
+    }
+    
+    /**
+     * Remove INDEX in the command args
+     * 
+     * @param commandArgs
+     * @return commandArgs with INDEX removed
+     */
+    private static String removeIndexFromCommandArgs(String commandArgs) {
+    		String whitespaceRemovedCommand = commandArgs.trim();
+    		int firstWhitespaceIndex = whitespaceRemovedCommand.indexOf(" ") == -1 ? commandArgs.length() : whitespaceRemovedCommand.indexOf(" ");
+    		String withOutIndexCommand = whitespaceRemovedCommand.substring(firstWhitespaceIndex, whitespaceRemovedCommand.length());
+    		return withOutIndexCommand.trim();
     }
 
     /**
