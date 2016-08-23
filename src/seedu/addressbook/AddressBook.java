@@ -283,10 +283,10 @@ public class AddressBook {
         if (!isValidFilePath(filePath)) {
             showToUser(String.format(MESSAGE_INVALID_FILE, filePath));
             exitProgram();
+        } else {
+        	storageFilePath = filePath;
+        	createFileIfMissing(filePath);
         }
-
-        storageFilePath = filePath;
-        createFileIfMissing(filePath);
     }
 
     /**
