@@ -1,9 +1,4 @@
 package seedu.addressbook;
-/* ==============NOTE TO STUDENTS======================================
- * This class is written in a procedural fashion (i.e. not Object-Oriented)
- * Yes, it is possible to write non-OO code using an OO language.
- * ====================================================================
- */
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -40,8 +35,7 @@ public class AddressBook {
 	private static final String VERSION = "AddessBook Level 1 - Version 1.0";
 
 	/**
-	 * A decorative prefix added to the beginning of lines printed by
-	 * AddressBook
+	 * A decorative prefix added to the beginning of lines printed by AddressBook
 	 */
 	public static final String LINE_PREFIX = "|| ";
 
@@ -127,27 +121,10 @@ public class AddressBook {
 
 	private static final String DIVIDER = "===================================================";
 
-	/*
-	 * We use a String array to store details of a single person. The constants
-	 * given below are the indexes for the different data elements of a person
-	 * used by the internal String[] storage format. For example, a person's
-	 * name is stored as the 0th element in the array.
-	 */
-	// private static final int PERSON_DATA_INDEX_NAME = 0;
-	// private static final int PERSON_DATA_INDEX_PHONE = 1;
-	// private static final int PERSON_DATA_INDEX_EMAIL = 2;
-	// private static final String PERSON_DATA_INDEX_NAME = "name";
-	// private static final String PERSON_DATA_INDEX_PHONE = "phone";
-	// private static final String PERSON_DATA_INDEX_EMAIL = "email";
 
 	private enum PersonProperty {
 		NAME, EMAIL, PHONE
 	};
-
-	/**
-	 * The number of data elements for a single person.
-	 */
-	// private static final int PERSON_DATA_COUNT = 3;
 
 	/**
 	 * Offset required to convert between 1-indexing and 0-indexing.COMMAND_
@@ -182,7 +159,6 @@ public class AddressBook {
 	/**
 	 * List of all persons in the address book.
 	 */
-	// private static final ArrayList<String[]> ALL_PERSONS = new ArrayList<>();
 	private static final ArrayList<HashMap<PersonProperty, String>> ALL_PERSONS = new ArrayList<HashMap<PersonProperty, String>>();
 
 	/**
@@ -190,8 +166,6 @@ public class AddressBook {
 	 * user command. This is a subset of the full list. Deleting persons in the
 	 * pull list does not delete those persons from this list.
 	 */
-	// private static ArrayList<String[]> latestPersonListingView =
-	// getAllPersonsInAddressBook(); // initial view is of all
 	private static ArrayList<HashMap<PersonProperty, String>> latestPersonListingView = getAllPersonsInAddressBook();
 
 	/**
