@@ -124,7 +124,7 @@ public class AddressBook {
      * we use enum type to store name/email/phone
      */
     private enum PersonProperty {
-    		NAME, EMAIL, PHONE;
+        NAME, EMAIL, PHONE;
     };
     
     /**
@@ -189,19 +189,19 @@ public class AddressBook {
     /**
      * Get user input, process it, and output command result
      */
-	private static void handleUserCommand() {
-		String userCommand = getUserInput();
-		echoUserCommand(userCommand);
-		String feedback = executeCommand(userCommand);
-		showResultToUser(feedback);
-	}
+    private static void handleUserCommand() {
+        String userCommand = getUserInput();
+        echoUserCommand(userCommand);
+        String feedback = executeCommand(userCommand);
+        showResultToUser(feedback);
+    }
 
     /**
      * The method will show the welcome message to user
      */
     private static void showWelcomeMessage() {
-    		showToUser(DIVIDER);
-    		showToUser(DIVIDER);
+        showToUser(DIVIDER);
+        showToUser(DIVIDER);
         showToUser(VERSION);
         showToUser(MESSAGE_WELCOME);
         showToUser(DIVIDER);
@@ -390,7 +390,7 @@ public class AddressBook {
      */
     private static String getMessageForSuccessfulAddPerson(HashMap<PersonProperty, String> addedPerson) {
         return String.format(MESSAGE_ADDED,
-        			getPropertyFromPerson(addedPerson, PersonProperty.NAME), 
+                getPropertyFromPerson(addedPerson, PersonProperty.NAME), 
                 getPropertyFromPerson(addedPerson, PersonProperty.PHONE), 
                 getPropertyFromPerson(addedPerson, PersonProperty.EMAIL));
     }
@@ -568,7 +568,7 @@ public class AddressBook {
      * Shows a message to the user
      */
     private static void showToUser(String message) {
-    		System.out.println(LINE_PREFIX + message);
+        System.out.println(LINE_PREFIX + message);
     }
 
     /**
@@ -615,7 +615,7 @@ public class AddressBook {
      */
     private static String getMessageForFormattedPersonData(HashMap<PersonProperty, String> person) {
         return String.format(MESSAGE_DISPLAY_PERSON_DATA,
-        		    getPropertyFromPerson(person, PersonProperty.NAME), 
+                getPropertyFromPerson(person, PersonProperty.NAME), 
                 getPropertyFromPerson(person, PersonProperty.PHONE), 
                 getPropertyFromPerson(person, PersonProperty.EMAIL));
     }
@@ -799,7 +799,7 @@ public class AddressBook {
      * @return
      */
     private static String getPropertyFromPerson(HashMap<PersonProperty, String> person, PersonProperty property) {
-    		return person.get(property);
+        return person.get(property);
     }
 
     /**
