@@ -202,13 +202,21 @@ public class AddressBook {
         showWelcomeMessage();
         processProgramArgs(args);
         loadDataFromStorage();
-        while (true) {
+        startUserInputLoop();
+    }
+
+    /**
+     * Continually accepts input from the user, processes it, 
+     * and provides visual feedback in an endless loop.
+     */
+	private static void startUserInputLoop() {
+		while (true) {
             String userCommand = getUserInput();
             echoUserCommand(userCommand);
             String feedback = executeCommand(userCommand);
             showResultToUser(feedback);
         }
-    }
+	}
 
     /*
      * ==============NOTE TO STUDENTS======================================
