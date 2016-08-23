@@ -20,6 +20,7 @@ import java.util.Scanner;
 import java.util.Set;
 
 import seedu.addressbook.sorter.CustomPersonSorterAscending;
+import seedu.addressbook.sorter.CustomPersonSorterDescending;
 
 /* ==============NOTE TO STUDENTS======================================
  * This class header comment below is brief because details of how to
@@ -471,8 +472,9 @@ public class AddressBook {
 	}
 
 	private static ArrayList<String[]> sortDescendingByName() {
-		
-		return null;
+		ArrayList<String[]> personsToSort = getAllPersonsInAddressBook();
+		Collections.sort(personsToSort, new CustomPersonSorterDescending());		
+		return personsToSort;
 	}
 
 	private static ArrayList<String[]> sortAscendingByName() {
