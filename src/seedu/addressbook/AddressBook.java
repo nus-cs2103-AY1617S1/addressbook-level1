@@ -364,8 +364,8 @@ public class AddressBook {
      * @return  size 2 array; first element is the command type and second element is the arguments string
      */
     private static String[] splitCommandWordAndArgs(String rawUserInput) {
-        final String[] split =  rawUserInput.trim().split("\\s+", 2);
-        return split.length == 2 ? split : new String[] { split[0] , "" }; // else case: no parameters
+        final String[] parts =  rawUserInput.trim().split("\\s+", 2);
+        return parts.length == 2 ? parts : new String[] { parts[0] , "" }; // else case: no parameters
     }
 
     /**
@@ -477,8 +477,8 @@ public class AddressBook {
         if (!isDisplayIndexValidForLastPersonListingView(targetVisibleIndex)) {
             return MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
         }
-        final String[] targetInModel = getPersonByLastVisibleIndex(targetVisibleIndex);
-        return deletePersonFromAddressBook(targetInModel) ? getMessageForSuccessfulDelete(targetInModel) // success
+        final String[] targetPersonInModel = getPersonByLastVisibleIndex(targetVisibleIndex);
+        return deletePersonFromAddressBook(targetPersonInModel) ? getMessageForSuccessfulDelete(targetPersonInModel) // success
                                                           : MESSAGE_PERSON_NOT_IN_ADDRESSBOOK; // not found
     }
 
@@ -544,9 +544,9 @@ public class AddressBook {
      * @return feedback display message for the operation result
      */
     private static String executeListAllPersonsInAddressBook() {
-        ArrayList<String[]> toBeDisplayed = getAllPersonsInAddressBook();
-        showToUser(toBeDisplayed);
-        return getMessageForPersonsDisplayedSummary(toBeDisplayed);
+        ArrayList<String[]> personsForDisplay = getAllPersonsInAddressBook();
+        showToUser(personsForDisplay);
+        return getMessageForPersonsDisplayedSummary(personsForDisplay);
     }
 
     /**
@@ -706,12 +706,12 @@ public class AddressBook {
      * @return the list of decoded persons
      */
     private static ArrayList<String[]> loadPersonsFromFile(String filePath) {
-        final Optional<ArrayList<String[]>> successfullyDecoded = decodePersonsFromStrings(getLinesInFile(filePath));
-        if (!successfullyDecoded.isPresent()) {
+        final Optional<ArrayList<String[]>> decodedPersons = decodePersonsFromStrings(getLinesInFile(filePath));
+        if (!decodedPersons.isPresent()) {
             showToUser(MESSAGE_INVALID_STORAGE_FILE_CONTENT);
             exitProgram();
         }
-        return successfullyDecoded.get();
+        return decodedPersons.get();
     }
 
     /**
@@ -880,11 +880,11 @@ public class AddressBook {
      * @return encoded strings
      */
     private static ArrayList<String> encodePersonsToStrings(ArrayList<String[]> persons) {
-        final ArrayList<String> encoded = new ArrayList<>();
+        final ArrayList<String> encodedStrings = new ArrayList<>();
         for (String[] person : persons) {
-            encoded.add(encodePersonToString(person));
+            encodedStrings.add(encodePersonToString(person));
         }
-        return encoded;
+        return encodedStrings;
     }
 
     /*
