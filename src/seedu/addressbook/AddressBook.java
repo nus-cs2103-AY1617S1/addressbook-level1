@@ -86,7 +86,8 @@ public class AddressBook {
     private static final String MESSAGE_STORAGE_FILE_CREATED = "Created new empty storage file: %1$s";
     private static final String MESSAGE_WELCOME = "Welcome to your Address Book!";
     private static final String MESSAGE_USING_DEFAULT_FILE = "Using default storage file : " + DEFAULT_STORAGE_FILEPATH;
-
+    private static final String MESSAGE_EDIT_PERSON_SUCCESS = "Person detail is successfully changed.";
+    
     // These are the prefix strings to define the data type of a command parameter
     private static final String PERSON_DATA_PREFIX_PHONE = "p/";
     private static final String PERSON_DATA_PREFIX_EMAIL = "e/";
@@ -124,6 +125,10 @@ public class AddressBook {
 	private static final String COMMAND_SORT_WORD = "sort";
 	private static final String COMMAND_SORT_DESC = "Sorts address book and list all persons";
     private static final String COMMAND_SORT_EXAMPLE = COMMAND_SORT_WORD;
+    
+	private static final String COMMAND_EDIT_WORD = "edit";
+	private static final String COMMAND_EDIT_DESC = "Edit properties of a specific person";
+    private static final String COMMAND_EDIT_EXAMPLE = COMMAND_EDIT_WORD;
     
     private static final String COMMAND_HELP_WORD = "help";
     private static final String COMMAND_HELP_DESC = "Shows program usage instructions.";
@@ -356,6 +361,8 @@ public class AddressBook {
             return executeClearAddressBook();
         case COMMAND_SORT_WORD:
         	return executeSortAddressBookAndList();
+        case COMMAND_EDIT_WORD:
+        	return executeEditPerson(commandArgs);
         case COMMAND_HELP_WORD:
             return getUsageInfoForAllCommands();
         case COMMAND_EXIT_WORD:
@@ -366,12 +373,53 @@ public class AddressBook {
     }
 
     /**
-     * Sorts address book and executes list command
+     * Takes in person name and which property should be changed.
+     * E.g. edit Betsy p 123456 => changes Betsy's phone number to be 123456.
+     * Assume input is valid for now.
+     * @return  feedback display messgae for the operation result
+     */
+    private static String executeEditPerson(String commandArgs) {
+		//TODO: Add check for input validity
+    	String[] details = commandArgs.split(" ");
+    	String personName = details[0];
+    	String type = details[1];
+    	String change = details[2];
+    	changePersonDetail(personName, type, change);
+    	savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
+		return MESSAGE_EDIT_PERSON_SUCCESS;
+	}
+
+	/**
+	 * @param person name
+	 * @param type of change, phone or email
+	 * @param new detail after change
+	 */
+	private static void changePersonDetail(String personName, String type, String change) {
+		if (type.equals("p")) {
+    		for (String[] person: ALL_PERSONS) {
+    			if (person[0].equals(personName)) {
+    				person[1] = change;
+    				return;
+    			}
+    		}
+    	} else if (type.equals("e")) {
+    		for (String[] person: ALL_PERSONS) {
+    			if (person[0].equals(personName)) {
+    				person[2] = change;
+    				return;
+    			}
+    		}
+    	}
+	}
+
+	/**
+     * Sorts address book and executes list command.
      *
      * @return  feedback display messgae for the operation result
      */
     private static String executeSortAddressBookAndList() {
 		sortAddressBook();
+		savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
 		return executeListAllPersonsInAddressBook();
 	}
 
