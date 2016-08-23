@@ -456,7 +456,9 @@ public class AddressBook {
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
         for (String[] person : getAllPersonsInAddressBook()) {
             final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
-            if (!Collections.disjoint(wordsInName, keywords)) {
+            final Collection<String> caseInsensitiveWordsInName = stringCollectionToLowercase(wordsInName);
+            final Collection<String> caseInsensitiveKeywords = stringCollectionToLowercase(keywords);
+            if (!Collections.disjoint(caseInsensitiveWordsInName, caseInsensitiveKeywords)) {
                 matchedPersons.add(person);
             }
         }
@@ -464,6 +466,20 @@ public class AddressBook {
     }
 
     /**
+     * Iterates through string collection and outputs a list of lowercased strings for each input string
+     * @param words a collection of strings to convert to lowercase
+     * @return collections of input strings converted to lowercase
+     */
+    private static Collection<String> stringCollectionToLowercase(
+			Collection<String> words) {
+    	Collection<String> outputStringCollection = new HashSet<>();
+		for (String word : words) {
+			outputStringCollection.add(word.toLowerCase());
+		}
+		return outputStringCollection;
+	}
+
+	/**
      * Deletes person identified using last displayed index.
      *
      * @param commandArgs full command args string from the user
