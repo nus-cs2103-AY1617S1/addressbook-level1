@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Scanner;
@@ -128,6 +129,10 @@ public class AddressBook {
     private static final String COMMAND_EXIT_WORD = "exit";
     private static final String COMMAND_EXIT_DESC = "Exits the program.";
     private static final String COMMAND_EXIT_EXAMPLE = COMMAND_EXIT_WORD;
+    
+    private static final String COMMAND_SORT_WORD = "sort";
+    private static final String COMMAND_SORT_DESC = "List the persons in alphabetical order.";
+    private static final String COMMAND_SORT_EXAMPLE = COMMAND_SORT_WORD;
 
     private static final String DIVIDER = "===================================================";
 
@@ -354,12 +359,21 @@ public class AddressBook {
             return getUsageInfoForAllCommands();
         case COMMAND_EXIT_WORD:
             executeExitProgramRequest();
+        case COMMAND_SORT_WORD:
+        	return executeSortPersons();
         default:
             return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
         }
     }
 
-    /**
+    private static String executeSortPersons() {
+    	ArrayList<String[]> toBeDisplayed = getAllPersonsInAddressBook();
+		toBeDisplayed.sort(Comparator.comparing(person -> getNameFromPerson(person)));;
+        showToUser(toBeDisplayed);
+        return getMessageForPersonsDisplayedSummary(toBeDisplayed);
+    }
+
+	/**
      * Splits raw user input into command word and command arguments string
      *
      * @return  size 2 array; first element is the command type and second element is the arguments string
