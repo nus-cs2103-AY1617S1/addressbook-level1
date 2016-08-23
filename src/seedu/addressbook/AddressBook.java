@@ -424,6 +424,7 @@ public class AddressBook {
      * @return feedback display message for the operation result
      */
     private static String executeEditPerson(String commandArgs) {
+    		// validation of args
     		if (!isEditPersonIndexArgsValid(commandArgs)) {
             return getMessageForInvalidCommandInput(COMMAND_EDIT_WORD, getUsageInfoForEditCommand());
         }
@@ -431,23 +432,18 @@ public class AddressBook {
         if (!isDisplayIndexValidForLastPersonListingView(targetVisibleIndex)) {
             return MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
         }
-       
         final HashMap<PersonProperty, String> targetInLastView = getPersonByLastVisibleIndex(targetVisibleIndex);
+        
+        // get person in address book
         final Optional<HashMap<PersonProperty, String>> targetInAddressBookOptional = getPersonInAddressBookByPersonEntity(targetInLastView);
         if (!targetInAddressBookOptional.isPresent()) {
         		return MESSAGE_PERSON_NOT_IN_ADDRESSBOOK;
         }
         final HashMap<PersonProperty, String> targetInAddressBook = targetInAddressBookOptional.get();
-        final HashMap<PersonProperty, String> beforeUpdatePersonProperties = new HashMap<PersonProperty, String>(targetInAddressBook);
-        final String encodedPersonProperties = removeIndexFromCommandArgs(commandArgs);
-        final Optional<HashMap<PersonProperty, String>> updatedPropertiesOptional = decodePersonPropertiesFromString(encodedPersonProperties);
-        if (!updatedPropertiesOptional.isPresent()) {
-            return getMessageForInvalidCommandInput(COMMAND_EDIT_WORD, getUsageInfoForEditCommand());
-        }
-        final HashMap<PersonProperty, String> updatedProperties = updatedPropertiesOptional.get();
         
-        editPersonProperty(targetInAddressBook, updatedProperties);
-        return getMessageForSuccessfulEditPerson(beforeUpdatePersonProperties, targetInAddressBook);
+        // update person properties
+        return editPersonProperty(targetInAddressBook, commandArgs);
+        
     }
     
 
@@ -985,10 +981,11 @@ public class AddressBook {
      * @param encoded
      * @return
      */
-    private static Optional<HashMap<PersonProperty, String>> decodePersonPropertiesFromString(String encoded) {
-        final Optional<String> personNameOptional = extractNameFromPersonStringWithOptionalProperty(encoded);
-        final Optional<String> personPhoneOptional = extractPhoneFromPersonStringWithOptionalProperty(encoded);
-        final Optional<String> personEmailOptional = extractEmailFromPersonStringWithOptionalProperty(encoded);
+    private static Optional<HashMap<PersonProperty, String>> decodePersonPropertiesFromString(String commandArgs) {
+    		final String encodedPersonProperties = removeIndexFromCommandArgs(commandArgs);
+        final Optional<String> personNameOptional = extractNameFromPersonStringWithOptionalProperty(encodedPersonProperties);
+        final Optional<String> personPhoneOptional = extractPhoneFromPersonStringWithOptionalProperty(encodedPersonProperties);
+        final Optional<String> personEmailOptional = extractEmailFromPersonStringWithOptionalProperty(encodedPersonProperties);
         
         if (personNameOptional.isPresent() || personPhoneOptional.isPresent() || personEmailOptional.isPresent()) {
         		final HashMap<PersonProperty, String> personProperties = new HashMap<PersonProperty, String>();
@@ -1284,20 +1281,32 @@ public class AddressBook {
      * 
      * @param person      the person that is being updated
      * @param properties  the personProperties provided
-     * @return
+     * @return feedback for edition to person
      */
-    private static HashMap<PersonProperty, String> editPersonProperty(HashMap<PersonProperty, String> person, HashMap<PersonProperty, String> properties) {
-    		if (properties.containsKey(PersonProperty.NAME)) {
-    			person.put(PersonProperty.NAME, properties.get(PersonProperty.NAME));
+    private static String editPersonProperty(HashMap<PersonProperty, String> person, String commandArgs) {
+    		// decode properties that going to updated to a person
+    		final Optional<HashMap<PersonProperty, String>> updatedPropertiesOptional = decodePersonPropertiesFromString(commandArgs);
+        if (!updatedPropertiesOptional.isPresent()) {
+            return getMessageForInvalidCommandInput(COMMAND_EDIT_WORD, getUsageInfoForEditCommand());
+        }
+        final HashMap<PersonProperty, String> updatedProperties = updatedPropertiesOptional.get();
+        final HashMap<PersonProperty, String> personOldProperties = new HashMap<PersonProperty, String>(person);
+        
+        // update the properties 
+        if (updatedProperties.isEmpty()) {
+        		return getMessageForInvalidCommandInput(COMMAND_EDIT_WORD, getUsageInfoForEditCommand());
+        }
+    		if (updatedProperties.containsKey(PersonProperty.NAME)) {
+    			person.put(PersonProperty.NAME, updatedProperties.get(PersonProperty.NAME));
     		}
-    		if (properties.containsKey(PersonProperty.PHONE)) {
-    			person.put(PersonProperty.PHONE, properties.get(PersonProperty.PHONE));
+    		if (updatedProperties.containsKey(PersonProperty.PHONE)) {
+    			person.put(PersonProperty.PHONE, updatedProperties.get(PersonProperty.PHONE));
     		}
-    		if (properties.containsKey(PersonProperty.EMAIL)) {
-    			person.put(PersonProperty.EMAIL, properties.get(PersonProperty.EMAIL));
+    		if (updatedProperties.containsKey(PersonProperty.EMAIL)) {
+    			person.put(PersonProperty.EMAIL, updatedProperties.get(PersonProperty.EMAIL));
     		}
     		savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
-    		return person;
+    		return getMessageForSuccessfulEditPerson(personOldProperties, person);
     }
 
 
