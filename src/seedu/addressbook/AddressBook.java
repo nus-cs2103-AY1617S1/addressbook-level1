@@ -482,8 +482,8 @@ public class AddressBook {
         if (!isDisplayIndexValidForLastPersonListingView(targetVisibleIndex)) {
             return MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
         }
-        final String[] targetInModel = getPersonByLastVisibleIndex(targetVisibleIndex);
-        return deletePersonFromAddressBook(targetInModel) ? getMessageForSuccessfulDelete(targetInModel) // success
+        final String[] targetPersonData = getPersonByLastVisibleIndex(targetVisibleIndex);
+        return deletePersonFromAddressBook(targetPersonData) ? getMessageForSuccessfulDelete(targetPersonData) // success
                                                           : MESSAGE_PERSON_NOT_IN_ADDRESSBOOK; // not found
     }
 
