@@ -322,7 +322,8 @@ public class AddressBook {
      * Assumption: The file exists.
      */
     private static void loadDataFromStorage() {
-        initialiseAddressBookModel(loadPersonsFromFile(storageFilePath));
+    	ArrayList<String[]> persons = loadPersonsFromFile(storageFilePath);
+        initialiseAddressBookModel(persons);
     }
 
 
