@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
@@ -380,7 +381,7 @@ public class AddressBook {
         case COMMAND_EXIT_WORD:
             executeExitProgramRequest();
         case COMMAND_SORT_WORD:
-        	return executeShowSorted();
+        	executeShowSorted();
         case COMMAND_EDIT_WORD:
         	executeEditProperties(commandArgs);
         default:
@@ -606,19 +607,22 @@ public class AddressBook {
      *
      * @return feedback display message for the operation result
      */
-    private static String executeShowSorted() {
+    private static void executeShowSorted() {
         ArrayList<String[]> toBeDisplayed = getAllPersonsInAddressBook();
-        sort(toBeDisplayed);
-        showToUser(toBeDisplayed);
-        return getMessageForPersonsDisplayedSummary(toBeDisplayed);
+        ArrayList<String> names = new ArrayList<String>();
+        for (int i = 0; i < toBeDisplayed.size(); i++) {
+        	names.add(toBeDisplayed.get(i)[0]);
+        }
+        sort(names);
+        showToUserSorted(names);
     }
     
     /**
      * Sort all persons in the address book 
      *
      */
-    private static void sort(ArrayList<String[]> list) {
-    	//Sort according to the person name
+    private static void sort(ArrayList<String> list) {
+    	Collections.sort(list);
     }
     
     
@@ -677,6 +681,12 @@ public class AddressBook {
         String listAsString = getDisplayString(persons);
         showToUser(listAsString);
         updateLatestViewedPersonListing(persons);
+    }
+    
+    private static void showToUserSorted(ArrayList<String> names) {
+    	for (String m : names) {
+            System.out.println(LINE_PREFIX + m);
+        }
     }
 
     /**
