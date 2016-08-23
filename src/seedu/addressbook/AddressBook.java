@@ -353,8 +353,14 @@ public class AddressBook {
         final String commandType = commandTypeAndParams[0];
         final String commandArgs = commandTypeAndParams[1];
         
-        String messageOutput = null;
-        switch (commandType) {
+        String messageOutput = getMessageFromCommandType(commandType, commandArgs);
+        
+        return messageOutput;
+    }
+
+	private static String getMessageFromCommandType(final String commandType, final String commandArgs) {
+		String messageOutput = null;
+		switch (commandType) {
         case COMMAND_ADD_WORD:
             messageOutput = executeAddPerson(commandArgs);
             break;
@@ -379,9 +385,8 @@ public class AddressBook {
         default:
             messageOutput = getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
         }
-        
-        return messageOutput;
-    }
+		return messageOutput;
+	}
 
     /**
      * Splits raw user input into command word and command arguments string
