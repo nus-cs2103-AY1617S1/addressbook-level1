@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
@@ -469,15 +470,38 @@ public class AddressBook {
      */
     private static ArrayList<HashMap<PersonProperty,String>> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
         final ArrayList<HashMap<PersonProperty,String>> matchedPersons = new ArrayList<>();
+        Collection<String> keywordsInLowerCase = changeToLowerCase(keywords);
+        
         for (HashMap<PersonProperty,String> person : getAllPersonsInAddressBook()) {
             final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
-            if (!Collections.disjoint(wordsInName, keywords)) {
+            Collection<String> nameInLowerCase = changeToLowerCase(wordsInName);
+            if (!Collections.disjoint(nameInLowerCase, keywordsInLowerCase)) {
                 matchedPersons.add(person);
             }
         }
         return matchedPersons;
     }
 
+    /**
+     * Changes all the strings in the set into lower case.
+     * 
+     * @param the set of string to be changed
+     * @return a set containing the strings in lower case
+     */
+    private static Collection<String> changeToLowerCase(Collection<String> stringSetToChange){
+    	
+    	Iterator<String> stringIterator = stringSetToChange.iterator();
+    	Set<String> lowerCaseString = new HashSet<String>();
+    	
+    	while(stringIterator.hasNext()){
+    		String stringToChange = stringIterator.next();
+    		lowerCaseString.add(stringToChange.toLowerCase());
+    	}
+    	    	
+    	return lowerCaseString;
+    	
+    }
+    
     /**
      * Deletes person identified using last displayed index.
      *
