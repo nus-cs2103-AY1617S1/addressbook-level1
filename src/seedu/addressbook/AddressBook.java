@@ -20,43 +20,23 @@ import java.util.Set;
  * in a text file.
  **/
 public class AddressBook {
-
-    /**
-     * Default file path used if the user doesn't provide the file name.
-     */
-    private static final String DEFAULT_STORAGE_FILEPATH = "addressbook.txt";
-
-    /**
-     * A decorative prefix added to the beginning of lines printed by AddressBook
-     */
-    public static final String LINE_PREFIX = "|| ";
-
-    /**
-     * A platform independent line separator.
-     */
-    private static final String LINE_SEPARATOR = System.lineSeparator() + LINE_PREFIX;
-
     /**
      * The following defined messages will prompts for user intervention.
      */
-    private static final String MESSAGE_ADDED = "New person added: %1$s, Phone: %2$s, Email: %3$s";
-    private static final String MESSAGE_COMMAND_HELP = "%1$s: %2$s";
+	private static final String MESSAGE_COMMAND_HELP = "%1$s: %2$s";
     private static final String MESSAGE_COMMAND_HELP_PARAMETERS = "\tParameters: %1$s";
     private static final String MESSAGE_COMMAND_HELP_EXAMPLE = "\tExample: %1$s";
     private static final String MESSAGE_DELETE_PERSON_SUCCESS = "Deleted Person: %1$s";
     private static final String MESSAGE_DISPLAY_PERSON_DATA = "%1$s  Phone Number: %2$s  Email: %3$s";
     private static final String MESSAGE_DISPLAY_LIST_ELEMENT_INDEX = "%1$d. ";
     private static final String MESSAGE_GOODBYE = "Exiting Address Book... Good bye!";
-    private static final String MESSAGE_INVALID_COMMAND_FORMAT = "Invalid command format: %1$s " + LINE_SEPARATOR + "%2$s";
+    private static final String MESSAGE_INVALID_COMMAND_FORMAT = "Invalid command format: %1$s " + System.lineSeparator() + "|| " + "%2$s";
     private static final String MESSAGE_INVALID_FILE = "The given file name [%1$s] is not a valid file name!";
     private static final String MESSAGE_ERROR_CREATING_STORAGE_FILE = "Error: unable to create file: %1$s";
     private static final String MESSAGE_ERROR_MISSING_STORAGE_FILE = "Storage file missing: %1$s";
     private static final String MESSAGE_ERROR_READING_FROM_FILE = "Unexpected error: unable to read from file: %1$s";
     private static final String MESSAGE_ERROR_WRITING_TO_FILE = "Unexpected error: unable to write to file: %1$s";
-    private static final String MESSAGE_PERSONS_FOUND_OVERVIEW = "%1$d persons found!";
-    private static final String MESSAGE_STORAGE_FILE_CREATED = "Created new empty storage file: %1$s";
-    private static final String MESSAGE_USING_DEFAULT_FILE = "Using default storage file : " + DEFAULT_STORAGE_FILEPATH;
-
+    
 
     /**
      * These are the prefix strings to define the data type of a command parameter
@@ -101,9 +81,6 @@ public class AddressBook {
     private static final String COMMAND_EXIT_WORD = "exit";
     private static final String COMMAND_EXIT_DESC = "Exits the program.";
     private static final String COMMAND_EXIT_EXAMPLE = COMMAND_EXIT_WORD;
-
-    private static final String DIVIDER = "===================================================";
-
     
     /**
      * We use HashMap to store details of a single person.
@@ -167,8 +144,8 @@ public class AddressBook {
         showToUser("===================================================");
         if (args.length >= 2) {
             showToUser("Too many parameters! Correct program argument format:"
-                    + LINE_SEPARATOR + "\tjava AddressBook"
-                    + LINE_SEPARATOR + "\tjava AddressBook [custom storage file path]");
+                    + System.lineSeparator() + "|| " + "\tjava AddressBook"
+                    + System.lineSeparator() + "|| " + "\tjava AddressBook [custom storage file path]");
             exitProgram();
         }
 
@@ -188,7 +165,7 @@ public class AddressBook {
 
             try {
                 storageFile.createNewFile();
-                showToUser(String.format(MESSAGE_STORAGE_FILE_CREATED, args[0]));
+                showToUser(String.format("Created new empty storage file: %1$s", args[0]));
             } catch (IOException ioe) {
                 showToUser(String.format(MESSAGE_ERROR_CREATING_STORAGE_FILE, args[0]));
                 exitProgram();
@@ -267,12 +244,12 @@ public class AddressBook {
 	                feedback = "Address book has been cleared!";
 	            		break;
 	            case "help":
-	            		feedback = getUsageInfoForAddCommand() + LINE_SEPARATOR
-	                            + getUsageInfoForFindCommand() + LINE_SEPARATOR
-	                            + getUsageInfoForViewCommand() + LINE_SEPARATOR
-	                            + getUsageInfoForDeleteCommand() + LINE_SEPARATOR
-	                            + getUsageInfoForClearCommand() + LINE_SEPARATOR
-	                            + getUsageInfoForExitCommand() + LINE_SEPARATOR
+	            		feedback = getUsageInfoForAddCommand() + System.lineSeparator() + "|| "
+	                            + getUsageInfoForFindCommand() + System.lineSeparator() + "|| "
+	                            + getUsageInfoForViewCommand() + System.lineSeparator() + "|| "
+	                            + getUsageInfoForDeleteCommand() + System.lineSeparator() + "|| "
+	                            + getUsageInfoForClearCommand() + System.lineSeparator() + "|| "
+	                            + getUsageInfoForExitCommand() + System.lineSeparator() + "|| "
 	                            + getUsageInfoForHelpCommand();
 	            		break;
 	            case "exit":
@@ -282,12 +259,12 @@ public class AddressBook {
 	                System.exit(0);
 	                break;
 	            default:
-	            		String usageInfoForAllCommands = feedback = getUsageInfoForAddCommand() + LINE_SEPARATOR
-	                            + getUsageInfoForFindCommand() + LINE_SEPARATOR
-	                            + getUsageInfoForViewCommand() + LINE_SEPARATOR
-	                            + getUsageInfoForDeleteCommand() + LINE_SEPARATOR
-	                            + getUsageInfoForClearCommand() + LINE_SEPARATOR
-	                            + getUsageInfoForExitCommand() + LINE_SEPARATOR
+	            		String usageInfoForAllCommands = feedback = getUsageInfoForAddCommand() + System.lineSeparator() + "|| "
+	                            + getUsageInfoForFindCommand() + System.lineSeparator() + "|| "
+	                            + getUsageInfoForViewCommand() + System.lineSeparator() + "|| "
+	                            + getUsageInfoForDeleteCommand() + System.lineSeparator() + "|| "
+	                            + getUsageInfoForClearCommand() + System.lineSeparator() + "|| "
+	                            + getUsageInfoForExitCommand() + System.lineSeparator() + "|| "
 	                            + getUsageInfoForHelpCommand();
 	            		feedback =  getMessageForInvalidCommandInput(commandType, usageInfoForAllCommands);
 	        }
@@ -304,8 +281,8 @@ public class AddressBook {
      */
     private static void exitProgram() {
         showToUser(MESSAGE_GOODBYE);
-        showToUser(DIVIDER);
-        showToUser(DIVIDER);
+        showToUser("===================================================");
+        showToUser("===================================================");
         System.exit(0);
     }
 
@@ -315,8 +292,8 @@ public class AddressBook {
      * Exits program if the file cannot be created.
      */
     private static void setupDefaultFileForStorage() {
-        showToUser(MESSAGE_USING_DEFAULT_FILE);
-        storageFilePath = DEFAULT_STORAGE_FILEPATH;
+        showToUser("Using default storage file : " + "addressbook.txt");
+        storageFilePath = "addressbook.txt";
         if (!isValidFilePath(storageFilePath)) {
             showToUser(String.format(MESSAGE_INVALID_FILE, storageFilePath));
             exitProgram();
@@ -331,7 +308,7 @@ public class AddressBook {
 
         try {
             storageFile.createNewFile();
-            showToUser(String.format(MESSAGE_STORAGE_FILE_CREATED, storageFilePath));
+            showToUser(String.format("Created new empty storage file: %1$s", storageFilePath));
         } catch (IOException ioe) {
             showToUser(String.format(MESSAGE_ERROR_CREATING_STORAGE_FILE, storageFilePath));
             exitProgram();
@@ -382,7 +359,7 @@ public class AddressBook {
      * @return successful add person feedback message
      */
     private static String getMessageForSuccessfulAddPerson(HashMap<PersonProperty, String> addedPerson) {
-        return String.format(MESSAGE_ADDED,
+        return String.format("New person added: %1$s, Phone: %2$s, Email: %3$s",
         			getPropertyFromPerson(addedPerson, PersonProperty.NAME), 
                 getPropertyFromPerson(addedPerson, PersonProperty.PHONE), 
                 getPropertyFromPerson(addedPerson, PersonProperty.EMAIL));
@@ -396,7 +373,7 @@ public class AddressBook {
      * @return summary message for persons displayed
      */
     private static String getMessageForPersonsDisplayedSummary(ArrayList<HashMap<PersonProperty, String>> personsDisplayed) {
-        return String.format(MESSAGE_PERSONS_FOUND_OVERVIEW, personsDisplayed.size());
+        return String.format("%1$d persons found!", personsDisplayed.size());
     }
 
     /**
@@ -487,7 +464,7 @@ public class AddressBook {
      * Shows a message to the user
      */
     private static void showToUser(String message) {
-    		System.out.println(LINE_PREFIX + message);
+    		System.out.println("|| " + message);
     }
 
     /**
@@ -510,7 +487,7 @@ public class AddressBook {
             final int displayIndex = i + DISPLAYED_INDEX_OFFSET;
             messageAccumulator.append('\t')
                               .append(getIndexedPersonListElementMessage(displayIndex, person))
-                              .append(LINE_SEPARATOR);
+                              .append(System.lineSeparator() + "|| ");
         }
         return messageAccumulator.toString();
     }
@@ -885,9 +862,9 @@ public class AddressBook {
      * @return  'add' command usage instruction
      */
     private static String getUsageInfoForAddCommand() {
-        return String.format(MESSAGE_COMMAND_HELP, COMMAND_ADD_WORD, COMMAND_ADD_DESC) + LINE_SEPARATOR
-                + String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_ADD_PARAMETERS) + LINE_SEPARATOR
-                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_ADD_EXAMPLE) + LINE_SEPARATOR;
+        return String.format(MESSAGE_COMMAND_HELP, COMMAND_ADD_WORD, COMMAND_ADD_DESC) + System.lineSeparator() + "|| "
+                + String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_ADD_PARAMETERS) + System.lineSeparator() + "|| "
+                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_ADD_EXAMPLE) + System.lineSeparator() + "|| ";
     }
 
     /**
@@ -896,9 +873,9 @@ public class AddressBook {
      * @return  'find' command usage instruction
      */
     private static String getUsageInfoForFindCommand() {
-        return String.format(MESSAGE_COMMAND_HELP, COMMAND_FIND_WORD, COMMAND_FIND_DESC) + LINE_SEPARATOR
-                + String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_FIND_PARAMETERS) + LINE_SEPARATOR
-                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_FIND_EXAMPLE) + LINE_SEPARATOR;
+        return String.format(MESSAGE_COMMAND_HELP, COMMAND_FIND_WORD, COMMAND_FIND_DESC) + System.lineSeparator() + "|| "
+                + String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_FIND_PARAMETERS) + System.lineSeparator() + "|| "
+                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_FIND_EXAMPLE) + System.lineSeparator() + "|| ";
     }
 
     /**
@@ -907,9 +884,9 @@ public class AddressBook {
      * @return  'delete' command usage instruction
      */
     private static String getUsageInfoForDeleteCommand() {
-        return String.format(MESSAGE_COMMAND_HELP, COMMAND_DELETE_WORD, COMMAND_DELETE_DESC) + LINE_SEPARATOR
-                + String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_DELETE_PARAMETER) + LINE_SEPARATOR
-                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_DELETE_EXAMPLE) + LINE_SEPARATOR;
+        return String.format(MESSAGE_COMMAND_HELP, COMMAND_DELETE_WORD, COMMAND_DELETE_DESC) + System.lineSeparator() + "|| "
+                + String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_DELETE_PARAMETER) + System.lineSeparator() + "|| "
+                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_DELETE_EXAMPLE) + System.lineSeparator() + "|| ";
     }
 
     /**
@@ -918,8 +895,8 @@ public class AddressBook {
      * @return  'clear' command usage instruction
      */
     private static String getUsageInfoForClearCommand() {
-        return String.format(MESSAGE_COMMAND_HELP, COMMAND_CLEAR_WORD, COMMAND_CLEAR_DESC) + LINE_SEPARATOR
-                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_CLEAR_EXAMPLE) + LINE_SEPARATOR;
+        return String.format(MESSAGE_COMMAND_HELP, COMMAND_CLEAR_WORD, COMMAND_CLEAR_DESC) + System.lineSeparator() + "|| "
+                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_CLEAR_EXAMPLE) + System.lineSeparator() + "|| ";
     }
 
     /**
@@ -928,8 +905,8 @@ public class AddressBook {
      * @return  'view' command usage instruction
      */
     private static String getUsageInfoForViewCommand() {
-        return String.format(MESSAGE_COMMAND_HELP, COMMAND_LIST_WORD, COMMAND_LIST_DESC) + LINE_SEPARATOR
-                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_LIST_EXAMPLE) + LINE_SEPARATOR;
+        return String.format(MESSAGE_COMMAND_HELP, COMMAND_LIST_WORD, COMMAND_LIST_DESC) + System.lineSeparator() + "|| "
+                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_LIST_EXAMPLE) + System.lineSeparator() + "|| ";
     }
 
     /**
