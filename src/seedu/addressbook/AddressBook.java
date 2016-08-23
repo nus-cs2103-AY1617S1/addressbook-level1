@@ -573,7 +573,9 @@ public class AddressBook {
         System.out.print(LINE_PREFIX + "Enter command: ");
         String inputLine = SCANNER.nextLine();
         // silently consume all blank and comment lines
-        while (inputLine.trim().isEmpty() || inputLine.trim().charAt(0) == INPUT_COMMENT_MARKER) {
+        boolean isComment = inputLine.trim().charAt(0) == INPUT_COMMENT_MARKER;
+		boolean isEmpty = inputLine.trim().isEmpty();
+		while (isEmpty || isComment) {
             inputLine = SCANNER.nextLine();
         }
         return inputLine;
@@ -1171,7 +1173,8 @@ public class AddressBook {
      * @return split by whitespace
      */
     private static ArrayList<String> splitByWhitespace(String toSplit) {
-        return new ArrayList(Arrays.asList(toSplit.trim().split("\\s+")));
+        String[] parts = toSplit.trim().split("\\s+");
+		return new ArrayList(Arrays.asList(parts));
     }
 
 }
