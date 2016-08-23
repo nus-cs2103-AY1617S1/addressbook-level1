@@ -224,6 +224,23 @@
 || 
 || 2 persons found!
 || ===================================================
+|| Enter command: || [Command entered:  add Amanda Bynes p/111111 e/amanda@notreal.tomato]
+|| Not very new person added: Amanda Bynes, Phone: 111111, Email: amanda@notreal.tomato
+|| ===================================================
+|| Enter command: || [Command entered:  list]
+|| 	1. Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
+|| 	2. Dickson Ee  Phone Number: 444444  Email: dickson@nus.edu.sg
+|| 	3. Amanda Bynes  Phone Number: 111111  Email: amanda@notreal.tomato
+|| 
+|| 3 persons found!
+|| ===================================================
+|| Enter command: || [Command entered:  sort]
+|| 	1. Amanda Bynes  Phone Number: 111111  Email: amanda@notreal.tomato
+|| 	2. Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
+|| 	3. Dickson Ee  Phone Number: 444444  Email: dickson@nus.edu.sg
+|| 
+|| 3 persons found!
+|| ===================================================
 || Enter command: || [Command entered:  clear]
 || Address book has been cleared!
 || ===================================================
