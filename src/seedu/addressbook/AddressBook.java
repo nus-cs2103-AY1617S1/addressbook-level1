@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Optional;
@@ -111,6 +112,10 @@ public class AddressBook {
     private static final String COMMAND_LIST_DESC = "Displays all persons as a list with index numbers.";
     private static final String COMMAND_LIST_EXAMPLE = COMMAND_LIST_WORD;
 
+	private static final String COMMAND_SORT_WORD = "sort";
+    private static final String COMMAND_SORT_DESC = "Displays all persons as a list with index numbers in sorted order.";
+    private static final String COMMAND_SORT_EXAMPLE = COMMAND_SORT_WORD;
+    
     private static final String COMMAND_DELETE_WORD = "delete";
     private static final String COMMAND_DELETE_DESC = "Deletes a person identified by the index number used in "
                                                     + "the last find/list call.";
@@ -177,6 +182,8 @@ public class AddressBook {
      * List of all persons in the address book.
      */
     private static final ArrayList<HashMap<PersonProperty, String>> ALL_PERSONS = new ArrayList<>();
+
+
 
 
     /**
@@ -346,6 +353,8 @@ public class AddressBook {
             return executeFindPersons(commandArgs);
         case COMMAND_LIST_WORD:
             return executeListAllPersonsInAddressBook();
+        case COMMAND_SORT_WORD:
+        	return executeSortandListAllPersonsInAddressBook();
         case COMMAND_DELETE_WORD:
             return executeDeletePerson(commandArgs);
         case COMMAND_CLEAR_WORD:
@@ -359,7 +368,9 @@ public class AddressBook {
         }
     }
 
-    /**
+
+
+	/**
      * Splits raw user input into command word and command arguments string
      *
      * @return  size 2 array; first element is the command type and second element is the arguments string
@@ -554,6 +565,25 @@ public class AddressBook {
         showToUser(toBeDisplayed);
         return getMessageForPersonsDisplayedSummary(toBeDisplayed);
     }
+    
+    /**
+     * Displays all persons in the address book to the user; in alphabetical order.
+     *
+     * @return feedback display message for the operation result
+     */
+    private static String executeSortandListAllPersonsInAddressBook() {
+        ArrayList<HashMap<PersonProperty, String>> toBeDisplayed = getAllPersonsInAddressBook();
+        Comparator<HashMap<PersonProperty, String>> personAlphabeticalSorter 
+        		= new Comparator<HashMap<PersonProperty, String>>(){
+					@Override
+					public int compare(HashMap<PersonProperty, String> o1, HashMap<PersonProperty, String> o2) {
+						return o1.get(PersonProperty.NAME).compareTo(o2.get(PersonProperty.NAME));
+					}
+        };
+        toBeDisplayed.sort(personAlphabeticalSorter);
+        showToUser(toBeDisplayed);
+        return getMessageForPersonsDisplayedSummary(toBeDisplayed);
+	}
     /*
      * ===========================================
      *               UI LOGIC
