@@ -231,7 +231,7 @@ public class AddressBook {
 				exitProgram();
 			}
 		}
-		loadDataFromStorage();
+		initialiseAddressBookModel(loadPersonsFromFile(storageFilePath));
 		run();
 	}
 
