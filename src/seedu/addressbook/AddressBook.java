@@ -46,7 +46,6 @@ public class AddressBook {
      * The following defined messages will prompts for user intervention.
      */
     private static final String MESSAGE_ADDED = "New person added: %1$s, Phone: %2$s, Email: %3$s";
-    private static final String MESSAGE_EDITED_DESC = "%1$s, Phone: %2$s, Email: %3$s";
     private static final String MESSAGE_EDITED = "Person : %1$s, Phone: %2$s, Email: %3$s" + LINE_SEPARATOR
     		                                                   + "Updated to Person : %4$s, Phone: %5$s, Email: %6$s";
     private static final String MESSAGE_ADDRESSBOOK_CLEARED = "Address book has been cleared!";
