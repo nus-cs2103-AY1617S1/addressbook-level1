@@ -361,7 +361,21 @@ public class AddressBook {
 
         // add the person as specified
         final String[] personToAdd = decodeResult.get();
-        addPersonToAddressBook(personToAdd);
+        ALL_PERSONS.add(personToAdd);
+		final ArrayList<String> linesToWrite = encodePersonsToStrings(getAllPersonsInAddressBook());
+		try {
+		    Files.write(Paths.get(storageFilePath), linesToWrite);
+		} catch (IOException ioe) {
+		    String[] message = { String.format(MESSAGE_ERROR_WRITING_TO_FILE, storageFilePath) };
+			for (String m : message) {
+			    System.out.println(LINE_PREFIX + m);
+			}
+		    String[] message1 = { MESSAGE_GOODBYE, DIVIDER, DIVIDER };
+			for (String m1 : message1) {
+			    System.out.println(LINE_PREFIX + m1);
+			}
+			System.exit(0);
+		}
         return getMessageForSuccessfulAddPerson(personToAdd);
     }
 
@@ -724,28 +738,7 @@ public class AddressBook {
         return lines;
     }
 
-    /**
-     * Saves all data to the file.
-     * Exits program if there is an error saving to file.
-     *
-     * @param filePath file for saving
-     */
-    private static void savePersonsToFile(ArrayList<String[]> persons, String filePath) {
-        final ArrayList<String> linesToWrite = encodePersonsToStrings(persons);
-        try {
-            Files.write(Paths.get(storageFilePath), linesToWrite);
-        } catch (IOException ioe) {
-            String[] message = { String.format(MESSAGE_ERROR_WRITING_TO_FILE, filePath) };
-			for (String m : message) {
-			    System.out.println(LINE_PREFIX + m);
-			}
-            String[] message1 = { MESSAGE_GOODBYE, DIVIDER, DIVIDER };
-			for (String m1 : message1) {
-			    System.out.println(LINE_PREFIX + m1);
-			}
-			System.exit(0);
-        }
-    }
+    
 
 
     /*
@@ -755,16 +748,6 @@ public class AddressBook {
      */
 
     /**
-     * Adds a person to the address book. Saves changes to storage file.
-     *
-     * @param person to add
-     */
-    private static void addPersonToAddressBook(String[] person) {
-        ALL_PERSONS.add(person);
-        savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
-    }
-
-    /**
      * Deletes a person from the address book, target is identified by it's absolute index in the full list.
      * Saves changes to storage file.
      *
@@ -772,7 +755,20 @@ public class AddressBook {
      */
     private static void deletePersonFromAddressBook(int index) {
         ALL_PERSONS.remove(index);
-        savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
+        final ArrayList<String> linesToWrite = encodePersonsToStrings(getAllPersonsInAddressBook());
+		try {
+		    Files.write(Paths.get(storageFilePath), linesToWrite);
+		} catch (IOException ioe) {
+		    String[] message = { String.format(MESSAGE_ERROR_WRITING_TO_FILE, storageFilePath) };
+			for (String m : message) {
+			    System.out.println(LINE_PREFIX + m);
+			}
+		    String[] message1 = { MESSAGE_GOODBYE, DIVIDER, DIVIDER };
+			for (String m1 : message1) {
+			    System.out.println(LINE_PREFIX + m1);
+			}
+			System.exit(0);
+		}
     }
 
     /**
@@ -784,7 +780,20 @@ public class AddressBook {
     private static boolean deletePersonFromAddressBook(String[] exactPerson) {
         final boolean changed = ALL_PERSONS.remove(exactPerson);
         if (changed) {
-            savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
+            final ArrayList<String> linesToWrite = encodePersonsToStrings(getAllPersonsInAddressBook());
+			try {
+			    Files.write(Paths.get(storageFilePath), linesToWrite);
+			} catch (IOException ioe) {
+			    String[] message = { String.format(MESSAGE_ERROR_WRITING_TO_FILE, storageFilePath) };
+				for (String m : message) {
+				    System.out.println(LINE_PREFIX + m);
+				}
+			    String[] message1 = { MESSAGE_GOODBYE, DIVIDER, DIVIDER };
+				for (String m1 : message1) {
+				    System.out.println(LINE_PREFIX + m1);
+				}
+				System.exit(0);
+			}
         }
         return changed;
     }
@@ -801,7 +810,20 @@ public class AddressBook {
      */
     private static void clearAddressBook() {
         ALL_PERSONS.clear();
-        savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
+        final ArrayList<String> linesToWrite = encodePersonsToStrings(getAllPersonsInAddressBook());
+		try {
+		    Files.write(Paths.get(storageFilePath), linesToWrite);
+		} catch (IOException ioe) {
+		    String[] message = { String.format(MESSAGE_ERROR_WRITING_TO_FILE, storageFilePath) };
+			for (String m : message) {
+			    System.out.println(LINE_PREFIX + m);
+			}
+		    String[] message1 = { MESSAGE_GOODBYE, DIVIDER, DIVIDER };
+			for (String m1 : message1) {
+			    System.out.println(LINE_PREFIX + m1);
+			}
+			System.exit(0);
+		}
     }
 
     
