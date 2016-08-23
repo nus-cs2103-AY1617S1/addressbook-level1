@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /* ==============NOTE TO STUDENTS======================================
  * This class header comment below is brief because details of how to
@@ -445,6 +446,11 @@ public class AddressBook {
     private static Set<String> extractKeywordsFromFindPersonArgs(String findPersonCommandArgs) {
         return new HashSet<>(splitByWhitespace(findPersonCommandArgs.trim()));
     }
+    
+    private static Collection<String> lowercased(Collection<String> collection) {
+    	Collection<String> newCollection = collection.stream().map(String::toLowerCase).collect(Collectors.toList());
+        return newCollection;
+    }
 
     /**
      * Retrieve all persons in the full model whose names contain some of the specified keywords.
@@ -456,7 +462,7 @@ public class AddressBook {
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
         for (String[] person : getAllPersonsInAddressBook()) {
             final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
-            if (!Collections.disjoint(wordsInName, keywords)) {
+            if (!Collections.disjoint(lowercased(wordsInName), lowercased(keywords))) {
                 matchedPersons.add(person);
             }
         }
