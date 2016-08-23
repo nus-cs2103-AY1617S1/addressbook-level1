@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.Comparator;
 
 /* ==============NOTE TO STUDENTS======================================
  * This class header comment below is brief because details of how to
@@ -120,6 +121,10 @@ public class AddressBook {
     private static final String COMMAND_CLEAR_DESC = "Clears address book permanently.";
     private static final String COMMAND_CLEAR_EXAMPLE = COMMAND_CLEAR_WORD;
 
+	private static final String COMMAND_SORT_WORD = "sort";
+	private static final String COMMAND_SORT_DESC = "Sorts address book and list all persons";
+    private static final String COMMAND_SORT_EXAMPLE = COMMAND_SORT_WORD;
+    
     private static final String COMMAND_HELP_WORD = "help";
     private static final String COMMAND_HELP_DESC = "Shows program usage instructions.";
     private static final String COMMAND_HELP_EXAMPLE = COMMAND_HELP_WORD;
@@ -349,6 +354,8 @@ public class AddressBook {
             return executeDeletePerson(commandArgs);
         case COMMAND_CLEAR_WORD:
             return executeClearAddressBook();
+        case COMMAND_SORT_WORD:
+        	return executeSortAddressBookAndList();
         case COMMAND_HELP_WORD:
             return getUsageInfoForAllCommands();
         case COMMAND_EXIT_WORD:
@@ -359,6 +366,28 @@ public class AddressBook {
     }
 
     /**
+     * Sorts address book and executes list command
+     *
+     * @return  feedback display messgae for the operation result
+     */
+    private static String executeSortAddressBookAndList() {
+		sortAddressBook();
+		return executeListAllPersonsInAddressBook();
+	}
+
+    /**
+     * Sorts address book based on user name, in non-decreasing order
+     *
+     */
+	private static void sortAddressBook() {
+		Collections.sort(ALL_PERSONS, new Comparator<String[]>() {
+			public int compare(String[] o1, String[] o2) {
+				return o1[0].toLowerCase().compareTo(o2[0].toLowerCase());
+			}
+		});
+	}
+
+	/**
      * Splits raw user input into command word and command arguments string
      *
      * @return  size 2 array; first element is the command type and second element is the arguments string
