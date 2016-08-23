@@ -214,7 +214,22 @@ public class AddressBook {
 		}
 
 		if (args.length == 0) {
-			setupDefaultFileForStorage();
+			showToUser(MESSAGE_USING_DEFAULT_FILE);
+			storageFilePath = DEFAULT_STORAGE_FILEPATH;
+			final File storageFile = new File(DEFAULT_STORAGE_FILEPATH);
+			if (storageFile.exists()) {
+				return;
+			}
+
+			showToUser(String.format(MESSAGE_ERROR_MISSING_STORAGE_FILE, DEFAULT_STORAGE_FILEPATH));
+
+			try {
+				storageFile.createNewFile();
+				showToUser(String.format(MESSAGE_STORAGE_FILE_CREATED, DEFAULT_STORAGE_FILEPATH));
+			} catch (IOException ioe) {
+				showToUser(String.format(MESSAGE_ERROR_CREATING_STORAGE_FILE, DEFAULT_STORAGE_FILEPATH));
+				exitProgram();
+			}
 		}
 		loadDataFromStorage();
 		run();
