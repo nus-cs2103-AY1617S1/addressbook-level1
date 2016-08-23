@@ -182,7 +182,7 @@ public class AddressBook {
      * This is a subset of the full list. Deleting persons in the pull list does not delete
      * those persons from this list.
      */
-    private static ArrayList<String[]> latestPersonListingView = getAllPersonsInAddressBook(); // initial view is of all
+    private static ArrayList<String[]> latestPersonListingView = ALL_PERSONS; // initial view is of all
 
     /**
      * The path to the file used for storing person data.
@@ -453,7 +453,7 @@ public class AddressBook {
      */
     private static ArrayList<String[]> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
-        for (String[] person : getAllPersonsInAddressBook()) {
+        for (String[] person : ALL_PERSONS) {
             final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
             if (!Collections.disjoint(wordsInName, keywords)) {
                 matchedPersons.add(person);
@@ -543,7 +543,7 @@ public class AddressBook {
      * @return feedback display message for the operation result
      */
     private static String executeListAllPersonsInAddressBook() {
-        ArrayList<String[]> personsForDisplay = getAllPersonsInAddressBook();
+        ArrayList<String[]> personsForDisplay = ALL_PERSONS;
         showToUser(personsForDisplay);
         return getMessageForPersonsDisplayedSummary(personsForDisplay);
     }
@@ -761,7 +761,7 @@ public class AddressBook {
      */
     private static void addPersonToAddressBook(String[] person) {
         ALL_PERSONS.add(person);
-        savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
+        savePersonsToFile(ALL_PERSONS, storageFilePath);
     }
 
     /**
@@ -772,7 +772,7 @@ public class AddressBook {
      */
     private static void deletePersonFromAddressBook(int index) {
         ALL_PERSONS.remove(index);
-        savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
+        savePersonsToFile(ALL_PERSONS, storageFilePath);
     }
 
     /**
@@ -784,16 +784,9 @@ public class AddressBook {
     private static boolean deletePersonFromAddressBook(String[] exactPerson) {
         final boolean isChanged = ALL_PERSONS.remove(exactPerson);
         if (isChanged) {
-            savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
+            savePersonsToFile(ALL_PERSONS, storageFilePath);
         }
         return isChanged;
-    }
-
-    /**
-     * @return unmodifiable list view of all persons in the address book
-     */
-    private static ArrayList<String[]> getAllPersonsInAddressBook() {
-        return ALL_PERSONS;
     }
 
     /**
@@ -801,7 +794,7 @@ public class AddressBook {
      */
     private static void clearAddressBook() {
         ALL_PERSONS.clear();
-        savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
+        savePersonsToFile(ALL_PERSONS, storageFilePath);
     }
 
     /**
@@ -813,7 +806,6 @@ public class AddressBook {
         ALL_PERSONS.clear();
         ALL_PERSONS.addAll(persons);
     }
-
 
     /*
      * ===========================================
@@ -895,19 +887,19 @@ public class AddressBook {
     /**
      * Decodes a person from it's supposed string representation.
      *
-     * @param encoded string to be decoded
+     * @param encodedString string to be decoded
      * @return if cannot decode: empty Optional
      *         else: Optional containing decoded person
      */
-    private static Optional<String[]> decodePersonFromString(String encoded) {
+    private static Optional<String[]> decodePersonFromString(String encodedString) {
         // check that we can extract the parts of a person from the encoded string
-        if (!isPersonDataExtractableFrom(encoded)) {
+        if (!isPersonDataExtractableFrom(encodedString)) {
             return Optional.empty();
         }
         final String[] decodedPerson = makePersonFromData(
-        		extractNameFromPersonString(encoded),
-                extractPhoneFromPersonString(encoded),
-                extractEmailFromPersonString(encoded)
+        		extractNameFromPersonString(encodedString),
+                extractPhoneFromPersonString(encodedString),
+                extractEmailFromPersonString(encodedString)
         );
         // check that the constructed person is valid
         return isPersonDataValid(decodedPerson) ? Optional.of(decodedPerson) : Optional.empty();
