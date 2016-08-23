@@ -358,6 +358,13 @@ public class AddressBook {
         return messageOutput;
     }
 
+    /**
+     * Helper method to get message from the commandType and commandArgs
+     * 
+     * @param commandType must not be null 
+     * @param commandArgs must not be null
+     * @return message feedback about command executed
+     */
 	private static String getMessageFromCommandType(final String commandType, final String commandArgs) {
 		String messageOutput = null;
 		switch (commandType) {
@@ -607,12 +614,22 @@ public class AddressBook {
     private static String getUserInput() {
         System.out.print(LINE_PREFIX + "Enter command: ");
         String inputLine = SCANNER.nextLine();
-        // silently consume all blank and comment lines
-        while (inputLine.trim().isEmpty() || inputLine.trim().charAt(0) == INPUT_COMMENT_MARKER) {
-            inputLine = SCANNER.nextLine();
-        }
+        inputLine = trimEmptyLine(inputLine); // silently consume all blank and comment lines
         return inputLine;
     }
+
+    /**
+     * Trims any empty line and comment lines
+     * 
+     * @param inputLine Must not be null
+     * @return user input with out any blank or empty lines
+     */
+	private static String trimEmptyLine(String inputLine) {
+		while (inputLine.trim().isEmpty() || inputLine.trim().charAt(0) == INPUT_COMMENT_MARKER) {
+            inputLine = SCANNER.nextLine();
+        }
+		return inputLine;
+	}
 
    /* ==============NOTE TO STUDENTS======================================
     * Note how the method below uses Java 'Varargs' feature so that the
