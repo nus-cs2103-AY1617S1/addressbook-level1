@@ -1169,7 +1169,7 @@ public class AddressBook {
     }
 
     /**
-     * Builds string for showing 'view' command usage instruction
+     * Builds string for showing 'list' command usage instruction
      *
      * @return  'list' command usage instruction
      */
