@@ -108,7 +108,7 @@ public class AddressBook {
 
     private static final String COMMAND_LIST_WORD = "list";
     private static final String COMMAND_LIST_DESC = "Displays all persons as a list with index numbers.";
-    private static final String COMMAND_LIST_EXAMPLE = COMMAND_LIST_WORD;
+//    private static final String COMMAND_LIST_EXAMPLE = COMMAND_LIST_WORD;
 
     private static final String COMMAND_DELETE_WORD = "delete";
     private static final String COMMAND_DELETE_DESC = "Deletes a person identified by the index number used in "
@@ -118,15 +118,15 @@ public class AddressBook {
 
     private static final String COMMAND_CLEAR_WORD = "clear";
     private static final String COMMAND_CLEAR_DESC = "Clears address book permanently.";
-    private static final String COMMAND_CLEAR_EXAMPLE = COMMAND_CLEAR_WORD;
+//    private static final String COMMAND_CLEAR_EXAMPLE = COMMAND_CLEAR_WORD;
 
     private static final String COMMAND_HELP_WORD = "help";
     private static final String COMMAND_HELP_DESC = "Shows program usage instructions.";
-    private static final String COMMAND_HELP_EXAMPLE = COMMAND_HELP_WORD;
+//    private static final String COMMAND_HELP_EXAMPLE = COMMAND_HELP_WORD;
 
     private static final String COMMAND_EXIT_WORD = "exit";
     private static final String COMMAND_EXIT_DESC = "Exits the program.";
-    private static final String COMMAND_EXIT_EXAMPLE = COMMAND_EXIT_WORD;
+//    private static final String COMMAND_EXIT_EXAMPLE = COMMAND_EXIT_WORD;
 
     private static final String DIVIDER = "===================================================";
 
@@ -254,17 +254,14 @@ public class AddressBook {
      *
      * @param args full program arguments passed to application main method
      */
+    // Combined the if-else statements as it is not mutually exclusive
     private static void processProgramArgs(String[] args) {
         if (args.length >= 2) {
             showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
             exitProgram();
-        }
-
-        if (args.length == 1) {
+        } else if (args.length == 1) {
             setupGivenFileForStorage(args[0]);
-        }
-
-        if(args.length == 0) {
+        } else {
             setupDefaultFileForStorage();
         }
     }
@@ -339,20 +336,20 @@ public class AddressBook {
         final String commandType = commandTypeAndParams[0];
         final String commandArgs = commandTypeAndParams[1];
         switch (commandType) {
-        case COMMAND_ADD_WORD:
+        case COMMAND_ADD_WORD :
             return executeAddPerson(commandArgs);
-        case COMMAND_FIND_WORD:
+        case COMMAND_FIND_WORD :
             return executeFindPersons(commandArgs);
-        case COMMAND_LIST_WORD:
+        case COMMAND_LIST_WORD :
             return executeListAllPersonsInAddressBook();
-        case COMMAND_DELETE_WORD:
+        case COMMAND_DELETE_WORD :
             return executeDeletePerson(commandArgs);
-        case COMMAND_CLEAR_WORD:
+        case COMMAND_CLEAR_WORD :
             return executeClearAddressBook();
-        case COMMAND_HELP_WORD:
+        case COMMAND_HELP_WORD :
             return getUsageInfoForAllCommands();
-        case COMMAND_EXIT_WORD:
-            executeExitProgramRequest();
+        case COMMAND_EXIT_WORD :
+            exitProgram();
         default:
             return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
         }
@@ -549,15 +546,6 @@ public class AddressBook {
         return getMessageForPersonsDisplayedSummary(toBeDisplayed);
     }
 
-    /**
-     * Request to terminate the program.
-     *
-     * @return feedback display message for the operation result
-     */
-    private static void executeExitProgramRequest() {
-        exitProgram();
-    }
-
     /*
      * ===========================================
      *               UI LOGIC
@@ -588,6 +576,7 @@ public class AddressBook {
     /**
      * Shows a message to the user
      */
+    // Better to use String[]?
     private static void showToUser(String... message) {
         for (String m : message) {
             System.out.println(LINE_PREFIX + m);
@@ -940,13 +929,14 @@ public class AddressBook {
      * @param personData person string representation
      * @return whether format of add command arguments allows parsing into individual arguments
      */
+    //Changed indexes to constants for better understanding
     private static boolean isPersonDataExtractableFrom(String personData) {
         final String matchAnyPersonDataPrefix = PERSON_DATA_PREFIX_PHONE + '|' + PERSON_DATA_PREFIX_EMAIL;
         final String[] splitArgs = personData.trim().split(matchAnyPersonDataPrefix);
-        return splitArgs.length == 3 // 3 arguments
-                && !splitArgs[0].isEmpty() // non-empty arguments
-                && !splitArgs[1].isEmpty()
-                && !splitArgs[2].isEmpty();
+        return splitArgs.length == PERSON_DATA_COUNT // 3 arguments
+                && !splitArgs[PERSON_DATA_INDEX_NAME].isEmpty() // non-empty arguments
+                && !splitArgs[PERSON_DATA_INDEX_PHONE].isEmpty()
+                && !splitArgs[PERSON_DATA_INDEX_EMAIL].isEmpty();
     }
 
     /**
@@ -1121,7 +1111,7 @@ public class AddressBook {
      */
     private static String getUsageInfoForClearCommand() {
         return String.format(MESSAGE_COMMAND_HELP, COMMAND_CLEAR_WORD, COMMAND_CLEAR_DESC) + LS
-                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_CLEAR_EXAMPLE) + LS;
+                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_CLEAR_WORD) + LS;
     }
 
     /**
@@ -1131,7 +1121,7 @@ public class AddressBook {
      */
     private static String getUsageInfoForViewCommand() {
         return String.format(MESSAGE_COMMAND_HELP, COMMAND_LIST_WORD, COMMAND_LIST_DESC) + LS
-                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_LIST_EXAMPLE) + LS;
+                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_LIST_WORD) + LS;
     }
 
     /**
@@ -1141,7 +1131,7 @@ public class AddressBook {
      */
     private static String getUsageInfoForHelpCommand() {
         return String.format(MESSAGE_COMMAND_HELP, COMMAND_HELP_WORD, COMMAND_HELP_DESC)
-                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_HELP_EXAMPLE);
+                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_HELP_WORD);
     }
 
     /**
@@ -1151,7 +1141,7 @@ public class AddressBook {
      */
     private static String getUsageInfoForExitCommand() {
         return String.format(MESSAGE_COMMAND_HELP, COMMAND_EXIT_WORD, COMMAND_EXIT_DESC)
-                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_EXIT_EXAMPLE);
+                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_EXIT_WORD);
     }
 
 
