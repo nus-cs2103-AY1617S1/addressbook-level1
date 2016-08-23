@@ -185,17 +185,27 @@ public class AddressBook {
 	 * ====================================================================
 	 */
 	public static void main(String[] args) {
-		showToUser(DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER);
+		showToUser("===================================================", 
+				"===================================================", 
+				"AddessBook Level 1 - Version 1.0", 
+				"Welcome to your Address Book!", 
+				"===================================================");
 		if (args.length >= 2) {
-			showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
-			showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
+			showToUser("Too many parameters! Correct program argument format:"
+					+ System.lineSeparator() + "|| " + "\tjava AddressBook" + System.lineSeparator() + 
+					"|| " + "\tjava AddressBook [custom storage file path]");
+			showToUser("Exiting Address Book... Good bye!", 
+					"===================================================", 
+					"===================================================");
 			System.exit(0);
 		}
 
 		if (args.length == 1) {
-			if (!isValidFilePath(args[0])) {
-				showToUser(String.format(MESSAGE_INVALID_FILE, args[0]));
-				showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
+			if (!(args[0].endsWith(".txt"))) {
+				showToUser(String.format("The given file name [%1$s] is not a valid file name!", args[0]));
+				showToUser("Exiting Address Book... Good bye!", 
+						"===================================================", 
+						"===================================================");
 				System.exit(0);
 			}
 
@@ -204,34 +214,38 @@ public class AddressBook {
 				return;
 			}
 
-			showToUser(String.format(MESSAGE_ERROR_MISSING_STORAGE_FILE, args[0]));
+			showToUser(String.format("Storage file missing: %1$s", args[0]));
 
 			try {
 				storageFile.createNewFile();
-				showToUser(String.format(MESSAGE_STORAGE_FILE_CREATED, args[0]));
+				showToUser(String.format("Created new empty storage file: %1$s", args[0]));
 			} catch (IOException ioe) {
-				showToUser(String.format(MESSAGE_ERROR_CREATING_STORAGE_FILE, args[0]));
-				showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
+				showToUser(String.format("Created new empty storage file: %1$s", args[0]));
+				showToUser("Exiting Address Book... Good bye!", 
+						"===================================================", 
+						"===================================================");
 				System.exit(0);
 			}
 		}
 
 		if (args.length == 0) {
-			showToUser(MESSAGE_USING_DEFAULT_FILE);
-			storageFilePath = DEFAULT_STORAGE_FILEPATH;
-			final File storageFile = new File(DEFAULT_STORAGE_FILEPATH);
+			showToUser("Using default storage file : " + "addressbook.txt");
+			storageFilePath = "addressbook.txt";
+			final File storageFile = new File("addressbook.txt");
 			if (storageFile.exists()) {
 				return;
 			}
 
-			showToUser(String.format(MESSAGE_ERROR_MISSING_STORAGE_FILE, DEFAULT_STORAGE_FILEPATH));
+			showToUser(String.format("Storage file missing: %1$s", "addressbook.txt"));
 
 			try {
 				storageFile.createNewFile();
-				showToUser(String.format(MESSAGE_STORAGE_FILE_CREATED, DEFAULT_STORAGE_FILEPATH));
+				showToUser(String.format("Created new empty storage file: %1$s", "addressbook.txt"));
 			} catch (IOException ioe) {
-				showToUser(String.format(MESSAGE_ERROR_CREATING_STORAGE_FILE, DEFAULT_STORAGE_FILEPATH));
-				showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
+				showToUser(String.format("Error: unable to create file: %1$s", "addressbook.txt"));
+				showToUser("Exiting Address Book... Good bye!", 
+						"===================================================", 
+						"===================================================");
 				System.exit(0);
 			}
 		}
