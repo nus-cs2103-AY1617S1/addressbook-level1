@@ -237,14 +237,12 @@ public class AddressBook {
             String userCommand = getUserInput();
             System.out.println(LINE_PREFIX + "[Command entered:" + userCommand + "]");
             String feedback = executeCommand(userCommand);
-            showResultToUser(feedback);
+            System.out.println(LINE_PREFIX + feedback);
+			System.out.println(LINE_PREFIX + DIVIDER);
         }
     }
 
-    private static void showResultToUser(String result) {
-        System.out.println(LINE_PREFIX + result);
-		System.out.println(LINE_PREFIX + DIVIDER);
-    }
+    
 
     
 
