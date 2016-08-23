@@ -206,7 +206,7 @@ public class AddressBook {
             String userCommand = getUserInput();
             echoUserCommand(userCommand);
             String feedback = executeCommand(userCommand);
-            showResultToUser(feedback);
+            showResultToUserWithDivider(feedback);
         }
     }
 
@@ -221,7 +221,7 @@ public class AddressBook {
         showToUser(DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER);
     }
 
-    private static void showResultToUser(String result) {
+    private static void showResultToUserWithDivider(String result) {
         showToUser(result, DIVIDER);
     }
 
