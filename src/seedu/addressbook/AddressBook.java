@@ -610,15 +610,19 @@ public class AddressBook {
      */
     private static String getDisplayString(ArrayList<String[]> persons) {
         final StringBuilder messageAccumulator = new StringBuilder();
-        for (int i = 0; i < persons.size(); i++) {
+        formatDisplayString(persons, messageAccumulator);
+        return messageAccumulator.toString();
+    }
+
+	private static void formatDisplayString(ArrayList<String[]> persons, final StringBuilder messageAccumulator) {
+		for (int i = 0; i < persons.size(); i++) {
             final String[] person = persons.get(i);
             final int displayIndex = i + DISPLAYED_INDEX_OFFSET;
             messageAccumulator.append('\t')
                               .append(getIndexedPersonListElementMessage(displayIndex, person))
                               .append(LS);
         }
-        return messageAccumulator.toString();
-    }
+	}
 
     /**
      * Constructs a prettified listing element message to represent a person and their data.
@@ -783,11 +787,11 @@ public class AddressBook {
      * @return true if the given person was found and deleted in the model
      */
     private static boolean deletePersonFromAddressBook(String[] exactPerson) {
-        final boolean isDeleted = ALL_PERSONS.remove(exactPerson);
-        if (isDeleted) {
+        final boolean isChanged = ALL_PERSONS.remove(exactPerson);
+        if (isChanged) {
             savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
         }
-        return isDeleted;
+        return isChanged;
     }
 
     /**
