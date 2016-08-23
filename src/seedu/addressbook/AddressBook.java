@@ -229,7 +229,9 @@ public class AddressBook {
         }
 
         if(args.length == 0) {
-            setupDefaultFileForStorage();
+            System.out.println(LINE_PREFIX + MESSAGE_USING_DEFAULT_FILE);
+			storageFilePath = DEFAULT_STORAGE_FILEPATH;
+			createFileIfMissing(storageFilePath);
         }
         
         initialiseAddressBookModel(loadPersonsFromFile(storageFilePath));
@@ -285,19 +287,10 @@ public class AddressBook {
         }
 
         if(args.length == 0) {
-            setupDefaultFileForStorage();
+            System.out.println(LINE_PREFIX + MESSAGE_USING_DEFAULT_FILE);
+			storageFilePath = DEFAULT_STORAGE_FILEPATH;
+			createFileIfMissing(storageFilePath);
         }
-    }
-
-    /**
-     * Sets up the storage based on the default file.
-     * Creates file if missing.
-     * Exits program if the file cannot be created.
-     */
-    private static void setupDefaultFileForStorage() {
-        System.out.println(LINE_PREFIX + MESSAGE_USING_DEFAULT_FILE);
-        storageFilePath = DEFAULT_STORAGE_FILEPATH;
-        createFileIfMissing(storageFilePath);
     }
 
     /**
