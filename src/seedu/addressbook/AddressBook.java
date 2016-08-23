@@ -34,7 +34,9 @@ import seedu.addressbook.sorter.CustomPersonSorterDescending;
  **/
 public class AddressBook {
 
-    /**
+    private static final int EDIT_INVALID = -1;
+
+	/**
      * Default file path used if the user doesn't provide the file name.
      */
     private static final String DEFAULT_STORAGE_FILEPATH = "addressbook.txt";
@@ -64,6 +66,7 @@ public class AddressBook {
      * ====================================================================
      */
     private static final String MESSAGE_ADDED = "New person added: %1$s, Phone: %2$s, Email: %3$s";
+	private static final String MESSAGE_EDITED = "Person edited: %1$s, Phone: %2$s, Email: %3$s";
     private static final String MESSAGE_ADDRESSBOOK_CLEARED = "Address book has been cleared!";
     private static final String MESSAGE_COMMAND_HELP = "%1$s: %2$s";
     private static final String MESSAGE_COMMAND_HELP_PARAMETERS = "\tParameters: %1$s";
@@ -110,13 +113,15 @@ public class AddressBook {
     private static final String COMMAND_FIND_EXAMPLE = COMMAND_FIND_WORD + " alice bob charlie";
     
 	private static final String COMMAND_SORT_WORD = "sort";   
-	private static final Object COMMAND_SORT_DESC = "Sorts all persons either by ascending or descending";
-	private static final Object COMMAND_SORT_EXAMPLE = COMMAND_SORT_WORD + " a";
+	private static final String COMMAND_SORT_DESC = "Sorts all persons either by ascending or descending";
+	private static final String COMMAND_SORT_EXAMPLE = COMMAND_SORT_WORD + " a";
 	
 	private static final String COMMAND_EDIT_WORD = "edit";
-	private static final Object COMMAND_EDIT_DESC = "Sorts all persons either by ascending or descending";
-	private static final Object COMMAND_EDIT_EXAMPLE = COMMAND_SORT_WORD + " a";	
-	
+	private static final String COMMAND_EDIT_DESC = "Sorts all persons either by ascending or descending";
+	private static final String COMMAND_EDIT_EXAMPLE = COMMAND_SORT_WORD + " a";
+	private static final String COMMAND_EDIT_PARAMETERS = "NAME "
+            											+ PERSON_DATA_PREFIX_PHONE + "PHONE_NUMBER "
+            											+ PERSON_DATA_PREFIX_EMAIL + "EMAIL";
     private static final String COMMAND_LIST_WORD = "list";
     private static final String COMMAND_LIST_DESC = "Displays all persons as a list with index numbers.";
     private static final String COMMAND_LIST_EXAMPLE = COMMAND_LIST_WORD;
@@ -375,9 +380,29 @@ public class AddressBook {
 
         // checks if args are valid (decode result will not be present if the person is invalid)
         if (!decodePartialResult.isPresent()) {
-            return getMessageForInvalidCommandInput(COMMAND_EDIT_WORD, getUsageInfoForAddCommand());
+            return getMessageForInvalidCommandInput(COMMAND_EDIT_WORD, getUsageInfoForEditCommand());
         }
-		return null;
+        
+        final String[] personToEdit = decodePartialResult.get();
+        final Set<String> keyword = new HashSet<String>();
+        keyword.add(personToEdit[PERSON_DATA_INDEX_NAME]);
+        // find the person in the phone book
+        final ArrayList<String[]> personFound = getPersonsWithNameContainingAnyKeyword(keyword);
+        
+        editPersonInAddressBook(personFound, commandArgs);
+        
+		return getMessageForSuccessfulEditPerson(personToEdit);
+	}
+
+	private static String getMessageForSuccessfulEditPerson(String[] editedPerson) {
+	    return String.format(MESSAGE_EDITED,
+                getNameFromPerson(editedPerson), getPhoneFromPerson(editedPerson), getEmailFromPerson(editedPerson));
+	}
+
+	private static void editPersonInAddressBook(ArrayList<String[]> personsFound, String commandArgs) {
+		String[] person = personsFound.get(0);
+		person[PERSON_DATA_INDEX_PHONE] = extractPartialPhoneFromPersonString(commandArgs);
+		person[PERSON_DATA_INDEX_EMAIL] = extractPartialEmailFromPersonString(commandArgs);
 	}
 
 	/**
@@ -1030,12 +1055,63 @@ public class AddressBook {
 			return Optional.empty();
 		}
 		
-		// 
-		
-		return null;
+        final String[] decodedPerson = makePersonFromData(
+                extractPartialNameFromPersonsString(encoded),
+                extractPartialPhoneFromPersonString(encoded),
+                extractPartialEmailFromPersonString(encoded)
+        );
+        // check that the constructed person is valid
+        return Optional.of(decodedPerson);
 	}
 
-    /**
+    private static String extractPartialEmailFromPersonString(String encoded) {
+        final int indexOfPhonePrefix = encoded.indexOf(PERSON_DATA_PREFIX_PHONE);
+        final int indexOfEmailPrefix = encoded.indexOf(PERSON_DATA_PREFIX_EMAIL);
+
+        if (indexOfEmailPrefix == EDIT_INVALID) {
+        	return "";
+        }
+        
+        // email is last arg, target is from prefix to end of string
+        if (indexOfEmailPrefix > indexOfPhonePrefix) {
+            return removePrefixSign(encoded.substring(indexOfEmailPrefix, encoded.length()).trim(),
+                    PERSON_DATA_PREFIX_EMAIL);
+
+        // email is middle arg, target is from own prefix to next prefix
+        } else {
+            return removePrefixSign(
+                    encoded.substring(indexOfEmailPrefix, indexOfPhonePrefix).trim(),
+                    PERSON_DATA_PREFIX_EMAIL);
+        }
+	}
+
+	private static String extractPartialPhoneFromPersonString(String encoded) {
+        final int indexOfPhonePrefix = encoded.indexOf(PERSON_DATA_PREFIX_PHONE);
+        final int indexOfEmailPrefix = encoded.indexOf(PERSON_DATA_PREFIX_EMAIL);
+
+        if (indexOfPhonePrefix == EDIT_INVALID) {
+        	return "";
+        }
+        
+        // phone is last arg, target is from prefix to end of string
+        if (indexOfPhonePrefix > indexOfEmailPrefix) {
+            return removePrefixSign(encoded.substring(indexOfPhonePrefix, encoded.length()).trim(),
+                    PERSON_DATA_PREFIX_PHONE);
+
+        // phone is middle arg, target is from own prefix to next prefix
+        } else {
+            return removePrefixSign(
+                    encoded.substring(indexOfPhonePrefix, indexOfEmailPrefix).trim(),
+                    PERSON_DATA_PREFIX_PHONE);
+        }
+	}
+
+	private static String extractPartialNameFromPersonsString(String encoded) {
+        String[] partialPerson = encoded.split(" ");
+        return partialPerson[PERSON_DATA_INDEX_NAME];
+	}
+
+	/**
      * Decode persons from a list of string representations.
      *
      * @param encodedPersons strings to be decoded
@@ -1237,6 +1313,17 @@ public class AddressBook {
                 + String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_FIND_PARAMETERS) + LS
                 + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_FIND_EXAMPLE) + LS;
     }
+    
+    /**
+     * Builds string for showing 'edit' command usage instruction
+     * 
+     * @return 'edit' command usage instruction
+     */
+	private static String getUsageInfoForEditCommand() {
+        return String.format(MESSAGE_COMMAND_HELP, COMMAND_EDIT_WORD, COMMAND_EDIT_DESC) + LS
+                + String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_EDIT_PARAMETERS) + LS
+                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_EDIT_EXAMPLE) + LS;
+	}
 
     /**
      * Builds string for showing 'delete' command usage instruction
