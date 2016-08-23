@@ -225,9 +225,7 @@ public class AddressBook {
         showToUser(DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER);
     }
 
-    /** 
-     * Shows the results to the user.
-     */
+
     private static void showResultToUser(String result) {
         showToUser(result, DIVIDER);
     }
