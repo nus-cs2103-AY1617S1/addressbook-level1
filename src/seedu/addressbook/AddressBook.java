@@ -260,8 +260,7 @@ public class AddressBook {
      */
     private static void processProgramArgs(String[] args) {
         if (args.length >= 2) {
-            showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
-            exitProgram();
+            setupForExit();
         }
 
         if (args.length == 1) {
@@ -272,6 +271,11 @@ public class AddressBook {
             setupDefaultFileForStorage();
         }
     }
+
+	private static void setupForExit() {
+		showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
+		exitProgram();
+	}
 
     /**
      * Sets up the storage file based on the supplied file path.
