@@ -31,7 +31,9 @@ import java.util.Set;
  **/
 public class AddressBook {
 
-    /**
+    private static final String TXT_EXTENSION = ".txt";
+
+	/**
      * Default file path used if the user doesn't provide the file name.
      */
     private static final String DEFAULT_STORAGE_FILEPATH = "addressbook.txt";
@@ -310,7 +312,7 @@ public class AddressBook {
      * TODO: Implement a more rigorous validity checking.
      */
     private static boolean isValidFilePath(String filePath) {
-        return filePath.endsWith(".txt");
+        return filePath.endsWith(TXT_EXTENSION);
     }
 
     /**
@@ -628,7 +630,8 @@ public class AddressBook {
      * @return formatted listing message with index
      */
     private static String getIndexedPersonListElementMessage(int visibleIndex, String[] person) {
-        return String.format(MESSAGE_DISPLAY_LIST_ELEMENT_INDEX, visibleIndex) + getMessageForFormattedPersonData(person);
+        return String.format(MESSAGE_DISPLAY_LIST_ELEMENT_INDEX, visibleIndex) 
+        		+ getMessageForFormattedPersonData(person);
     }
 
     /**
