@@ -202,13 +202,21 @@ public class AddressBook {
         showWelcomeMessage();
         processProgramArgs(args);
         loadDataFromStorage();
-        while (true) {
+        startUserInputLoop();
+    }
+
+    /**
+     * Continually accepts input from the user, processes it, 
+     * and provides visual feedback in an endless loop.
+     */
+	private static void startUserInputLoop() {
+		while (true) {
             String userCommand = getUserInput();
             echoUserCommand(userCommand);
             String feedback = executeCommand(userCommand);
             showResultToUser(feedback);
         }
-    }
+	}
 
     /*
      * ==============NOTE TO STUDENTS======================================
@@ -365,7 +373,8 @@ public class AddressBook {
      */
     private static String[] splitCommandWordAndArgs(String rawUserInput) {
         final String[] split =  rawUserInput.trim().split("\\s+", 2);
-        return split.length == 2 ? split : new String[] { split[0] , "" }; // else case: no parameters
+        final boolean isThereAnyArguments = split.length == 2;
+		return isThereAnyArguments ? split : new String[] { split[0] , "" }; // else case: no parameters
     }
 
     /**
