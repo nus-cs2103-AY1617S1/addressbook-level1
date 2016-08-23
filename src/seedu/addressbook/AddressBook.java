@@ -342,7 +342,7 @@ public class AddressBook {
         final String commandArgs = commandTypeAndParams[1];
         switch (commandType) {
         case COMMAND_ADD_WORD:
-            return executeAddPerson(commandArgs);
+            return addPerson(commandArgs);
         case COMMAND_FIND_WORD:
             return findPersons(commandArgs);
         case COMMAND_LIST_WORD:
@@ -388,7 +388,7 @@ public class AddressBook {
      * @param commandArgs full command args string from the user
      * @return feedback display message for the operation result
      */
-    private static String executeAddPerson(String commandArgs) {
+    private static String addPerson(String commandArgs) {
         // try decoding a person from the raw args
         final Optional<String[]> decodeResult = decodePersonFromString(commandArgs);
 
@@ -406,7 +406,7 @@ public class AddressBook {
     /**
      * Constructs a feedback message for a successful add person command execution.
      *
-     * @see #executeAddPerson(String)
+     * @see #addPerson(String)
      * @param addedPerson person who was successfully added
      * @return successful add person feedback message
      */
