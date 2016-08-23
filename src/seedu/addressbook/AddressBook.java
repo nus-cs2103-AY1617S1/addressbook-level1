@@ -192,7 +192,13 @@ public class AddressBook {
 		}
 
 		if (args.length == 1) {
-			setupGivenFileForStorage(args[0]);
+			if (!isValidFilePath(args[0])) {
+				showToUser(String.format(MESSAGE_INVALID_FILE, args[0]));
+				exitProgram();
+			}
+
+			storageFilePath = args[0];
+			createFileIfMissing(args[0]);
 		}
 
 		if (args.length == 0) {
