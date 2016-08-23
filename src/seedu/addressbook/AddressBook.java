@@ -19,6 +19,8 @@ import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
 
+import seedu.addressbook.sorter.CustomPersonSorterAscending;
+
 /* ==============NOTE TO STUDENTS======================================
  * This class header comment below is brief because details of how to
  * use this class are documented elsewhere.
@@ -106,8 +108,10 @@ public class AddressBook {
     private static final String COMMAND_FIND_PARAMETERS = "KEYWORD [MORE_KEYWORDS]";
     private static final String COMMAND_FIND_EXAMPLE = COMMAND_FIND_WORD + " alice bob charlie";
     
-	private static final String COMMAND_SORT_WORD = "sort";    
-
+	private static final String COMMAND_SORT_WORD = "sort";   
+	private static final Object COMMAND_SORT_DESC = "Sorts all persons either by ascending or descending";
+	private static final Object COMMAND_SORT_EXAMPLE = COMMAND_SORT_WORD + " a";
+	
     private static final String COMMAND_LIST_WORD = "list";
     private static final String COMMAND_LIST_DESC = "Displays all persons as a list with index numbers.";
     private static final String COMMAND_LIST_EXAMPLE = COMMAND_LIST_WORD;
@@ -444,19 +448,49 @@ public class AddressBook {
     		return getMessageForInvalidCommandInput(COMMAND_SORT_WORD, getUsageInfoForSortCommand());
     	}
     	
-    	ArrayList<String[]> personsSorted = null;
+    	ArrayList<String[]> personsSorted = sortPersonsByArgs(commandArgs);
     	showToUser(personsSorted);
 		// TODO Auto-generated method stub
 		return getMessageForPersonsDisplayedSummary(personsSorted);
 	}
 
-    private static String getUsageInfoForSortCommand() {
-		// TODO Auto-generated method stub
+    private static ArrayList<String[]> sortPersonsByArgs(String commandArgs) {
+    	String trimmedCommand = commandArgs.trim();
+    	ArrayList<String[]> sortedPersons = null;
+    	switch(trimmedCommand){
+    	case "a":
+    		sortedPersons = sortAscendingByName();
+    		break;
+    	case "d":
+    		sortedPersons = sortDescendingByName();
+    		break;
+    	default:
+    		sortedPersons = null;
+		}
+		return sortedPersons;
+	}
+
+	private static ArrayList<String[]> sortDescendingByName() {
+		
 		return null;
 	}
 
+	private static ArrayList<String[]> sortAscendingByName() {
+		ArrayList<String[]> personsToSort = getAllPersonsInAddressBook();
+		Collections.sort(personsToSort, new CustomPersonSorterAscending());
+		return personsToSort;
+	}
+
+	private static String getUsageInfoForSortCommand() {
+        return String.format(MESSAGE_COMMAND_HELP, COMMAND_SORT_WORD, COMMAND_SORT_DESC) + LS
+                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_SORT_EXAMPLE) + LS;
+    }
+
 	private static boolean isSortPersonArgsValid(String commandArgs) {
-		// TODO Auto-generated method stub
+		String sortType = commandArgs.trim();
+		if ( sortType.equals("a") || sortType.equals("d")) {
+			return true;
+		}
 		return false;
 	}
 
