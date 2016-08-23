@@ -1022,7 +1022,7 @@ public class AddressBook {
     private static boolean isPersonDataValid(String[] person) {
         return isValidPersonName(person[PERSON_DATA_INDEX_NAME])
                 && isValidPersonPhone(person[PERSON_DATA_INDEX_PHONE])
-                && isPersonEmailValid(person[PERSON_DATA_INDEX_EMAIL]);
+                && isValidPersonEmail(person[PERSON_DATA_INDEX_EMAIL]);
     }
 
     /*
@@ -1060,7 +1060,7 @@ public class AddressBook {
      * @param email to be validated
      * @return whether arg is a valid person email
      */
-    private static boolean isPersonEmailValid(String email) {
+    private static boolean isValidPersonEmail(String email) {
         return email.matches("\\S+@\\S+\\.\\S+"); // email is [non-whitespace]@[non-whitespace].[non-whitespace]
         //TODO: implement a more permissive validation
     }
