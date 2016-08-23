@@ -1021,7 +1021,7 @@ public class AddressBook {
      */
     private static boolean isPersonDataValid(String[] person) {
         return isValidPersonName(person[PERSON_DATA_INDEX_NAME])
-                && isPersonPhoneValid(person[PERSON_DATA_INDEX_PHONE])
+                && isValidPersonPhone(person[PERSON_DATA_INDEX_PHONE])
                 && isPersonEmailValid(person[PERSON_DATA_INDEX_EMAIL]);
     }
 
@@ -1049,7 +1049,7 @@ public class AddressBook {
      * @param phone to be validated
      * @return whether arg is a valid person phone number
      */
-    private static boolean isPersonPhoneValid(String phone) {
+    private static boolean isValidPersonPhone(String phone) {
         return phone.matches("\\d+");    // phone nonempty sequence of digits
         //TODO: implement a more permissive validation
     }
