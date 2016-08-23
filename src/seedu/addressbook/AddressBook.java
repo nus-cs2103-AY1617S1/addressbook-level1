@@ -601,10 +601,6 @@ public class AddressBook {
         showToUser(m1, m2, m3, m4);
         showToUser(m5);
     }
-    private static void showToUser(String m1, String m2, String m3, String m4, String m5, String m6) {
-        showToUser(m1, m2, m3, m4, m5);
-        showToUser(m6);
-    }
 
     /**
      * Shows the list of persons to the user.
