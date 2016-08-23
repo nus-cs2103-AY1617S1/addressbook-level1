@@ -30,7 +30,7 @@
   # should add correctly
   add Adam Brown p/111111 e/adam@gmail.com
   list
-  add Betsy Choo p/222222 e/benchoo@nus.edu.sg
+  add Petsy Choo p/222222 e/benchoo@nus.edu.sg
   list
 
   # order of phone and email should not matter
@@ -39,6 +39,16 @@
   add Dickson Ee e/dickson@nus.edu.sg p/444444
   list
   add Esther Potato p/555555 e/esther@notreal.potato
+  list
+  
+##########################################################
+# test sort command
+##########################################################
+
+  # list the persons in alphabetical order
+  sort
+  
+  # list the persons in added order
   list
 
 ##########################################################
@@ -52,20 +62,20 @@
   # does not match if none have keyword
   find 23912039120
   # matching should be case-insensitive
-  find betsy
+  find petsy
 
   # find unique keyword
-  find Betsy
+  find Petsy
   # find multiple with same keyword
   find Dickson
   # find multiple with some keywords
-  find Charlie Betsy
+  find Charlie Petsy
 
 ##########################################################
 # test delete person command
 ##########################################################
 
-# last active view: [1] betsy [2] charlie
+# last active view: [1] petsy [2] charlie
 
   # should catch invalid args format
   delete

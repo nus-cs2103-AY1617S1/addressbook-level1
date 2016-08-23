@@ -12,6 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -109,6 +110,10 @@ public class AddressBook {
     private static final String COMMAND_LIST_WORD = "list";
     private static final String COMMAND_LIST_DESC = "Displays all persons as a list with index numbers.";
     private static final String COMMAND_LIST_EXAMPLE = COMMAND_LIST_WORD;
+    
+    private static final String COMMAND_SORT_WORD = "sort";
+    private static final String COMMAND_SORT_DESC = "Displays all persons as a list with index numbers in alphabetical order.";
+    private static final String COMMAND_SORT_EXAMPLE = COMMAND_SORT_WORD;
 
     private static final String COMMAND_DELETE_WORD = "delete";
     private static final String COMMAND_DELETE_DESC = "Deletes a person identified by the index number used in "
@@ -344,7 +349,9 @@ public class AddressBook {
         case COMMAND_FIND_WORD:
             return executeFindPersons(commandArgs);
         case COMMAND_LIST_WORD:
-            return executeListAllPersonsInAddressBook();
+            return executeListAllPersonsInAddressBook(Optional.empty());
+        case COMMAND_SORT_WORD:
+            return executeListAllPersonsInAddressBook(Optional.of(getPersonComparator()));
         case COMMAND_DELETE_WORD:
             return executeDeletePerson(commandArgs);
         case COMMAND_CLEAR_WORD:
@@ -541,10 +548,14 @@ public class AddressBook {
     /**
      * Displays all persons in the address book to the user; in added order.
      *
+     * @param personComparator optional comparator if want list to be sorted
      * @return feedback display message for the operation result
      */
-    private static String executeListAllPersonsInAddressBook() {
-        ArrayList<String[]> toBeDisplayed = getAllPersonsInAddressBook();
+    private static String executeListAllPersonsInAddressBook(Optional<Comparator<String[]>> personComparator) {
+        ArrayList<String[]> toBeDisplayed = (ArrayList<String[]>) getAllPersonsInAddressBook().clone();
+        if (personComparator.isPresent()) {
+        	toBeDisplayed.sort(personComparator.get());
+        }
         showToUser(toBeDisplayed);
         return getMessageForPersonsDisplayedSummary(toBeDisplayed);
     }
@@ -885,6 +896,18 @@ public class AddressBook {
             encoded.add(encodePersonToString(person));
         }
         return encoded;
+    }
+    
+    private static Comparator<String[]> getPersonComparator() {
+    	class PersonComparator implements Comparator<String[]> {
+    		@Override
+    		public int compare(String[] person1, String[] person2) {
+    			return getNameFromPerson(person1).compareTo(getNameFromPerson(person2));
+    		}
+    	}
+    	
+    	final Comparator<String[]> personComparator = new PersonComparator();
+    	return personComparator;
     }
 
     /*
