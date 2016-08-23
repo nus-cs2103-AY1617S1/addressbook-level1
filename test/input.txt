@@ -47,11 +47,11 @@
 
   # should match none with no keywords
   find
-  # should only match full words in person names
+  # should be able to match partial words
   find bet
   # does not match if none have keyword
   find 23912039120
-  # matching should be case-sensitive
+  # matching should not be case-sensitive
   find betsy
 
   # find unique keyword
@@ -60,6 +60,16 @@
   find Dickson
   # find multiple with some keywords
   find Charlie Betsy
+
+##########################################################
+# test sort command with list and find
+##########################################################
+
+  # should show all persons, sorted ascending lexicographically
+  list -s
+
+  # should show all matched persons, sorted ascending lexicographically
+  find -s CHarlie Betsy
 
 ##########################################################
 # test delete person command
