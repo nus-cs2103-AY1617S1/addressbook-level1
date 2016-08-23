@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Scanner;
@@ -127,6 +128,10 @@ public class AddressBook {
     private static final String COMMAND_EXIT_WORD = "exit";
     private static final String COMMAND_EXIT_DESC = "Exits the program.";
     private static final String COMMAND_EXIT_EXAMPLE = COMMAND_EXIT_WORD;
+    
+    private static final String COMMAND_SORT_WORD = "sort";
+    
+    private static final String COMMAND_EDIT_WORD = "edit";
 
     private static final String DIVIDER = "===================================================";
 
@@ -200,7 +205,18 @@ public class AddressBook {
      */
     public static void main(String[] args) {
         showWelcomeMessage();
-        processProgramArgs(args);
+        if (args.length >= 2) {
+            showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
+            exitProgram();
+        }
+
+        if (args.length == 1) {
+            setupGivenFileForStorage(args[0]);
+        }
+
+        if(args.length == 0) {
+            setupDefaultFileForStorage();
+        }
         loadDataFromStorage();
         while (true) {
             String userCommand = getUserInput();
@@ -218,11 +234,17 @@ public class AddressBook {
      * ====================================================================
      */
     private static void showWelcomeMessage() {
-        showToUser(DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER);
+        String[] message = { DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER };
+		for (String m : message) {
+		    System.out.println(LINE_PREFIX + m);
+		}
     }
 
     private static void showResultToUser(String result) {
-        showToUser(result, DIVIDER);
+        String[] message = { result, DIVIDER };
+		for (String m : message) {
+		    System.out.println(LINE_PREFIX + m);
+		}
     }
 
     /*
@@ -236,7 +258,10 @@ public class AddressBook {
      * Echoes the user input back to the user.
      */
     private static void echoUserCommand(String userCommand) {
-        showToUser("[Command entered:" + userCommand + "]");
+        String[] message = { "[Command entered:" + userCommand + "]" };
+		for (String m : message) {
+		    System.out.println(LINE_PREFIX + m);
+		}
     }
 
     /*
@@ -318,7 +343,8 @@ public class AddressBook {
      * Assumption: The file exists.
      */
     private static void loadDataFromStorage() {
-        initialiseAddressBookModel(loadPersonsFromFile(storageFilePath));
+        ALL_PERSONS.clear();
+		ALL_PERSONS.addAll(loadPersonsFromFile(storageFilePath));
     }
 
 
@@ -353,6 +379,10 @@ public class AddressBook {
             return getUsageInfoForAllCommands();
         case COMMAND_EXIT_WORD:
             executeExitProgramRequest();
+        case COMMAND_SORT_WORD:
+        	return executeShowSorted();
+        case COMMAND_EDIT_WORD:
+        	executeEditProperties(commandArgs);
         default:
             return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
         }
@@ -420,11 +450,33 @@ public class AddressBook {
      * @return feedback display message for the operation result
      */
     private static String executeFindPersons(String commandArgs) {
-        final Set<String> keywords = extractKeywordsFromFindPersonArgs(commandArgs);
+        final Set<String> keywords = extractKeywordsFromFindPersonArgs(commandArgs.toUpperCase());
         final ArrayList<String[]> personsFound = getPersonsWithNameContainingAnyKeyword(keywords);
         showToUser(personsFound);
         return getMessageForPersonsDisplayedSummary(personsFound);
     }
+    
+    /**
+     * Finds and edit all persons in address book whose name contains any of the argument keywords.
+     * Keyword matching is case sensitive.
+     *
+     * @param commandArgs full command args string from the user
+     * @return feedback display message for the operation result
+     */
+    private static void executeEditProperties(String commandArgs) {
+        final Set<String> keywords = extractKeywordsFromFindPersonArgs(commandArgs.toUpperCase());
+        final ArrayList<String[]> personsFound = getPersonsWithNameContainingAnyKeyword(keywords);
+        final Optional<String[]> decodeResult = decodePersonFromString(commandArgs);
+   
+        final String[] updateDetails = decodeResult.get();
+        
+        for (int i = 0; i < personsFound.size(); i++) {
+        	personsFound.get(i)[1] = updateDetails[1];
+        	personsFound.get(i)[2] = updateDetails[2];
+        }
+    }
+    
+    
 
     /**
      * Constructs a feedback message to summarise an operation that displayed a listing of persons.
@@ -455,7 +507,7 @@ public class AddressBook {
     private static ArrayList<String[]> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
         for (String[] person : getAllPersonsInAddressBook()) {
-            final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
+            final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person).toUpperCase()));
             if (!Collections.disjoint(wordsInName, keywords)) {
                 matchedPersons.add(person);
             }
@@ -548,6 +600,28 @@ public class AddressBook {
         showToUser(toBeDisplayed);
         return getMessageForPersonsDisplayedSummary(toBeDisplayed);
     }
+    
+    /**
+     * Displays all persons in the address book to the user; in sorted order.
+     *
+     * @return feedback display message for the operation result
+     */
+    private static String executeShowSorted() {
+        ArrayList<String[]> toBeDisplayed = getAllPersonsInAddressBook();
+        sort(toBeDisplayed);
+        showToUser(toBeDisplayed);
+        return getMessageForPersonsDisplayedSummary(toBeDisplayed);
+    }
+    
+    /**
+     * Sort all persons in the address book 
+     *
+     */
+    private static void sort(ArrayList<String[]> list) {
+    	//Sort according to the person name
+    }
+    
+    
 
     /**
      * Request to terminate the program.
