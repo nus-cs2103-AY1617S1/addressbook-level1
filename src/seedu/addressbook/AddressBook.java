@@ -30,7 +30,7 @@ import java.util.Set;
  * in a text file.
  **/
 public class AddressBook {
-	//testing 
+
     /**
      * Default file path used if the user doesn't provide the file name.
      */
@@ -454,14 +454,18 @@ public class AddressBook {
      */
     private static ArrayList<String[]> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
-        for (String[] person : getAllPersonsInAddressBook()) {
+        getListOfMatchedPersons(keywords, matchedPersons);
+        return matchedPersons;
+    }
+
+	private static void getListOfMatchedPersons(Collection<String> keywords, final ArrayList<String[]> matchedPersons) {
+		for (String[] person : getAllPersonsInAddressBook()) {
             final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
             if (!Collections.disjoint(wordsInName, keywords)) {
                 matchedPersons.add(person);
             }
         }
-        return matchedPersons;
-    }
+	}
 
     /**
      * Deletes person identified using last displayed index.
@@ -610,15 +614,19 @@ public class AddressBook {
      */
     private static String getDisplayString(ArrayList<String[]> persons) {
         final StringBuilder messageAccumulator = new StringBuilder();
-        for (int i = 0; i < persons.size(); i++) {
+        formatDisplayString(persons, messageAccumulator);
+        return messageAccumulator.toString();
+    }
+
+	private static void formatDisplayString(ArrayList<String[]> persons, final StringBuilder messageAccumulator) {
+		for (int i = 0; i < persons.size(); i++) {
             final String[] person = persons.get(i);
             final int displayIndex = i + DISPLAYED_INDEX_OFFSET;
             messageAccumulator.append('\t')
                               .append(getIndexedPersonListElementMessage(displayIndex, person))
                               .append(LS);
         }
-        return messageAccumulator.toString();
-    }
+	}
 
     /**
      * Constructs a prettified listing element message to represent a person and their data.
@@ -783,11 +791,11 @@ public class AddressBook {
      * @return true if the given person was found and deleted in the model
      */
     private static boolean deletePersonFromAddressBook(String[] exactPerson) {
-        final boolean changed = ALL_PERSONS.remove(exactPerson);
-        if (changed) {
+        final boolean isChanged = ALL_PERSONS.remove(exactPerson);
+        if (isChanged) {
             savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
         }
-        return changed;
+        return isChanged;
     }
 
     /**
