@@ -217,10 +217,17 @@ public class AddressBook {
      * signature anyway.
      * ====================================================================
      */
+    
+    /**
+     * Shows a message to welcome to the user.
+     */
     private static void showWelcomeMessage() {
         showToUser(DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER);
     }
 
+    /** 
+     * Shows the results to the user.
+     */
     private static void showResultToUser(String result) {
         showToUser(result, DIVIDER);
     }
