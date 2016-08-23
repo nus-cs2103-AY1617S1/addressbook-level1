@@ -20,6 +20,8 @@ import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
 
+import seedu.addressbook.AddressBook.PersonProperty;
+
 /* ==============NOTE TO STUDENTS======================================
  * This class header comment below is brief because details of how to
  * use this class are documented elsewhere.
@@ -350,7 +352,19 @@ public class AddressBook {
 		final String commandArgs = commandTypeAndParams[1];
 		switch (commandType) {
 		case COMMAND_ADD_WORD:
-			return executeAddPerson(commandArgs);
+			// try decoding a person from the raw args
+			final Optional<HashMap<PersonProperty, String>> decodeResult = decodePersonFromString(commandArgs);
+			
+			// checks if args are valid (decode result will not be present if the
+			// person is invalid)
+			if (!decodeResult.isPresent()) {
+				return getMessageForInvalidCommandInput(COMMAND_ADD_WORD, getUsageInfoForAddCommand());
+			}
+			
+			// add the person as specified
+			final HashMap<PersonProperty, String> personToAdd = decodeResult.get();
+			addPersonToAddressBook(personToAdd);
+			return getMessageForSuccessfulAddPerson(personToAdd);
 		case COMMAND_FIND_WORD:
 			return executeFindPersons(commandArgs);
 		case COMMAND_LIST_WORD:
