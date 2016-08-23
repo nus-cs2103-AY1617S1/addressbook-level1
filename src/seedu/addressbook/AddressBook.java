@@ -634,9 +634,11 @@ public class AddressBook {
 						return o1.get(PersonProperty.NAME).compareTo(o2.get(PersonProperty.NAME));
 					}
         };
-        toBeDisplayed.sort(personAlphabeticalSorter);
-        showToUser(toBeDisplayed);
-        return getMessageForPersonsDisplayedSummary(toBeDisplayed);
+        ArrayList<HashMap<PersonProperty, String>> sortedListOfPersons 
+        		= new ArrayList<HashMap<PersonProperty, String>>(toBeDisplayed);
+        sortedListOfPersons.sort(personAlphabeticalSorter);
+        showToUser(sortedListOfPersons);
+        return getMessageForPersonsDisplayedSummary(sortedListOfPersons);
 	}
     /*
      * ===========================================
