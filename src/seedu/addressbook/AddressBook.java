@@ -603,24 +603,17 @@ public class AddressBook {
      *
      */
     private static void showToUser(ArrayList<String[]> persons) {
-        String listAsString = getDisplayString(persons);
+        final StringBuilder messageAccumulator = new StringBuilder();
+		for (int i = 0; i < persons.size(); i++) {
+		    final String[] person = persons.get(i);
+		    final int displayIndex = i + DISPLAYED_INDEX_OFFSET;
+		    messageAccumulator.append('\t')
+		                      .append(getIndexedPersonListElementMessage(displayIndex, person))
+		                      .append(LS);
+		}
+		String listAsString = messageAccumulator.toString();
         showToUser(listAsString);
         updateLatestViewedPersonListing(persons);
-    }
-
-    /**
-     * Returns the display string representation of the list of persons.
-     */
-    private static String getDisplayString(ArrayList<String[]> persons) {
-        final StringBuilder messageAccumulator = new StringBuilder();
-        for (int i = 0; i < persons.size(); i++) {
-            final String[] person = persons.get(i);
-            final int displayIndex = i + DISPLAYED_INDEX_OFFSET;
-            messageAccumulator.append('\t')
-                              .append(getIndexedPersonListElementMessage(displayIndex, person))
-                              .append(LS);
-        }
-        return messageAccumulator.toString();
     }
 
     /**
