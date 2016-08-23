@@ -235,7 +235,7 @@ public class AddressBook {
         initialiseAddressBookModel(loadPersonsFromFile(storageFilePath));
         while (true) {
             String userCommand = getUserInput();
-            echoUserCommand(userCommand);
+            System.out.println(LINE_PREFIX + "[Command entered:" + userCommand + "]");
             String feedback = executeCommand(userCommand);
             showResultToUser(feedback);
         }
@@ -246,19 +246,7 @@ public class AddressBook {
 		System.out.println(LINE_PREFIX + DIVIDER);
     }
 
-    /*
-     * ==============NOTE TO STUDENTS======================================
-     * Parameter description can be omitted from the method header comment
-     * if the parameter name is self-explanatory.
-     * In the method below, '@param userInput' comment has been omitted.
-     * ====================================================================
-     */
-    /**
-     * Echoes the user input back to the user.
-     */
-    private static void echoUserCommand(String userCommand) {
-        System.out.println(LINE_PREFIX + "[Command entered:" + userCommand + "]");
-    }
+    
 
     /*
      * ==============NOTE TO STUDENTS==========================================
