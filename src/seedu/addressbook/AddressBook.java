@@ -852,7 +852,7 @@ public class AddressBook {
         }
         final Person decodedPerson = new Person(extractNameFromPersonString(encoded), extractPhoneFromPersonString(encoded), extractEmailFromPersonString(encoded));
         // check that the constructed person is valid
-        return isPersonDataValid(decodedPerson) ? Optional.of(decodedPerson) : Optional.empty();
+        return decodedPerson.isValid() ? Optional.of(decodedPerson) : Optional.empty();
     }
 
     /**
@@ -949,59 +949,6 @@ public class AddressBook {
                     PERSON_DATA_PREFIX_EMAIL);
         }
     }
-
-    /**
-     * Validates a person's data fields
-     *
-     * @param person String array representing the person (used in internal data)
-     * @return whether the given person has valid data
-     */
-    private static boolean isPersonDataValid(Person person) {
-        return isPersonNameValid(person.getName())
-                && isPersonPhoneValid(person.getPhone())
-                && isPersonEmailValid(person.getEmail());
-    }
-
-    /*
-     * ==============NOTE TO STUDENTS======================================
-     * Note the use of 'regular expressions' in the method below.
-     * Regular expressions can be very useful in checking if a a string
-     * follows a sepcific format.
-     * ====================================================================
-     */
-    /**
-     * Validates string as a legal person name
-     *
-     * @param name to be validated
-     * @return whether arg is a valid person name
-     */
-    private static boolean isPersonNameValid(String name) {
-        return name.matches("(\\w|\\s)+");  // name is nonempty mixture of alphabets and whitespace
-        //TODO: implement a more permissive validation
-    }
-
-    /**
-     * Validates string as a legal person phone number
-     *
-     * @param phone to be validated
-     * @return whether arg is a valid person phone number
-     */
-    private static boolean isPersonPhoneValid(String phone) {
-        return phone.matches("\\d+");    // phone nonempty sequence of digits
-        //TODO: implement a more permissive validation
-    }
-
-    /**
-     * Validates string as a legal person email
-     *
-     * @param email to be validated
-     * @return whether arg is a valid person email
-     */
-    private static boolean isPersonEmailValid(String email) {
-        return email.matches("\\S+@\\S+\\.\\S+"); // email is [non-whitespace]@[non-whitespace].[non-whitespace]
-        //TODO: implement a more permissive validation
-    }
-
 
     /*
      * ===============================================
