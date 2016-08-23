@@ -409,7 +409,8 @@ public class AddressBook {
 
         // add the person as specified
         final String[] personToAdd = decodeResult.get();
-        addPersonToAddressBook(personToAdd);
+        ALL_PERSONS.add(personToAdd);
+		savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
         return getMessageForSuccessfulAddPerson(personToAdd);
     }
 
