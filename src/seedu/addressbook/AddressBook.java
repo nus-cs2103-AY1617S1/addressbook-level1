@@ -22,11 +22,15 @@ import java.util.Set;
  */
 
 
-//This class is used to maintain a list of person data which are saved in a text file.
+/** 
+ * This class is used to maintain a list of person data which are saved in a text file. 
+ */
 public class AddressBook {
 
 
-    //Default file path used if the user doesn't provide the file name.
+    /** 
+     * Default file path used if the user doesn't provide the file name.
+     */
 	private static final String DEFAULT_STORAGE_FILEPATH = "addressbook.txt";
 
 	/**
@@ -78,7 +82,7 @@ public class AddressBook {
 	private static final String MESSAGE_WELCOME = "Welcome to your Address Book!";
 	private static final String MESSAGE_USING_DEFAULT_FILE = "Using default storage file : " + DEFAULT_STORAGE_FILEPATH;
 
-	// These are the prefix strings to define the data type of a command parameter
+	/** These are the prefix strings to define the data type of a command parameter */
 	private static final String PERSON_DATA_PREFIX_PHONE = "p/";
 	private static final String PERSON_DATA_PREFIX_EMAIL = "e/";
 
