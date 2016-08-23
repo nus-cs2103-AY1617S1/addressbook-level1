@@ -197,8 +197,20 @@ public class AddressBook {
 				exitProgram();
 			}
 
-			storageFilePath = args[0];
-			createFileIfMissing(args[0]);
+			final File storageFile = new File(args[0]);
+			if (storageFile.exists()) {
+				return;
+			}
+
+			showToUser(String.format(MESSAGE_ERROR_MISSING_STORAGE_FILE, args[0]));
+
+			try {
+				storageFile.createNewFile();
+				showToUser(String.format(MESSAGE_STORAGE_FILE_CREATED, args[0]));
+			} catch (IOException ioe) {
+				showToUser(String.format(MESSAGE_ERROR_CREATING_STORAGE_FILE, args[0]));
+				exitProgram();
+			}
 		}
 
 		if (args.length == 0) {
