@@ -199,13 +199,28 @@ public class AddressBook {
      * ====================================================================
      */
     public static void main(String[] args) {
-        showWelcomeMessage();
-        processProgramArgs(args);
-        loadDataFromStorage();
+        String[] message = { DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER };
+		for (String m : message) {
+		    System.out.println(LINE_PREFIX + m);
+		}
+        if (args.length >= 2) {
+		    showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
+		    exitProgram();
+		}
+		
+		if (args.length == 1) {
+		    magicMethodForOneArgument(args[0]);
+		}
+		
+		if(args.length == 0) {
+		    solveWorldHunger();
+		}
+        ALL_PERSONS.clear();
+		ALL_PERSONS.addAll(loadPersonsFromFile(storageFilePath));
         while (true) {
-            String userCommand = getUserInput();
-            echoUserCommand(userCommand);
-            String feedback = executeCommand(userCommand);
+            String magicString = getUserInput();
+            echoUserCommand(magicString);
+            String feedback = doMagicStuff(magicString);
             showResultToUser(feedback);
         }
     }
@@ -217,9 +232,6 @@ public class AddressBook {
      * signature anyway.
      * ====================================================================
      */
-    private static void showWelcomeMessage() {
-        showToUser(DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER);
-    }
 
     private static void showResultToUser(String result) {
         showToUser(result, DIVIDER);
@@ -261,11 +273,11 @@ public class AddressBook {
         }
 
         if (args.length == 1) {
-            setupGivenFileForStorage(args[0]);
+            magicMethodForOneArgument(args[0]);
         }
 
         if(args.length == 0) {
-            setupDefaultFileForStorage();
+            solveWorldHunger();
         }
     }
 
@@ -274,7 +286,7 @@ public class AddressBook {
      * Creates the file if it is missing.
      * Exits if the file name is not acceptable.
      */
-    private static void setupGivenFileForStorage(String filePath) {
+    private static void magicMethodForOneArgument(String filePath) {
 
         if (!isValidFilePath(filePath)) {
             showToUser(String.format(MESSAGE_INVALID_FILE, filePath));
@@ -298,7 +310,7 @@ public class AddressBook {
      * Creates file if missing.
      * Exits program if the file cannot be created.
      */
-    private static void setupDefaultFileForStorage() {
+    private static void solveWorldHunger() {
         showToUser(MESSAGE_USING_DEFAULT_FILE);
         storageFilePath = DEFAULT_STORAGE_FILEPATH;
         createFileIfMissing(storageFilePath);
@@ -331,22 +343,22 @@ public class AddressBook {
     /**
      * Executes the command as specified by the {@code userInputString}
      *
-     * @param userInputString  raw input from user
+     * @param nobodyKnowsWhatsInside no help for you here, good luck!
      * @return  feedback about how the command was executed
      */
-    public static String executeCommand(String userInputString) {
-        final String[] commandTypeAndParams = splitCommandWordAndArgs(userInputString);
-        final String commandType = commandTypeAndParams[0];
-        final String commandArgs = commandTypeAndParams[1];
-        switch (commandType) {
+    public static String doMagicStuff(String nobodyKnowsWhatsInside) {
+        final String[] hopeThisEvenExist = splitCommandWordAndArgs(nobodyKnowsWhatsInside);
+        final String firstElementDuh = hopeThisEvenExist[0];
+        final String secondElementDuh = hopeThisEvenExist[1];
+        switch (firstElementDuh) {
         case COMMAND_ADD_WORD:
-            return executeAddPerson(commandArgs);
+            return executeAddPerson(secondElementDuh);
         case COMMAND_FIND_WORD:
-            return executeFindPersons(commandArgs);
+            return executeFindPersons(secondElementDuh);
         case COMMAND_LIST_WORD:
             return executeListAllPersonsInAddressBook();
         case COMMAND_DELETE_WORD:
-            return executeDeletePerson(commandArgs);
+            return executeDeletePerson(secondElementDuh);
         case COMMAND_CLEAR_WORD:
             return executeClearAddressBook();
         case COMMAND_HELP_WORD:
@@ -354,7 +366,7 @@ public class AddressBook {
         case COMMAND_EXIT_WORD:
             executeExitProgramRequest();
         default:
-            return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
+            return getMessageForInvalidCommandInput(firstElementDuh, getUsageInfoForAllCommands());
         }
     }
 
