@@ -605,7 +605,8 @@ public class AddressBook {
     private static void showToUser(ArrayList<String[]> persons) {
         String listAsString = getDisplayString(persons);
         showToUser(listAsString);
-        updateLatestViewedPersonListing(persons);
+        // clone to insulate from future changes to arg list
+		latestPersonListingView = new ArrayList<>(persons);
     }
 
     /**
@@ -644,16 +645,6 @@ public class AddressBook {
     private static String getMessageForFormattedPersonData(String[] person) {
         return String.format(MESSAGE_DISPLAY_PERSON_DATA,
                 getNameFromPerson(person), getPhoneFromPerson(person), getEmailFromPerson(person));
-    }
-
-    /**
-     * Updates the latest person listing view the user has seen.
-     *
-     * @param newListing the new listing of persons
-     */
-    private static void updateLatestViewedPersonListing(ArrayList<String[]> newListing) {
-        // clone to insulate from future changes to arg list
-        latestPersonListingView = new ArrayList<>(newListing);
     }
 
     /**
