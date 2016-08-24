@@ -61,6 +61,7 @@ public class AddressBook {
      * ====================================================================
      */
     private static final String MESSAGE_ADDED = "New person added: %1$s, Phone: %2$s, Email: %3$s";
+    private static final String MESSAGE_EDITED = "Properties of %1$s are edited, Phone: %2$s, Email: %3$s";
     private static final String MESSAGE_ADDRESSBOOK_CLEARED = "Address book has been cleared!";
     private static final String MESSAGE_COMMAND_HELP = "%1$s: %2$s";
     private static final String MESSAGE_COMMAND_HELP_PARAMETERS = "\tParameters: %1$s";
@@ -95,11 +96,19 @@ public class AddressBook {
                                                             + PERSON_DATA_PREFIX_EMAIL + "%3$s"; // email
     private static final String COMMAND_ADD_WORD = "add";
     private static final String COMMAND_ADD_DESC = "Adds a person to the address book.";
-    private static final String COMMAND_ADD_PARAMETERS = "NAME "
+    private static final String COMMAND_ADD_PARAMETERS = "INDEX NAME "
                                                       + PERSON_DATA_PREFIX_PHONE + "PHONE_NUMBER "
                                                       + PERSON_DATA_PREFIX_EMAIL + "EMAIL";
     private static final String COMMAND_ADD_EXAMPLE = COMMAND_ADD_WORD + " John Doe p/98765432 e/johnd@gmail.com";
+    
+    private static final String COMMAND_EDIT_WORD = "edit";
+    private static final String COMMAND_EDIT_DESC = "Edit properties of a specific person";
+    private static final String COMMAND_EDIT_PARAMETER = "NAME "
+            											  + PERSON_DATA_PREFIX_PHONE + "PHONE_NUMBER "
+            											  + PERSON_DATA_PREFIX_EMAIL + "EMAIL";
+    private static final String COMMAND_EDIT_EXAMPLE = COMMAND_EDIT_WORD + " John Doe p/98765432 e/johnd@gmail.com";
 
+    
     private static final String COMMAND_FIND_WORD = "find";
     private static final String COMMAND_FIND_DESC = "Finds all persons whose names contain any of the specified "
                                         + "keywords (case-sensitive) and displays them as a list with index numbers.";
@@ -346,6 +355,8 @@ public class AddressBook {
         switch (commandType) {
         case COMMAND_ADD_WORD:
             return executeAddPerson(commandArgs);
+        case COMMAND_EDIT_WORD:
+        	return executeEditPerson(commandArgs);
         case COMMAND_FIND_WORD:
             return executeFindPersons(commandArgs);
         case COMMAND_LIST_WORD:
@@ -408,6 +419,35 @@ public class AddressBook {
     }
 
     /**
+     * Edit properties of a person (specified by the command args) in the address book.
+     * The entire command arguments string is treated as a string representation of the person whose properties to be modified.
+     *
+     * @param commandArgs full command args string from the user
+     * @return feedback display message for the operation result
+     */
+    private static String executeEditPerson(String commandArgs) {
+        // try decoding a person from the raw args        
+        Optional<String[]> decodeResult = decodePersonFromString(commandArgs);
+        // checks if args are valid (decode result will not be present if the person is invalid)
+        if (!decodeResult.isPresent()) {
+            return getMessageForInvalidCommandInput(COMMAND_EDIT_WORD, getUsageInfoForEditCommand());
+        }
+        
+        String[] person = decodeResult.get(); 
+        String personName = person[PERSON_DATA_INDEX_NAME];
+        for (int i = 0; i < ALL_PERSONS.size(); i++) {
+        	if (getNameFromPerson(ALL_PERSONS.get(i)).equals(personName)) {
+        		ALL_PERSONS.set(i, person); 
+            	return getMessageForSuccessfulEditPerson(person);
+            }
+        }
+        
+        return MESSAGE_PERSON_NOT_IN_ADDRESSBOOK;       
+        
+    }
+
+    
+    /**
      * Constructs a feedback message for a successful add person command execution.
      *
      * @see #executeAddPerson(String)
@@ -418,7 +458,20 @@ public class AddressBook {
         return String.format(MESSAGE_ADDED,
                 getNameFromPerson(addedPerson), getPhoneFromPerson(addedPerson), getEmailFromPerson(addedPerson));
     }
-
+    
+    /**
+     * Constructs a feedback message for a successful edit person command execution.
+     *
+     * @see #executeEditPerson(String)
+     * @param editedPerson person who was successfully added
+     * @return successful edit person feedback message
+     */
+    private static String getMessageForSuccessfulEditPerson(String[] editedPerson) {
+        return String.format(MESSAGE_EDITED,
+                getNameFromPerson(editedPerson), getPhoneFromPerson(editedPerson), getEmailFromPerson(editedPerson));
+    }
+    
+    
     /**
      * Finds and lists all persons in address book whose name contains any of the argument keywords.
      * Keyword matching is case sensitive.
@@ -1094,6 +1147,7 @@ public class AddressBook {
      */
     private static String getUsageInfoForAllCommands() {
         return getUsageInfoForAddCommand() + LINE_SEPARATOR
+        		+ getUsageInfoForEditCommand() + LINE_SEPARATOR
                 + getUsageInfoForFindCommand() + LINE_SEPARATOR
                 + getUsageInfoForViewCommand() + LINE_SEPARATOR
                 + getUsageInfoForSortCommand() + LINE_SEPARATOR
@@ -1134,6 +1188,12 @@ public class AddressBook {
         return String.format(MESSAGE_COMMAND_HELP, COMMAND_DELETE_WORD, COMMAND_DELETE_DESC) + LINE_SEPARATOR
                 + String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_DELETE_PARAMETER) + LINE_SEPARATOR
                 + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_DELETE_EXAMPLE) + LINE_SEPARATOR;
+    }
+    
+    private static String getUsageInfoForEditCommand(){
+        return String.format(MESSAGE_COMMAND_HELP, COMMAND_EDIT_WORD, COMMAND_EDIT_DESC) + LINE_SEPARATOR
+                + String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_EDIT_PARAMETER) + LINE_SEPARATOR
+                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_EDIT_EXAMPLE) + LINE_SEPARATOR;
     }
 
     /**
