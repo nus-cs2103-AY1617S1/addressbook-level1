@@ -458,11 +458,21 @@ public class AddressBook {
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
         for (String[] person : getAllPersonsInAddressBook()) {
             final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
-            if (!Collections.disjoint(wordsInName, keywords)) {
+            if (!isMatched(wordsInName, keywords)) {
                 matchedPersons.add(person);
             }
         }
         return matchedPersons;
+    }
+    
+    /**
+     * Check if a person matched the key word searched. 
+     * @param keywords
+     * @param wordsInName
+     * @return
+     */
+    private static boolean isMatched(Set<String> wordsInName, Collection<String> keywords) {
+    	return Collections.disjoint(wordsInName, keywords);
     }
 
     /**
