@@ -152,6 +152,7 @@ public class AddressBook {
 
     /**
      * Case insensitive person comparator.
+     * @Override compare method.
      */
     private static final Comparator<String[]> PERSON_COMPARATOR = new Comparator<String[]>() {
         public int compare(String[] person, String[] otherPerson) {
