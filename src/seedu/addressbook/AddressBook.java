@@ -598,11 +598,15 @@ public class AddressBook {
 		System.out.print(LINE_PREFIX + askCommandInput);
 		String inputLine = SCANNER.nextLine();
 		// silently consume all blank and comment lines
-		while (inputLine.trim().isEmpty() || inputLine.trim().charAt(0) == INPUT_COMMENT_MARKER) {
-			inputLine = SCANNER.nextLine();
-		}
+		while (inputLine.trim().isEmpty() || isLineComment(inputLine)) {
+            inputLine = SCANNER.nextLine();
+        }
 		return inputLine;
 	}
+	
+	private static boolean isLineComment(String inputLine) {
+		return inputLine.trim().charAt(0) == INPUT_COMMENT_MARKER;
+    }
 
 	/*
 	 * ==============NOTE TO STUDENTS====================================== Note
