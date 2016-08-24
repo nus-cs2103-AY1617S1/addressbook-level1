@@ -91,6 +91,12 @@ public class AddressBook {
     private static final String PERSON_DATA_PREFIX_EMAIL = "e/";
     private static final String PERSON_DATA_PREFIX_NAME = "n/";
 
+    // These are the indexes to the ArrayList used to store the properties to be edited 
+    private static final int PERSON_EDIT_INDEX_NAME = 1;
+    private static final int PERSON_EDIT_INDEX_PHONE = 2;
+    private static final int PERSON_EDIT_INDEX_EMAIL = 3;
+    
+    
     private static final String PERSON_STRING_REPRESENTATION = "%1$s " // name
                                                             + PERSON_DATA_PREFIX_PHONE + "%2$s " // phone
                                                             + PERSON_DATA_PREFIX_EMAIL + "%3$s"; // email
@@ -105,10 +111,10 @@ public class AddressBook {
     private static final String COMMAND_EDIT_WORD = "edit";
     private static final String COMMAND_EDIT_DESC = "Edit a person identified by the index number used in "
                                                     + "the last find/list call.";
-    private static final String COMMAND_EDIT_PARAMETERS = "NAME "
+    private static final String COMMAND_EDIT_PARAMETERS = "INDEX " + PERSON_DATA_PREFIX_NAME + "NAME "
                                                       + PERSON_DATA_PREFIX_PHONE + "PHONE_NUMBER "
                                                       + PERSON_DATA_PREFIX_EMAIL + "EMAIL";
-    private static final String COMMAND_EDIT_EXAMPLE = COMMAND_EDIT_WORD + " John Doe p/98765432 e/johnd@gmail.com";
+    private static final String COMMAND_EDIT_EXAMPLE = COMMAND_EDIT_WORD + " 1 n/Jay Nathan p/98765432 e/jaynat@gmail.com";
     
     private static final String COMMAND_SORT_WORD = "sort";
     private static final String COMMAND_SORT_DESC = "Sorts and displays all persons as a list in alphabetical order.";
@@ -945,15 +951,115 @@ public class AddressBook {
         return isEditDataValid(decodedData) ? Optional.of(decodedData) : Optional.empty();
     }
     
+    /**
+     * Decodes edit data from it's supposed string representation.
+     *
+     * @param encoded string to be decoded
+     * @return ArrayList<String> containing index, and/or name, phone, email
+     */
     private static ArrayList<String> getEditDataFromString(String encoded) {
-		final ArrayList<String> decodedData = new ArrayList<>();
-		// TODO add splitting by prefix 
+		ArrayList<String> decodedData = new ArrayList<>();
+		encoded = encoded.trim();
+		int indexOfWhitespace = encoded.indexOf(' ');
+		decodedData.add( new String(encoded.substring(0, indexOfWhitespace))); //Extracts targetIndex from string
+		getPersonPropertyFromString(encoded.substring(indexOfWhitespace).trim(), decodedData);		
 		return decodedData;
 	}
 
+	/**
+	 * Assigns the corresponding properties (or null if it does not exist)
+	 * to be edited to ArrayList<String>
+	 * 
+	 * @param encoded
+	 * @param decodedData
+	 */
+	private static void getPersonPropertyFromString(String encoded, ArrayList<String> decodedData) {
+		decodedData.add(getNameIfExist(encoded));
+		decodedData.add(getPhoneIfExist(encoded));
+		decodedData.add(getEmailIfExist(encoded));
+	}
+
+    /**
+     * Decodes name from encoded string representation if it exists.
+     *
+     * @param encoded string to be decoded
+     * @return if n/ exist, return name in string
+     *         else return null
+     */
+	private static String getNameIfExist(String encoded) {
+		if (!encoded.contains(PERSON_DATA_PREFIX_NAME))
+			return null;
+		else {
+			int startIndex = encoded.indexOf(PERSON_DATA_PREFIX_NAME) + PERSON_DATA_PREFIX_NAME.length();
+			String trimmed = encoded.substring(startIndex).trim();
+			String extractedName;
+			if (trimmed.contains("/"))
+				extractedName = trimmed.substring(0, trimmed.indexOf("/")-1).trim();
+			else 
+				extractedName = trimmed;
+			return extractedName;
+		}
+	}
+
+	/**
+     * Decodes phone from encoded string representation if it exists.
+     *
+     * @param encoded string to be decoded
+     * @return if n/ exist, return name in string
+     *         else return null
+     */
+	private static String getPhoneIfExist(String encoded) {
+		if (!encoded.contains(PERSON_DATA_PREFIX_PHONE))
+			return null;
+		else {
+			int startIndex = encoded.indexOf(PERSON_DATA_PREFIX_PHONE) + PERSON_DATA_PREFIX_PHONE.length();
+			String trimmed = encoded.substring(startIndex).trim();
+			String extractedPhone;
+			if (trimmed.contains("/"))
+				extractedPhone = trimmed.substring(0, trimmed.indexOf("/")-1).trim();
+			else 
+				extractedPhone = trimmed;
+			return extractedPhone;
+		}
+	}
+	
+	/**
+     * Decodes email from encoded string representation if it exists.
+     *
+     * @param encoded string to be decoded
+     * @return if n/ exist, return name in string
+     *         else return null
+     */
+	private static String getEmailIfExist(String encoded) {
+		if (!encoded.contains(PERSON_DATA_PREFIX_EMAIL))
+			return null;
+		else {
+			int startIndex = encoded.indexOf(PERSON_DATA_PREFIX_EMAIL) + PERSON_DATA_PREFIX_EMAIL.length();
+			String trimmed = encoded.substring(startIndex).trim();
+			String extractedEmail;
+			if (trimmed.contains("/"))
+				extractedEmail = trimmed.substring(0, trimmed.indexOf("/")-1).trim();
+			else 
+				extractedEmail = trimmed;
+			return extractedEmail;
+		}
+	}
+	
+	/**
+     * Decodes edit data from it's supposed string representation.
+     *
+     * @param encoded string to be decoded
+     * @return ArrayList<String> containing index, and/or name, phone, email
+     */
 	private static boolean isEditDataValid(ArrayList<String> decodedPerson) {
-		// TODO check if data fields are valid data
-		return false;
+		boolean isValid = true;
+		if (decodedPerson.get(PERSON_EDIT_INDEX_NAME) != null)
+			isValid = isPersonNameValid(decodedPerson.get(PERSON_EDIT_INDEX_NAME));
+		if (decodedPerson.get(PERSON_EDIT_INDEX_PHONE) != null)
+			isValid = isPersonPhoneValid(decodedPerson.get(PERSON_EDIT_INDEX_PHONE));
+		if (decodedPerson.get(PERSON_EDIT_INDEX_EMAIL) != null)
+			isValid = isPersonEmailValid(decodedPerson.get(PERSON_EDIT_INDEX_EMAIL));
+		return isValid;
 	}
 
 	/**
@@ -1100,19 +1206,7 @@ public class AddressBook {
                 && isPersonPhoneValid(person.getPhone())
                 && isPersonEmailValid(person.getEmail());
     }
-    
-    /**
-     * Validates a person's data fields
-     *
-     * @param person String array representing the person (used in internal data)
-     * @return whether the given person has valid data
-     */
-    private static boolean isPersonDataValid(String[] person) {
-        return isPersonNameValid(person[0])
-                && isPersonPhoneValid(person[1])
-                && isPersonEmailValid(person[2]);
-    }
-
+   
     /*
      * ==============NOTE TO STUDENTS======================================
      * Note the use of 'regular expressions' in the method below.
