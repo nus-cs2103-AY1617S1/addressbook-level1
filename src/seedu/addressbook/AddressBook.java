@@ -278,7 +278,8 @@ public class AddressBook {
                 feedbackMessage = executeDeletePerson(commandArgs);
                 break;
             case COMMAND_CLEAR_WORD:
-                feedbackMessage = executeClearAddressBook();
+                clearAddressBook();
+                feedbackMessage = MESSAGE_ADDRESSBOOK_CLEARED;
                 break;
             case COMMAND_HELP_WORD:
                 feedbackMessage = getUsageInfoForAllCommands();
@@ -473,16 +474,6 @@ public class AddressBook {
      */
     private static String getMessageForSuccessfulDelete(String[] deletedPerson) {
         return String.format(MESSAGE_DELETE_PERSON_SUCCESS, getMessageForFormattedPersonData(deletedPerson));
-    }
-
-    /**
-     * Clears all persons in the address book.
-     *
-     * @return feedback display message for the operation result
-     */
-    private static String executeClearAddressBook() {
-        clearAddressBook();
-        return MESSAGE_ADDRESSBOOK_CLEARED;
     }
 
     /**
