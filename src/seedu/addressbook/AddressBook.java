@@ -128,7 +128,11 @@ public class AddressBook {
     private static final String COMMAND_EXIT_WORD = "exit";
     private static final String COMMAND_EXIT_DESC = "Exits the program.";
     private static final String COMMAND_EXIT_EXAMPLE = COMMAND_EXIT_WORD;
-
+    
+    private static final String COMMAND_SORT_WORD = "sort";
+    
+    private static final String COMMAND_EDIT_WORD = "edit";
+    
     private static final String DIVIDER = "===================================================";
 
 
@@ -352,6 +356,8 @@ public class AddressBook {
             return executeClearAddressBook();
         case COMMAND_HELP_WORD:
             return getUsageInfoForAllCommands();
+        case COMMAND_SORT_WORD:
+        	return executeSortAddressBookRequest();
         case COMMAND_EXIT_WORD:
             executeExitProgramRequest();
         default:
@@ -567,7 +573,39 @@ public class AddressBook {
     private static void executeExitProgramRequest() {
         exitProgram();
     }
+    
+    /**
+     * Request to sort the address book and list the persons in alphabetical order.
+     */
+    private static String executeSortAddressBookRequest() {
+    	if (ALL_PERSONS.size() == 0) {
+    		showToUser("Addressbook is empty!");
+    	}
+    	sortAddressBook();
+    	executeListAllPersonsInAddressBook();
+    	return "Addressbook sorted.";
+    }
 
+    private static void sortAddressBook() {
+    	ArrayList<String[]> toBeSorted = getAllPersonsInAddressBook();
+    	ArrayList<String[]> sortedAddressBook = new ArrayList<String[]>();
+    	for (int i = 0; i < toBeSorted.size(); i++) {
+    		String[] toBeSortedPerson = toBeSorted.get(i);
+			int j = 0;
+			for (; j < sortedAddressBook.size(); j++) {
+				String[] addressBookPerson = sortedAddressBook.get(j);
+				if (toBeSortedPerson[PERSON_DATA_INDEX_NAME].compareToIgnoreCase(addressBookPerson[PERSON_DATA_INDEX_NAME]) < 0) {
+					sortedAddressBook.add(j, toBeSorted.get(i));
+    				break;
+				}
+			}
+			if (j == sortedAddressBook.size()) {
+				sortedAddressBook.add(toBeSorted.get(i));
+			}
+		}
+    	initialiseAddressBookModel(sortedAddressBook);
+    }
+    
     /*
      * ===========================================
      *               UI LOGIC
