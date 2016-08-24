@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
@@ -62,6 +63,7 @@ public class AddressBook {
      * ====================================================================
      */
     private static final String MESSAGE_ADDED = "New person added: %1$s, Phone: %2$s, Email: %3$s";
+    private static final String MESSAGE_EDITED = "Contact edited: %1$s, Phone: %2$s, Email: %3$s";
     private static final String MESSAGE_ADDRESSBOOK_CLEARED = "Address book has been cleared!";
     private static final String MESSAGE_COMMAND_HELP = "%1$s: %2$s";
     private static final String MESSAGE_COMMAND_HELP_PARAMETERS = "\tParameters: %1$s";
@@ -358,6 +360,8 @@ public class AddressBook {
             return getUsageInfoForAllCommands();
         case COMMAND_SORT_WORD:
         	return executeSortAddressBookRequest();
+        case COMMAND_EDIT_WORD:
+        	return executeEditRequest(commandArgs) ;
         case COMMAND_EXIT_WORD:
             executeExitProgramRequest();
         default:
@@ -404,7 +408,7 @@ public class AddressBook {
         // add the person as specified
         final String[] personToAdd = decodeResult.get();
         addPersonToAddressBook(personToAdd);
-        return getMessageForSuccessfulAddPerson(personToAdd);
+        return getMessageForSuccessfulEditedPerson(personToAdd);
     }
 
     /**
@@ -416,6 +420,18 @@ public class AddressBook {
      */
     private static String getMessageForSuccessfulAddPerson(String[] addedPerson) {
         return String.format(MESSAGE_ADDED,
+                getNameFromPerson(addedPerson), getPhoneFromPerson(addedPerson), getEmailFromPerson(addedPerson));
+    }
+    
+    /**
+     * Constructs a feedback message for a successful add person command execution.
+     *
+     * @see #executeAddPerson(String)
+     * @param addedPerson person who was successfully added
+     * @return successful add person feedback message
+     */
+    private static String getMessageForSuccessfulEditedPerson(String[] addedPerson) {
+        return String.format(MESSAGE_EDITED,
                 getNameFromPerson(addedPerson), getPhoneFromPerson(addedPerson), getEmailFromPerson(addedPerson));
     }
 
@@ -604,6 +620,36 @@ public class AddressBook {
 			}
 		}
     	initialiseAddressBookModel(sortedAddressBook);
+    }
+    
+    /**
+     * Request to edit properties of a specific person.
+     * ASSUMING there is only one person with that name.
+     */
+    private static String executeEditRequest(String commandArgs) {
+        final Set<String> keywords = extractKeywordsFromFindPersonArgs(commandArgs);
+        final ArrayList<String[]> personsFound = getPersonsWithNameContainingAnyKeyword(keywords);
+        if (personsFound.size() == 0) {
+        	return LS + "Contact does not exist!";
+        }
+        editPersonAddressBook(personsFound, keywords);
+		return LS + "Contact edited.";
+    }
+    
+    private static void editPersonAddressBook(ArrayList<String[]> personsFound, Collection<String> keywords) {
+    	final List<String> list = new ArrayList<String>(keywords);
+    	String[] newPerson = personsFound.get(0);
+    	for (int i = 0; i < list.size(); i++) {
+			if (list.get(i).contains(PERSON_DATA_PREFIX_PHONE)) {
+				newPerson[PERSON_DATA_INDEX_PHONE] = list.get(i).substring(2, list.get(i).length());
+			}
+			else if (list.get(i).contains(PERSON_DATA_PREFIX_EMAIL)) {
+				newPerson[PERSON_DATA_INDEX_EMAIL] = list.get(i).substring(2, list.get(i).length());
+			}
+		}
+    	deletePersonFromAddressBook(personsFound.get(0));
+    	addPersonToAddressBook(newPerson);
+    	showToUser(getMessageForSuccessfulEditedPerson(newPerson));
     }
     
     /*
@@ -1125,6 +1171,8 @@ public class AddressBook {
                 + getUsageInfoForViewCommand() + LS
                 + getUsageInfoForDeleteCommand() + LS
                 + getUsageInfoForClearCommand() + LS
+                + getUsageInfoForSortCommand() + LS
+                + getUsageInfoForEditCommand() + LS
                 + getUsageInfoForExitCommand() + LS
                 + getUsageInfoForHelpCommand();
     }
@@ -1172,6 +1220,28 @@ public class AddressBook {
                 + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_CLEAR_EXAMPLE) + LS;
     }
 
+    /**
+     * Builds string for showing 'sort' command usage instruction
+     *
+     * @return  'sort' command usage instruction
+     */
+    private static String getUsageInfoForSortCommand() {
+//        return String.format(MESSAGE_COMMAND_HELP, COMMAND_CLEAR_WORD, COMMAND_CLEAR_DESC) + LS
+//                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_CLEAR_EXAMPLE) + LS;
+    	return "sort: sort and list the persons in alphabetical order." + LS;
+    }
+    
+    /**
+     * Builds string for showing 'edit' command usage instruction
+     *
+     * @return  'edit' command usage instruction
+     */
+    private static String getUsageInfoForEditCommand() {
+//        return String.format(MESSAGE_COMMAND_HELP, COMMAND_CLEAR_WORD, COMMAND_CLEAR_DESC) + LS
+//                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_CLEAR_EXAMPLE) + LS;
+    	return "edit: edit properties of a specific person." + LS;
+    }
+    
     /**
      * Builds string for showing 'view' command usage instruction
      *
