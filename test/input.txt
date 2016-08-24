@@ -99,6 +99,21 @@
   list
 
 ##########################################################
+# test edit command
+##########################################################
+
+  # edit betsy's phone number to 111
+  edit betsy p/1111
+  list
+  
+  edit betsy e/betsy@gmail.com
+  list
+  
+  edit ee p/333 e/dick@gmail.com
+  edit ee e/hihi@gmail.com p/12345
+  list
+ 
+##########################################################
 # test clear command
 ##########################################################
 

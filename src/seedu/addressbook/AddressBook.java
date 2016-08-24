@@ -385,7 +385,7 @@ public class AddressBook {
         
         final String[] personToEdit = decodePartialResult.get();
         final Set<String> keyword = new HashSet<String>();
-        keyword.add(personToEdit[PERSON_DATA_INDEX_NAME]);
+        keyword.add(personToEdit[PERSON_DATA_INDEX_NAME].toLowerCase());
         // find the person in the phone book
         final ArrayList<String[]> personFound = getPersonsWithNameContainingAnyKeyword(keyword);
         
