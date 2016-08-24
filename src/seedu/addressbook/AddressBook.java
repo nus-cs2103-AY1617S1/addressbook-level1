@@ -66,6 +66,7 @@ public class AddressBook {
     private static final String MESSAGE_COMMAND_HELP_PARAMETERS = "\tParameters: %1$s";
     private static final String MESSAGE_COMMAND_HELP_EXAMPLE = "\tExample: %1$s";
     private static final String MESSAGE_DELETE_PERSON_SUCCESS = "Deleted Person: %1$s";
+    private static final String MESSAGE_EDIT_PERSON_SUCCESS = "Edited Person: %1$s";
     private static final String MESSAGE_DISPLAY_PERSON_DATA = "%1$s  Phone Number: %2$s  Email: %3$s";
     private static final String MESSAGE_DISPLAY_LIST_ELEMENT_INDEX = "%1$d. ";
     private static final String MESSAGE_GOODBYE = "Exiting Address Book... Good bye!";
@@ -385,8 +386,11 @@ public class AddressBook {
         if (!isDisplayIndexValidForLastPersonListingView(targetVisibleIndex)) {
             return MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
         }
-        else 
-        	return editPersonFromAddressBook(decodeResult.get()) ? "Edited!": "Failed"; 
+        else {
+        	editPersonFromAddressBook(decodeResult.get(), targetVisibleIndex);
+        	return String.format(MESSAGE_EDIT_PERSON_SUCCESS,
+        					getMessageForFormattedPersonData(latestPersonListingView.get(targetVisibleIndex - DISPLAYED_INDEX_OFFSET)));
+        }
     }
 
     /**
@@ -394,7 +398,15 @@ public class AddressBook {
      *
      * @return feedback display message for the operation result
      */
-    private static boolean editPersonFromAddressBook(ArrayList<String> editData){
+    private static boolean editPersonFromAddressBook(ArrayList<String> editData, int indexToBeEdited){
+    	Person toEdit = latestPersonListingView.get(indexToBeEdited - DISPLAYED_INDEX_OFFSET);
+    	if (editData.get(PERSON_EDIT_INDEX_NAME) != null)
+    		toEdit.setName(editData.get(PERSON_EDIT_INDEX_NAME));
+    	if (editData.get(PERSON_EDIT_INDEX_PHONE) != null)
+    		toEdit.setPhone(editData.get(PERSON_EDIT_INDEX_PHONE));
+    	if (editData.get(PERSON_EDIT_INDEX_EMAIL) != null)
+    		toEdit.setEmail(editData.get(PERSON_EDIT_INDEX_EMAIL));
+    	savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
     	return true;
     }
     
@@ -828,20 +840,6 @@ public class AddressBook {
     private static void addPersonToAddressBook(Person person) {
         ALL_PERSONS.add(person);
         savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
-    }
-
-    /**
-     * Edits the properties of this person from the addressbook. Saves any changes to storage file.
-     *
-     * @param exactPerson the actual person inside the address book (exactPerson == the person to edit in the full list)
-     * @return true if the given person was found and edited in the model
-     */
-    private static boolean editPersonByIndexFromAddressBook(Person exactPerson) {
-        final boolean changed = ALL_PERSONS.remove(exactPerson);
-        if (changed) {
-            savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
-        }
-        return changed;
     }
     
     /**
