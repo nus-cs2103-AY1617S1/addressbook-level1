@@ -204,7 +204,7 @@ public class AddressBook {
         loadDataFromStorage();
         while (true) {
             String userCommand = getUserInput();
-            echoUserCommand(userCommand);
+            repeatUserCommand(userCommand);
             String feedback = executeCommand(userCommand);
             showResultToUser(feedback);
         }
@@ -233,9 +233,9 @@ public class AddressBook {
      * ====================================================================
      */
     /**
-     * Echoes the user input back to the user.
+     * Repeats the user input back to the user.
      */
-    private static void echoUserCommand(String userCommand) {
+    private static void repeatUserCommand(String userCommand) {
         showToUser("[Command entered:" + userCommand + "]");
     }
 
