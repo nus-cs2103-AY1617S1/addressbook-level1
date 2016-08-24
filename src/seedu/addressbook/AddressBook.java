@@ -574,7 +574,7 @@ public class AddressBook {
      * @return feedback display message for the operation result
      */
     private static String executeListSortedAllPersonsInAddressBook() {
-        ArrayList<String[]> toBeDisplayed = getAllPersonsInAddressBook();
+		ArrayList<String[]> toBeDisplayed = new ArrayList<String[]>(getAllPersonsInAddressBook());
         Collections.sort(toBeDisplayed, PERSON_COMPARATOR);
         showToUser(toBeDisplayed);
         return getMessageForPersonsDisplayedSummary(toBeDisplayed);
