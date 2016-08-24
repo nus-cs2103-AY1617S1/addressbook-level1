@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Scanner;
@@ -63,6 +62,7 @@ public class AddressBook {
      * ====================================================================
      */
     private static final String MESSAGE_ADDED = "New person added: %1$s, Phone: %2$s, Email: %3$s";
+    private static final String MESSAGE_EDITED = "Person edited: %1$s, Phone: %2$s, Email: %3$s";
     private static final String MESSAGE_ADDRESSBOOK_CLEARED = "Address book has been cleared!";
     private static final String MESSAGE_COMMAND_HELP = "%1$s: %2$s";
     private static final String MESSAGE_COMMAND_HELP_PARAMETERS = "\tParameters: %1$s";
@@ -115,9 +115,16 @@ public class AddressBook {
     private static final String COMMAND_SORT_DESC = "Displays all persons as a list in sorted order.";
     private static final String COMMAND_SORT_EXAMPLE = COMMAND_SORT_WORD;
 
+    private static final String COMMAND_EDIT_WORD = "edit";
+    private static final String COMMAND_EDIT_DESC = "Edits a person identified by the index number used in"
+            + "the last find/list/sort call.";
+    private static final String COMMAND_EDIT_PARAMETERS = "INDEX NAME" + PERSON_DATA_PREFIX_PHONE + "PHONE_NUMBER "
+            + PERSON_DATA_PREFIX_EMAIL + "EMAIL";
+    private static final String COMMAND_EDIT_EXAMPLE = COMMAND_EDIT_WORD + " John Edo p/23456789 e/djohn@gmail.com";
+
     private static final String COMMAND_DELETE_WORD = "delete";
     private static final String COMMAND_DELETE_DESC = "Deletes a person identified by the index number used in "
-            + "the last find/list call.";
+            + "the last find/list/sort call.";
     private static final String COMMAND_DELETE_PARAMETER = "INDEX";
     private static final String COMMAND_DELETE_EXAMPLE = COMMAND_DELETE_WORD + " 1";
 
@@ -348,6 +355,8 @@ public class AddressBook {
         switch (commandType) {
         case COMMAND_ADD_WORD:
             return executeAddPerson(commandArgs);
+        case COMMAND_EDIT_WORD:
+            return executeEditPerson(commandArgs);
         case COMMAND_FIND_WORD:
             return executeFindPersons(commandArgs);
         case COMMAND_LIST_WORD:
@@ -419,6 +428,37 @@ public class AddressBook {
     }
 
     /**
+     * Edits the person identified using last displayed index.
+     *
+     * @param commandArgs
+     *            full command args string from the user
+     * @return feedback display message for the operation result
+     */
+    private static String executeEditPerson(String commandArgs) {
+        final Optional<Integer> optionalIndex = extractTargetIndexFromEditArguments(commandArgs);
+        if (!optionalIndex.isPresent()) {
+            return MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
+        }
+
+        final int targetVisibleIndex = optionalIndex.get();
+        if (!isDisplayIndexValidForLastPersonListingView(targetVisibleIndex)) {
+            return MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
+        }
+
+        final Optional<String[]> decodeResult = decodePersonFromEditArguments(commandArgs);
+        if (!decodeResult.isPresent()) {
+            return getMessageForInvalidCommandInput(COMMAND_EDIT_WORD, getUsageInfoForEditCommand());
+        }
+
+        final String[] existingPerson = getPersonByLastVisibleIndex(targetVisibleIndex);
+        final String[] updatedPerson = decodeResult.get();
+
+        return updatePersonInAddressBook(existingPerson, updatedPerson)
+          ? getMessageForSuccessfulEditPerson(updatedPerson)
+          : MESSAGE_PERSON_NOT_IN_ADDRESSBOOK; // not found
+    }
+
+    /**
      * Constructs a feedback message for a successful add person command
      * execution.
      *
@@ -430,6 +470,20 @@ public class AddressBook {
     private static String getMessageForSuccessfulAddPerson(String[] addedPerson) {
         return String.format(MESSAGE_ADDED, getNameFromPerson(addedPerson), getPhoneFromPerson(addedPerson),
                 getEmailFromPerson(addedPerson));
+    }
+
+    /**
+     * Constructs a feedback message for a successful edit person command
+     * execution.
+     *
+     * @see #executeEditPerson(String)
+     * @param editedPerson
+     *            person who was successfully edited
+     * @return successful edit person feedback message
+     */
+    private static String getMessageForSuccessfulEditPerson(String[] editedPerson) {
+        return String.format(MESSAGE_EDITED, getNameFromPerson(editedPerson), getPhoneFromPerson(editedPerson),
+                getEmailFromPerson(editedPerson));
     }
 
     /**
@@ -540,6 +594,24 @@ public class AddressBook {
      */
     private static int extractTargetIndexFromDeletePersonArgs(String rawArgs) {
         return Integer.parseInt(rawArgs.trim());
+    }
+
+    /**
+     * Extracts the target's index from the arguments for the edit command
+     *
+     * @param arguments
+     *            The arguments for the edit command
+     * @return If the arguments are valid: an optional containing the index.
+     *         Otherwise, an empty optional
+     */
+    private static Optional<Integer> extractTargetIndexFromEditArguments(String arguments) {
+        final String[] split = arguments.trim().split("\\s+", 2);
+
+        if (split.length < 2) {
+            return Optional.empty();
+        } else {
+            return Optional.of(Integer.parseInt(split[0]));
+        }
     }
 
     /**
@@ -829,6 +901,29 @@ public class AddressBook {
     }
 
     /**
+     * Edits the specified person from the addressbook if it is inside. Saves
+     * any changes to storage file.
+     *
+     * @param existingPerson
+     *            the actual person inside the address book (exactPerson == the
+     *            person to edit in the full list)
+     * @param person
+     *            the person with updated info
+     * @return true if the given person was found and updated in the model
+     */
+    private static boolean updatePersonInAddressBook(String[] existingPerson, String[] person) {
+        int index = ALL_PERSONS.indexOf(existingPerson);
+
+        if (index == -1) {
+            return false;
+        }
+
+        ALL_PERSONS.set(index, person);
+        savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
+        return true;
+    }
+
+    /**
      * Deletes a person from the address book, target is identified by it's
      * absolute index in the full list. Saves changes to storage file.
      *
@@ -1010,6 +1105,25 @@ public class AddressBook {
     }
 
     /**
+     * Decode person from the arguments for the edit command.
+     *
+     * @param arguments
+     *            The arguments for the edit command
+     * @return if arguments are not valid: empty Optional else: Optional
+     *         containing the user
+     *
+     */
+    private static Optional<String[]> decodePersonFromEditArguments(String arguments) {
+        final String[] split = arguments.trim().split("\\s+", 2);
+
+        if (split.length < 2) {
+            return Optional.empty();
+        } else {
+            return decodePersonFromString(split[1]);
+        }
+    }
+
+    /**
      * Checks whether person data (email, name, phone etc) can be extracted from
      * the argument string. Format is [name] p/[phone] e/[email], phone and
      * email positions can be swapped.
@@ -1169,6 +1283,17 @@ public class AddressBook {
         return String.format(MESSAGE_COMMAND_HELP, COMMAND_ADD_WORD, COMMAND_ADD_DESC) + LS
                 + String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_ADD_PARAMETERS) + LS
                 + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_ADD_EXAMPLE) + LS;
+    }
+
+    /**
+     * Builds string for showing the 'edit' command usage instruction
+     *
+     * @return 'edit' command usage instruction
+     */
+    private static String getUsageInfoForEditCommand() {
+        return String.format(MESSAGE_COMMAND_HELP, COMMAND_EDIT_WORD, COMMAND_EDIT_DESC) + LS
+                + String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_EDIT_PARAMETERS) + LS
+                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_EDIT_EXAMPLE) + LS;
     }
 
     /**
