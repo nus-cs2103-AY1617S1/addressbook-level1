@@ -544,28 +544,47 @@ public class AddressBook {
      * @return feedback display message for the operation result
      */
     private static String executeSortAllPersonsInAddressBook() {
-		ArrayList<String[]> toBeDisplayed = sortAddressBook(getAllPersonsInAddressBook());
+    	ArrayList<String[]> persons = new ArrayList<String[]>(getAllPersonsInAddressBook());
+    	ArrayList<String[]> toBeDisplayed = sortAddressBook(persons);
         showToUser(toBeDisplayed);
 		return getMessageForPersonsDisplayedSummary(toBeDisplayed);
 	}
     
-    
-    private static ArrayList<String[]> sortAddressBook(ArrayList<String[]> persons) {
-        ArrayList<String[]> toBeDisplayed = new ArrayList<String[]>();
-        for (int i=0; i<persons.size(); i++){
-        	String smallestName = getNameFromPerson(persons.get(0));
-        	int smallestNameIndex = 0;
-        	for (int j=1; j<persons.size(); j++){
-        		String thisName = getNameFromPerson(persons.get(j));
-        		if (compareNames(smallestName, thisName) < 0){
-        			smallestName = thisName;
-        			smallestNameIndex = j;
-        		}
-        	}
+    /**
+     * Sorts the persons in the address book in alphabetical order (not case-sensitive).
+     * 
+     * @param allPersonsInAddressBook
+     * @return sorted list of persons
+     */
+    private static ArrayList<String[]> sortAddressBook(ArrayList<String[]> allPersonsInAddressBook) {
+    	ArrayList<String[]> persons = allPersonsInAddressBook;
+    	ArrayList<String[]> toBeDisplayed = new ArrayList<String[]>();
+    	int numPeople = persons.size();
+    	
+        for (int i=0; i<numPeople; i++){
+        	int smallestNameIndex = findSmallestName(persons);
         	toBeDisplayed.add(persons.get(smallestNameIndex));
         	persons.remove(smallestNameIndex);
         }
         return toBeDisplayed;
+	}
+
+    /** 
+     * @param persons
+     * @return index of lexicographically smallest name in list of persons
+     */
+	private static int findSmallestName(ArrayList<String[]> persons) {
+		String smallestName = getNameFromPerson(persons.get(0));
+		int smallestNameIndex = 0;
+		
+		for (int j=0; j<persons.size(); j++){
+			String thisName = getNameFromPerson(persons.get(j));
+			if (compareNames(smallestName, thisName) > 0){
+				smallestName = thisName;
+				smallestNameIndex = j;
+			}
+		}
+		return smallestNameIndex;
 	}
 
 	/**
