@@ -1053,9 +1053,9 @@ public class AddressBook {
 		boolean isValid = true;
 		if (decodedPerson.get(PERSON_EDIT_INDEX_NAME) != null)
 			isValid = isPersonNameValid(decodedPerson.get(PERSON_EDIT_INDEX_NAME));
-		if (decodedPerson.get(PERSON_EDIT_INDEX_PHONE) != null)
+		if (decodedPerson.get(PERSON_EDIT_INDEX_PHONE) != null && isValid == true)
 			isValid = isPersonPhoneValid(decodedPerson.get(PERSON_EDIT_INDEX_PHONE));
-		if (decodedPerson.get(PERSON_EDIT_INDEX_EMAIL) != null)
+		if (decodedPerson.get(PERSON_EDIT_INDEX_EMAIL) != null && isValid == true)
 			isValid = isPersonEmailValid(decodedPerson.get(PERSON_EDIT_INDEX_EMAIL));
 		return isValid;
 	}

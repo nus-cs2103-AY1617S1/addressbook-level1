@@ -101,6 +101,40 @@
   sort
 
 ##########################################################
+# test edit person command, setup state for futuer tests
+##########################################################
+
+  # should catch invalid args format
+  edit wrong args wrong args
+  edit n/ValidName p/123456 e/valid@email.butNoIndex
+  edit 1 NameButNoPrefix p/12345 valid@email.butNoPrefix
+  edit 1 n/Valid Name e/valid@email.butPhonePrefixMissing 12345
+  
+  # should catch invalid person data
+  edit 1 n/[]\[;] p/12345 e/valid@e.mail
+  edit 1 n/Valid Name p/not_numbers e/valid@e.mail
+  edit 1 n/Valid Name p/12345 e/notAnEmail
+
+  # should catch invalid person index
+  edit 4 n/Valid Name
+
+  # should edit correctly
+  edit 1 n/Adam Brown
+  list
+  edit 2 p/222222
+  list
+  edit 3 e/adamb@e.mail
+  list
+
+  # order and number of arguments should not matter
+  edit 1 n/Charlie Dickson e/charlie.d@nus.edu.sg p/333333
+  list
+  edit 2 e/betsy@nus.edu.sg p/444444 n/Betsy Lim
+  list
+  edit 1 p/555555 n/Esther Potato
+  list
+
+##########################################################
 # test clear command
 ##########################################################
 
