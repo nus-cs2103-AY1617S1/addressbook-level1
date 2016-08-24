@@ -219,7 +219,9 @@ public class AddressBook {
         }
         
         if(args.length == 0) {
-            setupDefaultFileForStorage();
+            showToUser(MESSAGE_USING_DEFAULT_FILE);
+            storageFilePath = DEFAULT_STORAGE_FILEPATH;
+            createFileIfMissing(storageFilePath);
         }
         initialiseAddressBookModel(loadPersonsFromFile(storageFilePath));
         while (true) {
@@ -239,17 +241,6 @@ public class AddressBook {
     
 
     
-
-    /**
-     * Sets up the storage based on the default file.
-     * Creates file if missing.
-     * Exits program if the file cannot be created.
-     */
-    private static void setupDefaultFileForStorage() {
-        showToUser(MESSAGE_USING_DEFAULT_FILE);
-        storageFilePath = DEFAULT_STORAGE_FILEPATH;
-        createFileIfMissing(storageFilePath);
-    }
 
     /**
      * Returns true if the given file is acceptable.
