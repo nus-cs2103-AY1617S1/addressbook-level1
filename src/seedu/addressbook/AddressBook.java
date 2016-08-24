@@ -132,8 +132,15 @@ public class AddressBook {
     private static final String COMMAND_EXIT_EXAMPLE = COMMAND_EXIT_WORD;
     
     private static final String COMMAND_SORT_WORD = "sort";
+    private static final String COMMAND_SORT_DESC = "Sort and list the persons in alphabetical order";
+    private static final String COMMAND_SORT_EXAMPLE = COMMAND_SORT_WORD;
+    
     
     private static final String COMMAND_EDIT_WORD = "edit";
+    private static final String COMMAND_EDIT_DESC = "Edit properties of a specific person";
+    private static final String COMMAND_EDIT_EXAMPLE = COMMAND_EDIT_WORD + " John Doe p/98765432 e/johnd@gmail.com"
+    													+ LS + "		 " + COMMAND_EDIT_WORD + " John Doe p/98765432" 
+    													+ LS + "		 " + COMMAND_EDIT_WORD + " John Doe e/johnd@gmail.com";
     
     private static final String DIVIDER = "===================================================";
 
@@ -1226,9 +1233,9 @@ public class AddressBook {
      * @return  'sort' command usage instruction
      */
     private static String getUsageInfoForSortCommand() {
-//        return String.format(MESSAGE_COMMAND_HELP, COMMAND_CLEAR_WORD, COMMAND_CLEAR_DESC) + LS
-//                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_CLEAR_EXAMPLE) + LS;
-    	return "sort: sort and list the persons in alphabetical order." + LS;
+        return String.format(MESSAGE_COMMAND_HELP, COMMAND_SORT_WORD, COMMAND_SORT_DESC) + LS
+                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_SORT_EXAMPLE) + LS;
+//    	return "sort: sort and list the persons in alphabetical order." + LS;
     }
     
     /**
@@ -1237,9 +1244,9 @@ public class AddressBook {
      * @return  'edit' command usage instruction
      */
     private static String getUsageInfoForEditCommand() {
-//        return String.format(MESSAGE_COMMAND_HELP, COMMAND_CLEAR_WORD, COMMAND_CLEAR_DESC) + LS
-//                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_CLEAR_EXAMPLE) + LS;
-    	return "edit: edit properties of a specific person." + LS;
+        return String.format(MESSAGE_COMMAND_HELP, COMMAND_EDIT_WORD, COMMAND_EDIT_DESC) + LS
+                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_EDIT_EXAMPLE) + LS;
+//    	return "edit: edit properties of a specific person." + LS;
     }
     
     /**
