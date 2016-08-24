@@ -216,90 +216,58 @@ public class AddressBook {
         }
         
         if (args.length == 1) {
-            setupGivenFileForStorage(args[0]);
+            String filePath = args[0];
+            if (!filePath.endsWith(".txt")) {
+                String[] message1 = { String.format(MESSAGE_INVALID_FILE, filePath) };
+                for (String m1 : message1) {
+                    System.out.println(LINE_PREFIX + m1);
+                }
+                String[] message11 = { MESSAGE_GOODBYE, DIVIDER, DIVIDER };
+                for (String m1 : message11) {
+                    System.out.println(LINE_PREFIX + m1);
+                }
+                System.exit(0);
+            }
+            
+            storageFilePath = filePath;
+            createFileIfMissing(filePath);
         }
         
         if(args.length == 0) {
-            setupDefaultFileForStorage();
-        }
-        initialiseAddressBookModel(loadPersonsFromFile(storageFilePath));
-        while (true) {
-            String userCommand = getUserInput();
-            echoUserCommand(userCommand);
-            String feedback = executeCommand(userCommand);
-            showResultToUser(feedback);
-        }
-    }
-
-    private static void showResultToUser(String result) {
-        String[] message = { result, DIVIDER };
-        for (String m : message) {
-            System.out.println(LINE_PREFIX + m);
-        }
-    }
-
-    /*
-     * ==============NOTE TO STUDENTS======================================
-     * Parameter description can be omitted from the method header comment
-     * if the parameter name is self-explanatory.
-     * In the method below, '@param userInput' comment has been omitted.
-     * ====================================================================
-     */
-    /**
-     * Echoes the user input back to the user.
-     */
-    private static void echoUserCommand(String userCommand) {
-        String[] message = { "[Command entered:" + userCommand + "]" };
-        for (String m : message) {
-            System.out.println(LINE_PREFIX + m);
-        }
-    }
-
-    /**
-     * Sets up the storage file based on the supplied file path.
-     * Creates the file if it is missing.
-     * Exits if the file name is not acceptable.
-     */
-    private static void setupGivenFileForStorage(String filePath) {
-
-        if (!isValidFilePath(filePath)) {
-            String[] message = { String.format(MESSAGE_INVALID_FILE, filePath) };
-            for (String m : message) {
-                System.out.println(LINE_PREFIX + m);
-            }
-            String[] message1 = { MESSAGE_GOODBYE, DIVIDER, DIVIDER };
+            String[] message1 = { MESSAGE_USING_DEFAULT_FILE };
             for (String m1 : message1) {
                 System.out.println(LINE_PREFIX + m1);
             }
-            System.exit(0);
+            storageFilePath = DEFAULT_STORAGE_FILEPATH;
+            createFileIfMissing(storageFilePath);
         }
-
-        storageFilePath = filePath;
-        createFileIfMissing(filePath);
-    }
-
-    /**
-     * Sets up the storage based on the default file.
-     * Creates file if missing.
-     * Exits program if the file cannot be created.
-     */
-    private static void setupDefaultFileForStorage() {
-        String[] message = { MESSAGE_USING_DEFAULT_FILE };
-        for (String m : message) {
-            System.out.println(LINE_PREFIX + m);
+        ALL_PERSONS.clear();
+        ALL_PERSONS.addAll(loadPersonsFromFile(storageFilePath));
+        while (true) {
+            System.out.print(LINE_PREFIX + "Enter command: ");
+            String inputLine = SCANNER.nextLine();
+            // silently consume all blank and comment lines
+            while (inputLine.trim().isEmpty() || inputLine.trim().charAt(0) == INPUT_COMMENT_MARKER) {
+                inputLine = SCANNER.nextLine();
+            }
+            String userCommand = inputLine;
+            String[] message1 = { "[Command entered:" + userCommand + "]" };
+            for (String m1 : message1) {
+                System.out.println(LINE_PREFIX + m1);
+            }
+            String feedback = executeCommand(userCommand);
+            String[] message2 = { feedback, DIVIDER };
+            for (String m2 : message2) {
+                System.out.println(LINE_PREFIX + m2);
+            }
         }
-        storageFilePath = DEFAULT_STORAGE_FILEPATH;
-        createFileIfMissing(storageFilePath);
     }
 
-    /**
-     * Returns true if the given file is acceptable.
-     * The file path is acceptable if it ends in '.txt'
-     * TODO: Implement a more rigorous validity checking.
-     */
-    private static boolean isValidFilePath(String filePath) {
-        return filePath.endsWith(".txt");
-    }
+    
+
+    
+
+    
 
     
 
@@ -541,22 +509,6 @@ public class AddressBook {
      */
 
     /**
-     * Prompts for the command and reads the text entered by the user.
-     * Ignores lines with first non-whitespace char equal to {@link #INPUT_COMMENT_MARKER} (considered comments)
-     *
-     * @return full line entered by the user
-     */
-    private static String getUserInput() {
-        System.out.print(LINE_PREFIX + "Enter command: ");
-        String inputLine = SCANNER.nextLine();
-        // silently consume all blank and comment lines
-        while (inputLine.trim().isEmpty() || inputLine.trim().charAt(0) == INPUT_COMMENT_MARKER) {
-            inputLine = SCANNER.nextLine();
-        }
-        return inputLine;
-    }
-
-   /**
      * Constructs a prettified string to show the user a person's data.
      *
      * @param person to show
@@ -762,15 +714,7 @@ public class AddressBook {
         }
     }
 
-    /**
-     * Resets the internal model with the given data. Does not save to file.
-     *
-     * @param persons list of persons to initialise the model with
-     */
-    private static void initialiseAddressBookModel(ArrayList<String[]> persons) {
-        ALL_PERSONS.clear();
-        ALL_PERSONS.addAll(persons);
-    }
+    
 
 
     /*
