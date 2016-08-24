@@ -282,12 +282,24 @@ public class AddressBook {
                 feedbackMessage = MESSAGE_ADDRESSBOOK_CLEARED;
                 break;
             case COMMAND_HELP_WORD:
-                feedbackMessage = getUsageInfoForAllCommands();
+                feedbackMessage = getUsageInfoForAddCommand() + LS
+                + getUsageInfoForFindCommand() + LS
+                + getUsageInfoForViewCommand() + LS
+                + getUsageInfoForDeleteCommand() + LS
+                + getUsageInfoForClearCommand() + LS
+                + getUsageInfoForExitCommand() + LS
+                + getUsageInfoForHelpCommand();
                 break;
             case COMMAND_EXIT_WORD:
                 executeExitProgramRequest();
             default:
-                feedbackMessage = getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
+                feedbackMessage = getMessageForInvalidCommandInput(commandType, getUsageInfoForAddCommand() + LS
+                + getUsageInfoForFindCommand() + LS
+                + getUsageInfoForViewCommand() + LS
+                + getUsageInfoForDeleteCommand() + LS
+                + getUsageInfoForClearCommand() + LS
+                + getUsageInfoForExitCommand() + LS
+                + getUsageInfoForHelpCommand());
                 break;
             }
             String feedback = feedbackMessage;
@@ -1004,19 +1016,6 @@ public class AddressBook {
      *         COMMAND HELP INFO FOR USERS
      * ===============================================
      */
-
-    /**
-     * @return  Usage info for all commands
-     */
-    private static String getUsageInfoForAllCommands() {
-        return getUsageInfoForAddCommand() + LS
-                + getUsageInfoForFindCommand() + LS
-                + getUsageInfoForViewCommand() + LS
-                + getUsageInfoForDeleteCommand() + LS
-                + getUsageInfoForClearCommand() + LS
-                + getUsageInfoForExitCommand() + LS
-                + getUsageInfoForHelpCommand();
-    }
 
     /**
      * Builds string for showing 'add' command usage instruction
