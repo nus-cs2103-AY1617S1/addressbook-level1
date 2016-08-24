@@ -102,7 +102,7 @@ public class AddressBook {
 
     private static final String COMMAND_FIND_WORD = "find";
     private static final String COMMAND_FIND_DESC = "Finds all persons whose names contain any of the specified "
-                                        + "keywords (case-sensitive) and displays them as a list with index numbers.";
+                                        + "keywords and displays them as a list with index numbers.";
     private static final String COMMAND_FIND_PARAMETERS = "KEYWORD [MORE_KEYWORDS]";
     private static final String COMMAND_FIND_EXAMPLE = COMMAND_FIND_WORD + " alice bob charlie";
 
@@ -202,17 +202,13 @@ public class AddressBook {
         showWelcomeMessage();
         processProgramArgs(args);
         loadDataFromStorage();
-        getAndShowInput();
-    }
-
-	private static void getAndShowInput() {
-		while (true) {
+        while (true) {
             String userCommand = getUserInput();
             echoUserCommand(userCommand);
             String feedback = executeCommand(userCommand);
             showResultToUser(feedback);
         }
-	}
+    }
 
     /*
      * ==============NOTE TO STUDENTS======================================
@@ -263,11 +259,9 @@ public class AddressBook {
         if (args.length >= 2) {
             showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
             exitProgram();
-        }
-        else if (args.length == 1){
+        } else if (args.length == 1){
         	setupGivenFileForStorage(args[0]);
-        }
-        else if(args.length == 0) {
+        } else if(args.length == 0) {
             setupDefaultFileForStorage();
         }
     }
