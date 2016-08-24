@@ -398,22 +398,22 @@ public class AddressBook {
         }
 
         // add the person as specified
-        final HashMap<PersonProperty, String> personToAdd = decodeResult.get();
+        final HashMap<PersonProperty, String> peopleToAdd = decodeResult.get();
         
-        addPersonToAddressBook(personToAdd);
-        return getMessageForSuccessfulAddPerson(personToAdd);
+        addPersonToAddressBook(peopleToAdd);
+        return getMessageForSuccessfulAddPerson(peopleToAdd);
     }
 
     /**
      * Constructs a feedback message for a successful add person command execution.
      *
      * @see #executeAddPerson(String)
-     * @param addedPerson person who was successfully added
+     * @param addedPeople person who was successfully added
      * @return successful add person feedback message
      */
-    private static String getMessageForSuccessfulAddPerson(HashMap<PersonProperty, String> addedPerson) {
+    private static String getMessageForSuccessfulAddPerson(HashMap<PersonProperty, String> addedPeople) {
         return String.format(MESSAGE_ADDED,
-                getNameFromPerson(addedPerson), getPhoneFromPerson(addedPerson), getEmailFromPerson(addedPerson));
+                getNameFromPerson(addedPeople), getPhoneFromPerson(addedPeople), getEmailFromPerson(addedPeople));
     }
 
     /**
@@ -458,10 +458,10 @@ public class AddressBook {
      */
     private static ArrayList<HashMap<PersonProperty, String>> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
         final ArrayList<HashMap<PersonProperty, String>> matchedPersons = new ArrayList<>();
-        for (HashMap<PersonProperty, String> person : getAllPersonsInAddressBook()) {
-            final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
+        for (HashMap<PersonProperty, String> persons : getAllPersonsInAddressBook()) {
+            final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(persons)));
             if (!Collections.disjoint(wordsInName, keywords)) {
-                matchedPersons.add(person);
+                matchedPersons.add(persons);
             }
         }
         return matchedPersons;
@@ -481,8 +481,8 @@ public class AddressBook {
         if (!isDisplayIndexValidForLastPersonListingView(targetVisibleIndex)) {
             return MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
         }
-        final HashMap<PersonProperty, String> targetInModel = getPersonByLastVisibleIndex(targetVisibleIndex);
-        return deletePersonFromAddressBook(targetInModel) ? getMessageForSuccessfulDelete(targetInModel) // success
+        final HashMap<PersonProperty, String> targetInModels = getPersonByLastVisibleIndexs(targetVisibleIndex);
+        return deletePersonFromAddressBook(targetInModels) ? getMessageForSuccessfulDelete(targetInModels) // success
                                                           : MESSAGE_PERSON_NOT_IN_ADDRESSBOOK; // not found
     }
 
@@ -518,18 +518,18 @@ public class AddressBook {
      * @return whether it is valid
      */
     private static boolean isDisplayIndexValidForLastPersonListingView(int index) {
-        return index >= DISPLAYED_INDEX_OFFSET && index < getLatestPersonListingView().size() + DISPLAYED_INDEX_OFFSET;
+        return index >= DISPLAYED_INDEX_OFFSET && index < getLatestPersonListingViews().size() + DISPLAYED_INDEX_OFFSET;
     }
 
     /**
      * Constructs a feedback message for a successful delete person command execution.
      *
      * @see #executeDeletePerson(String)
-     * @param deletedPerson successfully deleted
+     * @param deletedPersons successfully deleted
      * @return successful delete person feedback message
      */
-    private static String getMessageForSuccessfulDelete(HashMap<PersonProperty, String> deletedPerson) {
-        return String.format(MESSAGE_DELETE_PERSON_SUCCESS, getMessageForFormattedPersonData(deletedPerson));
+    private static String getMessageForSuccessfulDelete(HashMap<PersonProperty, String> deletedPersons) {
+        return String.format(MESSAGE_DELETE_PERSON_SUCCESS, getMessageForFormattedPersonData(deletedPersons));
     }
 
     /**
@@ -628,32 +628,32 @@ public class AddressBook {
      * Constructs a prettified listing element message to represent a person and their data.
      *
      * @param visibleIndex visible index for this listing
-     * @param person to show
+     * @param persons to show
      * @return formatted listing message with index
      */
-    private static String getIndexedPersonListElementMessage(int visibleIndex, HashMap<PersonProperty, String> person) {
-        return String.format(MESSAGE_DISPLAY_LIST_ELEMENT_INDEX, visibleIndex) + getMessageForFormattedPersonData(person);
+    private static String getIndexedPersonListElementMessage(int visibleIndex, HashMap<PersonProperty, String> persons) {
+        return String.format(MESSAGE_DISPLAY_LIST_ELEMENT_INDEX, visibleIndex) + getMessageForFormattedPersonData(persons);
     }
 
     /**
      * Constructs a prettified string to show the user a person's data.
      *
-     * @param person to show
+     * @param persons to show
      * @return formatted message showing internal state
      */
-    private static String getMessageForFormattedPersonData(HashMap<PersonProperty, String> person) {
+    private static String getMessageForFormattedPersonData(HashMap<PersonProperty, String> persons) {
         return String.format(MESSAGE_DISPLAY_PERSON_DATA,
-                getNameFromPerson(person), getPhoneFromPerson(person), getEmailFromPerson(person));
+                getNameFromPerson(persons), getPhoneFromPerson(persons), getEmailFromPerson(persons));
     }
 
     /**
      * Updates the latest person listing view the user has seen.
      *
-     * @param newListing the new listing of persons
+     * @param newListings the new listing of persons
      */
-    private static void updateLatestViewedPersonListing(ArrayList<HashMap<PersonProperty, String>> newListing) {
+    private static void updateLatestViewedPersonListing(ArrayList<HashMap<PersonProperty, String>> newListings) {
         // clone to insulate from future changes to arg list
-        latestPersonListingView = new ArrayList<>(newListing);
+        latestPersonListingView = new ArrayList<>(newListings);
     }
 
     /**
@@ -662,14 +662,14 @@ public class AddressBook {
      * @param lastVisibleIndex displayed index from last shown person listing
      * @return the actual person object in the last shown person listing
      */
-    private static HashMap<PersonProperty, String> getPersonByLastVisibleIndex(int lastVisibleIndex) {
+    private static HashMap<PersonProperty, String> getPersonByLastVisibleIndexs(int lastVisibleIndex) {
        return latestPersonListingView.get(lastVisibleIndex - DISPLAYED_INDEX_OFFSET);
     }
 
     /**
      * @return unmodifiable list view of the last person listing view
      */
-    private static ArrayList<HashMap<PersonProperty, String>> getLatestPersonListingView() {
+    private static ArrayList<HashMap<PersonProperty, String>> getLatestPersonListingViews() {
         return latestPersonListingView;
     }
 
@@ -762,10 +762,10 @@ public class AddressBook {
     /**
      * Adds a person to the address book. Saves changes to storage file.
      *
-     * @param person to add
+     * @param persons to add
      */
-    private static void addPersonToAddressBook(HashMap<PersonProperty, String> person) {
-        ALL_PERSONS.add(person);
+    private static void addPersonToAddressBook(HashMap<PersonProperty, String> persons) {
+        ALL_PERSONS.add(persons);
         savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
     }
 
@@ -783,11 +783,11 @@ public class AddressBook {
     /**
      * Deletes the specified person from the addressbook if it is inside. Saves any changes to storage file.
      *
-     * @param exactPerson the actual person inside the address book (exactPerson == the person to delete in the full list)
+     * @param exactPersons the actual person inside the address book (exactPerson == the person to delete in the full list)
      * @return true if the given person was found and deleted in the model
      */
-    private static boolean deletePersonFromAddressBook(HashMap<PersonProperty, String> exactPerson) {
-        final boolean isChanged = ALL_PERSONS.remove(exactPerson);
+    private static boolean deletePersonFromAddressBook(HashMap<PersonProperty, String> exactPersons) {
+        final boolean isChanged = ALL_PERSONS.remove(exactPersons);
         if (isChanged) {
             savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
         }
@@ -827,11 +827,11 @@ public class AddressBook {
      */
 
     /**
-     * @param person whose name you want
+     * @param persons whose name you want
      * @return person's name
      */
-    private static String getNameFromPerson(HashMap<PersonProperty, String> person) {
-        return person.get(PersonProperty.NAME);
+    private static String getNameFromPerson(HashMap<PersonProperty, String> persons) {
+        return persons.get(PersonProperty.NAME);
     }
 
     /**
