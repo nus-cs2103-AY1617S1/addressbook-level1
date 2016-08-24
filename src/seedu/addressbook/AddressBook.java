@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -63,6 +64,8 @@ public class AddressBook {
      * ====================================================================
      */
     private static final String MESSAGE_ADDED = "New person added: %1$s, Phone: %2$s, Email: %3$s";
+    private static final String MESSAGE_UPDATED= "Updated!: %1$s, Phone: %2$s, Email: %3$s";
+    private static final String MESSAGE_SORTED = "Address book has been sorted to display names in descending order";
     private static final String MESSAGE_ADDRESSBOOK_CLEARED = "Address book has been cleared!";
     private static final String MESSAGE_COMMAND_HELP = "%1$s: %2$s";
     private static final String MESSAGE_COMMAND_HELP_PARAMETERS = "\tParameters: %1$s";
@@ -381,9 +384,9 @@ public class AddressBook {
         case COMMAND_EXIT_WORD:
             executeExitProgramRequest();
         case COMMAND_SORT_WORD:
-        	executeShowSorted();
+        	return executeShowSorted();
         case COMMAND_EDIT_WORD:
-        	executeEditProperties(commandArgs);
+        	return executeEditProperties(commandArgs);
         default:
             return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
         }
@@ -443,6 +446,7 @@ public class AddressBook {
                 getNameFromPerson(addedPerson), getPhoneFromPerson(addedPerson), getEmailFromPerson(addedPerson));
     }
 
+
     /**
      * Finds and lists all persons in address book whose name contains any of the argument keywords.
      * Keyword matching is case sensitive.
@@ -462,22 +466,70 @@ public class AddressBook {
      * Keyword matching is case sensitive.
      *
      * @param commandArgs full command args string from the user
-     * @return feedback display message for the operation result
+     * @post-con: addressbook is updated with the new information
      */
-    private static void executeEditProperties(String commandArgs) {
+    private static String executeEditProperties(String commandArgs) {
         final Set<String> keywords = extractKeywordsFromFindPersonArgs(commandArgs.toUpperCase());
         final ArrayList<String[]> personsFound = getPersonsWithNameContainingAnyKeyword(keywords);
         final Optional<String[]> decodeResult = decodePersonFromString(commandArgs);
-   
         final String[] updateDetails = decodeResult.get();
-        
         for (int i = 0; i < personsFound.size(); i++) {
         	personsFound.get(i)[1] = updateDetails[1];
         	personsFound.get(i)[2] = updateDetails[2];
         }
+        ArrayList<String[]> temp = new ArrayList<String[]>();
+        massCopy(temp);
+        massDelete(getAllPersonsInAddressBook());
+        massAdd(temp);
+        return getMessageForSuccessfulUpdatePerson(updateDetails);
     }
     
     
+    /**
+     * Copy the content of addressbook into a temporary arraylist
+     *
+     * @param an empty temporary arraylist
+     * @post-con: addressbook is copied over to temporary arraylist
+     */
+    /**
+     * @param list
+     */
+    private static void massCopy(ArrayList<String[]> list) {
+    	ArrayList<String[]> addressBook = getAllPersonsInAddressBook();
+    	for (int i = 0;  i < addressBook.size(); i++) {
+    		list.add(addressBook.get(i));
+    	}
+    }
+    
+    /**
+     * Deletes all the entries in addressbook
+     * Keyword matching is case sensitive.
+     *
+     * @param arraylist containing the addressbook
+     * @post-con: an empty addressbook
+     */
+    private static void massDelete(ArrayList<String[]> list) {
+    	ALL_PERSONS.clear();
+    	savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
+    }
+    
+    /**
+     * Adds all the element of the temporary arraylist into the arraylist of addressbook
+     *
+     * @param addressbook arraylist
+     * @post-con: temporary arraylist is copied over to addressbook
+     */
+    private static void massAdd(ArrayList<String[]> list) {
+    	for (int i = 0; i < list.size(); i++) {
+    		ALL_PERSONS.add(list.get(i));
+    	}
+    	savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
+    }
+    
+    private static String getMessageForSuccessfulUpdatePerson(String[] addedPerson) {
+        return String.format(MESSAGE_UPDATED,
+                getNameFromPerson(addedPerson), getPhoneFromPerson(addedPerson), getEmailFromPerson(addedPerson));
+    }
 
     /**
      * Constructs a feedback message to summarise an operation that displayed a listing of persons.
@@ -607,14 +659,33 @@ public class AddressBook {
      *
      * @return feedback display message for the operation result
      */
-    private static void executeShowSorted() {
+    private static String executeShowSorted() {
         ArrayList<String[]> toBeDisplayed = getAllPersonsInAddressBook();
+        HashMap<String, String[]> map = hash(toBeDisplayed);
         ArrayList<String> names = new ArrayList<String>();
         for (int i = 0; i < toBeDisplayed.size(); i++) {
         	names.add(toBeDisplayed.get(i)[0]);
         }
         sort(names);
-        showToUserSorted(names);
+        ArrayList<String[]> temp = new ArrayList<String[]>();
+        populateSorted(names, map, temp);
+        massDelete(getAllPersonsInAddressBook());
+        massAdd(temp);
+        return MESSAGE_SORTED;
+    }
+    
+    private static void populateSorted(ArrayList<String> sorted, HashMap<String, String[]> map, ArrayList<String[]> temp) {
+    	for (int i = 0; i < sorted.size(); i++) {
+    		temp.add(map.get(sorted.get(i)));
+    	}
+    }
+    
+    private static HashMap<String, String[]> hash(ArrayList<String[]> list) {
+    	HashMap<String, String[]> map = new HashMap<String, String[]>();
+    	for (int i = 0; i < list.size(); i++) {
+    		map.put(list.get(i)[0], list.get(i));
+    	}
+    	return map;
     }
     
     /**
@@ -682,12 +753,7 @@ public class AddressBook {
         showToUser(listAsString);
         updateLatestViewedPersonListing(persons);
     }
-    
-    private static void showToUserSorted(ArrayList<String> names) {
-    	for (String m : names) {
-            System.out.println(LINE_PREFIX + m);
-        }
-    }
+   
 
     /**
      * Returns the display string representation of the list of persons.
