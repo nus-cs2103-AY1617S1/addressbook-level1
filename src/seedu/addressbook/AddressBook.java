@@ -390,7 +390,7 @@ public class AddressBook {
      */
     private static String executeAddPerson(String commandArgs) {
         // try decoding a person from the raw args
-        final Optional<HashMap<PersonProperty, String>> decodeResult = decodePersonFromString(commandArgs);
+        final Optional<HashMap<PersonProperty, String>> decodeResult = decodePersonsFromString(commandArgs);
 
         // checks if args are valid (decode result will not be present if the person is invalid)
         if (!decodeResult.isPresent()) {
@@ -835,19 +835,19 @@ public class AddressBook {
     }
 
     /**
-     * @param person whose phone number you want
+     * @param persons whose phone number you want
      * @return person's phone number
      */
-    private static String getPhoneFromPerson(HashMap<PersonProperty, String> person) {
-    	return person.get(PersonProperty.PHONE);
+    private static String getPhoneFromPerson(HashMap<PersonProperty, String> persons) {
+    	return persons.get(PersonProperty.PHONE);
     }
 
     /**
-     * @param person whose email you want
+     * @param persons whose email you want
      * @return person's email
      */
-    private static String getEmailFromPerson(HashMap<PersonProperty, String> person) {
-    	return person.get(PersonProperty.EMAIL);
+    private static String getEmailFromPerson(HashMap<PersonProperty, String> persons) {
+    	return persons.get(PersonProperty.EMAIL);
     }
 
     /**
@@ -858,23 +858,23 @@ public class AddressBook {
      * @param email without data prefix
      * @return constructed person
      */
-    private static HashMap<PersonProperty, String> makePersonFromData(String name, String phone, String email) {
-        final HashMap<PersonProperty, String> person = new HashMap<PersonProperty, String>();
-        person.put(PersonProperty.NAME, name);
-        person.put(PersonProperty.PHONE, phone);
-        person.put(PersonProperty.EMAIL, email);
-        return person;
+    private static HashMap<PersonProperty, String> makePersonsFromData(String name, String phone, String email) {
+        final HashMap<PersonProperty, String> persons = new HashMap<PersonProperty, String>();
+        persons.put(PersonProperty.NAME, name);
+        persons.put(PersonProperty.PHONE, phone);
+        persons.put(PersonProperty.EMAIL, email);
+        return persons;
     }
 
     /**
      * Encodes a person into a decodable and readable string representation.
      *
-     * @param person to be encoded
+     * @param persons to be encoded
      * @return encoded string
      */
-    private static String encodePersonToString(HashMap<PersonProperty, String> person) {
+    private static String encodePersonToString(HashMap<PersonProperty, String> persons) {
         return String.format(PERSON_STRING_REPRESENTATION,
-                getNameFromPerson(person), getPhoneFromPerson(person), getEmailFromPerson(person));
+                getNameFromPerson(persons), getPhoneFromPerson(persons), getEmailFromPerson(persons));
     }
 
     /**
@@ -904,18 +904,18 @@ public class AddressBook {
      * @return if cannot decode: empty Optional
      *         else: Optional containing decoded person
      */
-    private static Optional<HashMap<PersonProperty, String>> decodePersonFromString(String encoded) {
+    private static Optional<HashMap<PersonProperty, String>> decodePersonsFromString(String encoded) {
         // check that we can extract the parts of a person from the encoded string
         if (!isPersonDataExtractableFrom(encoded)) {
             return Optional.empty();
         }
-        final HashMap<PersonProperty, String> decodedPerson = makePersonFromData(
+        final HashMap<PersonProperty, String> decodedPersons = makePersonsFromData(
                 extractNameFromPersonString(encoded),
                 extractPhoneFromPersonString(encoded),
                 extractEmailFromPersonString(encoded)
         );
         // check that the constructed person is valid
-        return isPersonDataValid(decodedPerson) ? Optional.of(decodedPerson) : Optional.empty();
+        return isPersonDataValid(decodedPersons) ? Optional.of(decodedPersons) : Optional.empty();
     }
 
     /**
@@ -928,7 +928,7 @@ public class AddressBook {
     private static Optional<ArrayList<HashMap<PersonProperty, String>>> decodePersonsFromStrings(ArrayList<String> encodedPersons) {
         final ArrayList<HashMap<PersonProperty, String>> decodedPersons = new ArrayList<>();
         for (String encodedPerson : encodedPersons) {
-            final Optional<HashMap<PersonProperty, String>> decodedPerson = decodePersonFromString(encodedPerson);
+            final Optional<HashMap<PersonProperty, String>> decodedPerson = decodePersonsFromString(encodedPerson);
             if (!decodedPerson.isPresent()) {
                 return Optional.empty();
             }
