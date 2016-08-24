@@ -202,13 +202,17 @@ public class AddressBook {
         showWelcomeMessage();
         processProgramArgs(args);
         loadDataFromStorage();
-        while (true) {
+        processUserInput();
+    }
+
+	private static void processUserInput() {
+		while (true) {
             String userCommand = getUserInput();
             echoUserCommand(userCommand);
             String feedback = executeCommand(userCommand);
             showResultToUser(feedback);
         }
-    }
+	}
 
     /*
      * ==============NOTE TO STUDENTS======================================
@@ -256,8 +260,7 @@ public class AddressBook {
      */
     private static void processProgramArgs(String[] args) {
         if (args.length >= 2) {
-            showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
-            exitProgram();
+            setupForExit();
         }
 
         if (args.length == 1) {
@@ -268,6 +271,11 @@ public class AddressBook {
             setupDefaultFileForStorage();
         }
     }
+
+	private static void setupForExit() {
+		showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
+		exitProgram();
+	}
 
     /**
      * Sets up the storage file based on the supplied file path.
@@ -408,8 +416,8 @@ public class AddressBook {
      * @return successful add person feedback message
      */
     private static String getMessageForSuccessfulAddPerson(String[] addedPerson) {
-        return String.format(MESSAGE_ADDED,
-                getNameFromPerson(addedPerson), getPhoneFromPerson(addedPerson), getEmailFromPerson(addedPerson));
+        return String.format(MESSAGE_ADDED, getNameFromPerson(addedPerson), 
+        		getPhoneFromPerson(addedPerson), getEmailFromPerson(addedPerson));
     }
 
     /**
@@ -638,8 +646,8 @@ public class AddressBook {
      * @return formatted message showing internal state
      */
     private static String getMessageForFormattedPersonData(String[] person) {
-        return String.format(MESSAGE_DISPLAY_PERSON_DATA,
-                getNameFromPerson(person), getPhoneFromPerson(person), getEmailFromPerson(person));
+        return String.format(MESSAGE_DISPLAY_PERSON_DATA, getNameFromPerson(person), 
+        		getPhoneFromPerson(person), getEmailFromPerson(person));
     }
 
     /**
@@ -689,14 +697,18 @@ public class AddressBook {
 
         showToUser(String.format(MESSAGE_ERROR_MISSING_STORAGE_FILE, filePath));
 
-        try {
+        createFile(filePath, storageFile);
+    }
+
+	private static void createFile(String filePath, final File storageFile) {
+		try {
             storageFile.createNewFile();
             showToUser(String.format(MESSAGE_STORAGE_FILE_CREATED, filePath));
         } catch (IOException ioe) {
             showToUser(String.format(MESSAGE_ERROR_CREATING_STORAGE_FILE, filePath));
             exitProgram();
         }
-    }
+	}
 
     /**
      * Converts contents of a file into a list of persons.
@@ -911,7 +923,7 @@ public class AddressBook {
                 extractEmailFromPersonString(encoded)
         );
         // check that the constructed person is valid
-        return isPersonDataValid(decodedPerson) ? Optional.of(decodedPerson) : Optional.empty();
+        return (Optional<String[]>) (isPersonDataValid(decodedPerson) ? Optional.of(decodedPerson) : Optional.empty());
     }
 
     /**
