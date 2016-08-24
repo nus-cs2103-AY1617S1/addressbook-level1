@@ -202,6 +202,13 @@ public class AddressBook {
         showWelcomeMessage();
         processProgramArgs(args);
         loadDataFromStorage();
+        executeProcessUserInput();
+    }
+
+    /**
+     * 
+     */
+    private static void executeProcessUserInput() {
         while (true) {
             String userCommand = getUserInput();
             echoUserCommand(userCommand);
@@ -255,17 +262,19 @@ public class AddressBook {
      * @param args full program arguments passed to application main method
      */
     private static void processProgramArgs(String[] args) {
-        if (args.length >= 2) {
-            showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
-            exitProgram();
-        }
-
-        if (args.length == 1) {
-            setupGivenFileForStorage(args[0]);
-        }
-
-        if(args.length == 0) {
+        
+        switch (args.length){
+        case 0:
             setupDefaultFileForStorage();
+            break;
+            
+        case 1:
+            setupGivenFileForStorage(args[0]);
+            break;
+        
+        default:
+            showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
+            exitProgram();  
         }
     }
 
@@ -352,7 +361,7 @@ public class AddressBook {
         case COMMAND_HELP_WORD:
             return getUsageInfoForAllCommands();
         case COMMAND_EXIT_WORD:
-            executeExitProgramRequest();
+            exitProgram();
         default:
             return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
         }
@@ -456,11 +465,22 @@ public class AddressBook {
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
         for (String[] person : getAllPersonsInAddressBook()) {
             final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
-            if (!Collections.disjoint(wordsInName, keywords)) {
-                matchedPersons.add(person);
-            }
+            compareKeywordsAndName(keywords, matchedPersons, person, wordsInName);
         }
         return matchedPersons;
+    }
+
+    /**
+     * @param keywords
+     * @param matchedPersons
+     * @param person
+     * @param wordsInName
+     */
+    private static void compareKeywordsAndName(Collection<String> keywords, final ArrayList<String[]> matchedPersons,
+            String[] person, final Set<String> wordsInName) {
+        if (!Collections.disjoint(wordsInName, keywords)) {
+            matchedPersons.add(person);
+        }
     }
 
     /**
@@ -547,15 +567,6 @@ public class AddressBook {
         ArrayList<String[]> toBeDisplayed = getAllPersonsInAddressBook();
         showToUser(toBeDisplayed);
         return getMessageForPersonsDisplayedSummary(toBeDisplayed);
-    }
-
-    /**
-     * Request to terminate the program.
-     *
-     * @return feedback display message for the operation result
-     */
-    private static void executeExitProgramRequest() {
-        exitProgram();
     }
 
     /*
