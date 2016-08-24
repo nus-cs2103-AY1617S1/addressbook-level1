@@ -156,6 +156,11 @@ public class AddressBook {
      * If the first non-whitespace character in a user's input line is this, that line will be ignored.
      */
     private static final char INPUT_COMMENT_MARKER = '#';
+    
+    /**
+    * The size of the command with one parameter. It is used to differentiate commands with or without parameters.
+    */
+    private static final char INPUT_SIZE_HAS_PARA = 2;
 
     /*
      * This variable is declared for the whole class (instead of declaring it
@@ -361,8 +366,8 @@ public class AddressBook {
      * @return  size 2 array; first element is the command type and second element is the arguments string
      */
     private static String[] splitCommandWordAndArgs(String rawUserInput) {
-        final String[] split =  rawUserInput.trim().split("\\s+", 2);
-        return split.length == 2 ? split : new String[] { split[0] , "" }; // else case: no parameters
+        final String[] split =  rawUserInput.trim().split("\\s+", INPUT_SIZE_HAS_PARA);
+        return split.length == INPUT_SIZE_HAS_PARA ? split : new String[] { split[0] , "" }; // else case: no parameters
     }
 
     /**
