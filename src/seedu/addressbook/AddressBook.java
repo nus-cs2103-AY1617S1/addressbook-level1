@@ -32,6 +32,10 @@ import java.util.Set;
  **/
 public class AddressBook {
 	
+	private static final int ARG_TYPE_SETUP_DEFAULT_FILE_FOR_STORAGE = 0;
+
+	private static final int ARG_TYPE_SETUP_GIVEN_FILE_FOR_STORAGE = 1;
+
 	private enum PersonProperty{
 		NAME, EMAIL, PHONE
 	};
@@ -212,6 +216,7 @@ public class AddressBook {
 		showWelcomeMessage();
 		processProgramArgs(args);
 		loadDataFromStorage();
+		
 		while (true) {
 			String userCommand = getUserInput();
 			echoUserCommand(userCommand);
@@ -271,11 +276,11 @@ public class AddressBook {
 			exitProgram();
 		}
 
-		if (args.length == 1) {
+		if (args.length == ARG_TYPE_SETUP_GIVEN_FILE_FOR_STORAGE) {
 			setupGivenFileForStorage(args[0]);
 		}
 
-		if (args.length == 0) {
+		if (args.length == ARG_TYPE_SETUP_DEFAULT_FILE_FOR_STORAGE) {
 			setupDefaultFileForStorage();
 		}
 	}
