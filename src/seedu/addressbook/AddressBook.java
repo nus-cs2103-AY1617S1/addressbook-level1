@@ -65,6 +65,7 @@ public class AddressBook {
      * ====================================================================
      */
     private static final String MESSAGE_ADDED = "New person added: %1$s, Phone: %2$s, Email: %3$s";
+    private static final String MESSAGE_EDITED = "Properties of: %1$s have been edited, Phone: %2$s, Email: %3$s";
     private static final String MESSAGE_ADDRESSBOOK_CLEARED = "Address book has been cleared!";
     private static final String MESSAGE_COMMAND_HELP = "%1$s: %2$s";
     private static final String MESSAGE_COMMAND_HELP_PARAMETERS = "\tParameters: %1$s";
@@ -103,6 +104,16 @@ public class AddressBook {
                                                       + PERSON_DATA_PREFIX_PHONE + "PHONE_NUMBER "
                                                       + PERSON_DATA_PREFIX_EMAIL + "EMAIL";
     private static final String COMMAND_ADD_EXAMPLE = COMMAND_ADD_WORD + " John Doe p/98765432 e/johnd@gmail.com";
+    
+    private static final String COMMAND_EDIT_WORD = "edit";
+    private static final String COMMAND_EDIT_DESC = "Edits a persons properties in the address book.";
+    private static final String COMMAND_EDIT_PARAMETERS = "NAME "
+            + PERSON_DATA_PREFIX_PHONE + "PHONE_NUMBER "
+            + PERSON_DATA_PREFIX_EMAIL + "EMAIL";
+    private static final String COMMAND_EDIT_EXAMPLE = COMMAND_EDIT_WORD + " John Doe p/98765432 e/johnd@gmail.com";
+    
+    
+    
     
     private static final String COMMAND_SORT_WORDS = "sort";
     private static final String COMMAND_SORT_DESC = "Sorts all people in the list into alphabetical order";
@@ -349,6 +360,8 @@ public class AddressBook {
         switch (commandType) {
         case COMMAND_ADD_WORD:
             return executeAddPerson(commandArgs);
+        case COMMAND_EDIT_WORD:
+        	return executeEditPerson(commandArgs);
         case COMMAND_SORT_WORDS:
         	return executeAlphabetizePeople();
         case COMMAND_FIND_WORD:
@@ -368,6 +381,37 @@ public class AddressBook {
         }
     }
     /**
+     * Edit properites of a specific person in the address book
+     *
+     * @return  feedback display message for the operation results
+     */
+    private static String executeEditPerson(String commandArgs) {
+    	
+    	Optional<HashMap<PersonProperty, String>> decodeResult = decodePersonFromString(commandArgs);
+    	
+    	if(!decodeResult.isPresent()){
+    		return getMessageForInvalidCommandInput(COMMAND_EDIT_WORD, getUsageInForEditCommand());
+    	}
+    	
+    	HashMap<PersonProperty, String> persons = decodeResult.get();
+    	String personName = persons.get(PERSON_DATA_INDEX_NAME);
+    	
+    	for(int i = 0; i<  ALL_PERSONS.size(); i++){
+    		if(getNameFromPerson(ALL_PERSONS.get(i)).equals(personName)){
+    			ALL_PERSONS.add(i, persons);
+    			return getMessageForSuccessfulAddPerson(persons);
+    		}
+    	}
+    	
+    	
+		return MESSAGE_PERSON_NOT_IN_ADDRESSBOOK;
+	
+	}
+
+	
+
+	
+	/**
      * Displays all users in the addressbook in alphabetical order
      *
      * @return  feedback display message for the operation results
@@ -375,13 +419,17 @@ public class AddressBook {
     private static String executeAlphabetizePeople() {
     	
     	ArrayList<HashMap<PersonProperty, String>> allPersons = getAllPersonsInAddressBook();
+    	
+    	
+    	
     	Collections.sort(allPersons, new Comparator<HashMap<PersonProperty, String>>(){ 
             public int compare(HashMap<PersonProperty, String> one, HashMap<PersonProperty, String> two) { 
                 return one.get("get_name").compareTo(two.get("get_name"));
             } 
     });
-		// TODO Auto-generated method stub
-		return null;
+		
+
+	return null;
 	}
 
 	/**
@@ -1100,6 +1148,7 @@ public class AddressBook {
      */
     private static String getUsageInfoForAllCommands() {
         return getUsageInfoForAddCommand() + LS
+        		+ getUsageInForEditCommand() + LS
         		+ getUsageInfoForSortCommand() + LS
                 + getUsageInfoForFindCommand() + LS
                 + getUsageInfoForViewCommand() + LS
@@ -1151,6 +1200,12 @@ public class AddressBook {
                 + String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_DELETE_PARAMETER) + LS
                 + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_DELETE_EXAMPLE) + LS;
     }
+    
+    private static String getUsageInForEditCommand() {
+    	return String.format(MESSAGE_COMMAND_HELP, COMMAND_EDIT_WORD, COMMAND_EDIT_DESC) + LS
+                + String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_EDIT_PARAMETERS) + LS
+                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_EDIT_EXAMPLE) + LS;
+	}
 
     /**
      * Builds string for showing 'clear' command usage instruction
