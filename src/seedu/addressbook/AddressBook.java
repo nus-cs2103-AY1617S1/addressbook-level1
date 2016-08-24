@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Scanner;
@@ -113,6 +114,11 @@ public class AddressBook {
     private static final String COMMAND_LIST_DESC = "Displays all persons as a list with index numbers.";
     private static final String COMMAND_LIST_EXAMPLE = COMMAND_LIST_WORD;
 
+    private static final String COMMAND_SORT_WORD = "sort";
+    private static final String COMMAND_SORT_DESC = "Displays all persons sorted alphabetically by name.";
+    private static final String COMMAND_SORT_EXAMPLE = COMMAND_SORT_WORD;
+    
+    
     private static final String COMMAND_DELETE_WORD = "delete";
     private static final String COMMAND_DELETE_DESC = "Deletes a person identified by the index number used in "
                                                     + "the last find/list call.";
@@ -348,6 +354,8 @@ public class AddressBook {
             return executeFindPersons(commandArgs);
         case COMMAND_LIST_WORD:
             return executeListAllPersonsInAddressBook();
+        case COMMAND_SORT_WORD:
+        	return executeSortPersons();
         case COMMAND_DELETE_WORD:
             return executeDeletePerson(commandArgs);
         case COMMAND_CLEAR_WORD:
@@ -446,7 +454,7 @@ public class AddressBook {
      * @return set of keywords as specified by args
      */
     private static Set<String> extractKeywordsFromFindPersonArgs(String findPersonCommandArgs) {
-        return new HashSet<>(splitByWhitespace(findPersonCommandArgs.trim()));
+        return new HashSet<>(splitByWhitespaceAndConvertToLowerCase(findPersonCommandArgs.trim()));
     }
 
     /**
@@ -458,7 +466,7 @@ public class AddressBook {
     private static ArrayList<String[]> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
         for (String[] person : getAllPersonsInAddressBook()) {
-            final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
+            final Set<String> wordsInName = new HashSet<>(splitByWhitespaceAndConvertToLowerCase(getNameFromPerson(person)));
             if (!Collections.disjoint(wordsInName, keywords)) {
                 matchedPersons.add(person);
             }
@@ -552,6 +560,18 @@ public class AddressBook {
         return getMessageForPersonsDisplayedSummary(toBeDisplayed);
     }
 
+    private static String executeSortPersons() {
+        ArrayList<String[]> toBeSorted = getAllPersonsInAddressBook();
+        Collections.sort(toBeSorted,new Comparator<String[]>() {
+            public int compare(String[] person, String[] otherPerson) {
+                return person[PERSON_DATA_INDEX_NAME].compareTo(otherPerson[PERSON_DATA_INDEX_NAME]);
+            }
+        });
+    	showToUser(toBeSorted);
+        return getMessageForPersonsDisplayedSummary(toBeSorted);
+    }
+    
+    
     /**
      * Request to terminate the program.
      *
@@ -1185,5 +1205,16 @@ public class AddressBook {
     private static ArrayList<String> splitByWhitespace(String toSplit) {
         return new ArrayList(Arrays.asList(toSplit.trim().split("\\s+")));
     }
+    
+    private static ArrayList<String> splitByWhitespaceAndConvertToLowerCase(String toSplit) {
+        return new ArrayList(Arrays.asList(toSplit.toLowerCase().trim().split("\\s+")));
+    }
 
 }
+
+
+
+
+
+
+
