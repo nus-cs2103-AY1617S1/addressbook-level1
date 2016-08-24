@@ -217,8 +217,8 @@ public class AddressBook {
         while (true) {
             String userCommand = getUserInput();
             showToUser("[Command entered:" + userCommand + "]");
-            String feedback = executeCommand(userCommand);
-            showToUser(feedback, DIVIDER);;
+            String feedback = executeCommand(userCommand); 
+            showToUser(feedback, DIVIDER);;    //use inline method
         }
     }
 
