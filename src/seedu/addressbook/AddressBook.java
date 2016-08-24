@@ -101,6 +101,10 @@ public class AddressBook {
     private static final String COMMAND_LIST_DESC = "Displays all persons as a list with index numbers.";
     private static final String COMMAND_LIST_EXAMPLE = COMMAND_LIST_WORD;
 
+	private static final String COMMAND_SORT_WORD = "sort";
+    private static final String COMMAND_SORT_DESC = "Displays all persons in a list in alphabetical order.";
+    private static final String COMMAND_SORT_EXAMPLE = COMMAND_SORT_WORD;
+    
     private static final String COMMAND_DELETE_WORD = "delete";
     private static final String COMMAND_DELETE_DESC = "Deletes a person identified by the index number used in "
                                                       + "the last find/list call.";
@@ -160,6 +164,7 @@ public class AddressBook {
      */
     /** List of all persons in the address book. */
     private static final ArrayList<String[]> ALL_PERSONS = new ArrayList<>();
+
 
 
     /**
@@ -327,6 +332,8 @@ public class AddressBook {
             return executeFindPersons(commandArgs);
         case COMMAND_LIST_WORD:
             return executeListAllPersonsInAddressBook();
+        case COMMAND_SORT_WORD:
+        	return executeSortAllPersonsInAddressBook();
         case COMMAND_DELETE_WORD:
             return executeDeletePerson(commandArgs);
         case COMMAND_CLEAR_WORD:
@@ -340,7 +347,7 @@ public class AddressBook {
         }
     }
 
-    /**
+	/**
      * Splits raw user input into command word and command arguments string
      *
      * @return  size 2 array; first element is the command type and second element is the arguments string
@@ -532,6 +539,36 @@ public class AddressBook {
     }
 
     /**
+     * Displays all persons in the address book to the user, in alphabetical order.
+     * 
+     * @return feedback display message for the operation result
+     */
+    private static String executeSortAllPersonsInAddressBook() {
+		ArrayList<String[]> toBeDisplayed = sortAddressBook(getAllPersonsInAddressBook());
+        showToUser(toBeDisplayed);
+		return getMessageForPersonsDisplayedSummary(toBeDisplayed);
+	}
+    
+    
+    private static ArrayList<String[]> sortAddressBook(ArrayList<String[]> persons) {
+        ArrayList<String[]> toBeDisplayed = new ArrayList<String[]>();
+        for (int i=0; i<persons.size(); i++){
+        	String smallestName = getNameFromPerson(persons.get(0));
+        	int smallestNameIndex = 0;
+        	for (int j=1; j<persons.size(); j++){
+        		String thisName = getNameFromPerson(persons.get(j));
+        		if (compareNames(smallestName, thisName) < 0){
+        			smallestName = thisName;
+        			smallestNameIndex = j;
+        		}
+        	}
+        	toBeDisplayed.add(persons.get(smallestNameIndex));
+        	persons.remove(smallestNameIndex);
+        }
+        return toBeDisplayed;
+	}
+
+	/**
      * Request to terminate the program.
      *
      * @return feedback display message for the operation result
@@ -866,6 +903,19 @@ public class AddressBook {
             encoded.add(encodePersonToString(person));
         }
         return encoded;
+    }
+    
+    /**
+     * Compares two names. Not case-sensitive.
+     * 
+     * @param 2 names
+     * @return integer > 0 if name1 is alphabetically before name2, integer < 0 if name2 is alphabetically
+     * before name1, 0 otherwise
+     */
+    private static int compareNames(String name1, String name2){
+        String lowercaseName1 = name1.toLowerCase();
+        String lowercaseName2 = name2.toLowerCase();
+        return lowercaseName1.compareTo(lowercaseName2);
     }
 
     /*
