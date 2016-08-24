@@ -594,7 +594,7 @@ public class AddressBook {
 	 * @return full line entered by the user
 	 */
 	private static String getUserInput() {
-		private final String askCommandInput = "Enter command: ";
+		String askCommandInput = "Enter command: ";
 		System.out.print(LINE_PREFIX + askCommandInput);
 		String inputLine = SCANNER.nextLine();
 		// silently consume all blank and comment lines
@@ -757,7 +757,7 @@ public class AddressBook {
 	private static ArrayList<String> getLinesInFile(String filePath) {
 		ArrayList<String> lines = null;
 		try {
-			lines = new ArrayList(Files.readAllLines(Paths.get(filePath)));
+			lines = new ArrayList<String>(Files.readAllLines(Paths.get(filePath)));
 		} catch (FileNotFoundException fnfe) {
 			showToUser(String.format(MESSAGE_ERROR_MISSING_STORAGE_FILE, filePath));
 			exitProgram();
@@ -1091,7 +1091,7 @@ public class AddressBook {
 	 * @return whether arg is a valid person name
 	 */
 	private static boolean isPersonNameValid(String name) {
-		private String matchingFormat = "(\\w|\\s)+";
+		String matchingFormat = "(\\w|\\s)+";
 		return name.matches(matchingFormat); // name is nonempty mixture of
 											// alphabets and whitespace
 		// TODO: implement a more permissive validation
@@ -1105,7 +1105,7 @@ public class AddressBook {
 	 * @return whether arg is a valid person phone number
 	 */
 	private static boolean isPersonPhoneValid(String phone) {
-		private String matchingFormat = "\\d+";
+		String matchingFormat = "\\d+";
 		return phone.matches(matchingFormat); // phone nonempty sequence of digits
 		// TODO: implement a more permissive validation
 	}
@@ -1118,7 +1118,7 @@ public class AddressBook {
 	 * @return whether arg is a valid person email
 	 */
 	private static boolean isPersonEmailValid(String email) {
-		private String matchingFormat = "\\S+@\\S+\\.\\S+";
+		String matchingFormat = "\\S+@\\S+\\.\\S+";
 		return email.matches(matchingFormat); // email is
 													// [non-whitespace]@[non-whitespace].[non-whitespace]
 		// TODO: implement a more permissive validation
@@ -1238,7 +1238,7 @@ public class AddressBook {
 	 * @return split by whitespace
 	 */
 	private static ArrayList<String> splitByWhitespace(String toSplit) {
-		return new ArrayList(Arrays.asList(toSplit.trim().split("\\s+")));
+		return new ArrayList<String>(Arrays.asList(toSplit.trim().split("\\s+")));
 	}
 
 }
