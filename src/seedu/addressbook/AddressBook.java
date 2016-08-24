@@ -199,9 +199,20 @@ public class AddressBook {
      * ====================================================================
      */
     public static void main(String[] args) {
-        showWelcomeMessage();
-        processProgramArgs(args);
-        loadDataFromStorage();
+        showToUser(DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER);
+        if (args.length >= 2) {
+		    showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
+		    exitProgram();
+		}
+		
+		if (args.length == 1) {
+		    setupGivenFileForStorage(args[0]);
+		}
+		
+		if(args.length == 0) {
+		    setupDefaultFileForStorage();
+		}
+        initialiseAddressBookModel(loadPersonsFromFile(storageFilePath));
         while (true) {
             String userCommand = getUserInput();
             echoUserCommand(userCommand);
@@ -970,20 +981,7 @@ public class AddressBook {
      * @return phone number argument WITHOUT prefix
      */
     private static String extractPhoneFromPersonString(String encoded) {
-        final int indexOfPhonePrefix = encoded.indexOf(PERSON_DATA_PREFIX_PHONE);
-        final int indexOfEmailPrefix = encoded.indexOf(PERSON_DATA_PREFIX_EMAIL);
-
-        // phone is last arg, target is from prefix to end of string
-        if (indexOfPhonePrefix > indexOfEmailPrefix) {
-            return removePrefixSign(encoded.substring(indexOfPhonePrefix, encoded.length()).trim(),
-                    PERSON_DATA_PREFIX_PHONE);
-
-        // phone is middle arg, target is from own prefix to next prefix
-        } else {
-            return removePrefixSign(
-                    encoded.substring(indexOfPhonePrefix, indexOfEmailPrefix).trim(),
-                    PERSON_DATA_PREFIX_PHONE);
-        }
+    	return extractSubstringFromPersonString(encoded, true);
     }
 
     /**
@@ -993,21 +991,44 @@ public class AddressBook {
      * @return email argument WITHOUT prefix
      */
     private static String extractEmailFromPersonString(String encoded) {
-        final int indexOfPhonePrefix = encoded.indexOf(PERSON_DATA_PREFIX_PHONE);
-        final int indexOfEmailPrefix = encoded.indexOf(PERSON_DATA_PREFIX_EMAIL);
-
-        // email is last arg, target is from prefix to end of string
-        if (indexOfEmailPrefix > indexOfPhonePrefix) {
-            return removePrefixSign(encoded.substring(indexOfEmailPrefix, encoded.length()).trim(),
-                    PERSON_DATA_PREFIX_EMAIL);
-
-        // email is middle arg, target is from own prefix to next prefix
-        } else {
-            return removePrefixSign(
-                    encoded.substring(indexOfEmailPrefix, indexOfPhonePrefix).trim(),
-                    PERSON_DATA_PREFIX_EMAIL);
-        }
+        return extractSubstringFromPersonString(encoded, false);
     }
+
+    /**
+     * Extracts substring from person string representation
+     * This works based on the assumption that we're only interested in phone & email
+     *
+     * @param encoded person string representation
+     * @return substring WITHOUT prefix
+     */
+	private static String extractSubstringFromPersonString(String encoded, boolean isPhone) {
+		final int indexOfPhonePrefix = encoded.indexOf(PERSON_DATA_PREFIX_PHONE);
+        final int indexOfEmailPrefix = encoded.indexOf(PERSON_DATA_PREFIX_EMAIL);
+        boolean isLastArg;
+        int ownPrefix;
+        int nextPrefix;
+        String prefixSign;
+        
+        
+        if (isPhone) {
+        	isLastArg = indexOfPhonePrefix > indexOfEmailPrefix;
+        	ownPrefix = indexOfPhonePrefix;
+        	nextPrefix = indexOfEmailPrefix;
+        	prefixSign = PERSON_DATA_PREFIX_PHONE;
+        } else {
+        	isLastArg = indexOfEmailPrefix > indexOfPhonePrefix;
+        	ownPrefix = indexOfEmailPrefix;
+        	nextPrefix = indexOfPhonePrefix;
+        	prefixSign = PERSON_DATA_PREFIX_EMAIL;
+        }
+        // phone/email is last arg, target is from prefix to end of string
+        // phone/email is middle arg, target is from own prefix to next prefix
+        final int endIndex = (isLastArg) ? encoded.length() : nextPrefix;
+        								  
+        return removePrefixSign(encoded.substring(ownPrefix, endIndex).trim(), prefixSign);
+	}
+    
+    
 
     /**
      * Validates a person's data fields
