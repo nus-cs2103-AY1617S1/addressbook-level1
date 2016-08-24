@@ -139,8 +139,9 @@
 || 0 persons found!
 || ===================================================
 || Enter command: || [Command entered:  find betsy]
+|| 	1. Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
 || 
-|| 0 persons found!
+|| 1 persons found!
 || ===================================================
 || Enter command: || [Command entered:  find Betsy]
 || 	1. Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
@@ -222,6 +223,24 @@
 || 	2. Dickson Ee  Phone Number: 444444  Email: dickson@nus.edu.sg
 || 
 || 2 persons found!
+|| ===================================================
+|| Enter command: || [Command entered:  edit 2 n/Edmund Mok        p/98765432      e/edmund@edmund.com]
+|| Editted Person: Edmund Mok  Phone Number: 98765432  Email: edmund@edmund.com
+|| ===================================================
+|| Enter command: || [Command entered:  edit 1 n/John Tan        p/123123123      e/john@tan.com]
+|| Editted Person: John Tan  Phone Number: 123123123  Email: john@tan.com
+|| ===================================================
+|| Enter command: || [Command entered:  list]
+|| 	1. John Tan  Phone Number: 123123123  Email: john@tan.com
+|| 	2. Edmund Mok  Phone Number: 98765432  Email: edmund@edmund.com
+|| 
+|| 2 persons found!
+|| ===================================================
+|| Enter command: || [Command entered:  sort]
+|| 	1. Edmund Mok  Phone Number: 98765432  Email: edmund@edmund.com
+|| 	2. John Tan  Phone Number: 123123123  Email: john@tan.com
+|| 
+|| Address book has been sorted by alphabetical order!
 || ===================================================
 || Enter command: || [Command entered:  clear]
 || Address book has been cleared!

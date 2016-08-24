@@ -90,6 +90,22 @@
   # listing indexes get updated on next request
   delete 1
   list
+  
+##########################################################
+# test edit command
+##########################################################
+	
+  # edit someone
+  edit 2 n/Edmund Mok        p/98765432      e/edmund@edmund.com
+  edit 1 n/John Tan        p/123123123      e/john@tan.com
+  
+##########################################################
+# test sort command
+##########################################################
+
+  # list then sort
+  list
+  sort
 
 ##########################################################
 # test clear command
@@ -98,6 +114,7 @@
   # clears all
   clear
   list
+  
 
 ##########################################################
 # test exit command
