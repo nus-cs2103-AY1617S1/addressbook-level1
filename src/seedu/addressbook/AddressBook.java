@@ -290,21 +290,160 @@ public class AddressBook {
         final String commandArgs = commandTypeAndParams[1];
         switch (commandType) {
         case COMMAND_ADD_WORD:
-            return executeAddPerson(commandArgs);
+            // try decoding a person from the raw args
+            final Optional<String[]> decodeResult = decodePersonFromString(commandArgs);
+            
+            // checks if args are valid (decode result will not be present if the person is invalid)
+            if (!decodeResult.isPresent()) {
+                return String.format(MESSAGE_INVALID_COMMAND_FORMAT, COMMAND_ADD_WORD, String.format(MESSAGE_COMMAND_HELP, COMMAND_ADD_WORD, COMMAND_ADD_DESC) + LS
+                + String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_ADD_PARAMETERS) + LS
+                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_ADD_EXAMPLE) + LS);
+            }
+            
+            // add the person as specified
+            ALL_PERSONS.add(decodeResult.get());
+            final ArrayList<String> encoded = new ArrayList<>();
+            for (String[] person : ALL_PERSONS) {
+                encoded.add(String.format(PERSON_STRING_REPRESENTATION,
+                person[PERSON_DATA_INDEX_NAME], person[PERSON_DATA_INDEX_PHONE], person[PERSON_DATA_INDEX_EMAIL]));
+            }
+            final ArrayList<String> linesToWrite = encoded;
+            try {
+                Files.write(Paths.get(storageFilePath), linesToWrite);
+            } catch (IOException ioe) {
+                String[] message = { String.format(MESSAGE_ERROR_WRITING_TO_FILE, storageFilePath) };
+                for (String m : message) {
+                    System.out.println(LINE_PREFIX + m);
+                }
+                String[] message1 = { MESSAGE_GOODBYE, DIVIDER, DIVIDER };
+                for (String m1 : message1) {
+                    System.out.println(LINE_PREFIX + m1);
+                }
+                System.exit(0);
+            }
+            return String.format(MESSAGE_ADDED,
+            decodeResult.get()[PERSON_DATA_INDEX_NAME], decodeResult.get()[PERSON_DATA_INDEX_PHONE], decodeResult.get()[PERSON_DATA_INDEX_EMAIL]);
         case COMMAND_FIND_WORD:
-            return executeFindPersons(commandArgs);
+            final Set<String> keywords = new HashSet<>((ArrayList<String>) new ArrayList(Arrays.asList(commandArgs.trim().trim().split("\\s+"))));
+            final ArrayList<String[]> matchedPersons = new ArrayList<>();
+            for (String[] person1 : ALL_PERSONS) {
+                final Set<String> wordsInName = new HashSet<>((ArrayList<String>) new ArrayList(Arrays.asList(person1[PERSON_DATA_INDEX_NAME].trim().split("\\s+"))));
+                if (!Collections.disjoint(wordsInName, keywords)) {
+                    matchedPersons.add(person1);
+                }
+            }
+            final ArrayList<String[]> personsFound = matchedPersons;
+            final StringBuilder messageAccumulator = new StringBuilder();
+            for (int i = 0; i < personsFound.size(); i++) {
+                final String[] person11 = personsFound.get(i);
+                final int displayIndex = i + DISPLAYED_INDEX_OFFSET;
+                messageAccumulator.append('\t')
+                                  .append(String.format(MESSAGE_DISPLAY_LIST_ELEMENT_INDEX, displayIndex) + getMessageForFormattedPersonData(person11))
+                                  .append(LS);
+            }
+            String listAsString = messageAccumulator.toString();
+            String[] message = { listAsString };
+            for (String m : message) {
+                System.out.println(LINE_PREFIX + m);
+            }
+            // clone to insulate from future changes to arg list
+            latestPersonListingView = new ArrayList<>(personsFound);
+            return String.format(MESSAGE_PERSONS_FOUND_OVERVIEW, personsFound.size());
         case COMMAND_LIST_WORD:
-            return executeListAllPersonsInAddressBook();
+            ArrayList<String[]> toBeDisplayed = ALL_PERSONS;
+            final StringBuilder messageAccumulator1 = new StringBuilder();
+            for (int i = 0; i < toBeDisplayed.size(); i++) {
+                final String[] person2 = toBeDisplayed.get(i);
+                final int displayIndex = i + DISPLAYED_INDEX_OFFSET;
+                messageAccumulator1.append('\t')
+                                  .append(String.format(MESSAGE_DISPLAY_LIST_ELEMENT_INDEX, displayIndex) + getMessageForFormattedPersonData(person2))
+                                  .append(LS);
+            }
+            String listAsString1 = messageAccumulator1.toString();
+            String[] message1 = { listAsString1 };
+            for (String m1 : message1) {
+                System.out.println(LINE_PREFIX + m1);
+            }
+            // clone to insulate from future changes to arg list
+            latestPersonListingView = new ArrayList<>(toBeDisplayed);
+            return String.format(MESSAGE_PERSONS_FOUND_OVERVIEW, toBeDisplayed.size());
         case COMMAND_DELETE_WORD:
-            return executeDeletePerson(commandArgs);
+            if (!isDeletePersonArgsValid(commandArgs)) {
+                return String.format(MESSAGE_INVALID_COMMAND_FORMAT, COMMAND_DELETE_WORD, String.format(MESSAGE_COMMAND_HELP, COMMAND_DELETE_WORD, COMMAND_DELETE_DESC) + LS
+                + String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_DELETE_PARAMETER) + LS
+                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_DELETE_EXAMPLE) + LS);
+            }
+            final int targetVisibleIndex = Integer.parseInt(commandArgs.trim());
+            if (!(targetVisibleIndex >= DISPLAYED_INDEX_OFFSET && targetVisibleIndex < getLatestPersonListingView().size() + DISPLAYED_INDEX_OFFSET)) {
+                return MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
+            }
+            final String[] targetInModel = latestPersonListingView.get(targetVisibleIndex - DISPLAYED_INDEX_OFFSET);
+            return deletePersonFromAddressBook(targetInModel) ? String.format(MESSAGE_DELETE_PERSON_SUCCESS, getMessageForFormattedPersonData(targetInModel)) // success
+                                                              : MESSAGE_PERSON_NOT_IN_ADDRESSBOOK; // not found
         case COMMAND_CLEAR_WORD:
-            return executeClearAddressBook();
+            ALL_PERSONS.clear();
+            final ArrayList<String> encoded1 = new ArrayList<>();
+            for (String[] person2 : ALL_PERSONS) {
+                encoded1.add(String.format(PERSON_STRING_REPRESENTATION,
+                person2[PERSON_DATA_INDEX_NAME], person2[PERSON_DATA_INDEX_PHONE], person2[PERSON_DATA_INDEX_EMAIL]));
+            }
+            final ArrayList<String> linesToWrite1 = encoded1;
+            try {
+                Files.write(Paths.get(storageFilePath), linesToWrite1);
+            } catch (IOException ioe) {
+                String[] message2 = { String.format(MESSAGE_ERROR_WRITING_TO_FILE, storageFilePath) };
+                for (String m2 : message2) {
+                    System.out.println(LINE_PREFIX + m2);
+                }
+                String[] message11 = { MESSAGE_GOODBYE, DIVIDER, DIVIDER };
+                for (String m11 : message11) {
+                    System.out.println(LINE_PREFIX + m11);
+                }
+                System.exit(0);
+            }
+            return MESSAGE_ADDRESSBOOK_CLEARED;
         case COMMAND_HELP_WORD:
-            return getUsageInfoForAllCommands();
+            return String.format(MESSAGE_COMMAND_HELP, COMMAND_ADD_WORD, COMMAND_ADD_DESC) + LS
+            + String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_ADD_PARAMETERS) + LS
+            + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_ADD_EXAMPLE) + LS + LS
+            + String.format(MESSAGE_COMMAND_HELP, COMMAND_FIND_WORD, COMMAND_FIND_DESC) + LS
+            + String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_FIND_PARAMETERS) + LS
+            + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_FIND_EXAMPLE) + LS + LS
+            + String.format(MESSAGE_COMMAND_HELP, COMMAND_LIST_WORD, COMMAND_LIST_DESC) + LS
+            + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_LIST_EXAMPLE) + LS + LS
+            + String.format(MESSAGE_COMMAND_HELP, COMMAND_DELETE_WORD, COMMAND_DELETE_DESC) + LS
+            + String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_DELETE_PARAMETER) + LS
+            + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_DELETE_EXAMPLE) + LS + LS
+            + String.format(MESSAGE_COMMAND_HELP, COMMAND_CLEAR_WORD, COMMAND_CLEAR_DESC) + LS
+            + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_CLEAR_EXAMPLE) + LS + LS
+            + String.format(MESSAGE_COMMAND_HELP, COMMAND_EXIT_WORD, COMMAND_EXIT_DESC)
+            + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_EXIT_EXAMPLE) + LS
+            + String.format(MESSAGE_COMMAND_HELP, COMMAND_HELP_WORD, COMMAND_HELP_DESC)
+            + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_HELP_EXAMPLE);
         case COMMAND_EXIT_WORD:
-            executeExitProgramRequest();
+            String[] message2 = { MESSAGE_GOODBYE, DIVIDER, DIVIDER };
+            for (String m2 : message2) {
+                System.out.println(LINE_PREFIX + m2);
+            }
+            System.exit(0);
         default:
-            return String.format(MESSAGE_INVALID_COMMAND_FORMAT, commandType, getUsageInfoForAllCommands());
+            return String.format(MESSAGE_INVALID_COMMAND_FORMAT, commandType, String.format(MESSAGE_COMMAND_HELP, COMMAND_ADD_WORD, COMMAND_ADD_DESC) + LS
+            + String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_ADD_PARAMETERS) + LS
+            + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_ADD_EXAMPLE) + LS + LS
+            + String.format(MESSAGE_COMMAND_HELP, COMMAND_FIND_WORD, COMMAND_FIND_DESC) + LS
+            + String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_FIND_PARAMETERS) + LS
+            + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_FIND_EXAMPLE) + LS + LS
+            + String.format(MESSAGE_COMMAND_HELP, COMMAND_LIST_WORD, COMMAND_LIST_DESC) + LS
+            + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_LIST_EXAMPLE) + LS + LS
+            + String.format(MESSAGE_COMMAND_HELP, COMMAND_DELETE_WORD, COMMAND_DELETE_DESC) + LS
+            + String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_DELETE_PARAMETER) + LS
+            + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_DELETE_EXAMPLE) + LS + LS
+            + String.format(MESSAGE_COMMAND_HELP, COMMAND_CLEAR_WORD, COMMAND_CLEAR_DESC) + LS
+            + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_CLEAR_EXAMPLE) + LS + LS
+            + String.format(MESSAGE_COMMAND_HELP, COMMAND_EXIT_WORD, COMMAND_EXIT_DESC)
+            + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_EXIT_EXAMPLE) + LS
+            + String.format(MESSAGE_COMMAND_HELP, COMMAND_HELP_WORD, COMMAND_HELP_DESC)
+            + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_HELP_EXAMPLE));
         }
     }
 
@@ -316,103 +455,6 @@ public class AddressBook {
     private static String[] splitCommandWordAndArgs(String rawUserInput) {
         final String[] split =  rawUserInput.trim().split("\\s+", 2);
         return split.length == 2 ? split : new String[] { split[0] , "" }; // else case: no parameters
-    }
-
-    /**
-     * Adds a person (specified by the command args) to the address book.
-     * The entire command arguments string is treated as a string representation of the person to add.
-     *
-     * @param commandArgs full command args string from the user
-     * @return feedback display message for the operation result
-     */
-    private static String executeAddPerson(String commandArgs) {
-        // try decoding a person from the raw args
-        final Optional<String[]> decodeResult = decodePersonFromString(commandArgs);
-
-        // checks if args are valid (decode result will not be present if the person is invalid)
-        if (!decodeResult.isPresent()) {
-            return String.format(MESSAGE_INVALID_COMMAND_FORMAT, COMMAND_ADD_WORD, getUsageInfoForAddCommand());
-        }
-
-        // add the person as specified
-        ALL_PERSONS.add(decodeResult.get());
-        final ArrayList<String> encoded = new ArrayList<>();
-        for (String[] person : ALL_PERSONS) {
-            encoded.add(String.format(PERSON_STRING_REPRESENTATION,
-            person[PERSON_DATA_INDEX_NAME], person[PERSON_DATA_INDEX_PHONE], person[PERSON_DATA_INDEX_EMAIL]));
-        }
-        final ArrayList<String> linesToWrite = encoded;
-        try {
-            Files.write(Paths.get(storageFilePath), linesToWrite);
-        } catch (IOException ioe) {
-            String[] message = { String.format(MESSAGE_ERROR_WRITING_TO_FILE, storageFilePath) };
-            for (String m : message) {
-                System.out.println(LINE_PREFIX + m);
-            }
-            String[] message1 = { MESSAGE_GOODBYE, DIVIDER, DIVIDER };
-            for (String m1 : message1) {
-                System.out.println(LINE_PREFIX + m1);
-            }
-            System.exit(0);
-        }
-        return String.format(MESSAGE_ADDED,
-        decodeResult.get()[PERSON_DATA_INDEX_NAME], decodeResult.get()[PERSON_DATA_INDEX_PHONE], decodeResult.get()[PERSON_DATA_INDEX_EMAIL]);
-    }
-
-    /**
-     * Finds and lists all persons in address book whose name contains any of the argument keywords.
-     * Keyword matching is case sensitive.
-     *
-     * @param commandArgs full command args string from the user
-     * @return feedback display message for the operation result
-     */
-    private static String executeFindPersons(String commandArgs) {
-        final Set<String> keywords = new HashSet<>((ArrayList<String>) new ArrayList(Arrays.asList(commandArgs.trim().trim().split("\\s+"))));
-        final ArrayList<String[]> matchedPersons = new ArrayList<>();
-        for (String[] person : ALL_PERSONS) {
-            final Set<String> wordsInName = new HashSet<>((ArrayList<String>) new ArrayList(Arrays.asList(person[PERSON_DATA_INDEX_NAME].trim().split("\\s+"))));
-            if (!Collections.disjoint(wordsInName, keywords)) {
-                matchedPersons.add(person);
-            }
-        }
-        final ArrayList<String[]> personsFound = matchedPersons;
-        final StringBuilder messageAccumulator = new StringBuilder();
-        for (int i = 0; i < personsFound.size(); i++) {
-            final String[] person1 = personsFound.get(i);
-            final int displayIndex = i + DISPLAYED_INDEX_OFFSET;
-            messageAccumulator.append('\t')
-                              .append(String.format(MESSAGE_DISPLAY_LIST_ELEMENT_INDEX, displayIndex) + getMessageForFormattedPersonData(person1))
-                              .append(LS);
-        }
-        String listAsString = messageAccumulator.toString();
-        String[] message = { listAsString };
-        for (String m : message) {
-            System.out.println(LINE_PREFIX + m);
-        }
-        // clone to insulate from future changes to arg list
-        latestPersonListingView = new ArrayList<>(personsFound);
-        return String.format(MESSAGE_PERSONS_FOUND_OVERVIEW, personsFound.size());
-    }
-
-    /**
-     * Deletes person identified using last displayed index.
-     *
-     * @param commandArgs full command args string from the user
-     * @return feedback display message for the operation result
-     */
-    private static String executeDeletePerson(String commandArgs) {
-        if (!isDeletePersonArgsValid(commandArgs)) {
-            return String.format(MESSAGE_INVALID_COMMAND_FORMAT, COMMAND_DELETE_WORD, String.format(MESSAGE_COMMAND_HELP, COMMAND_DELETE_WORD, COMMAND_DELETE_DESC) + LS
-            + String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_DELETE_PARAMETER) + LS
-            + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_DELETE_EXAMPLE) + LS);
-        }
-        final int targetVisibleIndex = Integer.parseInt(commandArgs.trim());
-        if (!(targetVisibleIndex >= DISPLAYED_INDEX_OFFSET && targetVisibleIndex < getLatestPersonListingView().size() + DISPLAYED_INDEX_OFFSET)) {
-            return MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
-        }
-        final String[] targetInModel = latestPersonListingView.get(targetVisibleIndex - DISPLAYED_INDEX_OFFSET);
-        return deletePersonFromAddressBook(targetInModel) ? String.format(MESSAGE_DELETE_PERSON_SUCCESS, getMessageForFormattedPersonData(targetInModel)) // success
-                                                          : MESSAGE_PERSON_NOT_IN_ADDRESSBOOK; // not found
     }
 
     /**
@@ -430,72 +472,7 @@ public class AddressBook {
         }
     }
 
-    /**
-     * Clears all persons in the address book.
-     *
-     * @return feedback display message for the operation result
-     */
-    private static String executeClearAddressBook() {
-        ALL_PERSONS.clear();
-        final ArrayList<String> encoded = new ArrayList<>();
-        for (String[] person : ALL_PERSONS) {
-            encoded.add(String.format(PERSON_STRING_REPRESENTATION,
-            person[PERSON_DATA_INDEX_NAME], person[PERSON_DATA_INDEX_PHONE], person[PERSON_DATA_INDEX_EMAIL]));
-        }
-        final ArrayList<String> linesToWrite = encoded;
-        try {
-            Files.write(Paths.get(storageFilePath), linesToWrite);
-        } catch (IOException ioe) {
-            String[] message = { String.format(MESSAGE_ERROR_WRITING_TO_FILE, storageFilePath) };
-            for (String m : message) {
-                System.out.println(LINE_PREFIX + m);
-            }
-            String[] message1 = { MESSAGE_GOODBYE, DIVIDER, DIVIDER };
-            for (String m1 : message1) {
-                System.out.println(LINE_PREFIX + m1);
-            }
-            System.exit(0);
-        }
-        return MESSAGE_ADDRESSBOOK_CLEARED;
-    }
-
-    /**
-     * Displays all persons in the address book to the user; in added order.
-     *
-     * @return feedback display message for the operation result
-     */
-    private static String executeListAllPersonsInAddressBook() {
-        ArrayList<String[]> toBeDisplayed = ALL_PERSONS;
-        final StringBuilder messageAccumulator = new StringBuilder();
-        for (int i = 0; i < toBeDisplayed.size(); i++) {
-            final String[] person = toBeDisplayed.get(i);
-            final int displayIndex = i + DISPLAYED_INDEX_OFFSET;
-            messageAccumulator.append('\t')
-                              .append(String.format(MESSAGE_DISPLAY_LIST_ELEMENT_INDEX, displayIndex) + getMessageForFormattedPersonData(person))
-                              .append(LS);
-        }
-        String listAsString = messageAccumulator.toString();
-        String[] message = { listAsString };
-        for (String m : message) {
-            System.out.println(LINE_PREFIX + m);
-        }
-        // clone to insulate from future changes to arg list
-        latestPersonListingView = new ArrayList<>(toBeDisplayed);
-        return String.format(MESSAGE_PERSONS_FOUND_OVERVIEW, toBeDisplayed.size());
-    }
-
-    /**
-     * Request to terminate the program.
-     *
-     * @return feedback display message for the operation result
-     */
-    private static void executeExitProgramRequest() {
-        String[] message = { MESSAGE_GOODBYE, DIVIDER, DIVIDER };
-        for (String m : message) {
-            System.out.println(LINE_PREFIX + m);
-        }
-        System.exit(0);
-    }
+    
 
     /*
      * ===========================================
@@ -896,82 +873,9 @@ public class AddressBook {
      * ===============================================
      */
 
-    /**
-     * @return  Usage info for all commands
-     */
-    private static String getUsageInfoForAllCommands() {
-        return getUsageInfoForAddCommand() + LS
-                + getUsageInfoForFindCommand() + LS
-                + getUsageInfoForViewCommand() + LS
-                + String.format(MESSAGE_COMMAND_HELP, COMMAND_DELETE_WORD, COMMAND_DELETE_DESC) + LS
-                + String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_DELETE_PARAMETER) + LS
-                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_DELETE_EXAMPLE) + LS + LS
-                + getUsageInfoForClearCommand() + LS
-                + getUsageInfoForExitCommand() + LS
-                + getUsageInfoForHelpCommand();
-    }
+    
 
-    /**
-     * Builds string for showing 'add' command usage instruction
-     *
-     * @return  'add' command usage instruction
-     */
-    private static String getUsageInfoForAddCommand() {
-        return String.format(MESSAGE_COMMAND_HELP, COMMAND_ADD_WORD, COMMAND_ADD_DESC) + LS
-                + String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_ADD_PARAMETERS) + LS
-                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_ADD_EXAMPLE) + LS;
-    }
-
-    /**
-     * Builds string for showing 'find' command usage instruction
-     *
-     * @return  'find' command usage instruction
-     */
-    private static String getUsageInfoForFindCommand() {
-        return String.format(MESSAGE_COMMAND_HELP, COMMAND_FIND_WORD, COMMAND_FIND_DESC) + LS
-                + String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_FIND_PARAMETERS) + LS
-                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_FIND_EXAMPLE) + LS;
-    }
-
-    /**
-     * Builds string for showing 'clear' command usage instruction
-     *
-     * @return  'clear' command usage instruction
-     */
-    private static String getUsageInfoForClearCommand() {
-        return String.format(MESSAGE_COMMAND_HELP, COMMAND_CLEAR_WORD, COMMAND_CLEAR_DESC) + LS
-                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_CLEAR_EXAMPLE) + LS;
-    }
-
-    /**
-     * Builds string for showing 'view' command usage instruction
-     *
-     * @return  'view' command usage instruction
-     */
-    private static String getUsageInfoForViewCommand() {
-        return String.format(MESSAGE_COMMAND_HELP, COMMAND_LIST_WORD, COMMAND_LIST_DESC) + LS
-                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_LIST_EXAMPLE) + LS;
-    }
-
-    /**
-     * Builds string for showing 'help' command usage instruction
-     *
-     * @return  'help' command usage instruction
-     */
-    private static String getUsageInfoForHelpCommand() {
-        return String.format(MESSAGE_COMMAND_HELP, COMMAND_HELP_WORD, COMMAND_HELP_DESC)
-                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_HELP_EXAMPLE);
-    }
-
-    /**
-     * Builds string for showing 'exit' command usage instruction
-     *
-     * @return  'exit' command usage instruction
-     */
-    private static String getUsageInfoForExitCommand() {
-        return String.format(MESSAGE_COMMAND_HELP, COMMAND_EXIT_WORD, COMMAND_EXIT_DESC)
-                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_EXIT_EXAMPLE);
-    }
+    
 
 
     /*
