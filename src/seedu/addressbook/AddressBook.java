@@ -86,7 +86,7 @@ public class AddressBook {
     private static final String MESSAGE_WELCOME = "Welcome to your Address Book!";
     private static final String MESSAGE_USING_DEFAULT_FILE = "Using default storage file : " + DEFAULT_STORAGE_FILEPATH;
 
-    // These are the prefix strings to define the data type of a command parameter
+    // These are the prefix strings to define the data type of a command parameter    //can delete the method comments as the name have already show what it's doing
     private static final String PERSON_DATA_PREFIX_PHONE = "p/";
     private static final String PERSON_DATA_PREFIX_EMAIL = "e/";
 
@@ -176,7 +176,7 @@ public class AddressBook {
     /**
      * List of all persons in the address book.
      */
-    private static final ArrayList<String[]> ALL_PERSONS = new ArrayList<>();
+    private static final ArrayList<String[]> ALL_PERSONS = new ArrayList<>(); //use HashMap to store all the information of people
 
 
     /**
@@ -557,7 +557,7 @@ public class AddressBook {
     private static void executeExitProgramRequest() {
         exitProgram();
     }
-
+    // remove extra empty lines to make the code looks better
     /*
      * ===========================================
      *               UI LOGIC
