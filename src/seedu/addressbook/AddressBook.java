@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Scanner;
@@ -128,6 +129,10 @@ public class AddressBook {
     private static final String COMMAND_EXIT_DESC = "Exits the program.";
     private static final String COMMAND_EXIT_EXAMPLE = COMMAND_EXIT_WORD;
 
+    private static final String COMMAND_SORT_WORD = "sort";
+    private static final String COMMAND_SORT_DESC = "Displays all persons sorted alphabetically as a list with index numbers.";
+    private static final String COMMAND_SORT_EXAMPLE = COMMAND_SORT_WORD;
+
     private static final String DIVIDER = "===================================================";
 
 
@@ -144,6 +149,18 @@ public class AddressBook {
      * The number of data elements for a single person.
      */
     private static final int PERSON_DATA_COUNT = 3;
+
+    /**
+     * Case insensitive person comparator.
+     * @Override compare method.
+     */
+    private static final Comparator<String[]> PERSON_COMPARATOR = new Comparator<String[]>() {
+        public int compare(String[] person, String[] otherPerson) {
+        	String personNameLowercase = person[PERSON_DATA_INDEX_NAME].toLowerCase();
+        	String otherPersonNameLowercase = otherPerson[PERSON_DATA_INDEX_NAME].toLowerCase();
+            return personNameLowercase.compareTo(otherPersonNameLowercase);
+        }
+    };
 
     /**
      * Offset required to convert between 1-indexing and 0-indexing.COMMAND_
@@ -345,6 +362,8 @@ public class AddressBook {
             return executeFindPersons(commandArgs);
         case COMMAND_LIST_WORD:
             return executeListAllPersonsInAddressBook();
+        case COMMAND_SORT_WORD:
+            return executeListSortedAllPersonsInAddressBook();
         case COMMAND_DELETE_WORD:
             return executeDeletePerson(commandArgs);
         case COMMAND_CLEAR_WORD:
@@ -548,6 +567,20 @@ public class AddressBook {
         showToUser(toBeDisplayed);
         return getMessageForPersonsDisplayedSummary(toBeDisplayed);
     }
+
+    
+    /**
+     * Displays all persons in the address book to the user; in alphabetical order.
+     *
+     * @return feedback display message for the operation result
+     */
+    private static String executeListSortedAllPersonsInAddressBook() {
+		ArrayList<String[]> toBeDisplayed = new ArrayList<String[]>(getAllPersonsInAddressBook());
+        Collections.sort(toBeDisplayed, PERSON_COMPARATOR);
+        showToUser(toBeDisplayed);
+        return getMessageForPersonsDisplayedSummary(toBeDisplayed);
+    }
+    
 
     /**
      * Request to terminate the program.
