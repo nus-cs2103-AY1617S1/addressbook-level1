@@ -393,12 +393,13 @@ public class AddressBook {
         if (!decodeResult.isPresent()) {
             return getMessageForInvalidCommandInput(COMMAND_ADD_WORD, getUsageInfoForAddCommand());
         }
-
+        
         // add the person as specified
         final String[] personToAdd = decodeResult.get();
         addPersonToAddressBook(personToAdd);
         return getMessageForSuccessfulAddPerson(personToAdd);
     }
+    
 
     /**
      * Constructs a feedback message for a successful add person command execution.
@@ -454,13 +455,17 @@ public class AddressBook {
      */
     private static ArrayList<String[]> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
+        getMatchedPersons(keywords, matchedPersons);
+        return matchedPersons;
+    }
+    
+    private static void getMatchedPersons(Collection<String> keywords, final ArrayList<String[]> matchedPersons) {
         for (String[] person : getAllPersonsInAddressBook()) {
             final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
             if (!Collections.disjoint(wordsInName, keywords)) {
                 matchedPersons.add(person);
             }
         }
-        return matchedPersons;
     }
 
     /**
