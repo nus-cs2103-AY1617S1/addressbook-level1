@@ -62,6 +62,7 @@ public class AddressBook {
      * ====================================================================
      */
     private static final String MESSAGE_ADDED = "New person added: %1$s, Phone: %2$s, Email: %3$s";
+    private static final String MESSAGE_EDIT = "%1$s 's Phone is now: %2$s, Email: %3$s";
     private static final String MESSAGE_ADDRESSBOOK_CLEARED = "Address book has been cleared!";
     private static final String MESSAGE_COMMAND_HELP = "%1$s: %2$s";
     private static final String MESSAGE_COMMAND_HELP_PARAMETERS = "\tParameters: %1$s";
@@ -133,6 +134,13 @@ public class AddressBook {
     private static final String COMMAND_SORT_WORD = "sort";
     private static final String COMMAND_SORT_DESC = "Sort the persons in alphabetical order.";
     private static final String COMMAND_SORT_EXAMPLE = COMMAND_SORT_WORD;
+    
+    private static final String COMMAND_EDIT_WORD = "edit";
+    private static final String COMMAND_EDIT_DESC = "Edit a person's information in the address book. Use '...' if unchanged";
+    private static final String COMMAND_EDIT_PARAMETERS = "NAME "
+            + PERSON_DATA_PREFIX_PHONE + "PHONE_NUMBER "
+            + PERSON_DATA_PREFIX_EMAIL + "EMAIL";
+    private static final String COMMAND_EDIT_EXAMPLE = COMMAND_EDIT_WORD + " John Deo p/8888888 e/...";
 
     private static final String DIVIDER = "===================================================";
 
@@ -359,8 +367,11 @@ public class AddressBook {
             return getUsageInfoForAllCommands();
         case COMMAND_EXIT_WORD:
             executeExitProgramRequest();
+        case COMMAND_EDIT_WORD:
+        	return executeEditPerson(commandArgs);
         case COMMAND_SORT_WORD:
         	return executeSortRequest();
+        
         default:
             return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
         }
@@ -511,12 +522,121 @@ public class AddressBook {
     	return persons;
     }
     
+    
+    /**
+     * Get message for people sorted
+     * @param personsSorted
+     * @return feedback of the command operation
+     */
     private static String getMessageForPersonsSortedSummary(ArrayList<String[]> personsSorted){
     	return String.format(MESSAGE_PERSONS_SORTED, personsSorted.size());
     }
     
+    /**
+     * Execute Edit command
+     * @param commandArgs
+     * @return feedback message for successful edited person's information.
+     */
+    private static String executeEditPerson(String commandArgs){
+    	Optional<String[]> decodedResult = decodePersonFromStringForEdit(commandArgs);
+    	//check if args are valid 
+    	 
+    	if(!decodedResult.isPresent()){
+    		return getMessageForInvalidCommandInput(COMMAND_EDIT_WORD, getUsageInforForEditCommand());
+    	}
+    	
+    	String[] personFromCommandArgs = decodedResult.get();
+    	
+    	//check if the person is in the addressbook. 
+    	Optional<String[]> personInAddressBook = findPersonInAddressBook(personFromCommandArgs);
+    	if(!personInAddressBook.isPresent()){
+    		return getMessageForInvalidCommandInput(COMMAND_EDIT_WORD, getUsageInforForEditCommand());
+    	}
+    	String[] personToEdit = personInAddressBook.get();
+    	
+    	String[] newPerson = editPersonInAddressBook(personToEdit, personFromCommandArgs);
+    	return getMessageForSuccessfulEditPerson(newPerson);
+    }
     
+    /**
+     *Decodes a person from string representation. Skipped Check of data first. 
+     *
+     * @param encoded
+     * @return if cannot decode: empty Optional 
+     * 		   else: Optional containing decoed person
+     */
+    private static Optional<String[]> decodePersonFromStringForEdit(String encoded) {
+        // check that we can extract the parts of a person from the encoded string
+    	if (!isPersonDataExtractableFrom(encoded)) {
+            return Optional.empty();
+        }
+    	
+        final String[] decodedPerson = makePersonFromData(
+                extractNameFromPersonString(encoded),
+                extractPhoneFromPersonString(encoded),
+                extractEmailFromPersonString(encoded)
+        );
+        
+        // delay checking of the person's data. 
+        return Optional.of(decodedPerson);
+    }
+  
+    /**
+     * Get message for person's information being editted.
+     * @param edittedPerson
+     * @return feedback for the edit operation. 
+     */
+    private static String getMessageForSuccessfulEditPerson(String[] edittedPerson) {
+        return String.format(MESSAGE_EDIT,
+                getNameFromPerson(edittedPerson), getPhoneFromPerson(edittedPerson), getEmailFromPerson(edittedPerson));
+    }
     
+    /**
+     * Find the person in the address book based on the person user keys in
+     * @param target
+     * @return if cannot find: empty optional
+     * 			else: optional containing the person in the address book;
+     */
+    private static Optional<String[]> findPersonInAddressBook(String[] target){
+    	String name = getNameFromPerson(target);
+    	
+    	for(String[] person : ALL_PERSONS){
+    		if(getNameFromPerson(person).equals(name)) return Optional.of(person);
+    	}
+    	return Optional.empty();
+    }
+    
+    /**
+     * Edits the person's information
+     * @param personToEdit
+     * @param personFromCommandArgs
+     * @return the editted person.
+     */
+    private static String[] editPersonInAddressBook(String[] personToEdit, String[] personFromCommandArgs){
+    	int indexOfPerson = ALL_PERSONS.indexOf(personToEdit);
+    	
+    	String[] newPerson = copyUnchangedData(personToEdit, personFromCommandArgs);
+    	ALL_PERSONS.set(indexOfPerson, newPerson);
+    	savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
+    	
+    	return newPerson;
+    }
+    
+    /**
+     * handles unchanged data
+     * @param personToEdit
+     * @param personFromCommandArgs
+     * @return a person with invalid input data replaced by original data
+     */
+    private static String[] copyUnchangedData(String[] personToEdit, String[] personFromCommandArgs){    	
+    	if(!isPersonPhoneValid(getPhoneFromPerson(personFromCommandArgs))) 
+    		personFromCommandArgs[PERSON_DATA_INDEX_PHONE] = getPhoneFromPerson(personToEdit);
+    	
+    	if(!isPersonEmailValid(getEmailFromPerson(personFromCommandArgs)))
+    		personFromCommandArgs[PERSON_DATA_INDEX_EMAIL] = getEmailFromPerson(personToEdit);
+    	
+    	return personFromCommandArgs;
+    }
 
     /**
      * Deletes person identified using last displayed index.
@@ -1134,6 +1254,7 @@ public class AddressBook {
                 + getUsageInfoForClearCommand() + LS
                 + getUsageInfoForExitCommand() + LS
                 + getUsageInfoForHelpCommand() +LS
+                + getUsageInforForEditCommand() + LS
                 + getUsageInforForSortCommand();
     }
 
@@ -1146,6 +1267,17 @@ public class AddressBook {
         return String.format(MESSAGE_COMMAND_HELP, COMMAND_ADD_WORD, COMMAND_ADD_DESC) + LS
                 + String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_ADD_PARAMETERS) + LS
                 + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_ADD_EXAMPLE) + LS;
+    }
+    
+    /**
+     * Builds string for showing 'edit' command usage instruction
+     *
+     * @return  'edit' command usage instruction
+     */
+    private static String getUsageInforForEditCommand(){
+    	return String.format(MESSAGE_COMMAND_HELP, COMMAND_EDIT_WORD, COMMAND_EDIT_DESC)+LS
+    			+ String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_EDIT_PARAMETERS)+ LS
+    			+ String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_EDIT_EXAMPLE) + LS;
     }
 
     /**
