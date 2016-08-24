@@ -651,10 +651,19 @@ public class AddressBook
      */
     private static String consumeBlankOrCommentLines(String inputLine)
     {
-        while (inputLine.trim().isEmpty() || inputLine.trim().charAt(0) == INPUT_COMMENT_MARKER) {
+        while (isEmptyOrCommentLine(inputLine)) {
             inputLine = SCANNER.nextLine();
         }
         return inputLine;
+    }
+    
+    /**
+     * Checks whether line is empty or a comment marked by
+     * {@link #INPUT_COMMENT_MARKER}
+     */
+    private static boolean isEmptyOrCommentLine(String inputLine)
+    {
+        return inputLine.trim().isEmpty() || inputLine.trim().charAt(0) == INPUT_COMMENT_MARKER;
     }
     
     /*
