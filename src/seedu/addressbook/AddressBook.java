@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Scanner;
@@ -444,16 +445,20 @@ public class AddressBook {
      */
     private static String executeSortAllPersonsInAddressBook() {
     	 ArrayList<String[]> toBeSorted = getAllPersonsInAddressBook();
-    	 Collections.sort(toBeSorted, new Comparator<String>() {
-    	        @Override
-    	        public int compare(String s1, String s2) {
-    	            return s1.compareToIgnoreCase(s2);
-    	        }
-    	    });
+    	 //AddressBook outer = new AddressBook();
+    	 //for (String[] person : getAllPersonsInAddressBook()) {
+    		// Collections.sort(getPerson, String.CASE_INSENSITIVE_ORDER);
+    
+    	 Collections.sort(toBeSorted, new Comparator<String[]>(){
+    		 public int compare(String[] p1, String[] p2) {
+    			 return getNameFromPerson(p1).compareToIgnoreCase(getNameFromPerson(p2));
+    		 }
+    	 });
     	 showToUser(toBeSorted);
     	 return getMessageForPersonsDisplayedSummary(toBeSorted);
     }
-    /**
+   
+    /** 
      * Constructs a feedback message to summarise an operation that displayed a listing of persons.
      *
      * @param personsDisplayed used to generate summary
@@ -481,9 +486,16 @@ public class AddressBook {
      */
     private static ArrayList<String[]> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
+        Collection<String> lowerKeyWords = new HashSet<>();
+        for(String keyword : keywords) {
+        	lowerKeyWords.add(keyword.toLowerCase());
+        }
         for (String[] person : getAllPersonsInAddressBook()) {
             final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
-            if (!Collections.disjoint(wordsInName.toString().toLowerCase(), keywords.toString().toLowerCase())) {
+            if (!Collections.disjoint(wordsInName, keywords)) {
+                matchedPersons.add(person);
+            }
+            else if (!Collections.disjoint(wordsInName, lowerKeyWords)) {
                 matchedPersons.add(person);
             }
         }
