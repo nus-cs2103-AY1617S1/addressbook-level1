@@ -336,7 +336,12 @@ public class AddressBook {
 
         // add the person as specified
         ALL_PERSONS.add(decodeResult.get());
-        final ArrayList<String> linesToWrite = encodePersonsToStrings(ALL_PERSONS);
+        final ArrayList<String> encoded = new ArrayList<>();
+        for (String[] person : ALL_PERSONS) {
+            encoded.add(String.format(PERSON_STRING_REPRESENTATION,
+            person[PERSON_DATA_INDEX_NAME], person[PERSON_DATA_INDEX_PHONE], person[PERSON_DATA_INDEX_EMAIL]));
+        }
+        final ArrayList<String> linesToWrite = encoded;
         try {
             Files.write(Paths.get(storageFilePath), linesToWrite);
         } catch (IOException ioe) {
@@ -397,14 +402,16 @@ public class AddressBook {
      */
     private static String executeDeletePerson(String commandArgs) {
         if (!isDeletePersonArgsValid(commandArgs)) {
-            return String.format(MESSAGE_INVALID_COMMAND_FORMAT, COMMAND_DELETE_WORD, getUsageInfoForDeleteCommand());
+            return String.format(MESSAGE_INVALID_COMMAND_FORMAT, COMMAND_DELETE_WORD, String.format(MESSAGE_COMMAND_HELP, COMMAND_DELETE_WORD, COMMAND_DELETE_DESC) + LS
+            + String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_DELETE_PARAMETER) + LS
+            + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_DELETE_EXAMPLE) + LS);
         }
-        final int targetVisibleIndex = extractTargetIndexFromDeletePersonArgs(commandArgs);
-        if (!isDisplayIndexValidForLastPersonListingView(targetVisibleIndex)) {
+        final int targetVisibleIndex = Integer.parseInt(commandArgs.trim());
+        if (!(targetVisibleIndex >= DISPLAYED_INDEX_OFFSET && targetVisibleIndex < getLatestPersonListingView().size() + DISPLAYED_INDEX_OFFSET)) {
             return MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
         }
-        final String[] targetInModel = getPersonByLastVisibleIndex(targetVisibleIndex);
-        return deletePersonFromAddressBook(targetInModel) ? getMessageForSuccessfulDelete(targetInModel) // success
+        final String[] targetInModel = latestPersonListingView.get(targetVisibleIndex - DISPLAYED_INDEX_OFFSET);
+        return deletePersonFromAddressBook(targetInModel) ? String.format(MESSAGE_DELETE_PERSON_SUCCESS, getMessageForFormattedPersonData(targetInModel)) // success
                                                           : MESSAGE_PERSON_NOT_IN_ADDRESSBOOK; // not found
     }
 
@@ -424,43 +431,31 @@ public class AddressBook {
     }
 
     /**
-     * Extracts the target's index from the raw delete person args string
-     *
-     * @param rawArgs raw command args string for the delete person command
-     * @return extracted index
-     */
-    private static int extractTargetIndexFromDeletePersonArgs(String rawArgs) {
-        return Integer.parseInt(rawArgs.trim());
-    }
-
-    /**
-     * Checks that the given index is within bounds and valid for the last shown person list view.
-     *
-     * @param index to check
-     * @return whether it is valid
-     */
-    private static boolean isDisplayIndexValidForLastPersonListingView(int index) {
-        return index >= DISPLAYED_INDEX_OFFSET && index < getLatestPersonListingView().size() + DISPLAYED_INDEX_OFFSET;
-    }
-
-    /**
-     * Constructs a feedback message for a successful delete person command execution.
-     *
-     * @see #executeDeletePerson(String)
-     * @param deletedPerson successfully deleted
-     * @return successful delete person feedback message
-     */
-    private static String getMessageForSuccessfulDelete(String[] deletedPerson) {
-        return String.format(MESSAGE_DELETE_PERSON_SUCCESS, getMessageForFormattedPersonData(deletedPerson));
-    }
-
-    /**
      * Clears all persons in the address book.
      *
      * @return feedback display message for the operation result
      */
     private static String executeClearAddressBook() {
-        clearAddressBook();
+        ALL_PERSONS.clear();
+        final ArrayList<String> encoded = new ArrayList<>();
+        for (String[] person : ALL_PERSONS) {
+            encoded.add(String.format(PERSON_STRING_REPRESENTATION,
+            person[PERSON_DATA_INDEX_NAME], person[PERSON_DATA_INDEX_PHONE], person[PERSON_DATA_INDEX_EMAIL]));
+        }
+        final ArrayList<String> linesToWrite = encoded;
+        try {
+            Files.write(Paths.get(storageFilePath), linesToWrite);
+        } catch (IOException ioe) {
+            String[] message = { String.format(MESSAGE_ERROR_WRITING_TO_FILE, storageFilePath) };
+            for (String m : message) {
+                System.out.println(LINE_PREFIX + m);
+            }
+            String[] message1 = { MESSAGE_GOODBYE, DIVIDER, DIVIDER };
+            for (String m1 : message1) {
+                System.out.println(LINE_PREFIX + m1);
+            }
+            System.exit(0);
+        }
         return MESSAGE_ADDRESSBOOK_CLEARED;
     }
 
@@ -517,16 +512,6 @@ public class AddressBook {
     private static String getMessageForFormattedPersonData(String[] person) {
         return String.format(MESSAGE_DISPLAY_PERSON_DATA,
                 person[PERSON_DATA_INDEX_NAME], person[PERSON_DATA_INDEX_PHONE], person[PERSON_DATA_INDEX_EMAIL]);
-    }
-
-    /**
-     * Retrieves the person identified by the displayed index from the last shown listing of persons.
-     *
-     * @param lastVisibleIndex displayed index from last shown person listing
-     * @return the actual person object in the last shown person listing
-     */
-    private static String[] getPersonByLastVisibleIndex(int lastVisibleIndex) {
-       return latestPersonListingView.get(lastVisibleIndex - DISPLAYED_INDEX_OFFSET);
     }
 
     /**
@@ -650,7 +635,12 @@ public class AddressBook {
      */
     private static void deletePersonFromAddressBook(int index) {
         ALL_PERSONS.remove(index);
-        final ArrayList<String> linesToWrite = encodePersonsToStrings(ALL_PERSONS);
+        final ArrayList<String> encoded = new ArrayList<>();
+        for (String[] person : ALL_PERSONS) {
+            encoded.add(String.format(PERSON_STRING_REPRESENTATION,
+            person[PERSON_DATA_INDEX_NAME], person[PERSON_DATA_INDEX_PHONE], person[PERSON_DATA_INDEX_EMAIL]));
+        }
+        final ArrayList<String> linesToWrite = encoded;
         try {
             Files.write(Paths.get(storageFilePath), linesToWrite);
         } catch (IOException ioe) {
@@ -675,7 +665,12 @@ public class AddressBook {
     private static boolean deletePersonFromAddressBook(String[] exactPerson) {
         final boolean changed = ALL_PERSONS.remove(exactPerson);
         if (changed) {
-            final ArrayList<String> linesToWrite = encodePersonsToStrings(ALL_PERSONS);
+            final ArrayList<String> encoded = new ArrayList<>();
+            for (String[] person : ALL_PERSONS) {
+                encoded.add(String.format(PERSON_STRING_REPRESENTATION,
+                person[PERSON_DATA_INDEX_NAME], person[PERSON_DATA_INDEX_PHONE], person[PERSON_DATA_INDEX_EMAIL]));
+            }
+            final ArrayList<String> linesToWrite = encoded;
             try {
                 Files.write(Paths.get(storageFilePath), linesToWrite);
             } catch (IOException ioe) {
@@ -693,26 +688,7 @@ public class AddressBook {
         return changed;
     }
 
-    /**
-     * Clears all persons in the address book and saves changes to file.
-     */
-    private static void clearAddressBook() {
-        ALL_PERSONS.clear();
-        final ArrayList<String> linesToWrite = encodePersonsToStrings(ALL_PERSONS);
-        try {
-            Files.write(Paths.get(storageFilePath), linesToWrite);
-        } catch (IOException ioe) {
-            String[] message = { String.format(MESSAGE_ERROR_WRITING_TO_FILE, storageFilePath) };
-            for (String m : message) {
-                System.out.println(LINE_PREFIX + m);
-            }
-            String[] message1 = { MESSAGE_GOODBYE, DIVIDER, DIVIDER };
-            for (String m1 : message1) {
-                System.out.println(LINE_PREFIX + m1);
-            }
-            System.exit(0);
-        }
-    }
+    
 
     
 
@@ -737,31 +713,6 @@ public class AddressBook {
         person[PERSON_DATA_INDEX_PHONE] = phone;
         person[PERSON_DATA_INDEX_EMAIL] = email;
         return person;
-    }
-
-    /**
-     * Encodes a person into a decodable and readable string representation.
-     *
-     * @param person to be encoded
-     * @return encoded string
-     */
-    private static String encodePersonToString(String[] person) {
-        return String.format(PERSON_STRING_REPRESENTATION,
-                person[PERSON_DATA_INDEX_NAME], person[PERSON_DATA_INDEX_PHONE], person[PERSON_DATA_INDEX_EMAIL]);
-    }
-
-    /**
-     * Encodes list of persons into list of decodable and readable string representations.
-     *
-     * @param persons to be encoded
-     * @return encoded strings
-     */
-    private static ArrayList<String> encodePersonsToStrings(ArrayList<String[]> persons) {
-        final ArrayList<String> encoded = new ArrayList<>();
-        for (String[] person : persons) {
-            encoded.add(encodePersonToString(person));
-        }
-        return encoded;
     }
 
     /*
@@ -952,7 +903,9 @@ public class AddressBook {
         return getUsageInfoForAddCommand() + LS
                 + getUsageInfoForFindCommand() + LS
                 + getUsageInfoForViewCommand() + LS
-                + getUsageInfoForDeleteCommand() + LS
+                + String.format(MESSAGE_COMMAND_HELP, COMMAND_DELETE_WORD, COMMAND_DELETE_DESC) + LS
+                + String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_DELETE_PARAMETER) + LS
+                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_DELETE_EXAMPLE) + LS + LS
                 + getUsageInfoForClearCommand() + LS
                 + getUsageInfoForExitCommand() + LS
                 + getUsageInfoForHelpCommand();
@@ -978,17 +931,6 @@ public class AddressBook {
         return String.format(MESSAGE_COMMAND_HELP, COMMAND_FIND_WORD, COMMAND_FIND_DESC) + LS
                 + String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_FIND_PARAMETERS) + LS
                 + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_FIND_EXAMPLE) + LS;
-    }
-
-    /**
-     * Builds string for showing 'delete' command usage instruction
-     *
-     * @return  'delete' command usage instruction
-     */
-    private static String getUsageInfoForDeleteCommand() {
-        return String.format(MESSAGE_COMMAND_HELP, COMMAND_DELETE_WORD, COMMAND_DELETE_DESC) + LS
-                + String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_DELETE_PARAMETER) + LS
-                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_DELETE_EXAMPLE) + LS;
     }
 
     /**
