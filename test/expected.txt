@@ -230,6 +230,13 @@
 || 
 || 0 persons found!
 || ===================================================
+|| Enter command: || [Command entered:  clear]
+|| Address book has been cleared!
+|| ===================================================
+|| Enter command: || [Command entered:  list]
+|| 
+|| 0 persons found!
+|| ===================================================
 || Enter command: || [Command entered:  exit]
 || Exiting Address Book... Good bye!
 || ===================================================
