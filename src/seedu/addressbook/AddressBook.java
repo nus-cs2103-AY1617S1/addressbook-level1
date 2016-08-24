@@ -550,8 +550,6 @@ public class AddressBook {
 
     /**
      * Request to terminate the program.
-     *
-     * @return feedback display message for the operation result
      */
     private static void executeExitProgramRequest() {
         exitProgram();
