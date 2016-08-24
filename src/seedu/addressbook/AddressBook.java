@@ -1086,7 +1086,8 @@ public class AddressBook {
 	 * @return whether arg is a valid person name
 	 */
 	private static boolean isPersonNameValid(String name) {
-		return name.matches("(\\w|\\s)+"); // name is nonempty mixture of
+		private String matchingFormat = "(\\w|\\s)+";
+		return name.matches(matchingFormat); // name is nonempty mixture of
 											// alphabets and whitespace
 		// TODO: implement a more permissive validation
 	}
@@ -1099,7 +1100,8 @@ public class AddressBook {
 	 * @return whether arg is a valid person phone number
 	 */
 	private static boolean isPersonPhoneValid(String phone) {
-		return phone.matches("\\d+"); // phone nonempty sequence of digits
+		private String matchingFormat = "\\d+";
+		return phone.matches(matchingFormat); // phone nonempty sequence of digits
 		// TODO: implement a more permissive validation
 	}
 
@@ -1111,7 +1113,8 @@ public class AddressBook {
 	 * @return whether arg is a valid person email
 	 */
 	private static boolean isPersonEmailValid(String email) {
-		return email.matches("\\S+@\\S+\\.\\S+"); // email is
+		private String matchingFormat = "\\S+@\\S+\\.\\S+";
+		return email.matches(matchingFormat); // email is
 													// [non-whitespace]@[non-whitespace].[non-whitespace]
 		// TODO: implement a more permissive validation
 	}
