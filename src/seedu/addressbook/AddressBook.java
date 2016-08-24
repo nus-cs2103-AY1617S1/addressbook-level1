@@ -208,7 +208,11 @@ public class AddressBook {
             for (String m : message1) {
                 System.out.println(LINE_PREFIX + m);
             }
-            exitProgram();
+            String[] message2 = { MESSAGE_GOODBYE, DIVIDER, DIVIDER };
+            for (String m1 : message2) {
+                System.out.println(LINE_PREFIX + m1);
+            }
+            System.exit(0);
         }
         
         if (args.length == 1) {
@@ -263,22 +267,15 @@ public class AddressBook {
             for (String m : message) {
                 System.out.println(LINE_PREFIX + m);
             }
-            exitProgram();
+            String[] message1 = { MESSAGE_GOODBYE, DIVIDER, DIVIDER };
+            for (String m1 : message1) {
+                System.out.println(LINE_PREFIX + m1);
+            }
+            System.exit(0);
         }
 
         storageFilePath = filePath;
         createFileIfMissing(filePath);
-    }
-
-    /**
-     * Displays the goodbye message and exits the runtime.
-     */
-    private static void exitProgram() {
-        String[] message = { MESSAGE_GOODBYE, DIVIDER, DIVIDER };
-        for (String m : message) {
-            System.out.println(LINE_PREFIX + m);
-        }
-        System.exit(0);
     }
 
     /**
@@ -370,11 +367,23 @@ public class AddressBook {
         }
 
         // add the person as specified
-        final String[] personToAdd = decodeResult.get();
-        ALL_PERSONS.add(personToAdd);
-        savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
+        ALL_PERSONS.add(decodeResult.get());
+        final ArrayList<String> linesToWrite = encodePersonsToStrings(getAllPersonsInAddressBook());
+        try {
+            Files.write(Paths.get(storageFilePath), linesToWrite);
+        } catch (IOException ioe) {
+            String[] message = { String.format(MESSAGE_ERROR_WRITING_TO_FILE, storageFilePath) };
+            for (String m : message) {
+                System.out.println(LINE_PREFIX + m);
+            }
+            String[] message1 = { MESSAGE_GOODBYE, DIVIDER, DIVIDER };
+            for (String m1 : message1) {
+                System.out.println(LINE_PREFIX + m1);
+            }
+            System.exit(0);
+        }
         return String.format(MESSAGE_ADDED,
-        getNameFromPerson(personToAdd), getPhoneFromPerson(personToAdd), getEmailFromPerson(personToAdd));
+        decodeResult.get()[PERSON_DATA_INDEX_NAME], decodeResult.get()[PERSON_DATA_INDEX_PHONE], decodeResult.get()[PERSON_DATA_INDEX_EMAIL]);
     }
 
     /**
@@ -420,7 +429,7 @@ public class AddressBook {
     private static ArrayList<String[]> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
         for (String[] person : getAllPersonsInAddressBook()) {
-            final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
+            final Set<String> wordsInName = new HashSet<>(splitByWhitespace(person[PERSON_DATA_INDEX_NAME]));
             if (!Collections.disjoint(wordsInName, keywords)) {
                 matchedPersons.add(person);
             }
@@ -520,7 +529,11 @@ public class AddressBook {
      * @return feedback display message for the operation result
      */
     private static void executeExitProgramRequest() {
-        exitProgram();
+        String[] message = { MESSAGE_GOODBYE, DIVIDER, DIVIDER };
+        for (String m : message) {
+            System.out.println(LINE_PREFIX + m);
+        }
+        System.exit(0);
     }
 
     /*
@@ -593,7 +606,7 @@ public class AddressBook {
      */
     private static String getMessageForFormattedPersonData(String[] person) {
         return String.format(MESSAGE_DISPLAY_PERSON_DATA,
-                getNameFromPerson(person), getPhoneFromPerson(person), getEmailFromPerson(person));
+                person[PERSON_DATA_INDEX_NAME], person[PERSON_DATA_INDEX_PHONE], person[PERSON_DATA_INDEX_EMAIL]);
     }
 
     /**
@@ -657,7 +670,11 @@ public class AddressBook {
             for (String m : message1) {
                 System.out.println(LINE_PREFIX + m);
             }
-            exitProgram();
+            String[] message2 = { MESSAGE_GOODBYE, DIVIDER, DIVIDER };
+            for (String m1 : message2) {
+                System.out.println(LINE_PREFIX + m1);
+            }
+            System.exit(0);
         }
     }
 
@@ -675,7 +692,11 @@ public class AddressBook {
             for (String m : message) {
                 System.out.println(LINE_PREFIX + m);
             }
-            exitProgram();
+            String[] message1 = { MESSAGE_GOODBYE, DIVIDER, DIVIDER };
+            for (String m1 : message1) {
+                System.out.println(LINE_PREFIX + m1);
+            }
+            System.exit(0);
         }
         return successfullyDecoded.get();
     }
@@ -693,35 +714,26 @@ public class AddressBook {
             for (String m : message) {
                 System.out.println(LINE_PREFIX + m);
             }
-            exitProgram();
+            String[] message1 = { MESSAGE_GOODBYE, DIVIDER, DIVIDER };
+            for (String m1 : message1) {
+                System.out.println(LINE_PREFIX + m1);
+            }
+            System.exit(0);
         } catch (IOException ioe) {
             String[] message = { String.format(MESSAGE_ERROR_READING_FROM_FILE, filePath) };
             for (String m : message) {
                 System.out.println(LINE_PREFIX + m);
             }
-            exitProgram();
+            String[] message1 = { MESSAGE_GOODBYE, DIVIDER, DIVIDER };
+            for (String m1 : message1) {
+                System.out.println(LINE_PREFIX + m1);
+            }
+            System.exit(0);
         }
         return lines;
     }
 
-    /**
-     * Saves all data to the file.
-     * Exits program if there is an error saving to file.
-     *
-     * @param filePath file for saving
-     */
-    private static void savePersonsToFile(ArrayList<String[]> persons, String filePath) {
-        final ArrayList<String> linesToWrite = encodePersonsToStrings(persons);
-        try {
-            Files.write(Paths.get(storageFilePath), linesToWrite);
-        } catch (IOException ioe) {
-            String[] message = { String.format(MESSAGE_ERROR_WRITING_TO_FILE, filePath) };
-            for (String m : message) {
-                System.out.println(LINE_PREFIX + m);
-            }
-            exitProgram();
-        }
-    }
+    
 
 
     /*
@@ -738,7 +750,20 @@ public class AddressBook {
      */
     private static void deletePersonFromAddressBook(int index) {
         ALL_PERSONS.remove(index);
-        savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
+        final ArrayList<String> linesToWrite = encodePersonsToStrings(getAllPersonsInAddressBook());
+        try {
+            Files.write(Paths.get(storageFilePath), linesToWrite);
+        } catch (IOException ioe) {
+            String[] message = { String.format(MESSAGE_ERROR_WRITING_TO_FILE, storageFilePath) };
+            for (String m : message) {
+                System.out.println(LINE_PREFIX + m);
+            }
+            String[] message1 = { MESSAGE_GOODBYE, DIVIDER, DIVIDER };
+            for (String m1 : message1) {
+                System.out.println(LINE_PREFIX + m1);
+            }
+            System.exit(0);
+        }
     }
 
     /**
@@ -750,7 +775,20 @@ public class AddressBook {
     private static boolean deletePersonFromAddressBook(String[] exactPerson) {
         final boolean changed = ALL_PERSONS.remove(exactPerson);
         if (changed) {
-            savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
+            final ArrayList<String> linesToWrite = encodePersonsToStrings(getAllPersonsInAddressBook());
+            try {
+                Files.write(Paths.get(storageFilePath), linesToWrite);
+            } catch (IOException ioe) {
+                String[] message = { String.format(MESSAGE_ERROR_WRITING_TO_FILE, storageFilePath) };
+                for (String m : message) {
+                    System.out.println(LINE_PREFIX + m);
+                }
+                String[] message1 = { MESSAGE_GOODBYE, DIVIDER, DIVIDER };
+                for (String m1 : message1) {
+                    System.out.println(LINE_PREFIX + m1);
+                }
+                System.exit(0);
+            }
         }
         return changed;
     }
@@ -767,7 +805,20 @@ public class AddressBook {
      */
     private static void clearAddressBook() {
         ALL_PERSONS.clear();
-        savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
+        final ArrayList<String> linesToWrite = encodePersonsToStrings(getAllPersonsInAddressBook());
+        try {
+            Files.write(Paths.get(storageFilePath), linesToWrite);
+        } catch (IOException ioe) {
+            String[] message = { String.format(MESSAGE_ERROR_WRITING_TO_FILE, storageFilePath) };
+            for (String m : message) {
+                System.out.println(LINE_PREFIX + m);
+            }
+            String[] message1 = { MESSAGE_GOODBYE, DIVIDER, DIVIDER };
+            for (String m1 : message1) {
+                System.out.println(LINE_PREFIX + m1);
+            }
+            System.exit(0);
+        }
     }
 
     /**
@@ -786,30 +837,6 @@ public class AddressBook {
      *             PERSON METHODS
      * ===========================================
      */
-
-    /**
-     * @param person whose name you want
-     * @return person's name
-     */
-    private static String getNameFromPerson(String[] person) {
-        return person[PERSON_DATA_INDEX_NAME];
-    }
-
-    /**
-     * @param person whose phone number you want
-     * @return person's phone number
-     */
-    private static String getPhoneFromPerson(String[] person) {
-        return person[PERSON_DATA_INDEX_PHONE];
-    }
-
-    /**
-     * @param person whose email you want
-     * @return person's email
-     */
-    private static String getEmailFromPerson(String[] person) {
-        return person[PERSON_DATA_INDEX_EMAIL];
-    }
 
     /**
      * Create a person for use in the internal data.
@@ -835,7 +862,7 @@ public class AddressBook {
      */
     private static String encodePersonToString(String[] person) {
         return String.format(PERSON_STRING_REPRESENTATION,
-                getNameFromPerson(person), getPhoneFromPerson(person), getEmailFromPerson(person));
+                person[PERSON_DATA_INDEX_NAME], person[PERSON_DATA_INDEX_PHONE], person[PERSON_DATA_INDEX_EMAIL]);
     }
 
     /**
