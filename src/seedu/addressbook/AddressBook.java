@@ -184,7 +184,7 @@ public class AddressBook {
      * This is a subset of the full list. Deleting persons in the pull list does not delete
      * those persons from this list.
      */
-    private static ArrayList<String[]> latestPersonListingView = getAllPersonsInAddressBook(); // initial view is of all
+    private static ArrayList<String[]> latestPersonListingView = ALL_PERSONS; // initial view is of all
 
     /**
      * The path to the file used for storing person data.
@@ -368,7 +368,7 @@ public class AddressBook {
 
         // add the person as specified
         ALL_PERSONS.add(decodeResult.get());
-        final ArrayList<String> linesToWrite = encodePersonsToStrings(getAllPersonsInAddressBook());
+        final ArrayList<String> linesToWrite = encodePersonsToStrings(ALL_PERSONS);
         try {
             Files.write(Paths.get(storageFilePath), linesToWrite);
         } catch (IOException ioe) {
@@ -394,47 +394,31 @@ public class AddressBook {
      * @return feedback display message for the operation result
      */
     private static String executeFindPersons(String commandArgs) {
-        final Set<String> keywords = extractKeywordsFromFindPersonArgs(commandArgs);
-        final ArrayList<String[]> personsFound = getPersonsWithNameContainingAnyKeyword(keywords);
-        showToUser(personsFound);
-        return getMessageForPersonsDisplayedSummary(personsFound);
-    }
-
-    /**
-     * Constructs a feedback message to summarise an operation that displayed a listing of persons.
-     *
-     * @param personsDisplayed used to generate summary
-     * @return summary message for persons displayed
-     */
-    private static String getMessageForPersonsDisplayedSummary(ArrayList<String[]> personsDisplayed) {
-        return String.format(MESSAGE_PERSONS_FOUND_OVERVIEW, personsDisplayed.size());
-    }
-
-    /**
-     * Extract keywords from the command arguments given for the find persons command.
-     *
-     * @param findPersonCommandArgs full command args string for the find persons command
-     * @return set of keywords as specified by args
-     */
-    private static Set<String> extractKeywordsFromFindPersonArgs(String findPersonCommandArgs) {
-        return new HashSet<>(splitByWhitespace(findPersonCommandArgs.trim()));
-    }
-
-    /**
-     * Retrieve all persons in the full model whose names contain some of the specified keywords.
-     *
-     * @param keywords for searching
-     * @return list of persons in full model with name containing some of the keywords
-     */
-    private static ArrayList<String[]> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
+        final Set<String> keywords = new HashSet<>((ArrayList<String>) new ArrayList(Arrays.asList(commandArgs.trim().trim().split("\\s+"))));
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
-        for (String[] person : getAllPersonsInAddressBook()) {
-            final Set<String> wordsInName = new HashSet<>(splitByWhitespace(person[PERSON_DATA_INDEX_NAME]));
+        for (String[] person : ALL_PERSONS) {
+            final Set<String> wordsInName = new HashSet<>((ArrayList<String>) new ArrayList(Arrays.asList(person[PERSON_DATA_INDEX_NAME].trim().split("\\s+"))));
             if (!Collections.disjoint(wordsInName, keywords)) {
                 matchedPersons.add(person);
             }
         }
-        return matchedPersons;
+        final ArrayList<String[]> personsFound = matchedPersons;
+        final StringBuilder messageAccumulator = new StringBuilder();
+        for (int i = 0; i < personsFound.size(); i++) {
+            final String[] person1 = personsFound.get(i);
+            final int displayIndex = i + DISPLAYED_INDEX_OFFSET;
+            messageAccumulator.append('\t')
+                              .append(String.format(MESSAGE_DISPLAY_LIST_ELEMENT_INDEX, displayIndex) + getMessageForFormattedPersonData(person1))
+                              .append(LS);
+        }
+        String listAsString = messageAccumulator.toString();
+        String[] message = { listAsString };
+        for (String m : message) {
+            System.out.println(LINE_PREFIX + m);
+        }
+        // clone to insulate from future changes to arg list
+        latestPersonListingView = new ArrayList<>(personsFound);
+        return String.format(MESSAGE_PERSONS_FOUND_OVERVIEW, personsFound.size());
     }
 
     /**
@@ -518,9 +502,23 @@ public class AddressBook {
      * @return feedback display message for the operation result
      */
     private static String executeListAllPersonsInAddressBook() {
-        ArrayList<String[]> toBeDisplayed = getAllPersonsInAddressBook();
-        showToUser(toBeDisplayed);
-        return getMessageForPersonsDisplayedSummary(toBeDisplayed);
+        ArrayList<String[]> toBeDisplayed = ALL_PERSONS;
+        final StringBuilder messageAccumulator = new StringBuilder();
+        for (int i = 0; i < toBeDisplayed.size(); i++) {
+            final String[] person = toBeDisplayed.get(i);
+            final int displayIndex = i + DISPLAYED_INDEX_OFFSET;
+            messageAccumulator.append('\t')
+                              .append(String.format(MESSAGE_DISPLAY_LIST_ELEMENT_INDEX, displayIndex) + getMessageForFormattedPersonData(person))
+                              .append(LS);
+        }
+        String listAsString = messageAccumulator.toString();
+        String[] message = { listAsString };
+        for (String m : message) {
+            System.out.println(LINE_PREFIX + m);
+        }
+        // clone to insulate from future changes to arg list
+        latestPersonListingView = new ArrayList<>(toBeDisplayed);
+        return String.format(MESSAGE_PERSONS_FOUND_OVERVIEW, toBeDisplayed.size());
     }
 
     /**
@@ -559,46 +557,6 @@ public class AddressBook {
     }
 
    /**
-     * Shows the list of persons to the user.
-     * The list will be indexed, starting from 1.
-     *
-     */
-    private static void showToUser(ArrayList<String[]> persons) {
-        String listAsString = getDisplayString(persons);
-        String[] message = { listAsString };
-        for (String m : message) {
-            System.out.println(LINE_PREFIX + m);
-        }
-        updateLatestViewedPersonListing(persons);
-    }
-
-    /**
-     * Returns the display string representation of the list of persons.
-     */
-    private static String getDisplayString(ArrayList<String[]> persons) {
-        final StringBuilder messageAccumulator = new StringBuilder();
-        for (int i = 0; i < persons.size(); i++) {
-            final String[] person = persons.get(i);
-            final int displayIndex = i + DISPLAYED_INDEX_OFFSET;
-            messageAccumulator.append('\t')
-                              .append(getIndexedPersonListElementMessage(displayIndex, person))
-                              .append(LS);
-        }
-        return messageAccumulator.toString();
-    }
-
-    /**
-     * Constructs a prettified listing element message to represent a person and their data.
-     *
-     * @param visibleIndex visible index for this listing
-     * @param person to show
-     * @return formatted listing message with index
-     */
-    private static String getIndexedPersonListElementMessage(int visibleIndex, String[] person) {
-        return String.format(MESSAGE_DISPLAY_LIST_ELEMENT_INDEX, visibleIndex) + getMessageForFormattedPersonData(person);
-    }
-
-    /**
      * Constructs a prettified string to show the user a person's data.
      *
      * @param person to show
@@ -607,16 +565,6 @@ public class AddressBook {
     private static String getMessageForFormattedPersonData(String[] person) {
         return String.format(MESSAGE_DISPLAY_PERSON_DATA,
                 person[PERSON_DATA_INDEX_NAME], person[PERSON_DATA_INDEX_PHONE], person[PERSON_DATA_INDEX_EMAIL]);
-    }
-
-    /**
-     * Updates the latest person listing view the user has seen.
-     *
-     * @param newListing the new listing of persons
-     */
-    private static void updateLatestViewedPersonListing(ArrayList<String[]> newListing) {
-        // clone to insulate from future changes to arg list
-        latestPersonListingView = new ArrayList<>(newListing);
     }
 
     /**
@@ -750,7 +698,7 @@ public class AddressBook {
      */
     private static void deletePersonFromAddressBook(int index) {
         ALL_PERSONS.remove(index);
-        final ArrayList<String> linesToWrite = encodePersonsToStrings(getAllPersonsInAddressBook());
+        final ArrayList<String> linesToWrite = encodePersonsToStrings(ALL_PERSONS);
         try {
             Files.write(Paths.get(storageFilePath), linesToWrite);
         } catch (IOException ioe) {
@@ -775,7 +723,7 @@ public class AddressBook {
     private static boolean deletePersonFromAddressBook(String[] exactPerson) {
         final boolean changed = ALL_PERSONS.remove(exactPerson);
         if (changed) {
-            final ArrayList<String> linesToWrite = encodePersonsToStrings(getAllPersonsInAddressBook());
+            final ArrayList<String> linesToWrite = encodePersonsToStrings(ALL_PERSONS);
             try {
                 Files.write(Paths.get(storageFilePath), linesToWrite);
             } catch (IOException ioe) {
@@ -794,18 +742,11 @@ public class AddressBook {
     }
 
     /**
-     * @return unmodifiable list view of all persons in the address book
-     */
-    private static ArrayList<String[]> getAllPersonsInAddressBook() {
-        return ALL_PERSONS;
-    }
-
-    /**
      * Clears all persons in the address book and saves changes to file.
      */
     private static void clearAddressBook() {
         ALL_PERSONS.clear();
-        final ArrayList<String> linesToWrite = encodePersonsToStrings(getAllPersonsInAddressBook());
+        final ArrayList<String> linesToWrite = encodePersonsToStrings(ALL_PERSONS);
         try {
             Files.write(Paths.get(storageFilePath), linesToWrite);
         } catch (IOException ioe) {
@@ -1163,16 +1104,6 @@ public class AddressBook {
      */
     private static String removePrefixSign(String s, String sign) {
         return s.replace(sign, "");
-    }
-
-    /**
-     * Splits a source string into the list of substrings that were separated by whitespace.
-     *
-     * @param toSplit source string
-     * @return split by whitespace
-     */
-    private static ArrayList<String> splitByWhitespace(String toSplit) {
-        return new ArrayList(Arrays.asList(toSplit.trim().split("\\s+")));
     }
 
 }
