@@ -813,18 +813,6 @@ public class AddressBook {
 		savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
 	}
 
-	/**
-	 * Deletes a person from the address book, target is identified by it's
-	 * absolute index in the full list. Saves changes to storage file.
-	 *
-	 * @param index
-	 *            absolute index of person to delete (index within
-	 *            {@link #persons})
-	 */
-	private static void deletePersonFromAddressBook(int index) {
-		persons.remove(index);
-		savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
-	}
 
 	/**
 	 * Deletes the specified person from the addressbook if it is inside. Saves
