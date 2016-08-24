@@ -14,7 +14,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
@@ -61,6 +64,8 @@ public class AddressBook {
      * ====================================================================
      */
     private static final String MESSAGE_ADDED = "New person added: %1$s, Phone: %2$s, Email: %3$s";
+    private static final String MESSAGE_UPDATED= "Updated!: %1$s, Phone: %2$s, Email: %3$s";
+    private static final String MESSAGE_SORTED = "Address book has been sorted to display names in descending order";
     private static final String MESSAGE_ADDRESSBOOK_CLEARED = "Address book has been cleared!";
     private static final String MESSAGE_COMMAND_HELP = "%1$s: %2$s";
     private static final String MESSAGE_COMMAND_HELP_PARAMETERS = "\tParameters: %1$s";
@@ -127,6 +132,10 @@ public class AddressBook {
     private static final String COMMAND_EXIT_WORD = "exit";
     private static final String COMMAND_EXIT_DESC = "Exits the program.";
     private static final String COMMAND_EXIT_EXAMPLE = COMMAND_EXIT_WORD;
+    
+    private static final String COMMAND_SORT_WORD = "sort";
+    
+    private static final String COMMAND_EDIT_WORD = "edit";
 
     private static final String DIVIDER = "===================================================";
 
@@ -200,7 +209,18 @@ public class AddressBook {
      */
     public static void main(String[] args) {
         showWelcomeMessage();
-        processProgramArgs(args);
+        if (args.length >= 2) {
+            showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
+            exitProgram();
+        }
+
+        if (args.length == 1) {
+            setupGivenFileForStorage(args[0]);
+        }
+
+        if(args.length == 0) {
+            setupDefaultFileForStorage();
+        }
         loadDataFromStorage();
         while (true) {
             String userCommand = getUserInput();
@@ -218,11 +238,17 @@ public class AddressBook {
      * ====================================================================
      */
     private static void showWelcomeMessage() {
-        showToUser(DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER);
+        String[] message = { DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER };
+		for (String m : message) {
+		    System.out.println(LINE_PREFIX + m);
+		}
     }
 
     private static void showResultToUser(String result) {
-        showToUser(result, DIVIDER);
+        String[] message = { result, DIVIDER };
+		for (String m : message) {
+		    System.out.println(LINE_PREFIX + m);
+		}
     }
 
     /*
@@ -236,7 +262,10 @@ public class AddressBook {
      * Echoes the user input back to the user.
      */
     private static void echoUserCommand(String userCommand) {
-        showToUser("[Command entered:" + userCommand + "]");
+        String[] message = { "[Command entered:" + userCommand + "]" };
+		for (String m : message) {
+		    System.out.println(LINE_PREFIX + m);
+		}
     }
 
     /*
@@ -318,7 +347,8 @@ public class AddressBook {
      * Assumption: The file exists.
      */
     private static void loadDataFromStorage() {
-        initialiseAddressBookModel(loadPersonsFromFile(storageFilePath));
+        ALL_PERSONS.clear();
+		ALL_PERSONS.addAll(loadPersonsFromFile(storageFilePath));
     }
 
 
@@ -353,6 +383,10 @@ public class AddressBook {
             return getUsageInfoForAllCommands();
         case COMMAND_EXIT_WORD:
             executeExitProgramRequest();
+        case COMMAND_SORT_WORD:
+        	return executeShowSorted();
+        case COMMAND_EDIT_WORD:
+        	return executeEditProperties(commandArgs);
         default:
             return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
         }
@@ -412,6 +446,7 @@ public class AddressBook {
                 getNameFromPerson(addedPerson), getPhoneFromPerson(addedPerson), getEmailFromPerson(addedPerson));
     }
 
+
     /**
      * Finds and lists all persons in address book whose name contains any of the argument keywords.
      * Keyword matching is case sensitive.
@@ -420,10 +455,80 @@ public class AddressBook {
      * @return feedback display message for the operation result
      */
     private static String executeFindPersons(String commandArgs) {
-        final Set<String> keywords = extractKeywordsFromFindPersonArgs(commandArgs);
+        final Set<String> keywords = extractKeywordsFromFindPersonArgs(commandArgs.toUpperCase());
         final ArrayList<String[]> personsFound = getPersonsWithNameContainingAnyKeyword(keywords);
         showToUser(personsFound);
         return getMessageForPersonsDisplayedSummary(personsFound);
+    }
+    
+    /**
+     * Finds and edit all persons in address book whose name contains any of the argument keywords.
+     * Keyword matching is case sensitive.
+     *
+     * @param commandArgs full command args string from the user
+     * @post-con: addressbook is updated with the new information
+     */
+    private static String executeEditProperties(String commandArgs) {
+        final Set<String> keywords = extractKeywordsFromFindPersonArgs(commandArgs.toUpperCase());
+        final ArrayList<String[]> personsFound = getPersonsWithNameContainingAnyKeyword(keywords);
+        final Optional<String[]> decodeResult = decodePersonFromString(commandArgs);
+        final String[] updateDetails = decodeResult.get();
+        for (int i = 0; i < personsFound.size(); i++) {
+        	personsFound.get(i)[1] = updateDetails[1];
+        	personsFound.get(i)[2] = updateDetails[2];
+        }
+        ArrayList<String[]> temp = new ArrayList<String[]>();
+        massCopy(temp);
+        massDelete(getAllPersonsInAddressBook());
+        massAdd(temp);
+        return getMessageForSuccessfulUpdatePerson(updateDetails);
+    }
+    
+    
+    /**
+     * Copy the content of addressbook into a temporary arraylist
+     *
+     * @param an empty temporary arraylist
+     * @post-con: addressbook is copied over to temporary arraylist
+     */
+    /**
+     * @param list
+     */
+    private static void massCopy(ArrayList<String[]> list) {
+    	ArrayList<String[]> addressBook = getAllPersonsInAddressBook();
+    	for (int i = 0;  i < addressBook.size(); i++) {
+    		list.add(addressBook.get(i));
+    	}
+    }
+    
+    /**
+     * Deletes all the entries in addressbook
+     * Keyword matching is case sensitive.
+     *
+     * @param arraylist containing the addressbook
+     * @post-con: an empty addressbook
+     */
+    private static void massDelete(ArrayList<String[]> list) {
+    	ALL_PERSONS.clear();
+    	savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
+    }
+    
+    /**
+     * Adds all the element of the temporary arraylist into the arraylist of addressbook
+     *
+     * @param addressbook arraylist
+     * @post-con: temporary arraylist is copied over to addressbook
+     */
+    private static void massAdd(ArrayList<String[]> list) {
+    	for (int i = 0; i < list.size(); i++) {
+    		ALL_PERSONS.add(list.get(i));
+    	}
+    	savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
+    }
+    
+    private static String getMessageForSuccessfulUpdatePerson(String[] addedPerson) {
+        return String.format(MESSAGE_UPDATED,
+                getNameFromPerson(addedPerson), getPhoneFromPerson(addedPerson), getEmailFromPerson(addedPerson));
     }
 
     /**
@@ -455,7 +560,7 @@ public class AddressBook {
     private static ArrayList<String[]> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
         for (String[] person : getAllPersonsInAddressBook()) {
-            final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
+            final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person).toUpperCase()));
             if (!Collections.disjoint(wordsInName, keywords)) {
                 matchedPersons.add(person);
             }
@@ -548,6 +653,50 @@ public class AddressBook {
         showToUser(toBeDisplayed);
         return getMessageForPersonsDisplayedSummary(toBeDisplayed);
     }
+    
+    /**
+     * Displays all persons in the address book to the user; in sorted order.
+     *
+     * @return feedback display message for the operation result
+     */
+    private static String executeShowSorted() {
+        ArrayList<String[]> toBeDisplayed = getAllPersonsInAddressBook();
+        HashMap<String, String[]> map = hash(toBeDisplayed);
+        ArrayList<String> names = new ArrayList<String>();
+        for (int i = 0; i < toBeDisplayed.size(); i++) {
+        	names.add(toBeDisplayed.get(i)[0]);
+        }
+        sort(names);
+        ArrayList<String[]> temp = new ArrayList<String[]>();
+        populateSorted(names, map, temp);
+        massDelete(getAllPersonsInAddressBook());
+        massAdd(temp);
+        return MESSAGE_SORTED;
+    }
+    
+    private static void populateSorted(ArrayList<String> sorted, HashMap<String, String[]> map, ArrayList<String[]> temp) {
+    	for (int i = 0; i < sorted.size(); i++) {
+    		temp.add(map.get(sorted.get(i)));
+    	}
+    }
+    
+    private static HashMap<String, String[]> hash(ArrayList<String[]> list) {
+    	HashMap<String, String[]> map = new HashMap<String, String[]>();
+    	for (int i = 0; i < list.size(); i++) {
+    		map.put(list.get(i)[0], list.get(i));
+    	}
+    	return map;
+    }
+    
+    /**
+     * Sort all persons in the address book 
+     *
+     */
+    private static void sort(ArrayList<String> list) {
+    	Collections.sort(list);
+    }
+    
+    
 
     /**
      * Request to terminate the program.
@@ -604,6 +753,7 @@ public class AddressBook {
         showToUser(listAsString);
         updateLatestViewedPersonListing(persons);
     }
+   
 
     /**
      * Returns the display string representation of the list of persons.
