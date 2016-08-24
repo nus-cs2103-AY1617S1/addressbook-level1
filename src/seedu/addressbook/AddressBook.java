@@ -86,7 +86,7 @@ public class AddressBook {
     private static final String MESSAGE_WELCOME = "Welcome to your Address Book!";
     private static final String MESSAGE_USING_DEFAULT_FILE = "Using default storage file : " + DEFAULT_STORAGE_FILEPATH;
 
-    // These are the prefix strings to define the data type of a command parameter
+    // These are the prefix strings to define the data type of a command parameter   //delete method comments (since the name have already show what it's doing)
     private static final String PERSON_DATA_PREFIX_PHONE = "p/";
     private static final String PERSON_DATA_PREFIX_EMAIL = "e/";
 
@@ -129,8 +129,7 @@ public class AddressBook {
     private static final String COMMAND_EXIT_EXAMPLE = COMMAND_EXIT_WORD;
 
     private static final String DIVIDER = "===================================================";
-
-
+    
     /* We use a String array to store details of a single person.
      * The constants given below are the indexes for the different data elements of a person
      * used by the internal String[] storage format.
@@ -149,8 +148,6 @@ public class AddressBook {
      * Offset required to convert between 1-indexing and 0-indexing.COMMAND_
      */
     private static final int DISPLAYED_INDEX_OFFSET = 1;
-
-
 
     /**
      * If the first non-whitespace character in a user's input line is this, that line will be ignored.
@@ -176,9 +173,7 @@ public class AddressBook {
     /**
      * List of all persons in the address book.
      */
-    private static final ArrayList<String[]> ALL_PERSONS = new ArrayList<>();
-
-
+    private static final ArrayList<String[]> ALL_PERSONS = new ArrayList<>(); //use HashMap
     /**
      * Stores the most recent list of persons shown to the user as a result of a user command.
      * This is a subset of the full list. Deleting persons in the pull list does not delete
@@ -238,7 +233,6 @@ public class AddressBook {
     private static void echoUserCommand(String userCommand) {
         showToUser("[Command entered:" + userCommand + "]");
     }
-
     /*
      * ==============NOTE TO STUDENTS==========================================
      * If the reader wants a deeper understanding of the solution, she can go
@@ -268,7 +262,6 @@ public class AddressBook {
             setupDefaultFileForStorage();
         }
     }
-
     /**
      * Sets up the storage file based on the supplied file path.
      * Creates the file if it is missing.
@@ -320,7 +313,6 @@ public class AddressBook {
     private static void loadDataFromStorage() {
         initialiseAddressBookModel(loadPersonsFromFile(storageFilePath));
     }
-
 
     /*
      * ===========================================
@@ -557,7 +549,7 @@ public class AddressBook {
     private static void executeExitProgramRequest() {
         exitProgram();
     }
-
+    // remove empty lines to make the code looks better
     /*
      * ===========================================
      *               UI LOGIC
