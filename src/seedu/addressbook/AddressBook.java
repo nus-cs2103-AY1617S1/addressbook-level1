@@ -812,7 +812,7 @@ public class AddressBook {
 		persons.add(person);
 		savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
 	}
-
+g
 
 	/**
 	 * Deletes the specified person from the addressbook if it is inside. Saves
@@ -824,11 +824,11 @@ public class AddressBook {
 	 * @return true if the given person was found and deleted in the model
 	 */
 	private static boolean deletePersonFromAddressBook(HashMap<PersonProperty, String> exactPerson) {
-		final boolean changed = persons.remove(exactPerson);
-		if (changed) {
+		final boolean hasChanged = persons.remove(exactPerson);
+		if (hasChanged) {
 			savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
 		}
-		return changed;
+		return hasChanged;
 	}
 
 	/**
