@@ -199,9 +199,20 @@ public class AddressBook {
      * ====================================================================
      */
     public static void main(String[] args) {
-        showWelcomeMessage();
-        processProgramArgs(args);
-        loadDataFromStorage();
+        showToUser(DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER);
+        if (args.length >= 2) {
+		    showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
+		    exitProgram();
+		}
+		
+		if (args.length == 1) {
+		    setupGivenFileForStorage(args[0]);
+		}
+		
+		if(args.length == 0) {
+		    setupDefaultFileForStorage();
+		}
+        initialiseAddressBookModel(loadPersonsFromFile(storageFilePath));
         while (true) {
             String userCommand = getUserInput();
             echoUserCommand(userCommand);
@@ -456,13 +467,40 @@ public class AddressBook {
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
         for (String[] person : getAllPersonsInAddressBook()) {
             final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
-            if (!Collections.disjoint(wordsInName, keywords)) {
+            if (nameMatchedKeywordsCaseInsensitive(wordsInName, keywords)) {
                 matchedPersons.add(person);
             }
         }
         return matchedPersons;
     }
 
+    /**
+     * Check (case insensitive) if a name matched any keywords 
+     * @param keywords
+     * @param wordsInName
+     * @return
+     */
+    private static boolean nameMatchedKeywordsCaseInsensitive(Collection<String> keywords, Collection<String> wordsInName) {
+    	Set<String> lowerCaseKeywords = convertToLowerCase(keywords);
+    	Set<String> lowerCaseWordsInName = convertToLowerCase(wordsInName);
+    	   	
+    	return !Collections.disjoint(lowerCaseKeywords, lowerCaseWordsInName);
+    }
+    
+    /**
+     * Return a set of string, converted to lower case
+     * 
+     * @param words
+     * @return
+     */
+    private static Set<String> convertToLowerCase(Collection<String> words) {
+    	Set<String> lowerCaseWords = new HashSet<>();
+    	
+    	for (String word : words) {
+    		lowerCaseWords.add(word.toLowerCase());
+    	}
+    	return lowerCaseWords;
+    }
     /**
      * Deletes person identified using last displayed index.
      *
