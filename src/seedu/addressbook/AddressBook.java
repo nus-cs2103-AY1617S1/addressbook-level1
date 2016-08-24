@@ -391,7 +391,7 @@ public class AddressBook {
         
         editPersonInAddressBook(personFound, commandArgs);
         
-		return getMessageForSuccessfulEditPerson(personToEdit);
+		return getMessageForSuccessfulEditPerson(personFound.get(0));
 	}
 
 	private static String getMessageForSuccessfulEditPerson(String[] editedPerson) {
@@ -401,8 +401,14 @@ public class AddressBook {
 
 	private static void editPersonInAddressBook(ArrayList<String[]> personsFound, String commandArgs) {
 		String[] person = personsFound.get(0);
-		person[PERSON_DATA_INDEX_PHONE] = extractPartialPhoneFromPersonString(commandArgs);
-		person[PERSON_DATA_INDEX_EMAIL] = extractPartialEmailFromPersonString(commandArgs);
+		String phone = extractPartialPhoneFromPersonString(commandArgs);
+		String email = extractPartialEmailFromPersonString(commandArgs);
+		if (!phone.equals("")) {
+			person[PERSON_DATA_INDEX_PHONE] = extractPartialPhoneFromPersonString(commandArgs);
+		}
+		if (!email.equals("")){
+			person[PERSON_DATA_INDEX_EMAIL] = extractPartialEmailFromPersonString(commandArgs);
+		}
 	}
 
 	/**
