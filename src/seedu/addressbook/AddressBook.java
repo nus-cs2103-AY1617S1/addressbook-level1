@@ -177,7 +177,7 @@ public class AddressBook {
 	 * STUDENTS=================================================================
 	 * ===== Note that the type of the variable below can also be declared as
 	 * List<String[]>, as follows: private static final List<String[]>
-	 * ALL_PERSONS = new ArrayList<>() That is because List is an interface
+	 * persons = new ArrayList<>() That is because List is an interface
 	 * implemented by the ArrayList class. In this code we use ArrayList instead
 	 * because we wanted to to stay away from advanced concepts such as
 	 * interface inheritance.
@@ -187,7 +187,7 @@ public class AddressBook {
 	/**
 	 * List of all persons in the address book.
 	 */
-	private static final ArrayList<HashMap<PersonProperty, String>> ALL_PERSONS = new ArrayList<>();
+	private static ArrayList<HashMap<PersonProperty, String>> persons = new ArrayList<>();
 
 	/**
 	 * Stores the most recent list of persons shown to the user as a result of a
@@ -809,7 +809,7 @@ public class AddressBook {
 	 *            to add
 	 */
 	private static void addPersonToAddressBook(HashMap<PersonProperty, String> person) {
-		ALL_PERSONS.add(person);
+		persons.add(person);
 		savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
 	}
 
@@ -819,10 +819,10 @@ public class AddressBook {
 	 *
 	 * @param index
 	 *            absolute index of person to delete (index within
-	 *            {@link #ALL_PERSONS})
+	 *            {@link #persons})
 	 */
 	private static void deletePersonFromAddressBook(int index) {
-		ALL_PERSONS.remove(index);
+		persons.remove(index);
 		savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
 	}
 
@@ -836,7 +836,7 @@ public class AddressBook {
 	 * @return true if the given person was found and deleted in the model
 	 */
 	private static boolean deletePersonFromAddressBook(HashMap<PersonProperty, String> exactPerson) {
-		final boolean changed = ALL_PERSONS.remove(exactPerson);
+		final boolean changed = persons.remove(exactPerson);
 		if (changed) {
 			savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
 		}
@@ -847,14 +847,14 @@ public class AddressBook {
 	 * @return unmodifiable list view of all persons in the address book
 	 */
 	private static ArrayList<HashMap<PersonProperty, String>> getAllPersonsInAddressBook() {
-		return ALL_PERSONS;
+		return persons;
 	}
 
 	/**
 	 * Clears all persons in the address book and saves changes to file.
 	 */
 	private static void clearAddressBook() {
-		ALL_PERSONS.clear();
+		persons.clear();
 		savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
 	}
 
@@ -865,8 +865,8 @@ public class AddressBook {
 	 *            list of persons to initialise the model with
 	 */
 	private static void initialiseAddressBookModel(ArrayList<HashMap<PersonProperty, String>> persons) {
-		ALL_PERSONS.clear();
-		ALL_PERSONS.addAll(persons);
+		persons.clear();
+		persons.addAll(persons);
 	}
 
 	/*
