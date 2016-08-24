@@ -199,8 +199,15 @@ public class AddressBook {
      * ====================================================================
      */
     public static void main(String[] args) {
-        showWelcomeMessage();
-        processProgramArgs(args);
+        showWelcomeMessage();        
+        if (args.length == 1) {
+            setupGivenFileForStorage(args[0]);
+        } else if (args.length == 0) {
+            setupDefaultFileForStorage();
+        } else {
+            showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
+            exitProgram();        	
+        }
         loadDataFromStorage();
         while (true) {
             String userCommand = getUserInput();
