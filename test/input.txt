@@ -98,11 +98,22 @@
   # clears all
   clear
   list
-
+  
+  
+##########################################################
+# test additional commands
+##########################################################
+  #adds properly
+  add TEST p/12345678 e/TEST@gmail.com
+  list
+  
+  #deletes properly
+  delete 1
+  list
+  
 ##########################################################
 # test exit command
 ##########################################################
 
   # exits properly
   exit
-  list
