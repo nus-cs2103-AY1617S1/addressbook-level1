@@ -163,7 +163,9 @@ public class AddressBook {
      * the I/O redirection technique. If not, only the first line of the input
      * text file will be processed.
      */
-    private static final Scanner SCANNER = new Scanner(System.in);
+    // private static final Scanner scanner = new Scanner(System.in);
+    private static final Scanner scanner = new Scanner(System.in);
+
     /*
      * ==============NOTE TO STUDENTS======================================================================
      * Note that the type of the variable below can also be declared as List<String[]>, as follows:
@@ -199,9 +201,25 @@ public class AddressBook {
      * ====================================================================
      */
     public static void main(String[] args) {
-        showWelcomeMessage();
-        processProgramArgs(args);
-        loadDataFromStorage();
+        //showWelcomeMessage();
+    	showToUser(DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER);
+        
+        // processProgramArgs(args);
+        // Tutorial 2 [LO-MethodAbstraction] 
+        if (args.length >= 2) {
+            showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
+            exitProgram();
+        }
+        if (args.length == 1) {
+            setupGivenFileForStorage(args[0]);
+        }
+        if(args.length == 0) {
+            setupDefaultFileForStorage();
+        }
+        
+        // loadDataFromStorage();
+        initialiseAddressBookModel(loadPersonsFromFile(storageFilePath));
+        
         while (true) {
             String userCommand = getUserInput();
             echoUserCommand(userCommand);
@@ -365,7 +383,11 @@ public class AddressBook {
      */
     private static String[] splitCommandWordAndArgs(String rawUserInput) {
         final String[] split =  rawUserInput.trim().split("\\s+", 2);
-        return split.length == 2 ? split : new String[] { split[0] , "" }; // else case: no parameters
+        return split.length == 2 ? split : convertSingleStringToStringArray(split); // else case: no parameters
+    }
+    // T2A2 (Refactoring) - Extract Method 
+    private static String[] convertSingleStringToStringArray(String[] input) {
+    	return new String[] { input[0] , "" };
     }
 
     /**
@@ -572,10 +594,10 @@ public class AddressBook {
      */
     private static String getUserInput() {
         System.out.print(LINE_PREFIX + "Enter command: ");
-        String inputLine = SCANNER.nextLine();
+        String inputLine = scanner.nextLine();
         // silently consume all blank and comment lines
         while (inputLine.trim().isEmpty() || inputLine.trim().charAt(0) == INPUT_COMMENT_MARKER) {
-            inputLine = SCANNER.nextLine();
+            inputLine = scanner.nextLine();
         }
         return inputLine;
     }
