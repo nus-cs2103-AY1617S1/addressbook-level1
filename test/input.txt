@@ -84,6 +84,12 @@
   delete 2
 
   sort
+  edit a -n mike
+  edit 1 -n bob
+  edit 5 -n bob
+  edit 10 -n bob
+  edit 1 -e asdasd
+  edit 2 -p z
   
   # should have deleted based on last active view's index
   list

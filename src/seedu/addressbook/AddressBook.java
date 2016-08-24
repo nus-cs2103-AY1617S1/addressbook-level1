@@ -70,6 +70,7 @@ public class AddressBook
     private static final String MESSAGE_COMMAND_HELP_PARAMETERS        = "\tParameters: %1$s";
     private static final String MESSAGE_COMMAND_HELP_EXAMPLE           = "\tExample: %1$s";
     private static final String MESSAGE_DELETE_PERSON_SUCCESS          = "Deleted Person: %1$s";
+    private static final String MESSAGE_EDITED_PERSON_SUCCESS          = "Details updated: %1$s";
     private static final String MESSAGE_DISPLAY_PERSON_DATA            = "%1$s  Phone Number: %2$s  Email: %3$s";
     private static final String MESSAGE_DISPLAY_LIST_ELEMENT_INDEX     = "%1$d. ";
     private static final String MESSAGE_GOODBYE                        = "Exiting Address Book... Good bye!";
@@ -84,6 +85,7 @@ public class AddressBook
     private static final String MESSAGE_PERSON_NOT_IN_ADDRESSBOOK      = "Person could not be found in address book";
     private static final String MESSAGE_ERROR_CREATING_STORAGE_FILE    = "Error: unable to create file: %1$s";
     private static final String MESSAGE_ERROR_MISSING_STORAGE_FILE     = "Storage file missing: %1$s";
+    private static final String MESSAGE_INVALID_EDIT_OPTION            = "Invalid option: Choose -n/-p/-e only.";
     private static final String MESSAGE_ERROR_READING_FROM_FILE        =
             "Unexpected error: unable to read from file: %1$s";
     private static final String MESSAGE_ERROR_WRITING_TO_FILE          =
@@ -137,6 +139,16 @@ public class AddressBook
     private static final String COMMAND_SORT_DESC    =
             "Sorts all persons alphabetically and displays as a list with index numbers.";
     private static final String COMMAND_SORT_EXAMPLE = COMMAND_SORT_WORD;
+    
+    private static final String COMMAND_EDIT_WORD         = "edit";
+    private static final String COMMAND_EDIT_DESC         =
+            "Edits details of a person identified by the index number used in "
+                    + "the last find/list/sort call. Edits have to be valid.";
+    private static final String COMMAND_EDIT_PARAMETERS   = "INDEX -p/-e/-n NEW_VALUES";
+    private static final String COMMAND_EDIT_DETAIL_PHONE = "-p";
+    private static final String COMMAND_EDIT_DETAIL_EMAIL = "-e";
+    private static final String COMMAND_EDIT_DETAIL_NAME  = "-n";
+    private static final String COMMAND_EDIT_EXAMPLE      = COMMAND_EDIT_WORD + " 1 -n mike";
     
     private static final String COMMAND_EXIT_WORD    = "exit";
     private static final String COMMAND_EXIT_DESC    = "Exits the program.";
@@ -209,6 +221,27 @@ public class AddressBook
      * The path to the file used for storing person data.
      */
     private static String storageFilePath;
+    
+    /**
+     * 
+     * Enum to store edit args INDEX holds a value of 0 DETAIL holds a value of
+     * 1 NEWVAL holds a value of 2
+     */
+    private enum EditArgs
+    {
+        INDEX(0), DETAIL(1), NEWVAL(2);
+        private int _val;
+        
+        private EditArgs(int val)
+        {
+            _val = val;
+        }
+        
+        public int getValue()
+        {
+            return _val;
+        }
+    };
     
     /*
      * ==============NOTE TO STUDENTS======================================
@@ -380,11 +413,208 @@ public class AddressBook
             return getUsageInfoForAllCommands();
         case COMMAND_SORT_WORD :
             return executeSortAndListAllPersonsInAddressBook();
+        case COMMAND_EDIT_WORD :
+            return executeEditPerson(commandArgs);
         case COMMAND_EXIT_WORD :
             executeExitProgramRequest();
         default :
             return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
         }
+    }
+    
+    /**
+     * Edits person identified using last displayed index.
+     *
+     * @param commandArgs
+     *            full command args string from the user
+     * @return feedback display message for the operation result
+     */
+    private static String executeEditPerson(String commandArgs)
+    {
+        if (!isEditPersonArgsExtractable(commandArgs)) {
+            return getMessageForInvalidCommandInput(COMMAND_EDIT_WORD, getUsageInfoForEditCommand());
+        }
+        
+        final ArrayList<String> splittedEditArgs = splitByWhitespace(commandArgs);
+        
+        // extracting information from args
+        final String indexArgs = splittedEditArgs.get(EditArgs.INDEX.getValue());
+        final String userSelectedDetailToEdit = splittedEditArgs.get(EditArgs.DETAIL.getValue());
+        final String editsToMake = splittedEditArgs.get(EditArgs.NEWVAL.getValue());
+        
+        // checking validity of extracted information
+        final Optional<String> feedback =
+                checkValidityOfEditArgsAndFeedback(indexArgs, userSelectedDetailToEdit, editsToMake);
+        if (feedback.isPresent()) {
+            return feedback.get();
+        }
+        
+        // information valid, proceed with editing
+        final int targetVisibleIndex = extractTargetIndexFromArgs(indexArgs);
+        final String[] personToEdit = getPersonByLastVisibleIndex(targetVisibleIndex);
+        editPersonInAddressBook(personToEdit, userSelectedDetailToEdit, editsToMake);
+        return getMessageForSuccessfulEdit(editsToMake);
+    }
+    
+    /**
+     * Constructs a feedback message for a successful edit person command
+     * execution.
+     *
+     * @see #executeEditPerson(String)
+     * @param editsToMake
+     *            changes to be made to current details
+     * @return successful edit person feedback message
+     */
+    private static String getMessageForSuccessfulEdit(String editsToMake)
+    {
+        return String.format(MESSAGE_EDITED_PERSON_SUCCESS, editsToMake);
+    }
+    
+    /**
+     * Edits selected person in address book.
+     * 
+     * @param personToEdit
+     *            selected person to edit
+     * @param userSelectedDetailToEdit
+     *            selected detail to edit e.g. name/phone/email
+     * @param editsToMake
+     *            changes to be made
+     */
+    private static void editPersonInAddressBook(String[] personToEdit, String userSelectedDetailToEdit,
+            String editsToMake)
+    {
+        final String[] edittedPerson;
+        
+        // create new person with edits in place
+        switch (userSelectedDetailToEdit) {
+        case COMMAND_EDIT_DETAIL_EMAIL : {
+            edittedPerson = makePersonFromData(personToEdit[PERSON_DATA_INDEX_NAME],
+                    personToEdit[PERSON_DATA_INDEX_PHONE], editsToMake);
+            break;
+        }
+        case COMMAND_EDIT_DETAIL_NAME : {
+            edittedPerson = makePersonFromData(editsToMake, personToEdit[PERSON_DATA_INDEX_PHONE],
+                    personToEdit[PERSON_DATA_INDEX_EMAIL]);
+            break;
+        }
+        default : // default to edit phone
+            edittedPerson = makePersonFromData(personToEdit[PERSON_DATA_INDEX_NAME], editsToMake,
+                    personToEdit[PERSON_DATA_INDEX_EMAIL]);
+        }
+        
+        replacePersonInAddressBook(personToEdit, edittedPerson);
+    }
+    
+    /**
+     * Replaces firstPerson with secondPerson in address book. Saves file after
+     * replacement.
+     */
+    private static void replacePersonInAddressBook(String[] firstPerson, String[] secondPerson)
+    {
+        updateLatestViewedPersonListing(ALL_PERSONS);
+        final int targetIndex = ALL_PERSONS.indexOf(firstPerson);
+        ALL_PERSONS.set(targetIndex, secondPerson);
+        savePersonsToFile(ALL_PERSONS, storageFilePath);
+    }
+    
+    /**
+     * Checks validity of edit args and returns an appropriate error msg
+     * 
+     * @param targetVisibleIndex
+     *            index of person in address book
+     * @param userSelectedDetailToEdit
+     *            selected detail to edit e.g. name/phone/email
+     * @param editsToMake
+     *            changes to be made
+     * @return empty optional if all args are valid; else return optional
+     *         containing appropriate error msg
+     */
+    private static Optional<String> checkValidityOfEditArgsAndFeedback(String indexArgs,
+            String userSelectedDetailToEdit, String editsToMake)
+    {
+        if (!isEditIndexArgsValid(indexArgs)) {
+            return Optional.of(MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
+        }
+        
+        final int targetVisibleIndex = extractTargetIndexFromArgs(indexArgs);
+        
+        if (!isDisplayIndexValidForLastPersonListingView(targetVisibleIndex)) {
+            return Optional.of(MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
+        }
+        if (!isValidUserSelectedDetailToEdit(userSelectedDetailToEdit)) {
+            return Optional.of(MESSAGE_INVALID_EDIT_OPTION);
+        }
+        if (!isValidEditsToMake(userSelectedDetailToEdit, editsToMake)) {
+            return Optional.of(getMessageForInvalidCommandInput(COMMAND_EDIT_WORD, getUsageInfoForEditCommand()));
+        }
+        return Optional.empty();
+    }
+    
+    /**
+     * Checks validity of edit person argument string's format.
+     *
+     * @param indexArgs
+     *            raw edit args containing the index parameter
+     * @return whether the input args string is valid
+     */
+    private static boolean isEditIndexArgsValid(String indexArgs)
+    {
+        try {
+            final int extractedIndex = Integer.parseInt(indexArgs.trim());
+            return extractedIndex >= DISPLAYED_INDEX_OFFSET;
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
+    }
+    
+    /**
+     * Checks if changes to be made are valid in accordance to "add" function
+     * guidelines
+     * 
+     * @see #isPersonDataValid(String[])
+     * @param userSelectedDetailToEdit
+     *            user selected detail to edit e.g. name/phone/email
+     * @param editsToMake
+     *            changes to be made
+     * @return whether edits to be made are valid.
+     */
+    private static boolean isValidEditsToMake(String userSelectedDetailToEdit, String editsToMake)
+    {
+        switch (userSelectedDetailToEdit) {
+        case COMMAND_EDIT_DETAIL_EMAIL :
+            return isPersonEmailValid(editsToMake);
+        case COMMAND_EDIT_DETAIL_NAME :
+            return isPersonNameValid(editsToMake);
+        case COMMAND_EDIT_DETAIL_PHONE :
+            return isPersonPhoneValid(editsToMake);
+        default :
+            return false;
+        }
+    }
+    
+    /**
+     * Checks whether user selected detail is valid i.e. -n/-p/-e
+     */
+    private static boolean isValidUserSelectedDetailToEdit(String userSelectedDetailToEdit)
+    {
+        return userSelectedDetailToEdit.equals(COMMAND_EDIT_DETAIL_EMAIL)
+                || userSelectedDetailToEdit.equals(COMMAND_EDIT_DETAIL_NAME)
+                || userSelectedDetailToEdit.equals(COMMAND_EDIT_DETAIL_PHONE);
+    }
+    
+    /**
+     * Checks validity of edit person argument string's format.
+     *
+     * @param rawArgs
+     *            raw command args string for the delete person command
+     * @return whether the input args string is extractable
+     */
+    private static boolean isEditPersonArgsExtractable(String rawArgs)
+    {
+        final String[] splitArgs = rawArgs.trim().split("\\s+", 3);
+        return splitArgs.length == 3 // 3 arguments
+                && !splitArgs[0].isEmpty() // non-empty arguments
+                && !splitArgs[1].isEmpty() && !splitArgs[2].isEmpty();
     }
     
     /**
@@ -531,7 +761,7 @@ public class AddressBook
         if (!isDeletePersonArgsValid(commandArgs)) {
             return getMessageForInvalidCommandInput(COMMAND_DELETE_WORD, getUsageInfoForDeleteCommand());
         }
-        final int targetVisibleIndex = extractTargetIndexFromDeletePersonArgs(commandArgs);
+        final int targetVisibleIndex = extractTargetIndexFromArgs(commandArgs);
         if (!isDisplayIndexValidForLastPersonListingView(targetVisibleIndex)) {
             return MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
         }
@@ -568,7 +798,7 @@ public class AddressBook
      *            raw command args string for the delete person command
      * @return extracted index
      */
-    private static int extractTargetIndexFromDeletePersonArgs(String rawArgs)
+    private static int extractTargetIndexFromArgs(String rawArgs)
     {
         return Integer.parseInt(rawArgs.trim());
     }
@@ -1128,8 +1358,7 @@ public class AddressBook
                     PERSON_DATA_PREFIX_PHONE);
             
             // phone is middle arg, target is from own prefix to next prefix
-        }
-        else {
+        } else {
             return removePrefixSign(encoded.substring(indexOfPhonePrefix, indexOfEmailPrefix).trim(),
                     PERSON_DATA_PREFIX_PHONE);
         }
@@ -1153,8 +1382,7 @@ public class AddressBook
                     PERSON_DATA_PREFIX_EMAIL);
             
             // email is middle arg, target is from own prefix to next prefix
-        }
-        else {
+        } else {
             return removePrefixSign(encoded.substring(indexOfEmailPrefix, indexOfPhonePrefix).trim(),
                     PERSON_DATA_PREFIX_EMAIL);
         }
@@ -1231,8 +1459,21 @@ public class AddressBook
     private static String getUsageInfoForAllCommands()
     {
         return getUsageInfoForAddCommand() + LS + getUsageInfoForFindCommand() + LS + getUsageInfoForViewCommand() + LS
-                + getUsageInfoForSortCommand() + LS + getUsageInfoForDeleteCommand() + LS
-                + getUsageInfoForClearCommand() + LS + getUsageInfoForExitCommand() + LS + getUsageInfoForHelpCommand();
+                + getUsageInfoForSortCommand() + LS + getUsageInfoForDeleteCommand() + LS + getUsageInfoForEditCommand()
+                + LS + getUsageInfoForClearCommand() + LS + getUsageInfoForExitCommand() + LS
+                + getUsageInfoForHelpCommand();
+    }
+    
+    /**
+     * Builds string for showing 'edit' command usage instruction
+     *
+     * @return 'edit' command usage instruction
+     */
+    private static String getUsageInfoForEditCommand()
+    {
+        return String.format(MESSAGE_COMMAND_HELP, COMMAND_EDIT_WORD, COMMAND_EDIT_DESC) + LS
+                + String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_EDIT_PARAMETERS) + LS
+                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_EDIT_EXAMPLE) + LS;
     }
     
     /**
