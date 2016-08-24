@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Optional;
@@ -102,6 +103,10 @@ public class AddressBook {
                                                       + PERSON_DATA_PREFIX_PHONE + "PHONE_NUMBER "
                                                       + PERSON_DATA_PREFIX_EMAIL + "EMAIL";
     private static final String COMMAND_ADD_EXAMPLE = COMMAND_ADD_WORD + " John Doe p/98765432 e/johnd@gmail.com";
+    
+    private static final String COMMAND_SORT_WORDS = "sort";
+    private static final String COMMAND_SORT_DESC = "Sorts all people in the list into alphabetical order";
+    private static final String COMMAND_SORT_EXAMPLE = COMMAND_SORT_WORDS;
 
     private static final String COMMAND_FIND_WORD = "find";
     private static final String COMMAND_FIND_DESC = "Finds all persons whose names contain any of the specified "
@@ -344,6 +349,8 @@ public class AddressBook {
         switch (commandType) {
         case COMMAND_ADD_WORD:
             return executeAddPerson(commandArgs);
+        case COMMAND_SORT_WORDS:
+        	return executeAlphabetizePeople();
         case COMMAND_FIND_WORD:
             return executeFindPersons(commandArgs);
         case COMMAND_LIST_WORD:
@@ -360,8 +367,24 @@ public class AddressBook {
             return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
         }
     }
-
     /**
+     * Displays all users in the addressbook in alphabetical order
+     *
+     * @return  feedback display message for the operation results
+     */
+    private static String executeAlphabetizePeople() {
+    	
+    	ArrayList<HashMap<PersonProperty, String>> allPersons = getAllPersonsInAddressBook();
+    	Collections.sort(allPersons, new Comparator<HashMap<PersonProperty, String>>(){ 
+            public int compare(HashMap<PersonProperty, String> one, HashMap<PersonProperty, String> two) { 
+                return one.get("get_name").compareTo(two.get("get_name"));
+            } 
+    });
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
      * Splits raw user input into command word and command arguments string
      *
      * @return  size 2 array; first element is the command type and second element is the arguments string
@@ -1077,6 +1100,7 @@ public class AddressBook {
      */
     private static String getUsageInfoForAllCommands() {
         return getUsageInfoForAddCommand() + LS
+        		+ getUsageInfoForSortCommand() + LS
                 + getUsageInfoForFindCommand() + LS
                 + getUsageInfoForViewCommand() + LS
                 + getUsageInfoForDeleteCommand() + LS
@@ -1084,8 +1108,18 @@ public class AddressBook {
                 + getUsageInfoForExitCommand() + LS
                 + getUsageInfoForHelpCommand();
     }
-
     /**
+     * Builds string for showing 'sort' command usage instruction
+     *
+     * @return  'sort' command usage instruction
+     */
+    private static String getUsageInfoForSortCommand() {
+		// TODO Auto-generated method stub
+		return String.format(MESSAGE_COMMAND_HELP, COMMAND_SORT_WORDS, COMMAND_SORT_DESC) + LS
+				+ String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_SORT_EXAMPLE) + LS;
+	}
+
+	/**
      * Builds string for showing 'add' command usage instruction
      *
      * @return  'add' command usage instruction
