@@ -86,7 +86,7 @@ public class AddressBook {
     private static final String MESSAGE_WELCOME = "Welcome to your Address Book!";
     private static final String MESSAGE_USING_DEFAULT_FILE = "Using default storage file : " + DEFAULT_STORAGE_FILEPATH;
 
-    // These are the prefix strings to define the data type of a command parameter
+    // These are the prefix strings to define the data type of a command parameter   //delete method comments (since the name have already show what it's doing)
     private static final String PERSON_DATA_PREFIX_PHONE = "p/";
     private static final String PERSON_DATA_PREFIX_EMAIL = "e/";
 
@@ -176,7 +176,7 @@ public class AddressBook {
     /**
      * List of all persons in the address book.
      */
-    private static final ArrayList<String[]> ALL_PERSONS = new ArrayList<>();
+    private static final ArrayList<String[]> ALL_PERSONS = new ArrayList<>(); //use HashMap
 
 
     /**
@@ -200,13 +200,25 @@ public class AddressBook {
      */
     public static void main(String[] args) {
         showWelcomeMessage();
-        processProgramArgs(args);
-        loadDataFromStorage();
+        if (args.length >= 2) {
+            showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
+            exitProgram();
+        }
+
+        if (args.length == 1) {
+            setupGivenFileForStorage(args[0]);
+        }
+
+        if(args.length == 0) {
+            setupDefaultFileForStorage();
+        }
+       loadDataFromStorage();
+        
         while (true) {
             String userCommand = getUserInput();
-            echoUserCommand(userCommand);
-            String feedback = executeCommand(userCommand);
-            showResultToUser(feedback);
+            showToUser("[Command entered:" + userCommand + "]");
+            String feedback = executeCommand(userCommand); 
+            showToUser(feedback, DIVIDER);;    //use inline method
         }
     }
 
@@ -557,7 +569,7 @@ public class AddressBook {
     private static void executeExitProgramRequest() {
         exitProgram();
     }
-
+    // remove empty lines to make the code looks better
     /*
      * ===========================================
      *               UI LOGIC
