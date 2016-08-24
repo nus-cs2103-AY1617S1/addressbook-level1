@@ -687,8 +687,13 @@ public class AddressBook {
         showToUser(String.format(MESSAGE_ERROR_MISSING_STORAGE_FILE, filePath));
 
         try {
-            storageFile.createNewFile();
-            showToUser(String.format(MESSAGE_STORAGE_FILE_CREATED, filePath));
+            if (storageFile.createNewFile()) {
+                showToUser(String.format(MESSAGE_STORAGE_FILE_CREATED, filePath));
+            } else {
+                showToUser(String.format("File already exists", filePath));
+                exitProgram();
+            }
+
         } catch (IOException ioe) {
             showToUser(String.format(MESSAGE_ERROR_CREATING_STORAGE_FILE, filePath));
             exitProgram();
