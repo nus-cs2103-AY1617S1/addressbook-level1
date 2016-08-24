@@ -136,9 +136,7 @@ public class AddressBook {
      * used by the internal String[] storage format.
      * For example, a person's name is stored as the 0th element in the array.
      */
-    private static final int PERSON_DATA_INDEX_NAME = 0;
-    private static final int PERSON_DATA_INDEX_PHONE = 1;
-    private static final int PERSON_DATA_INDEX_EMAIL = 2;
+    private enum PersonProperty {NAME, EMAIL, PHONE};
 
     /**
      * The number of data elements for a single person.
@@ -184,7 +182,7 @@ public class AddressBook {
      * This is a subset of the full list. Deleting persons in the pull list does not delete
      * those persons from this list.
      */
-    private static ArrayList<String[]> latestPersonListingView = getAllPersonsInAddressBook(); // initial view is of all
+    private static ArrayList<String[]> latestPersonListingView = ALL_PERSONS; // initial view is of all
 
     /**
      * The path to the file used for storing person data.
@@ -199,44 +197,15 @@ public class AddressBook {
      * ====================================================================
      */
     public static void main(String[] args) {
-        showWelcomeMessage();
+        showToUser(DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER);
         processProgramArgs(args);
         loadDataFromStorage();
         while (true) {
             String userCommand = getUserInput();
-            echoUserCommand(userCommand);
+            showToUser("[Command entered:" + userCommand + "]");
             String feedback = executeCommand(userCommand);
-            showResultToUser(feedback);
+            showToUser(feedback, DIVIDER);
         }
-    }
-
-    /*
-     * ==============NOTE TO STUDENTS======================================
-     * The method header comment can be omitted if the method is trivial
-     * and the header comment is going to be almost identical to the method
-     * signature anyway.
-     * ====================================================================
-     */
-    private static void showWelcomeMessage() {
-        showToUser(DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER);
-    }
-
-    private static void showResultToUser(String result) {
-        showToUser(result, DIVIDER);
-    }
-
-    /*
-     * ==============NOTE TO STUDENTS======================================
-     * Parameter description can be omitted from the method header comment
-     * if the parameter name is self-explanatory.
-     * In the method below, '@param userInput' comment has been omitted.
-     * ====================================================================
-     */
-    /**
-     * Echoes the user input back to the user.
-     */
-    private static void echoUserCommand(String userCommand) {
-        showToUser("[Command entered:" + userCommand + "]");
     }
 
     /*
@@ -255,17 +224,16 @@ public class AddressBook {
      * @param args full program arguments passed to application main method
      */
     private static void processProgramArgs(String[] args) {
-        if (args.length >= 2) {
-            showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
-            exitProgram();
-        }
-
-        if (args.length == 1) {
-            setupGivenFileForStorage(args[0]);
-        }
-
-        if(args.length == 0) {
-            setupDefaultFileForStorage();
+        switch (args.length) {
+        case 1:
+        	setupGivenFileForStorage(args[0]);
+        	break;
+        case 0:
+        	setupDefaultFileForStorage();
+        	break;
+        default:
+        	showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
+        	exitProgram();
         }
     }
 
@@ -276,7 +244,7 @@ public class AddressBook {
      */
     private static void setupGivenFileForStorage(String filePath) {
 
-        if (!isValidFilePath(filePath)) {
+        if (!isValidTextFilePath(filePath)) {
             showToUser(String.format(MESSAGE_INVALID_FILE, filePath));
             exitProgram();
         }
@@ -309,7 +277,7 @@ public class AddressBook {
      * The file path is acceptable if it ends in '.txt'
      * TODO: Implement a more rigorous validity checking.
      */
-    private static boolean isValidFilePath(String filePath) {
+    private static boolean isValidTextFilePath(String filePath) {
         return filePath.endsWith(".txt");
     }
 
@@ -352,7 +320,7 @@ public class AddressBook {
         case COMMAND_HELP_WORD:
             return getUsageInfoForAllCommands();
         case COMMAND_EXIT_WORD:
-            executeExitProgramRequest();
+            exitProgram();
         default:
             return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
         }
@@ -409,7 +377,9 @@ public class AddressBook {
      */
     private static String getMessageForSuccessfulAddPerson(String[] addedPerson) {
         return String.format(MESSAGE_ADDED,
-                getNameFromPerson(addedPerson), getPhoneFromPerson(addedPerson), getEmailFromPerson(addedPerson));
+                getPropertyFromPerson(addedPerson, PersonProperty.NAME), 
+                getPropertyFromPerson(addedPerson, PersonProperty.PHONE), 
+                getPropertyFromPerson(addedPerson, PersonProperty.EMAIL));
     }
 
     /**
@@ -454,8 +424,9 @@ public class AddressBook {
      */
     private static ArrayList<String[]> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
-        for (String[] person : getAllPersonsInAddressBook()) {
-            final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
+        for (String[] person : ALL_PERSONS) {
+            final Set<String> wordsInName = new HashSet<>(
+            		splitByWhitespace(getPropertyFromPerson(person, PersonProperty.NAME)));
             if (!Collections.disjoint(wordsInName, keywords)) {
                 matchedPersons.add(person);
             }
@@ -544,19 +515,12 @@ public class AddressBook {
      * @return feedback display message for the operation result
      */
     private static String executeListAllPersonsInAddressBook() {
-        ArrayList<String[]> toBeDisplayed = getAllPersonsInAddressBook();
+        ArrayList<String[]> toBeDisplayed = ALL_PERSONS;
         showToUser(toBeDisplayed);
         return getMessageForPersonsDisplayedSummary(toBeDisplayed);
     }
 
-    /**
-     * Request to terminate the program.
-     *
-     * @return feedback display message for the operation result
-     */
-    private static void executeExitProgramRequest() {
-        exitProgram();
-    }
+    
 
     /*
      * ===========================================
@@ -639,7 +603,9 @@ public class AddressBook {
      */
     private static String getMessageForFormattedPersonData(String[] person) {
         return String.format(MESSAGE_DISPLAY_PERSON_DATA,
-                getNameFromPerson(person), getPhoneFromPerson(person), getEmailFromPerson(person));
+        		getPropertyFromPerson(person, PersonProperty.NAME), 
+        		getPropertyFromPerson(person, PersonProperty.PHONE), 
+        		getPropertyFromPerson(person, PersonProperty.EMAIL));
     }
 
     /**
@@ -721,7 +687,7 @@ public class AddressBook {
     private static ArrayList<String> getLinesInFile(String filePath) {
         ArrayList<String> lines = null;
         try {
-            lines = new ArrayList(Files.readAllLines(Paths.get(filePath)));
+            lines = new ArrayList<String>(Files.readAllLines(Paths.get(filePath)));
         } catch (FileNotFoundException fnfe) {
             showToUser(String.format(MESSAGE_ERROR_MISSING_STORAGE_FILE, filePath));
             exitProgram();
@@ -762,18 +728,7 @@ public class AddressBook {
      */
     private static void addPersonToAddressBook(String[] person) {
         ALL_PERSONS.add(person);
-        savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
-    }
-
-    /**
-     * Deletes a person from the address book, target is identified by it's absolute index in the full list.
-     * Saves changes to storage file.
-     *
-     * @param index absolute index of person to delete (index within {@link #ALL_PERSONS})
-     */
-    private static void deletePersonFromAddressBook(int index) {
-        ALL_PERSONS.remove(index);
-        savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
+        savePersonsToFile(ALL_PERSONS, storageFilePath);
     }
 
     /**
@@ -785,16 +740,9 @@ public class AddressBook {
     private static boolean deletePersonFromAddressBook(String[] exactPerson) {
         final boolean changed = ALL_PERSONS.remove(exactPerson);
         if (changed) {
-            savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
+            savePersonsToFile(ALL_PERSONS, storageFilePath);
         }
         return changed;
-    }
-
-    /**
-     * @return unmodifiable list view of all persons in the address book
-     */
-    private static ArrayList<String[]> getAllPersonsInAddressBook() {
-        return ALL_PERSONS;
     }
 
     /**
@@ -802,7 +750,7 @@ public class AddressBook {
      */
     private static void clearAddressBook() {
         ALL_PERSONS.clear();
-        savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
+        savePersonsToFile(ALL_PERSONS, storageFilePath);
     }
 
     /**
@@ -826,24 +774,8 @@ public class AddressBook {
      * @param person whose name you want
      * @return person's name
      */
-    private static String getNameFromPerson(String[] person) {
-        return person[PERSON_DATA_INDEX_NAME];
-    }
-
-    /**
-     * @param person whose phone number you want
-     * @return person's phone number
-     */
-    private static String getPhoneFromPerson(String[] person) {
-        return person[PERSON_DATA_INDEX_PHONE];
-    }
-
-    /**
-     * @param person whose email you want
-     * @return person's email
-     */
-    private static String getEmailFromPerson(String[] person) {
-        return person[PERSON_DATA_INDEX_EMAIL];
+    private static String getPropertyFromPerson(String[] person, PersonProperty property) {
+        return person[property.ordinal()];
     }
 
     /**
@@ -856,9 +788,9 @@ public class AddressBook {
      */
     private static String[] makePersonFromData(String name, String phone, String email) {
         final String[] person = new String[PERSON_DATA_COUNT];
-        person[PERSON_DATA_INDEX_NAME] = name;
-        person[PERSON_DATA_INDEX_PHONE] = phone;
-        person[PERSON_DATA_INDEX_EMAIL] = email;
+        person[PersonProperty.NAME.ordinal()] = name;
+        person[PersonProperty.PHONE.ordinal()] = phone;
+        person[PersonProperty.EMAIL.ordinal()] = email;
         return person;
     }
 
@@ -870,7 +802,9 @@ public class AddressBook {
      */
     private static String encodePersonToString(String[] person) {
         return String.format(PERSON_STRING_REPRESENTATION,
-                getNameFromPerson(person), getPhoneFromPerson(person), getEmailFromPerson(person));
+        		getPropertyFromPerson(person, PersonProperty.NAME), 
+        		getPropertyFromPerson(person, PersonProperty.PHONE), 
+        		getPropertyFromPerson(person, PersonProperty.EMAIL));
     }
 
     /**
@@ -1016,9 +950,9 @@ public class AddressBook {
      * @return whether the given person has valid data
      */
     private static boolean isPersonDataValid(String[] person) {
-        return isPersonNameValid(person[PERSON_DATA_INDEX_NAME])
-                && isPersonPhoneValid(person[PERSON_DATA_INDEX_PHONE])
-                && isPersonEmailValid(person[PERSON_DATA_INDEX_EMAIL]);
+        return isPersonNameValid(person[PersonProperty.NAME.ordinal()])
+                && isPersonPhoneValid(person[PersonProperty.PHONE.ordinal()])
+                && isPersonEmailValid(person[PersonProperty.EMAIL.ordinal()]);
     }
 
     /*
@@ -1180,7 +1114,7 @@ public class AddressBook {
      * @return split by whitespace
      */
     private static ArrayList<String> splitByWhitespace(String toSplit) {
-        return new ArrayList(Arrays.asList(toSplit.trim().split("\\s+")));
+        return new ArrayList<String>(Arrays.asList(toSplit.trim().split("\\s+")));
     }
 
 }
