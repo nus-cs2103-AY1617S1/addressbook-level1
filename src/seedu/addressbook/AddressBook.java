@@ -207,20 +207,28 @@ public class AddressBook {
         }
 
         if (args.length == 1) {
-            setupGivenFileForStorage(args[0]);
+            if (!isValidFilePath(args[0])) {
+                showToUser(String.format(MESSAGE_INVALID_FILE, args[0]));
+                exitProgram();
+            }
+
+            storageFilePath = args[0];
+            createFileIfMissing(args[0]);
         }
 
         if(args.length == 0) {
-            setupDefaultFileForStorage();
+            showToUser(MESSAGE_USING_DEFAULT_FILE);
+            storageFilePath = DEFAULT_STORAGE_FILEPATH;
+            createFileIfMissing(storageFilePath);
         }
         
         initialiseAddressBookModel(loadPersonsFromFile(storageFilePath));
         
         while (true) {
             String userCommand = getUserInput();
-            echoUserCommand(userCommand);
+            showToUser("[Command entered:" + userCommand + "]");            
             String feedback = executeCommand(userCommand);
-            showResultToUser(feedback);
+            showToUser(feedback, DIVIDER);
         }
     }
 
@@ -356,7 +364,7 @@ public class AddressBook {
         case COMMAND_ADD_WORD:
             return executeAddPerson(commandArgs);
         case COMMAND_FIND_WORD:
-            return executeFindPersons(commandArgs.toLowerCase());
+            return executeFindPersons(commandArgs);
         case COMMAND_LIST_WORD:
             return executeListAllPersonsInAddressBook();
         case COMMAND_DELETE_WORD:
@@ -469,7 +477,7 @@ public class AddressBook {
     private static ArrayList<String[]> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
         for (String[] person : getAllPersonsInAddressBook()) {
-            final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person).toLowerCase()));
+            final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
             if (!Collections.disjoint(wordsInName, keywords)) {
                 matchedPersons.add(person);
             }
