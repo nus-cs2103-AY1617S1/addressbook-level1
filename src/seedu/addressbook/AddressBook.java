@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Scanner;
@@ -127,7 +128,18 @@ public class AddressBook {
     private static final String COMMAND_EXIT_WORD = "exit";
     private static final String COMMAND_EXIT_DESC = "Exits the program.";
     private static final String COMMAND_EXIT_EXAMPLE = COMMAND_EXIT_WORD;
-
+   
+    private static final String COMMAND_SORT_WORD = "sort";
+    private static final String COMMAND_SORT_DESC = "List the persons in alphabateical order";
+    private static final String COMMAND_SORT_EXAMPLE = COMMAND_SORT_WORD;
+    
+    private static final String COMMAND_EDIT_WORD = "edit";
+    private static final String COMMAND_EDIT_DESC = "Edit properties of a specific person";
+    private static final String COMMAND_EDIT_PARAMETERS = "NAME "
+            + PERSON_DATA_PREFIX_PHONE + "PHONE_NUMBER "
+            + PERSON_DATA_PREFIX_EMAIL + "EMAIL";
+    private static final String COMMAND_EDIT_EXAMPLE = COMMAND_EDIT_WORD + " John Doe p/98765432 e/johnd@gmail.com";
+    
     private static final String DIVIDER = "===================================================";
 
 
@@ -353,6 +365,10 @@ public class AddressBook {
             return getUsageInfoForAllCommands();
         case COMMAND_EXIT_WORD:
             executeExitProgramRequest();
+        case COMMAND_SORT_WORD:
+        	return executeSortAllPersonsInAddressBook();
+        case COMMAND_EDIT_WORD:
+        	return executeEditPersonDetails(commandArgs);
         default:
             return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
         }
@@ -411,10 +427,14 @@ public class AddressBook {
         return String.format(MESSAGE_ADDED,
                 getNameFromPerson(addedPerson), getPhoneFromPerson(addedPerson), getEmailFromPerson(addedPerson));
     }
-
+    
+    private static String getMessageForSuccessfulEditedPerson(String[] editedPerson) {
+    	return String.format(MESSAGE_ADDED,
+    			getNameFromPerson(editedPerson), getPhoneFromPerson(editedPerson), getEmailFromPerson(editedPerson));
+    }
     /**
      * Finds and lists all persons in address book whose name contains any of the argument keywords.
-     * Keyword matching is case sensitive.
+     * Keyword matching is case insensitive.(updated)
      *
      * @param commandArgs full command args string from the user
      * @return feedback display message for the operation result
@@ -425,8 +445,53 @@ public class AddressBook {
         showToUser(personsFound);
         return getMessageForPersonsDisplayedSummary(personsFound);
     }
-
     /**
+     * Finds the required person in addressBook whose name matches the argument keywords
+     * Keyword matching is case insensitive.
+     * 
+     * 
+     * @param commandArgs full command args string from the user
+     * @return display edited Person's details message for operation result
+     */
+    private static String executeEditPersonDetails(String commandArgs) {
+    	//Try decoding a person from raw args
+    	Optional<String[]> decodeResults = decodePersonFromString(commandArgs);
+    	//Then check if args are valid
+    	if(!decodeResults.isPresent())  {
+    		return getMessageForInvalidCommandInput(COMMAND_EDIT_WORD, getUsageInfoForExitCommand());
+    	}
+    	String[] personToEdit = decodeResults.get();
+    	String personName = personToEdit[PERSON_DATA_INDEX_NAME];
+    	for(int i=0 ; i < ALL_PERSONS.size() ; i ++) {
+    		if(personName.equals(getNameFromPerson(ALL_PERSONS.get(i)))) {
+    			ALL_PERSONS.set(i, personToEdit);
+    		}
+    	}
+    	return personName;
+    }
+  
+    /**
+     * Sorts and list all persons in addressbook and prints out the list
+     * Sorted in alphabetical order
+     * 
+     * @return sorted list in alphabetical order for display
+     */
+    private static String executeSortAllPersonsInAddressBook() {
+    	 ArrayList<String[]> toBeSorted = getAllPersonsInAddressBook();
+    	 //AddressBook outer = new AddressBook();
+    	 //for (String[] person : getAllPersonsInAddressBook()) {
+    		// Collections.sort(getPerson, String.CASE_INSENSITIVE_ORDER);
+    
+    	 Collections.sort(toBeSorted, new Comparator<String[]>(){
+    		 public int compare(String[] p1, String[] p2) {
+    			 return getNameFromPerson(p1).compareToIgnoreCase(getNameFromPerson(p2));
+    		 }
+    	 });
+    	 showToUser(toBeSorted);
+    	 return getMessageForPersonsDisplayedSummary(toBeSorted);
+    }
+   
+    /** 
      * Constructs a feedback message to summarise an operation that displayed a listing of persons.
      *
      * @param personsDisplayed used to generate summary
@@ -454,9 +519,16 @@ public class AddressBook {
      */
     private static ArrayList<String[]> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
+        Collection<String> lowerKeyWords = new HashSet<>();
+        for(String keyword : keywords) {
+        	lowerKeyWords.add(keyword.toLowerCase());
+        }
         for (String[] person : getAllPersonsInAddressBook()) {
-            final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
+            final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person).toLowerCase()));
             if (!Collections.disjoint(wordsInName, keywords)) {
+                matchedPersons.add(person);
+            }
+            else if (!Collections.disjoint(wordsInName, lowerKeyWords)) {
                 matchedPersons.add(person);
             }
         }
@@ -789,7 +861,15 @@ public class AddressBook {
         }
         return changed;
     }
-
+    /**
+     * Replaces the specificed person details from address book if it exists
+     * 
+     * @param s1 The found person in addressbook
+     * @param s2 The renewed details of found person
+     */
+    private static void replaceFound(String[] s1, String[] s2) {
+    	s1 = s2;
+    }
     /**
      * @return unmodifiable list view of all persons in the address book
      */
@@ -845,7 +925,14 @@ public class AddressBook {
     private static String getEmailFromPerson(String[] person) {
         return person[PERSON_DATA_INDEX_EMAIL];
     }
-
+    /*
+    private static String setEmailFromPerson(String[] person) {
+    	person[PERSON_DATA_INDEX_EMAIL] = person;
+    }
+    private static String setPhoneNumberFromPerson(String[] person) {
+    	person[PERSON_DATA_PREFIX_PHONE] = person;
+    }*/
+    
     /**
      * Create a person for use in the internal data.
      *
@@ -1078,7 +1165,9 @@ public class AddressBook {
                 + getUsageInfoForDeleteCommand() + LS
                 + getUsageInfoForClearCommand() + LS
                 + getUsageInfoForExitCommand() + LS
-                + getUsageInfoForHelpCommand();
+                + getUsageInfoForHelpCommand() + LS
+                + getUsageInfoForSortCommand() + LS
+                + getUsageInfoForEditCommand();
     }
 
     /**
@@ -1153,8 +1242,26 @@ public class AddressBook {
         return String.format(MESSAGE_COMMAND_HELP, COMMAND_EXIT_WORD, COMMAND_EXIT_DESC)
                 + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_EXIT_EXAMPLE);
     }
-
-
+    /**
+     * Builds string for showing 'sort' command usage instruction
+     * 
+     * @return 'sort' command usage instruction
+     */
+    private static String getUsageInfoForSortCommand() {
+    	return String.format(MESSAGE_COMMAND_HELP, COMMAND_SORT_WORD, COMMAND_SORT_DESC) + LS
+    			+ String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_SORT_EXAMPLE) + LS;
+    }
+    /**
+     * Builds string for showing 'edit' command usage instruction
+     * 
+     * @return 'edit' command usage instruction
+     */
+    private static String getUsageInfoForEditCommand() {
+    	return String.format(MESSAGE_COMMAND_HELP , COMMAND_EDIT_WORD , COMMAND_EDIT_DESC) + LS
+    			+ String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_EDIT_PARAMETERS) + LS
+    			+ String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_EDIT_EXAMPLE) +LS;
+    }
+    
     /*
      * ============================
      *         UTILITY METHODS
