@@ -17,6 +17,9 @@
 || list: Displays all persons as a list with index numbers.
 || 	Example: list
 || 
+|| sort: Sorts and lists all persons in alphabetical order.
+|| 	Example: sort
+|| 
 || delete: Deletes a person identified by the index number used in the last find/list call.
 || 	Parameters: INDEX
 || 	Example: delete 1
@@ -230,6 +233,32 @@
 || Enter command: || [Command entered:  list]
 || 
 || 0 persons found!
+|| ===================================================
+|| Enter command: || [Command entered:  add Cedric Tan p/345 e/345@gmail.com]
+|| New person added: Cedric Tan, Phone: 345, Email: 345@gmail.com
+|| ===================================================
+|| Enter command: || [Command entered:  add Aaron Lee p/123 e/123@gmail.com]
+|| New person added: Aaron Lee, Phone: 123, Email: 123@gmail.com
+|| ===================================================
+|| Enter command: || [Command entered:  add Barry Lim p/454 e/454@gmail.com]
+|| New person added: Barry Lim, Phone: 454, Email: 454@gmail.com
+|| ===================================================
+|| Enter command: || [Command entered:  sort]
+|| 	1. Aaron Lee  Phone Number: 123  Email: 123@gmail.com
+|| 	2. Barry Lim  Phone Number: 454  Email: 454@gmail.com
+|| 	3. Cedric Tan  Phone Number: 345  Email: 345@gmail.com
+|| 
+|| Address Book is sorted!
+|| ===================================================
+|| Enter command: || [Command entered:  list]
+|| 	1. Aaron Lee  Phone Number: 123  Email: 123@gmail.com
+|| 	2. Barry Lim  Phone Number: 454  Email: 454@gmail.com
+|| 	3. Cedric Tan  Phone Number: 345  Email: 345@gmail.com
+|| 
+|| 3 persons found!
+|| ===================================================
+|| Enter command: || [Command entered:  clear]
+|| Address book has been cleared!
 || ===================================================
 || Enter command: || [Command entered:  exit]
 || Exiting Address Book... Good bye!

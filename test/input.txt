@@ -100,6 +100,22 @@
   list
 
 ##########################################################
+# test sort persons command
+##########################################################
+
+  # add persons to sort
+  add Cedric Tan p/345 e/345@gmail.com
+  add Aaron Lee p/123 e/123@gmail.com
+  add Barry Lim p/454 e/454@gmail.com
+  
+  # should sort address book
+  sort
+  # should show sorted address book
+  list
+  # clears all
+  clear
+
+##########################################################
 # test exit command
 ##########################################################
 
