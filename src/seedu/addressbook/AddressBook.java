@@ -206,7 +206,8 @@ public class AddressBook {
         
         if (args.length >= 2) {
             showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
-            exitProgram();
+            showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
+			System.exit(0);
         }
 
         if (args.length == 1) {
@@ -217,7 +218,7 @@ public class AddressBook {
             setupDefaultFileForStorage();
         }
         
-        loadDataFromStorage();
+        initialiseAddressBookModel(loadPersonsFromFile(storageFilePath));
         while (true) {
             String userCommand = getUserInput();
             echoUserCommand(userCommand);
@@ -252,7 +253,10 @@ public class AddressBook {
      * Echoes the user input back to the user.
      */
     private static void echoUserCommand(String userCommand) {
-        showToUser("[Command entered:" + userCommand + "]");
+        String[] message = { "[Command entered:" + userCommand + "]" };
+		for (String m : message) {
+		    System.out.println(LINE_PREFIX + m);
+		}
     }
 
     /*
@@ -279,21 +283,14 @@ public class AddressBook {
      */
     private static void setupGivenFileForStorage(String filePath) {
 
-        if (!isValidFilePath(filePath)) {
+        if (!filePath.endsWith(".txt")) {
             showToUser(String.format(MESSAGE_INVALID_FILE, filePath));
-            exitProgram();
+            showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
+			System.exit(0);
         }
 
         storageFilePath = filePath;
         createFileIfMissing(filePath);
-    }
-
-    /**
-     * Displays the goodbye message and exits the runtime.
-     */
-    private static void exitProgram() {
-        showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
-        System.exit(0);
     }
 
     /**
@@ -305,15 +302,6 @@ public class AddressBook {
         showToUser(MESSAGE_USING_DEFAULT_FILE);
         storageFilePath = DEFAULT_STORAGE_FILEPATH;
         createFileIfMissing(storageFilePath);
-    }
-
-    /**
-     * Returns true if the given file is acceptable.
-     * The file path is acceptable if it ends in '.txt'
-     * TODO: Implement a more rigorous validity checking.
-     */
-    private static boolean isValidFilePath(String filePath) {
-        return filePath.endsWith(".txt");
     }
 
     /**
@@ -559,7 +547,8 @@ public class AddressBook {
      * @return feedback display message for the operation result
      */
     private static void executeExitProgramRequest() {
-        exitProgram();
+        showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
+		System.exit(0);
     }
 
     /*
@@ -698,7 +687,8 @@ public class AddressBook {
             showToUser(String.format(MESSAGE_STORAGE_FILE_CREATED, filePath));
         } catch (IOException ioe) {
             showToUser(String.format(MESSAGE_ERROR_CREATING_STORAGE_FILE, filePath));
-            exitProgram();
+            showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
+			System.exit(0);
         }
     }
 
@@ -713,7 +703,8 @@ public class AddressBook {
         final Optional<ArrayList<HashMap<PersonProperty, String>>> successfullyDecoded = decodePersonsFromStrings(getLinesInFile(filePath));
         if (!successfullyDecoded.isPresent()) {
             showToUser(MESSAGE_INVALID_STORAGE_FILE_CONTENT);
-            exitProgram();
+            showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
+			System.exit(0);
         }
         return successfullyDecoded.get();
     }
@@ -728,10 +719,12 @@ public class AddressBook {
             lines = new ArrayList(Files.readAllLines(Paths.get(filePath)));
         } catch (FileNotFoundException fnfe) {
             showToUser(String.format(MESSAGE_ERROR_MISSING_STORAGE_FILE, filePath));
-            exitProgram();
+            showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
+			System.exit(0);
         } catch (IOException ioe) {
             showToUser(String.format(MESSAGE_ERROR_READING_FROM_FILE, filePath));
-            exitProgram();
+            showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
+			System.exit(0);
         }
         return lines;
     }
@@ -748,7 +741,8 @@ public class AddressBook {
             Files.write(Paths.get(storageFilePath), linesToWrite);
         } catch (IOException ioe) {
             showToUser(String.format(MESSAGE_ERROR_WRITING_TO_FILE, filePath));
-            exitProgram();
+            showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
+			System.exit(0);
         }
     }
 
@@ -1020,27 +1014,9 @@ public class AddressBook {
      * @return whether the given person has valid data
      */
     private static boolean isPersonDataValid(HashMap<PersonProperty, String> person) {
-        return isPersonNameValid(getNameFromPerson(person))
+        return getNameFromPerson(person).matches("(\\w|\\s)+")
                 && isPersonPhoneValid(getPhoneFromPerson(person))
                 && isPersonEmailValid(getEmailFromPerson(person));
-    }
-
-    /*
-     * ==============NOTE TO STUDENTS======================================
-     * Note the use of 'regular expressions' in the method below.
-     * Regular expressions can be very useful in checking if a a string
-     * follows a sepcific format.
-     * ====================================================================
-     */
-    /**
-     * Validates string as a legal person name
-     *
-     * @param name to be validated
-     * @return whether arg is a valid person name
-     */
-    private static boolean isPersonNameValid(String name) {
-        return name.matches("(\\w|\\s)+");  // name is nonempty mixture of alphabets and whitespace
-        //TODO: implement a more permissive validation
     }
 
     /**
@@ -1184,7 +1160,11 @@ public class AddressBook {
      * @return split by whitespace
      */
     private static ArrayList<String> splitByWhitespace(String toSplit) {
-        return new ArrayList(Arrays.asList(toSplit.trim().split("\\s+")));
+        return returnWhitespaceSplit(toSplit);
     }
+
+	private static ArrayList<String> returnWhitespaceSplit(String toSplit) {
+		return new ArrayList(Arrays.asList(toSplit.trim().split("\\s+")));
+	}
 
 }
