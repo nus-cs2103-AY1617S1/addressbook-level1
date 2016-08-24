@@ -255,7 +255,36 @@ public class AddressBook {
             for (String m : message1) {
                 System.out.println(LINE_PREFIX + m);
             }
-            String feedback = executeCommand(userCommand);
+            final String[] commandTypeAndParams = splitCommandWordAndArgs(userCommand);
+            final String commandType = commandTypeAndParams[0];
+            final String commandArgs = commandTypeAndParams[1];
+            String feedbackMessage = new String();
+            switch (commandType) {
+            case COMMAND_ADD_WORD:
+                feedbackMessage = executeAddPerson(commandArgs);
+                break;
+            case COMMAND_FIND_WORD:
+                feedbackMessage = executeFindPersons(commandArgs);
+                break;
+            case COMMAND_LIST_WORD:
+                feedbackMessage = executeListAllPersonsInAddressBook();
+                break;
+            case COMMAND_DELETE_WORD:
+                feedbackMessage = executeDeletePerson(commandArgs);
+                break;
+            case COMMAND_CLEAR_WORD:
+                feedbackMessage = executeClearAddressBook();
+                break;
+            case COMMAND_HELP_WORD:
+                feedbackMessage = getUsageInfoForAllCommands();
+                break;
+            case COMMAND_EXIT_WORD:
+                executeExitProgramRequest();
+            default:
+                feedbackMessage = getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
+                break;
+            }
+            String feedback = feedbackMessage;
             String[] message2 = { feedback, DIVIDER };
             for (String m : message2) {
                 System.out.println(LINE_PREFIX + m);
@@ -284,36 +313,6 @@ public class AddressBook {
      *           COMMAND LOGIC
      * ===========================================
      */
-
-    /**
-     * Executes the command as specified by the {@code userInputString}
-     *
-     * @param userInputString  raw input from user
-     * @return  feedback about how the command was executed
-     */
-    public static String executeCommand(String userInputString) {
-        final String[] commandTypeAndParams = splitCommandWordAndArgs(userInputString);
-        final String commandType = commandTypeAndParams[0];
-        final String commandArgs = commandTypeAndParams[1];
-        switch (commandType) {
-        case COMMAND_ADD_WORD:
-            return executeAddPerson(commandArgs);
-        case COMMAND_FIND_WORD:
-            return executeFindPersons(commandArgs);
-        case COMMAND_LIST_WORD:
-            return executeListAllPersonsInAddressBook();
-        case COMMAND_DELETE_WORD:
-            return executeDeletePerson(commandArgs);
-        case COMMAND_CLEAR_WORD:
-            return executeClearAddressBook();
-        case COMMAND_HELP_WORD:
-            return getUsageInfoForAllCommands();
-        case COMMAND_EXIT_WORD:
-            executeExitProgramRequest();
-        default:
-            return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
-        }
-    }
 
     /**
      * Splits raw user input into command word and command arguments string
