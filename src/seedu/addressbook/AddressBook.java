@@ -39,7 +39,7 @@ public class AddressBook {
     /**
      * Version info of the program.
      */
-    private static final String VERSION = "AddessBook Level 1 - Version 1.0";
+    private static final String PROG_VERSION = "AddessBook Level 1 - Version 1.0";
 
     /**
      * A decorative prefix added to the beginning of lines printed by AddressBook
@@ -163,7 +163,7 @@ public class AddressBook {
      * the I/O redirection technique. If not, only the first line of the input
      * text file will be processed.
      */
-    private static final Scanner SCANNER = new Scanner(System.in);
+    private static final Scanner scanner = new Scanner(System.in);
     /*
      * ==============NOTE TO STUDENTS======================================================================
      * Note that the type of the variable below can also be declared as List<String[]>, as follows:
@@ -176,7 +176,7 @@ public class AddressBook {
     /**
      * List of all persons in the address book.
      */
-    private static final ArrayList<String[]> ALL_PERSONS = new ArrayList<>();
+    private static final ArrayList<String[]> allPersons = new ArrayList<>();
 
 
     /**
@@ -339,19 +339,19 @@ public class AddressBook {
         final String commandType = commandTypeAndParams[0];
         final String commandArgs = commandTypeAndParams[1];
         switch (commandType) {
-        case COMMAND_ADD_WORD:
+        case COMMAND_ADD_WORD :
             return executeAddPerson(commandArgs);
-        case COMMAND_FIND_WORD:
+        case COMMAND_FIND_WORD :
             return executeFindPersons(commandArgs);
-        case COMMAND_LIST_WORD:
+        case COMMAND_LIST_WORD :
             return executeListAllPersonsInAddressBook();
-        case COMMAND_DELETE_WORD:
+        case COMMAND_DELETE_WORD :
             return executeDeletePerson(commandArgs);
-        case COMMAND_CLEAR_WORD:
+        case COMMAND_CLEAR_WORD :
             return executeClearAddressBook();
-        case COMMAND_HELP_WORD:
+        case COMMAND_HELP_WORD :
             return getUsageInfoForAllCommands();
-        case COMMAND_EXIT_WORD:
+        case COMMAND_EXIT_WORD :
             executeExitProgramRequest();
         default:
             return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
@@ -572,10 +572,10 @@ public class AddressBook {
      */
     private static String getUserInput() {
         System.out.print(LINE_PREFIX + "Enter command: ");
-        String inputLine = SCANNER.nextLine();
+        String inputLine = scanner.nextLine();
         // silently consume all blank and comment lines
         while (inputLine.trim().isEmpty() || inputLine.trim().charAt(0) == INPUT_COMMENT_MARKER) {
-            inputLine = SCANNER.nextLine();
+            inputLine = scanner.nextLine();
         }
         return inputLine;
     }
