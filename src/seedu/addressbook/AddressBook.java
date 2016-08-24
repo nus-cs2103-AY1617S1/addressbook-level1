@@ -213,57 +213,14 @@ public class AddressBook {
      * ====================================================================
      */
     public static void main(String[] args) {
-    	showToUser(DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER);
-        
-    	final int storageFileLength = args.length;
-        if (storageFileLength >= 2) {
-            showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
-            showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
-            System.exit(0);
-        }
-
-        if (storageFileLength == 1) {
-        	   if (!isValidFilePath(args[0])) {
-                   showToUser(String.format(MESSAGE_INVALID_FILE, args[0]));
-                   showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
-                   System.exit(0);
-               }
-
-               storageFilePath = args[0];
-               final File storageFile = new File(args[0]);
-               if (storageFile.exists()) {
-                   return;
-               }
-
-               showToUser(String.format(MESSAGE_ERROR_MISSING_STORAGE_FILE, args[0]));
-
-               try {
-                   storageFile.createNewFile();
-                   showToUser(String.format(MESSAGE_STORAGE_FILE_CREATED, args[0]));
-               } catch (IOException ioe) {
-                   showToUser(String.format(MESSAGE_ERROR_CREATING_STORAGE_FILE, args[0]));
-                   showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
-                   System.exit(0);
-               }
-        }
-
-        if(storageFileLength == 0) {
-            showToUser(MESSAGE_USING_DEFAULT_FILE);
-            storageFilePath = DEFAULT_STORAGE_FILEPATH;
-            createFileIfMissing(storageFilePath);
-        }
-        final Optional<ArrayList<String[]>> successfullyDecoded = decodePersonsFromStrings(getLinesInFile(storageFilePath));
-        if (!successfullyDecoded.isPresent()) {
-            showToUser(MESSAGE_INVALID_STORAGE_FILE_CONTENT);
-            exitProgram();
-        }
-        
-        ALL_PERSONS.clear();
-        ALL_PERSONS.addAll(successfullyDecoded.get());
-
+        showWelcomeMessage();
+        processProgramArgs(args);
+        loadDataFromStorage();
         while (true) {
-            echoUserCommand(getUserInput());
-            showResultToUser(executeCommand(getUserInput()));
+            String userCommand = getUserInput();
+            echoUserCommand(userCommand);
+            String feedback = executeCommand(userCommand);
+            showResultToUser(feedback);
         }
     }
 
