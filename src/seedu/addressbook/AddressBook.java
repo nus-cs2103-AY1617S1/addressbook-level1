@@ -429,7 +429,8 @@ public class AddressBook {
     });
 		
 
-	return null;
+    	showToUser(allPersons);
+    	return getMessageForPersonsDisplayedSummary(allPersons);
 	}
 
 	/**
