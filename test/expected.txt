@@ -20,6 +20,10 @@
 || sort: Sorts and lists all persons in alphabetical order.
 || 	Example: sort
 || 
+|| edit: Edits properties of a specific person.
+|| 	Parameters: INDEX n/NAME p/PHONE_NUMBER e/EMAIL
+|| 	Example: edit 1 n/John Doe p/98765432 e/johnd@gmail.com
+|| 
 || delete: Deletes a person identified by the index number used in the last find/list call.
 || 	Parameters: INDEX
 || 	Example: delete 1
@@ -254,6 +258,22 @@
 || 	1. Aaron Lee  Phone Number: 123  Email: 123@gmail.com
 || 	2. Barry Lim  Phone Number: 454  Email: 454@gmail.com
 || 	3. Cedric Tan  Phone Number: 345  Email: 345@gmail.com
+|| 
+|| 3 persons found!
+|| ===================================================
+|| Enter command: || [Command entered:  edit 1 n/Adam Lee p/912 e/912@gmail.com]
+|| Edited Person: Adam Lee  Phone Number: 912  Email: 912@gmail.com
+|| ===================================================
+|| Enter command: || [Command entered:  edit 2 p/233 e/barryng@gmail.com n/Barry Ng]
+|| Edited Person: Barry Ng  Phone Number: 233  Email: barryng@gmail.com
+|| ===================================================
+|| Enter command: || [Command entered:  edit 3 n/Cedric Ang B C]
+|| Edited Person: Cedric Ang B C  Phone Number: 345  Email: 345@gmail.com
+|| ===================================================
+|| Enter command: || [Command entered:  list]
+|| 	1. Adam Lee  Phone Number: 912  Email: 912@gmail.com
+|| 	2. Barry Ng  Phone Number: 233  Email: barryng@gmail.com
+|| 	3. Cedric Ang B C  Phone Number: 345  Email: 345@gmail.com
 || 
 || 3 persons found!
 || ===================================================

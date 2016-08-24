@@ -100,7 +100,7 @@
   list
 
 ##########################################################
-# test sort persons command
+# test sort and edit persons command
 ##########################################################
 
   # add persons to sort
@@ -111,6 +111,17 @@
   # should sort address book
   sort
   # should show sorted address book
+  list
+  
+
+  # edit all three details in n/ p/ e/ order
+  edit 1 n/Adam Lee p/912 e/912@gmail.com
+  # edit all three in random order
+  edit 2 p/233 e/barryng@gmail.com n/Barry Ng
+  # edit name only
+  edit 3 n/Cedric Ang B C
+
+  # verify edits
   list
   # clears all
   clear
