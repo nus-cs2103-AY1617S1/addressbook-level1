@@ -465,11 +465,22 @@ public class AddressBook {
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
         for (String[] person : getAllPersonsInAddressBook()) {
             final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
-            if (!Collections.disjoint(wordsInName, keywords)) {
-                matchedPersons.add(person);
-            }
+            compareKeywordsAndName(keywords, matchedPersons, person, wordsInName);
         }
         return matchedPersons;
+    }
+
+    /**
+     * @param keywords
+     * @param matchedPersons
+     * @param person
+     * @param wordsInName
+     */
+    private static void compareKeywordsAndName(Collection<String> keywords, final ArrayList<String[]> matchedPersons,
+            String[] person, final Set<String> wordsInName) {
+        if (!Collections.disjoint(wordsInName, keywords)) {
+            matchedPersons.add(person);
+        }
     }
 
     /**
