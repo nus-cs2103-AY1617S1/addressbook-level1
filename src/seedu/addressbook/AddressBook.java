@@ -291,7 +291,11 @@ public class AddressBook {
                 + getUsageInfoForHelpCommand();
                 break;
             case COMMAND_EXIT_WORD:
-                executeExitProgramRequest();
+                String[] message3 = { MESSAGE_GOODBYE, DIVIDER, DIVIDER };
+                for (String m1 : message3) {
+                    System.out.println(LINE_PREFIX + m1);
+                }
+                System.exit(0);
             default:
                 feedbackMessage = getMessageForInvalidCommandInput(commandType, getUsageInfoForAddCommand() + LS
                 + getUsageInfoForFindCommand() + LS
@@ -488,18 +492,7 @@ public class AddressBook {
         return String.format(MESSAGE_DELETE_PERSON_SUCCESS, getMessageForFormattedPersonData(deletedPerson));
     }
 
-    /**
-     * Request to terminate the program.
-     *
-     * @return feedback display message for the operation result
-     */
-    private static void executeExitProgramRequest() {
-        String[] message = { MESSAGE_GOODBYE, DIVIDER, DIVIDER };
-        for (String m : message) {
-            System.out.println(LINE_PREFIX + m);
-        }
-        System.exit(0);
-    }
+    
 
     /*
      * ===========================================
