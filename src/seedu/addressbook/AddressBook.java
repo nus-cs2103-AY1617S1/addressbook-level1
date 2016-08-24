@@ -108,7 +108,7 @@ public class AddressBook {
 
     private static final String COMMAND_LIST_WORD = "list";
     private static final String COMMAND_LIST_DESC = "Displays all persons as a list with index numbers.";
-//    private static final String COMMAND_LIST_EXAMPLE = COMMAND_LIST_WORD;
+    private static final String COMMAND_LIST_EXAMPLE = COMMAND_LIST_WORD;
 
     private static final String COMMAND_DELETE_WORD = "delete";
     private static final String COMMAND_DELETE_DESC = "Deletes a person identified by the index number used in "
@@ -118,15 +118,15 @@ public class AddressBook {
 
     private static final String COMMAND_CLEAR_WORD = "clear";
     private static final String COMMAND_CLEAR_DESC = "Clears address book permanently.";
-//    private static final String COMMAND_CLEAR_EXAMPLE = COMMAND_CLEAR_WORD;
+    private static final String COMMAND_CLEAR_EXAMPLE = COMMAND_CLEAR_WORD;
 
     private static final String COMMAND_HELP_WORD = "help";
     private static final String COMMAND_HELP_DESC = "Shows program usage instructions.";
-//    private static final String COMMAND_HELP_EXAMPLE = COMMAND_HELP_WORD;
+    private static final String COMMAND_HELP_EXAMPLE = COMMAND_HELP_WORD;
 
     private static final String COMMAND_EXIT_WORD = "exit";
     private static final String COMMAND_EXIT_DESC = "Exits the program.";
-//    private static final String COMMAND_EXIT_EXAMPLE = COMMAND_EXIT_WORD;
+    private static final String COMMAND_EXIT_EXAMPLE = COMMAND_EXIT_WORD;
 
     private static final String DIVIDER = "===================================================";
 
