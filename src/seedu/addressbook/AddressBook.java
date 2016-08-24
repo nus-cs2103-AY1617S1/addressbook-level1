@@ -200,13 +200,43 @@ public class AddressBook {
      */
     public static void main(String[] args) {
         showWelcomeMessage();
+<<<<<<< Updated upstream
         processProgramArgs(args);
         loadDataFromStorage();
+=======
+        // processProgramArgs(args);
+        if (args.length >= 2) {
+            showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
+            exitProgram();
+        }
+
+        if (args.length == 1) {
+            //setupGivenFileForStorage(args[0]);
+            if (!isValidFilePath(args[0])) {
+                showToUser(String.format(MESSAGE_INVALID_FILE, args[0]));
+                exitProgram();
+            }
+
+            storageFilePath = args[0];
+            createFileIfMissing(args[0]);
+        }
+
+        if(args.length == 0) {
+            //setupDefaultFileForStorage();
+            showToUser(MESSAGE_USING_DEFAULT_FILE);
+            storageFilePath = DEFAULT_STORAGE_FILEPATH;
+            createFileIfMissing(storageFilePath);
+        }
+        //loadDataFromStorage();
+        initialiseAddressBookModel(loadPersonsFromFile(storageFilePath));
+>>>>>>> Stashed changes
         while (true) {
             String userCommand = getUserInput();
-            echoUserCommand(userCommand);
+            //echoUserCommand(userCommand);
+            showToUser("[Command entered:" + userCommand + "]");
             String feedback = executeCommand(userCommand);
-            showResultToUser(feedback);
+            //showResultToUser(feedback);
+            showToUser(feedback, DIVIDER);
         }
     }
 
