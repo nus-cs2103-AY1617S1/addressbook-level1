@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Scanner;
@@ -424,12 +425,30 @@ public class AddressBook {
         final Set<String> lowerCaseKeywords = changeToLowerCase(keywords);
         System.out.println(lowerCaseKeywords);
         final ArrayList<String[]> personsFound = getPersonsWithNameContainingAnyKeyword(lowerCaseKeywords);
-        showToUser(personsFound);
-        return getMessageForPersonsDisplayedSummary(personsFound);
+        final ArrayList<String[]> sortedPerson = sortNameList(personsFound);
+        showToUser(sortedPerson);
+        return getMessageForPersonsDisplayedSummary(sortedPerson);
     }
 
     
     /**
+     * sorts list of person object by their names in lexigraphical order
+     * 
+     * @param personsFound
+     * 
+     * @return sorted list
+     */
+    private static ArrayList<String[]> sortNameList(ArrayList<String[]> personsFound) {
+    	Collections.sort(personsFound, new Comparator<String[]>() {
+    		public int compare(String[] p1, String[] p2) {
+    			return p1[0].toLowerCase().compareTo(p2[0].toLowerCase());
+    	 	}
+    	});
+		// TODO Auto-generated method stub
+		return personsFound;
+	}
+
+	/**
      * change all strings in a set to lowercase
      * 
      * @param keywords
@@ -563,7 +582,7 @@ public class AddressBook {
      * @return feedback display message for the operation result
      */
     private static String executeListAllPersonsInAddressBook() {
-        ArrayList<String[]> toBeDisplayed = getAllPersonsInAddressBook();
+        ArrayList<String[]> toBeDisplayed = sortNameList(getAllPersonsInAddressBook());
         showToUser(toBeDisplayed);
         return getMessageForPersonsDisplayedSummary(toBeDisplayed);
     }
