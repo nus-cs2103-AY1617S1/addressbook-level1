@@ -156,6 +156,8 @@ public class AddressBook {
      * If the first non-whitespace character in a user's input line is this, that line will be ignored.
      */
     private static final char INPUT_COMMENT_MARKER = '#';
+    
+    private static final boolean PROGRAM_IS_RUNNING = true;
 
     /*
      * This variable is declared for the whole class (instead of declaring it
@@ -202,7 +204,7 @@ public class AddressBook {
         showWelcomeMessage();
         processProgramArgs(args);
         loadDataFromStorage();
-        while (true) {
+        while (PROGRAM_IS_RUNNING) {
             String userCommand = getUserInput();
             echoUserCommand(userCommand);
             String feedback = executeCommand(userCommand);
