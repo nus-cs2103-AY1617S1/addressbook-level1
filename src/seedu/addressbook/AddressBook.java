@@ -770,19 +770,8 @@ public class AddressBook {
      */
     private static boolean isPersonDataValid(HashMap<PersonProperty,String> person) {
         return person.get(PersonProperty.NAME).matches("(\\w|\\s)+")
-                && isPersonPhoneValid(person.get(PersonProperty.PHONE))
+                && person.get(PersonProperty.PHONE).matches("\\d+")
                 && isPersonEmailValid(person.get(PersonProperty.EMAIL));
-    }
-
-    /**
-     * Validates string as a legal person phone number
-     *
-     * @param phone to be validated
-     * @return whether arg is a valid person phone number
-     */
-    private static boolean isPersonPhoneValid(String phone) {
-        return phone.matches("\\d+");    // phone nonempty sequence of digits
-        //TODO: implement a more permissive validation
     }
 
     /**
