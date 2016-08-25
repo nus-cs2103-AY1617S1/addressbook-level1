@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.Comparator;
 
 /* ==============NOTE TO STUDENTS======================================
  * This class header comment below is brief because details of how to
@@ -85,7 +86,8 @@ public class AddressBook {
     private static final String MESSAGE_STORAGE_FILE_CREATED = "Created new empty storage file: %1$s";
     private static final String MESSAGE_WELCOME = "Welcome to your Address Book!";
     private static final String MESSAGE_USING_DEFAULT_FILE = "Using default storage file : " + DEFAULT_STORAGE_FILEPATH;
-
+    private static final String MESSAGE_EDIT_PERSON_SUCCESS = "Person detail is successfully changed.";
+    
     // These are the prefix strings to define the data type of a command parameter
     private static final String PERSON_DATA_PREFIX_PHONE = "p/";
     private static final String PERSON_DATA_PREFIX_EMAIL = "e/";
@@ -120,6 +122,15 @@ public class AddressBook {
     private static final String COMMAND_CLEAR_DESC = "Clears address book permanently.";
     private static final String COMMAND_CLEAR_EXAMPLE = COMMAND_CLEAR_WORD;
 
+    private static final String COMMAND_SORT_WORD = "sort";
+    private static final String COMMAND_SORT_DESC = "Sorts address book and list all persons";
+    private static final String COMMAND_SORT_EXAMPLE = COMMAND_SORT_WORD;
+
+    private static final String COMMAND_EDIT_WORD = "edit";
+    private static final String COMMAND_EDIT_DESC = "Edit properties of a specific person, enter n, p, e to edit name, phone, email respectively";
+    private static final String COMMAND_EDIT_PARAMETERS = "NAME PROPERTYTOEDIT NEWDETAIL";
+    private static final String COMMAND_EDIT_EXAMPLE = COMMAND_EDIT_WORD + " John e john@gmail.com";
+
     private static final String COMMAND_HELP_WORD = "help";
     private static final String COMMAND_HELP_DESC = "Shows program usage instructions.";
     private static final String COMMAND_HELP_EXAMPLE = COMMAND_HELP_WORD;
@@ -130,7 +141,6 @@ public class AddressBook {
 
     private static final String DIVIDER = "===================================================";
 
-
     /* We use a String array to store details of a single person.
      * The constants given below are the indexes for the different data elements of a person
      * used by the internal String[] storage format.
@@ -139,7 +149,13 @@ public class AddressBook {
     private static final int PERSON_DATA_INDEX_NAME = 0;
     private static final int PERSON_DATA_INDEX_PHONE = 1;
     private static final int PERSON_DATA_INDEX_EMAIL = 2;
-
+    
+    /**
+     * EDITTYPE command args parameter for edit command
+     */
+    private static final String PERSON_EDIT_TYPE_NAME = "n";
+    private static final String PERSON_EDIT_TYPE_PHONE = "p";
+    private static final String PERSON_EDIT_TYPE_EMAIL = "e";
     /**
      * The number of data elements for a single person.
      */
@@ -149,8 +165,6 @@ public class AddressBook {
      * Offset required to convert between 1-indexing and 0-indexing.COMMAND_
      */
     private static final int DISPLAYED_INDEX_OFFSET = 1;
-
-
 
     /**
      * If the first non-whitespace character in a user's input line is this, that line will be ignored.
@@ -177,7 +191,6 @@ public class AddressBook {
      * List of all persons in the address book.
      */
     private static final ArrayList<String[]> ALL_PERSONS = new ArrayList<>();
-
 
     /**
      * Stores the most recent list of persons shown to the user as a result of a user command.
@@ -264,7 +277,7 @@ public class AddressBook {
             setupGivenFileForStorage(args[0]);
         }
 
-        if(args.length == 0) {
+        if (args.length == 0) {
             setupDefaultFileForStorage();
         }
     }
@@ -321,7 +334,6 @@ public class AddressBook {
         initialiseAddressBookModel(loadPersonsFromFile(storageFilePath));
     }
 
-
     /*
      * ===========================================
      *           COMMAND LOGIC
@@ -349,6 +361,10 @@ public class AddressBook {
             return executeDeletePerson(commandArgs);
         case COMMAND_CLEAR_WORD:
             return executeClearAddressBook();
+        case COMMAND_SORT_WORD:
+            return executeSortAddressBookAndList();
+        case COMMAND_EDIT_WORD:
+            return executeEditPerson(commandArgs);
         case COMMAND_HELP_WORD:
             return getUsageInfoForAllCommands();
         case COMMAND_EXIT_WORD:
@@ -359,13 +375,91 @@ public class AddressBook {
     }
 
     /**
-     * Splits raw user input into command word and command arguments string
-     *
-     * @return  size 2 array; first element is the command type and second element is the arguments string
+     * Takes in person name and which property should be changed.
+     * E.g. edit Betsy p 123456 => changes Betsy's phone number to be 123456.
+     * 
+     * @return  feedback display message for the operation result
      */
+    private static String executeEditPerson(String commandArgs) {
+        String[] details = commandArgs.split(" ");
+        if (details.length != 3) {
+            return getMessageForInvalidCommandInput(COMMAND_EDIT_WORD, getUsageInfoForEditCommand());
+        }
+        String personName = details[0];
+        String editType = details[1];
+        String newDetail = details[2];
+        boolean personDetailIsChanged = changePersonDetail(personName, editType, newDetail);
+        if (!personDetailIsChanged) {
+            return getMessageForInvalidCommandInput(COMMAND_EDIT_WORD, getUsageInfoForEditCommand());
+        }
+        savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
+        return MESSAGE_EDIT_PERSON_SUCCESS;
+    }
+
+
+    /**
+     * @param personName
+     * @param type of change, name, phone or email (n, p, e)
+     * @param newDetail after change
+     * @return whether person detail was changed
+     */
+    private static boolean changePersonDetail(String personName, String editType, String newDetail) {
+        if (editType.equals(PERSON_EDIT_TYPE_NAME)) {
+            for (String[] person : getAllPersonsInAddressBook()) {
+                if (person[0].equals(personName)) {
+                    person[0] = newDetail;
+                    return true;
+                }
+            }
+        } else if (editType.equals(PERSON_EDIT_TYPE_PHONE)) {
+            for (String[] person : getAllPersonsInAddressBook()) {
+                if (person[0].equals(personName)) {
+                    person[1] = newDetail;
+                    return true;
+                }
+            }
+        } else if (editType.equals(PERSON_EDIT_TYPE_EMAIL)) {
+            for (String[] person : getAllPersonsInAddressBook()) {
+                if (person[0].equals(personName)) {
+                    person[2] = newDetail;
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+    * Sorts address book and executes list command.
+    *
+    * @return  feedback display messgae for the operation result
+    */
+    private static String executeSortAddressBookAndList() {
+        sortAddressBook();
+        savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
+        return executeListAllPersonsInAddressBook();
+    }
+
+    /**
+     * Sorts address book based on user name, in non-decreasing order
+     *
+     */
+    private static void sortAddressBook() {
+        Collections.sort(ALL_PERSONS, new Comparator<String[]>() {
+            public int compare(String[] o1, String[] o2) {
+                return o1[0].toLowerCase().compareTo(o2[0].toLowerCase());
+            }
+        });
+    }
+
+    /**
+    * Splits raw user input into command word and command arguments string
+    *
+    * @return  size 2 array; first element is the command type and second element is the arguments string
+    */
     private static String[] splitCommandWordAndArgs(String rawUserInput) {
-        final String[] split =  rawUserInput.trim().split("\\s+", 2);
-        return split.length == 2 ? split : new String[] { split[0] , "" }; // else case: no parameters
+        final String[] split = rawUserInput.trim().split("\\s+", 2);
+        return split.length == 2 ? split : new String[] { split[0], "" }; // else case: no parameters
     }
 
     /**
@@ -443,7 +537,7 @@ public class AddressBook {
      * @return set of keywords as specified by args
      */
     private static Set<String> extractKeywordsFromFindPersonArgs(String findPersonCommandArgs) {
-        return new HashSet<>(splitByWhitespace(findPersonCommandArgs.trim()));
+        return new HashSet<>(splitByWhitespace(findPersonCommandArgs.trim().toLowerCase()));
     }
 
     /**
@@ -455,7 +549,7 @@ public class AddressBook {
     private static ArrayList<String[]> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
         for (String[] person : getAllPersonsInAddressBook()) {
-            final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
+            final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person).toLowerCase()));
             if (!Collections.disjoint(wordsInName, keywords)) {
                 matchedPersons.add(person);
             }
@@ -659,7 +753,7 @@ public class AddressBook {
      * @return the actual person object in the last shown person listing
      */
     private static String[] getPersonByLastVisibleIndex(int lastVisibleIndex) {
-       return latestPersonListingView.get(lastVisibleIndex - DISPLAYED_INDEX_OFFSET);
+        return latestPersonListingView.get(lastVisibleIndex - DISPLAYED_INDEX_OFFSET);
     }
 
     /**
@@ -1133,7 +1227,18 @@ public class AddressBook {
         return String.format(MESSAGE_COMMAND_HELP, COMMAND_LIST_WORD, COMMAND_LIST_DESC) + LS
                 + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_LIST_EXAMPLE) + LS;
     }
-
+    
+    /**
+     * Builds string for showing 'edit' command usage instruction
+     *
+     * @return  'edit' command usage instruction
+     */
+    private static String getUsageInfoForEditCommand() {
+        return String.format(MESSAGE_COMMAND_HELP, COMMAND_EDIT_WORD, COMMAND_EDIT_DESC) + LS
+                + String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_EDIT_PARAMETERS) + LS
+                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_EDIT_EXAMPLE) + LS;
+    }
+    
     /**
      * Builds string for showing 'help' command usage instruction
      *
