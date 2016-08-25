@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Scanner;
@@ -61,6 +62,8 @@ public class AddressBook {
      * ====================================================================
      */
     private static final String MESSAGE_ADDED = "New person added: %1$s, Phone: %2$s, Email: %3$s";
+    private static final String MESSAGE_EDITED = "Person edited: %1$s, Phone: %2$s, Email: %3$s";
+    private static final String MESSAGE_NOT_FOUND = "Person not found: %1$s, Phone: %2$s, Email: %3$s";
     private static final String MESSAGE_ADDRESSBOOK_CLEARED = "Address book has been cleared!";
     private static final String MESSAGE_COMMAND_HELP = "%1$s: %2$s";
     private static final String MESSAGE_COMMAND_HELP_PARAMETERS = "\tParameters: %1$s";
@@ -99,6 +102,16 @@ public class AddressBook {
                                                       + PERSON_DATA_PREFIX_PHONE + "PHONE_NUMBER "
                                                       + PERSON_DATA_PREFIX_EMAIL + "EMAIL";
     private static final String COMMAND_ADD_EXAMPLE = COMMAND_ADD_WORD + " John Doe p/98765432 e/johnd@gmail.com";
+    
+    private static final String COMMAND_EDIT_WORD = "edit";
+    private static final String COMMAND_EDIT_DESC = "edit a person in the address book.";
+    private static final String COMMAND_EDIT_PARAMETERS = "INDEX "
+                                                      + "NEW_NAME "
+                                                      + PERSON_DATA_PREFIX_PHONE + "NEW_PHONE_NUMBER "
+                                                      + PERSON_DATA_PREFIX_EMAIL + "NEW_EMAIL" ;
+    private static final String COMMAND_EDIT_EXAMPLE = COMMAND_EDIT_WORD + " 1"
+    												+ " to "
+    												+ "John Doe p/12345678 e/jdoe@hotmail.com";
 
     private static final String COMMAND_FIND_WORD = "find";
     private static final String COMMAND_FIND_DESC = "Finds all persons whose names contain any of the specified "
@@ -341,6 +354,8 @@ public class AddressBook {
         switch (commandType) {
         case COMMAND_ADD_WORD:
             return executeAddPerson(commandArgs);
+        case COMMAND_EDIT_WORD:
+        	return executeEditPerson(commandArgs);
         case COMMAND_FIND_WORD:
             return executeFindPersons(commandArgs);
         case COMMAND_LIST_WORD:
@@ -411,6 +426,81 @@ public class AddressBook {
         return String.format(MESSAGE_ADDED,
                 getNameFromPerson(addedPerson), getPhoneFromPerson(addedPerson), getEmailFromPerson(addedPerson));
     }
+    
+    /**
+     * Constructs a feedback message for a successful edit person command execution.
+     *
+     * @see #executeEditPerson(String)
+     * @param EditedPerson person who was successfully edited
+     * @return successful edit person feedback message
+     */
+    private static String getMessageForSuccessfulEditPerson(String[] editedPerson) {
+        return String.format(MESSAGE_EDITED,
+                getNameFromPerson(editedPerson), getPhoneFromPerson(editedPerson), getEmailFromPerson(editedPerson));
+    }
+    
+    /**
+     * Constructs a feedback message for a unsuccessful edit person command execution.
+     *
+     * @see #executeEditPerson(String)
+     * @param EditedPerson person who was unsuccessfully edited
+     * @return unsuccessful edit person feedback message
+     */
+    private static String getMessageForUnsuccessfulEditPerson(String[] editedPerson) {
+        return String.format(MESSAGE_NOT_FOUND,
+                getNameFromPerson(editedPerson), getPhoneFromPerson(editedPerson), getEmailFromPerson(editedPerson));
+    }
+    
+    /**
+     * Adds a person (specified by the command args) to the address book.
+     * The entire command arguments string is treated as a string representation of the person to add.
+     *
+     * @param commandArgs full command args string from the user
+     * @return feedback display message for the operation result
+     */
+    private static String executeEditPerson(String commandArgs) {
+        // try decoding a person from the raw args
+        final Optional<String[]> decodeResult = decodeArgs(commandArgs);
+
+        // checks if args are valid (decode result will not be present if the person is invalid)
+        if (!decodeResult.isPresent()) {
+            return getMessageForInvalidCommandInput(COMMAND_EDIT_WORD, getUsageInfoForEditCommand());
+        }
+        final int deleteIndex = Integer.parseInt(decodeResult.get()[0].trim());
+        final String[] personToAdd = getData(decodeResult.get()[1]);
+        
+        final String[] targetInModel = getPersonByLastVisibleIndex(deleteIndex);
+        if (deletePersonFromAddressBook(targetInModel)){
+        	addPersonToAddressBook(personToAdd);
+            return getMessageForSuccessfulEditPerson(personToAdd);
+        }else{
+        	return MESSAGE_PERSON_NOT_IN_ADDRESSBOOK; // not found
+        }
+    }
+    
+
+	private static String[] getData(String result) {
+        final String matchAnyKeyChar = PERSON_DATA_PREFIX_PHONE + '|' + PERSON_DATA_PREFIX_EMAIL;
+        final String[] splitArgs = result.trim().split(matchAnyKeyChar);
+        
+        
+		return splitArgs;
+	}
+
+	private static Optional<String[]> decodeArgs(String personData) {
+        final String matchAnyKeyChar = PERSON_DATA_PREFIX_PHONE + '|' + PERSON_DATA_PREFIX_EMAIL
+        		+ '|' + "to";
+        final String[] splitArgs = personData.trim().split(matchAnyKeyChar);
+        if (splitArgs.length != 4) {// 4 arguments
+        	return Optional.empty();
+        }
+        final String[] splitPersonArgs = personData.trim().split("to");
+        if (splitPersonArgs.length != 2){
+        	return Optional.empty();
+        }
+        
+        return Optional.of(splitPersonArgs);
+    }
 
     /**
      * Finds and lists all persons in address book whose name contains any of the argument keywords.
@@ -421,12 +511,46 @@ public class AddressBook {
      */
     private static String executeFindPersons(String commandArgs) {
         final Set<String> keywords = extractKeywordsFromFindPersonArgs(commandArgs);
-        final ArrayList<String[]> personsFound = getPersonsWithNameContainingAnyKeyword(keywords);
-        showToUser(personsFound);
-        return getMessageForPersonsDisplayedSummary(personsFound);
+        final Set<String> lowerCaseKeywords = changeToLowerCase(keywords);
+        System.out.println(lowerCaseKeywords);
+        final ArrayList<String[]> personsFound = getPersonsWithNameContainingAnyKeyword(lowerCaseKeywords);
+        final ArrayList<String[]> sortedPerson = sortNameList(personsFound);
+        showToUser(sortedPerson);
+        return getMessageForPersonsDisplayedSummary(sortedPerson);
     }
 
+    
     /**
+     * sorts list of person object by their names in lexigraphical order
+     * 
+     * @param personsFound
+     * 
+     * @return sorted list
+     */
+    private static ArrayList<String[]> sortNameList(ArrayList<String[]> personsFound) {
+    	Collections.sort(personsFound, new Comparator<String[]>() {
+    		public int compare(String[] p1, String[] p2) {
+    			return p1[0].toLowerCase().compareTo(p2[0].toLowerCase());
+    	 	}
+    	});
+		return personsFound;
+	}
+
+	/**
+     * change all strings in a set to lowercase
+     * 
+     * @param keywords
+     */
+    private static Set<String> changeToLowerCase(Collection<String> keywords) {
+    	Set<String> lowerCaseStrings = new HashSet<String>();
+		for (String i: keywords){
+			lowerCaseStrings.add(i.toLowerCase());
+		}
+		
+		return lowerCaseStrings;
+	}
+
+	/**
      * Constructs a feedback message to summarise an operation that displayed a listing of persons.
      *
      * @param personsDisplayed used to generate summary
@@ -454,9 +578,11 @@ public class AddressBook {
      */
     private static ArrayList<String[]> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
+        
         for (String[] person : getAllPersonsInAddressBook()) {
             final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
-            if (!Collections.disjoint(wordsInName, keywords)) {
+            final Set<String> lowerCaseWordsInName = changeToLowerCase(wordsInName);
+            if (!Collections.disjoint(lowerCaseWordsInName, keywords)) {
                 matchedPersons.add(person);
             }
         }
@@ -544,7 +670,7 @@ public class AddressBook {
      * @return feedback display message for the operation result
      */
     private static String executeListAllPersonsInAddressBook() {
-        ArrayList<String[]> toBeDisplayed = getAllPersonsInAddressBook();
+        ArrayList<String[]> toBeDisplayed = sortNameList(getAllPersonsInAddressBook());
         showToUser(toBeDisplayed);
         return getMessageForPersonsDisplayedSummary(toBeDisplayed);
     }
@@ -910,6 +1036,7 @@ public class AddressBook {
                 extractPhoneFromPersonString(encoded),
                 extractEmailFromPersonString(encoded)
         );
+        
         // check that the constructed person is valid
         return isPersonDataValid(decodedPerson) ? Optional.of(decodedPerson) : Optional.empty();
     }
@@ -1090,6 +1217,17 @@ public class AddressBook {
         return String.format(MESSAGE_COMMAND_HELP, COMMAND_ADD_WORD, COMMAND_ADD_DESC) + LS
                 + String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_ADD_PARAMETERS) + LS
                 + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_ADD_EXAMPLE) + LS;
+    }
+    
+    /**
+     * Builds string for showing 'edit' command usage instruction
+     *
+     * @return  'edit' command usage instruction
+     */
+    private static String getUsageInfoForEditCommand() {
+        return String.format(MESSAGE_COMMAND_HELP, COMMAND_EDIT_WORD, COMMAND_EDIT_DESC) + LS
+                + String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_EDIT_PARAMETERS) + LS
+                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_EDIT_EXAMPLE) + LS;
     }
 
     /**
