@@ -385,7 +385,7 @@ public class AddressBook {
      * @return feedback display message for the operation result
      */
     private static String executeFindPersons(String commandArgs) {
-        final Set<String> keywords = extractKeywordsFromFindPersonArgs(commandArgs);
+        final Set<String> keywords = new HashSet<>(splitByWhitespace(commandArgs.trim()));
         final ArrayList<HashMap<PersonProperty,String>> personsFound = getPersonsWithNameContainingAnyKeyword(keywords);
         showToUser(personsFound);
         return getMessageForPersonsDisplayedSummary(personsFound);
@@ -399,16 +399,6 @@ public class AddressBook {
      */
     private static String getMessageForPersonsDisplayedSummary(ArrayList<HashMap<PersonProperty,String>> personsDisplayed) {
         return String.format(MESSAGE_PERSONS_FOUND_OVERVIEW, personsDisplayed.size());
-    }
-
-    /**
-     * Extract keywords from the command arguments given for the find persons command.
-     *
-     * @param findPersonCommandArgs full command args string for the find persons command
-     * @return set of keywords as specified by args
-     */
-    private static Set<String> extractKeywordsFromFindPersonArgs(String findPersonCommandArgs) {
-        return new HashSet<>(splitByWhitespace(findPersonCommandArgs.trim()));
     }
 
     /**
