@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Scanner;
@@ -69,6 +70,7 @@ public class AddressBook {
     private static final String MESSAGE_DISPLAY_PERSON_DATA = "%1$s  Phone Number: %2$s  Email: %3$s";
     private static final String MESSAGE_DISPLAY_LIST_ELEMENT_INDEX = "%1$d. ";
     private static final String MESSAGE_GOODBYE = "Exiting Address Book... Good bye!";
+    private static final String MESSAGE_SORT_ADDRESSBOOK_SUCCESS = "Sort successful.";
     private static final String MESSAGE_INVALID_COMMAND_FORMAT = "Invalid command format: %1$s " + LS + "%2$s";
     private static final String MESSAGE_INVALID_FILE = "The given file name [%1$s] is not a valid file name!";
     private static final String MESSAGE_INVALID_PROGRAM_ARGS = "Too many parameters! Correct program argument format:"
@@ -81,6 +83,7 @@ public class AddressBook {
     private static final String MESSAGE_ERROR_MISSING_STORAGE_FILE = "Storage file missing: %1$s";
     private static final String MESSAGE_ERROR_READING_FROM_FILE = "Unexpected error: unable to read from file: %1$s";
     private static final String MESSAGE_ERROR_WRITING_TO_FILE = "Unexpected error: unable to write to file: %1$s";
+    private static final String MESSAGE_ERROR_SORTING_ADDRESSBOOK = "Unexcpeted error: unable to sort address book";
     private static final String MESSAGE_PERSONS_FOUND_OVERVIEW = "%1$d persons found!";
     private static final String MESSAGE_STORAGE_FILE_CREATED = "Created new empty storage file: %1$s";
     private static final String MESSAGE_WELCOME = "Welcome to your Address Book!";
@@ -127,6 +130,10 @@ public class AddressBook {
     private static final String COMMAND_EXIT_WORD = "exit";
     private static final String COMMAND_EXIT_DESC = "Exits the program.";
     private static final String COMMAND_EXIT_EXAMPLE = COMMAND_EXIT_WORD;
+    
+    private static final String COMMAND_SORT_WORD = "sort";
+    private static final String COMMAND_SORT_DESC = "Sorts address book in alphabetical order";
+    private static final String COMMAND_SORT_EXAMPLE = COMMAND_SORT_WORD;
 
     private static final String DIVIDER = "===================================================";
 
@@ -327,7 +334,9 @@ public class AddressBook {
         case COMMAND_CLEAR_WORD:
             return executeClearAddressBook();
         case COMMAND_HELP_WORD:
-            return getUsageInfoForAllCommands();
+            return getUsageInfoForAllCommands();        
+        case COMMAND_SORT_WORD:
+        	return executeSortAddressBook();
         case COMMAND_EXIT_WORD:
             executeExitProgramRequest();
         default:
@@ -336,6 +345,18 @@ public class AddressBook {
     }
 
     /**
+     * Sorts the address book in alphabetical order.
+     * @return feedback display message for the operation result, along with the address book if successful.
+     */
+    private static String executeSortAddressBook() {
+    	if (sortAddressBook()) {    		
+    		executeListAllPersonsInAddressBook();
+    		return MESSAGE_SORT_ADDRESSBOOK_SUCCESS ;
+    	}
+    	return MESSAGE_ERROR_SORTING_ADDRESSBOOK;
+	}
+
+	/**
      * Splits raw user input into command word and command arguments string
      *
      * @return  size 2 array; first element is the command type and second element is the arguments string
@@ -739,6 +760,24 @@ public class AddressBook {
      *        INTERNAL ADDRESS BOOK DATA METHODS
      * ================================================================================
      */
+    
+	/**
+	 * Sorts the address book in alphabetical order.
+	 * @return a boolean indicating if the operation was successful.
+	 */
+    private static boolean sortAddressBook() {
+    	try {
+    		Collections.sort(ALL_PERSONS.subList(0, ALL_PERSONS.size()), new Comparator<String[]>() {
+    			public int compare(String[] person2, String[] person1) {
+    				return person2[PERSON_DATA_INDEX_NAME].compareToIgnoreCase(person1[PERSON_DATA_INDEX_NAME]);
+    			}
+    		});
+    	} catch (Exception e) {
+    		return false;
+    	}
+    	savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
+    	return true;
+	}
 
     /**
      * Adds a person to the address book. Saves changes to storage file.
