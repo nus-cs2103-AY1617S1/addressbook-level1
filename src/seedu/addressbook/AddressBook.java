@@ -471,23 +471,14 @@ public class AddressBook {
             final HashMap<PersonProperty,String> person = persons.get(i);
             final int displayIndex = i + DISPLAYED_INDEX_OFFSET;
             messageAccumulator.append('\t')
-                              .append(getIndexedPersonListElementMessage(displayIndex, person))
+                              .append(String.format(MESSAGE_DISPLAY_LIST_ELEMENT_INDEX, displayIndex) + String.format(MESSAGE_DISPLAY_PERSON_DATA,
+							getNameFromPerson(person), getPhoneFromPerson(person), getEmailFromPerson(person)))
                               .append(LS);
         }
         return messageAccumulator.toString();
     }
 
-    /**
-     * Constructs a prettified listing element message to represent a person and their data.
-     *
-     * @param visibleIndex visible index for this listing
-     * @param person to show
-     * @return formatted listing message with index
-     */
-    private static String getIndexedPersonListElementMessage(int visibleIndex, HashMap<PersonProperty,String> person) {
-        return String.format(MESSAGE_DISPLAY_LIST_ELEMENT_INDEX, visibleIndex) + String.format(MESSAGE_DISPLAY_PERSON_DATA,
-		getNameFromPerson(person), getPhoneFromPerson(person), getEmailFromPerson(person));
-    }
+    
 
     
 
