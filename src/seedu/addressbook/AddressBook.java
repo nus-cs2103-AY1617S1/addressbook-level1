@@ -1183,4 +1183,8 @@ public class AddressBook {
         return new ArrayList(Arrays.asList(toSplit.trim().split("\\s+")));
     }
 
+    private void sortAllPersons(){
+    	Collections.sort(ALL_PERSONS, (String[] s1, String[] s2) -> s1[PERSON_DATA_INDEX_NAME].compareTo(s2[PERSON_DATA_INDEX_NAME]));
+    }
+    
 }
