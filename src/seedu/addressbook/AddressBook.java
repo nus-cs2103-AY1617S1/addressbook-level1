@@ -31,7 +31,17 @@ import java.util.Set;
  **/
 public class AddressBook {
 
-    private static final int INDEX_OF_COMMAND_PARAMETERS = 1;
+    private static final String PARAMETER_EMPTY = "";
+
+	private static final int INDEX_OF_COMMAND = 0;
+
+	private static final int SPLIT_LENGTH_WITH_PARAMETERS = 2;
+
+	private static final int SPLIT_LENGTH_LIMIT = 2;
+
+	private static final String REGEX_ONE_OR_MORE_WHITESPACE = "\\s+";
+
+	private static final int INDEX_OF_COMMAND_PARAMETERS = 1;
 
 	private static final int INDEX_OF_COMMAND_TYPE = 0;
 
@@ -386,8 +396,8 @@ public class AddressBook {
      * @return  size 2 array; first element is the command type and second element is the arguments string
      */
     private static String[] splitCommandWordAndArgs(String rawUserInput) {
-        final String[] split =  rawUserInput.trim().split("\\s+", 2);
-        return split.length == 2 ? split : new String[] { split[0] , "" }; // else case: no parameters
+        final String[] split =  rawUserInput.trim().split(REGEX_ONE_OR_MORE_WHITESPACE, SPLIT_LENGTH_LIMIT);
+        return split.length == SPLIT_LENGTH_WITH_PARAMETERS ? split : new String[] { split[INDEX_OF_COMMAND] , PARAMETER_EMPTY }; // else case: no parameters
     }
 
     /**
@@ -1192,7 +1202,7 @@ public class AddressBook {
      * @return  Priority string without p/
      */
     private static String removePrefixSign(String s, String sign) {
-        return s.replace(sign, "");
+        return s.replace(sign, PARAMETER_EMPTY);
     }
 
     /**
@@ -1202,7 +1212,7 @@ public class AddressBook {
      * @return split by whitespace
      */
     private static ArrayList<String> splitByWhitespace(String toSplit) {
-        return new ArrayList(Arrays.asList(toSplit.trim().split("\\s+")));
+        return new ArrayList(Arrays.asList(toSplit.trim().split(REGEX_ONE_OR_MORE_WHITESPACE)));
     }
 
 }
