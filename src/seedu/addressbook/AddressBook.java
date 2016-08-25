@@ -385,7 +385,7 @@ public class AddressBook {
      * @return feedback display message for the operation result
      */
     private static String executeFindPersons(String commandArgs) {
-        final Set<String> keywords = new HashSet<>(splitByWhitespace(commandArgs.trim()));
+        final Set<String> keywords = new HashSet<>(new ArrayList<String>(Arrays.asList(commandArgs.trim().trim().split("\\s+"))));
         final ArrayList<HashMap<PersonProperty,String>> personsFound = getPersonsWithNameContainingAnyKeyword(keywords);
         showToUser(personsFound);
         return String.format(MESSAGE_PERSONS_FOUND_OVERVIEW, personsFound.size());
@@ -400,7 +400,7 @@ public class AddressBook {
     private static ArrayList<HashMap<PersonProperty,String>> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
         final ArrayList<HashMap<PersonProperty,String>> matchedPersons = new ArrayList<>();
         for (HashMap<PersonProperty,String> person : ALL_PERSONS) {
-            final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
+            final Set<String> wordsInName = new HashSet<>(new ArrayList<String>(Arrays.asList(getNameFromPerson(person).trim().split("\\s+"))));
             if (!Collections.disjoint(wordsInName, keywords)) {
                 matchedPersons.add(person);
             }
@@ -929,16 +929,6 @@ public class AddressBook {
      */
     private static String removePrefixSign(String s, String sign) {
         return s.replace(sign, "");
-    }
-
-    /**
-     * Splits a source string into the list of substrings that were separated by whitespace.
-     *
-     * @param toSplit source string
-     * @return split by whitespace
-     */
-    private static ArrayList<String> splitByWhitespace(String toSplit) {
-        return new ArrayList<String>(Arrays.asList(toSplit.trim().split("\\s+")));
     }
 
 }
