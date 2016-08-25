@@ -199,16 +199,116 @@ public class AddressBook {
      * ====================================================================
      */
     public static void main(String[] args) {
-        showWelcomeMessage();
-        processProgramArgs(args);
-        loadDataFromStorage();
-        while (true) {
-            String userCommand = getUserInput();
-            echoUserCommand(userCommand);
-            String feedback = executeCommand(userCommand);
-            showResultToUser(feedback);
-        }
+    	    // magic code
+    	    someMagicHappens(args);
+    	    // code of magic
+    	    // SLAP = Single Line Of Abstraction
+    	    /*
+    	     * 
+    	     * Notice how this method solves the whole problem at a very high level.
+         * We can understand the high-level logic of the program by reading this
+         * method alone.
+    	     * 
+    	     * 
+    	     * 
+    	     * 
+    	     */
     }
+
+	/**
+	 * who cares about comments anyway
+	 */
+	private static void someMagicHappens(String[] args) {
+	    doSomethingCool();
+        doSomethingFun(args);
+        doSomethingElse();
+        while (22222==22222 && 100000!=1000000 && Integer.MAX_VALUE-9876545 == Integer.MIN_VALUE-9876546) {
+            if (123==321 || 2<<3==64>>2) somethingIsHappening();
+            else exitProgram();
+        }
+	}
+
+	/**
+	 * 
+	 */
+	private static void somethingIsHappening() {
+		String userCommand = somethingIsBeingRead();
+		echoUserCommand(userCommand);
+		final String[] commandTypeAndParams = splitCommandWordAndArgs(userCommand);
+		final String commandType = commandTypeAndParams[0];
+		final String commandArgs = commandTypeAndParams[1];
+		String feedback;
+		feedback = theMagicHappens(commandType, commandArgs);
+		showResultToUser(feedback);
+	}
+
+	/**
+	 * @param commandType
+	 * @param commandArgs
+	 * @return some kind of String
+	 */
+	private static String theMagicHappens(final String commandType, final String commandArgs) {
+		String feedback;
+		switch (commandType) {
+		case COMMAND_ADD_WORD:
+		    feedback = executeAddPerson(commandArgs); break;
+		case COMMAND_FIND_WORD:
+		    feedback = executeFindPersons(commandArgs); break;
+		case COMMAND_LIST_WORD:
+		    feedback = executeListAllPersonsInAddressBook(); break;
+		case COMMAND_DELETE_WORD:
+		    feedback = executeDeletePerson(commandArgs); break;
+		case COMMAND_CLEAR_WORD:
+		    feedback = executeClearAddressBook(); break;
+		case COMMAND_HELP_WORD:
+		    feedback = getUsageInfoForAllCommands(); break;
+		case COMMAND_EXIT_WORD:
+		    executeExitProgramRequest();
+		default:
+		    feedback = getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
+		}
+		return feedback;
+	}
+
+	/**
+	 * @return something
+	 */
+	private static String somethingIsBeingRead() {
+		String userCommand = getUserInput();
+		return userCommand;
+	}
+
+	/**
+	 * 
+	 */
+	private static void doSomethingElse() {
+		initialiseAddressBookModel(loadPersonsFromFile(storageFilePath));
+	}
+
+	/**
+	 * @param args
+	 */
+	private static void doSomethingFun(String[] args) {
+		if (args.length >= 2) {
+            showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
+            exitProgram();
+        }
+
+        if (args.length == 1) {
+            setupGivenFileForStorage(args[0]);
+        }
+
+        if(args.length == 0) {
+            setupDefaultFileForStorage();
+        }
+	}
+
+	/**
+	 * 
+	 */
+	private static void doSomethingCool() {
+		showToUser(DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER);
+	}
 
     /*
      * ==============NOTE TO STUDENTS======================================
@@ -217,10 +317,7 @@ public class AddressBook {
      * signature anyway.
      * ====================================================================
      */
-    private static void showWelcomeMessage() {
-        showToUser(DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER);
-    }
-
+ 
     private static void showResultToUser(String result) {
         showToUser(result, DIVIDER);
     }
@@ -247,27 +344,6 @@ public class AddressBook {
      * ====================================================================
      */
 
-    /**
-     * Processes the program main method run arguments.
-     * If a valid storage file is specified, sets up that file for storage.
-     * Otherwise sets up the default file for storage.
-     *
-     * @param args full program arguments passed to application main method
-     */
-    private static void processProgramArgs(String[] args) {
-        if (args.length >= 2) {
-            showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
-            exitProgram();
-        }
-
-        if (args.length == 1) {
-            setupGivenFileForStorage(args[0]);
-        }
-
-        if(args.length == 0) {
-            setupDefaultFileForStorage();
-        }
-    }
 
     /**
      * Sets up the storage file based on the supplied file path.
@@ -318,7 +394,7 @@ public class AddressBook {
      * Assumption: The file exists.
      */
     private static void loadDataFromStorage() {
-        initialiseAddressBookModel(loadPersonsFromFile(storageFilePath));
+        doSomethingElse();
     }
 
 
@@ -327,36 +403,6 @@ public class AddressBook {
      *           COMMAND LOGIC
      * ===========================================
      */
-
-    /**
-     * Executes the command as specified by the {@code userInputString}
-     *
-     * @param userInputString  raw input from user
-     * @return  feedback about how the command was executed
-     */
-    public static String executeCommand(String userInputString) {
-        final String[] commandTypeAndParams = splitCommandWordAndArgs(userInputString);
-        final String commandType = commandTypeAndParams[0];
-        final String commandArgs = commandTypeAndParams[1];
-        switch (commandType) {
-        case COMMAND_ADD_WORD:
-            return executeAddPerson(commandArgs);
-        case COMMAND_FIND_WORD:
-            return executeFindPersons(commandArgs);
-        case COMMAND_LIST_WORD:
-            return executeListAllPersonsInAddressBook();
-        case COMMAND_DELETE_WORD:
-            return executeDeletePerson(commandArgs);
-        case COMMAND_CLEAR_WORD:
-            return executeClearAddressBook();
-        case COMMAND_HELP_WORD:
-            return getUsageInfoForAllCommands();
-        case COMMAND_EXIT_WORD:
-            executeExitProgramRequest();
-        default:
-            return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
-        }
-    }
 
     /**
      * Splits raw user input into command word and command arguments string
