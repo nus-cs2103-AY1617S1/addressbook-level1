@@ -272,7 +272,8 @@ public class AddressBook {
      * @return  feedback about how the command was executed
      */
     public static String executeCommand(String userInputString) {
-        final String[] commandTypeAndParams = splitCommandWordAndArgs(userInputString);
+        final String[] split =  userInputString.trim().split("\\s+", 2);
+		final String[] commandTypeAndParams = split.length == 2 ? split : new String[] { split[0] , "" };
         final String commandType = commandTypeAndParams[0];
         final String commandArgs = commandTypeAndParams[1];
         switch (commandType) {
@@ -293,16 +294,6 @@ public class AddressBook {
         default:
             return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
         }
-    }
-
-    /**
-     * Splits raw user input into command word and command arguments string
-     *
-     * @return  size 2 array; first element is the command type and second element is the arguments string
-     */
-    private static String[] splitCommandWordAndArgs(String rawUserInput) {
-        final String[] split =  rawUserInput.trim().split("\\s+", 2);
-        return split.length == 2 ? split : new String[] { split[0] , "" }; // else case: no parameters
     }
 
     /**
