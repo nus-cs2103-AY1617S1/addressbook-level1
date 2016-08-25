@@ -124,6 +124,14 @@ public class AddressBook {
     private static final String COMMAND_HELP_DESC = "Shows program usage instructions.";
     private static final String COMMAND_HELP_EXAMPLE = COMMAND_HELP_WORD;
 
+	private static final String COMMAND_SORT_WORD = "sort";
+	private static final String COMMAND_SORT_DESC = "List the persons in alphabetical order.";
+	private static final String COMMAND_SORT_EXAMPLE = COMMAND_SORT_WORD;
+	
+	private static final String COMMAND_EDIT_WORD = "edit";
+	private static final String COMMAND_EDIT_DESC = "Edit properties of a specific person.";
+	private static final String COMMAND_EDIT_EXAMPLE = COMMAND_EDIT_WORD;
+    
     private static final String COMMAND_EXIT_WORD = "exit";
     private static final String COMMAND_EXIT_DESC = "Exits the program.";
     private static final String COMMAND_EXIT_EXAMPLE = COMMAND_EXIT_WORD;
@@ -349,6 +357,10 @@ public class AddressBook {
             return executeDeletePerson(commandArgs);
         case COMMAND_CLEAR_WORD:
             return executeClearAddressBook();
+        case COMMAND_SORT_WORD:
+			return executeSortAllPersons();
+		case COMMAND_EDIT_WORD:
+			return "unknown";
         case COMMAND_HELP_WORD:
             return getUsageInfoForAllCommands();
         case COMMAND_EXIT_WORD:
@@ -420,6 +432,7 @@ public class AddressBook {
      * @return feedback display message for the operation result
      */
     private static String executeFindPersons(String commandArgs) {
+    	commandArgs = commandArgs.toLowerCase();
         final Set<String> keywords = extractKeywordsFromFindPersonArgs(commandArgs);
         final ArrayList<String[]> personsFound = getPersonsWithNameContainingAnyKeyword(keywords);
         showToUser(personsFound);
@@ -455,6 +468,12 @@ public class AddressBook {
     private static ArrayList<String[]> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
         for (String[] person : getAllPersonsInAddressBook()) {
+        	
+        	//convert all word into lower case
+			for(int i = 0; i < person.length; i ++){
+				person[i] = person[i].toLowerCase();
+			}
+			
             final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
             if (!Collections.disjoint(wordsInName, keywords)) {
                 matchedPersons.add(person);
@@ -548,6 +567,13 @@ public class AddressBook {
         showToUser(toBeDisplayed);
         return getMessageForPersonsDisplayedSummary(toBeDisplayed);
     }
+    
+    private static String executeSortAllPersons() {
+		ArrayList<String[]> toBeDisplayed = getAllPersonsInAddressBook();
+		//Collections.sort(toBeDisplayed);
+		showToUser(toBeDisplayed);
+		return getMessageForPersonsDisplayedSummary(toBeDisplayed);
+	}
 
     /**
      * Request to terminate the program.
