@@ -428,7 +428,8 @@ public class AddressBook {
             return MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
         }
         final HashMap<PersonProperty,String> targetInModel = latestPersonListingView.get(targetVisibleIndex - DISPLAYED_INDEX_OFFSET);
-        return deletePersonFromAddressBook(targetInModel) ? String.format(MESSAGE_DELETE_PERSON_SUCCESS, getMessageForFormattedPersonData(targetInModel)) // success
+        return deletePersonFromAddressBook(targetInModel) ? String.format(MESSAGE_DELETE_PERSON_SUCCESS, String.format(MESSAGE_DISPLAY_PERSON_DATA,
+		getNameFromPerson(targetInModel), getPhoneFromPerson(targetInModel), getEmailFromPerson(targetInModel))) // success
                                                           : MESSAGE_PERSON_NOT_IN_ADDRESSBOOK; // not found
     }
 
@@ -484,19 +485,11 @@ public class AddressBook {
      * @return formatted listing message with index
      */
     private static String getIndexedPersonListElementMessage(int visibleIndex, HashMap<PersonProperty,String> person) {
-        return String.format(MESSAGE_DISPLAY_LIST_ELEMENT_INDEX, visibleIndex) + getMessageForFormattedPersonData(person);
+        return String.format(MESSAGE_DISPLAY_LIST_ELEMENT_INDEX, visibleIndex) + String.format(MESSAGE_DISPLAY_PERSON_DATA,
+		getNameFromPerson(person), getPhoneFromPerson(person), getEmailFromPerson(person));
     }
 
-    /**
-     * Constructs a prettified string to show the user a person's data.
-     *
-     * @param person to show
-     * @return formatted message showing internal state
-     */
-    private static String getMessageForFormattedPersonData(HashMap<PersonProperty,String> person) {
-        return String.format(MESSAGE_DISPLAY_PERSON_DATA,
-                getNameFromPerson(person), getPhoneFromPerson(person), getEmailFromPerson(person));
-    }
+    
 
     
 
