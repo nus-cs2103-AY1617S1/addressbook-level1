@@ -443,7 +443,13 @@ public class AddressBook {
      * @return set of keywords as specified by args
      */
     private static Set<String> extractKeywordsFromFindPersonArgs(String findPersonCommandArgs) {
-        return new HashSet<>(splitByWhitespace(findPersonCommandArgs.trim()));
+        ArrayList<String> temp = splitByWhitespace(findPersonCommandArgs.trim());
+        HashSet<String> temp_Set = new HashSet<String>(splitByWhitespace(findPersonCommandArgs.trim()));
+        for(String name : temp){
+        	String new_name = name.substring(0, 1).toUpperCase() + name.substring(1);
+        	temp_Set.add(new_name);
+        }
+    	return temp_Set;
     }
 
     /**
