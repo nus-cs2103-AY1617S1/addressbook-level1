@@ -202,6 +202,10 @@ public class AddressBook {
         showWelcomeMessage();
         processProgramArgs(args);
         loadDataFromStorage();
+        executeUserInput();
+    }
+
+    private static void executeUserInput() {
         while (true) {
             String userCommand = getUserInput();
             echoUserCommand(userCommand);
@@ -339,19 +343,19 @@ public class AddressBook {
         final String commandType = commandTypeAndParams[0];
         final String commandArgs = commandTypeAndParams[1];
         switch (commandType) {
-        case COMMAND_ADD_WORD:
+        case COMMAND_ADD_WORD :
             return executeAddPerson(commandArgs);
-        case COMMAND_FIND_WORD:
+        case COMMAND_FIND_WORD :
             return executeFindPersons(commandArgs);
-        case COMMAND_LIST_WORD:
+        case COMMAND_LIST_WORD :
             return executeListAllPersonsInAddressBook();
-        case COMMAND_DELETE_WORD:
+        case COMMAND_DELETE_WORD :
             return executeDeletePerson(commandArgs);
-        case COMMAND_CLEAR_WORD:
+        case COMMAND_CLEAR_WORD :
             return executeClearAddressBook();
-        case COMMAND_HELP_WORD:
+        case COMMAND_HELP_WORD :
             return getUsageInfoForAllCommands();
-        case COMMAND_EXIT_WORD:
+        case COMMAND_EXIT_WORD :
             executeExitProgramRequest();
         default:
             return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
