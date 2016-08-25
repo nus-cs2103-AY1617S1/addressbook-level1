@@ -423,7 +423,7 @@ public class AddressBook {
 			+ String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_DELETE_PARAMETER) + LS
 			+ String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_DELETE_EXAMPLE) + LS);
         }
-        final int targetVisibleIndex = extractTargetIndexFromDeletePersonArgs(commandArgs);
+        final int targetVisibleIndex = Integer.parseInt(commandArgs.trim());
         if (!isDisplayIndexValidForLastPersonListingView(targetVisibleIndex)) {
             return MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
         }
@@ -445,16 +445,6 @@ public class AddressBook {
         } catch (NumberFormatException nfe) {
             return false;
         }
-    }
-
-    /**
-     * Extracts the target's index from the raw delete person args string
-     *
-     * @param rawArgs raw command args string for the delete person command
-     * @return extracted index
-     */
-    private static int extractTargetIndexFromDeletePersonArgs(String rawArgs) {
-        return Integer.parseInt(rawArgs.trim());
     }
 
     /**
