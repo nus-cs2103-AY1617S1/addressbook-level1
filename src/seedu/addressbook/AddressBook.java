@@ -202,6 +202,13 @@ public class AddressBook {
         showWelcomeMessage();
         processProgramArgs(args);
         loadDataFromStorage();
+        userInputAndFeedback();
+    }
+    
+    /**
+     * Reads user input and provides corresponding feedback.
+     */
+    private static void userInputAndFeedback() {
         while (true) {
             String userCommand = getUserInput();
             echoUserCommand(userCommand);
