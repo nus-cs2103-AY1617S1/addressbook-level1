@@ -115,6 +115,10 @@ public class AddressBook {
 	private static final String COMMAND_FIND_PARAMETERS = "KEYWORD [MORE_KEYWORDS]";
 	private static final String COMMAND_FIND_EXAMPLE = COMMAND_FIND_WORD + " alice bob charlie";
 
+	private static final String COMMAND_EDIT_WORD = "edit";
+	private static final String COMMAND_EDIT_DESC = "Displays all persons as a list with index numbers.";
+	private static final String COMMAND_EDIT_EXAMPLE = COMMAND_EDIT_WORD + " 1 Pankaj Bhootra p/96145687 e/pankaj@google.com";
+	
 	private static final String COMMAND_LIST_WORD = "list";
 	private static final String COMMAND_LIST_DESC = "Displays all persons as a list with index numbers.";
 	private static final String COMMAND_LIST_EXAMPLE = COMMAND_LIST_WORD;
@@ -354,6 +358,8 @@ public class AddressBook {
 			return executeFindPersons(commandArgs);
 		case COMMAND_LIST_WORD:
 			return executeListAllPersonsInAddressBook();
+		case COMMAND_EDIT_WORD:
+			return executeEditPerson(commandArgs);
 		case COMMAND_DELETE_WORD:
 			return executeDeletePerson(commandArgs);
 		case COMMAND_SORT_WORD:
@@ -517,6 +523,40 @@ public class AddressBook {
 	}
 
 	/**
+	 * Edits the person identified using last displayed index.
+	 *
+	 * @param commandArgs
+	 *            full command args string from the user
+	 * @return feedback display message for the operation result
+	 */
+	
+	private static final String SUCCESSFUL_EDIT_MESSAGE = "Edited successfully!";
+	private static final String FAIL_EDIT_MESSAGE = "Editing failed!";
+	private static String executeEditPerson(String commandArgs) {
+		//decode person from given string
+		final Optional<String[]> decodeResult = decodePersonFromString(commandArgs);
+		int index = getIndexFromInput(commandArgs);
+		String[] personEdits = decodeResult.get();
+		personEdits[0] = removeFirstWord(personEdits[0]);
+		return updateInAddressBook(index, personEdits)?SUCCESSFUL_EDIT_MESSAGE:FAIL_EDIT_MESSAGE;
+	}
+	
+    private static String removeFirstWord(String words){
+    	words = words.substring(words.indexOf(" ")).trim();
+    	return words;
+    }
+	
+    private static int getIndexFromInput(String words){
+    	return Integer.parseInt(words.substring(0, words.indexOf(" ")));
+    }
+
+    private static boolean updateInAddressBook(int index, String[] personEdits){
+    	ALL_PERSONS.remove(index - DISPLAYED_INDEX_OFFSET);
+        ALL_PERSONS.add(index - DISPLAYED_INDEX_OFFSET, personEdits);
+    	return true;
+    }
+    
+    /**
 	 * Deletes person identified using last displayed index.
 	 *
 	 * @param commandArgs
