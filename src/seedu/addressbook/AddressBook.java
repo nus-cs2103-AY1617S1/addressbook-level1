@@ -198,8 +198,35 @@ public class AddressBook {
      * ====================================================================
      */
     public static void main(String[] args) {
-        showWelcomeMessage();
-        processProgramArgs(args);
+        String[] s1 = new String[5]; 
+        s1[0] = DIVIDER; 
+        s1[1] = DIVIDER; 
+        s1[2] = VERSION; 
+        s1[3] = MESSAGE_WELCOME; 
+        s1[4] = DIVIDER; 
+        for (String m : s1) {
+            System.out.println(LINE_PREFIX + m);
+        }
+        if (args.length >= 2) {
+            System.out.println(LINE_PREFIX + MESSAGE_INVALID_PROGRAM_ARGS);
+            String[] s2 = new String[3]; 
+            s2[0] = MESSAGE_GOODBYE; 
+            s2[1] = DIVIDER; 
+            s2[2] = DIVIDER; 
+            for (String m : s2) {
+                System.out.println(LINE_PREFIX + m);
+            }
+            System.exit(0);
+        }
+        if (args.length == 1) {
+            setupGivenFileForStorage(args[0]);
+        }
+
+        if(args.length == 0) {
+            setupDefaultFileForStorage();
+        }
+        
+        
         loadDataFromStorage();
         while (true) {
             String userCommand = getUserInput();
