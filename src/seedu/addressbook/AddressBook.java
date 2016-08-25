@@ -260,11 +260,11 @@ public class AddressBook {
             exitProgram();
         }
 
-        if (args.length == 1) {
+        else if (args.length == 1) {
             setupGivenFileForStorage(args[0]);
         }
 
-        if(args.length == 0) {
+        else if(args.length == 0) {
             setupDefaultFileForStorage();
         }
     }
