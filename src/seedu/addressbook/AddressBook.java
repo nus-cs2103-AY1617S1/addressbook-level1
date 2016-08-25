@@ -31,6 +31,8 @@ import java.util.Set;
  **/
 public class AddressBook {
 
+    private static final String REGEX_PHONE = "\\d+";
+
     private static final String REGEX_NAME = "(\\w|\\s)+";
 
     private static final int INDEX_OF_SECONDARY_CONTACT = 2;
@@ -1100,7 +1102,7 @@ public class AddressBook {
      * @return whether arg is a valid person phone number
      */
     private static boolean isPersonPhoneValid(String phone) {
-        return phone.matches("\\d+");    // phone nonempty sequence of digits
+        return phone.matches(REGEX_PHONE);    // phone nonempty sequence of digits
         //TODO: implement a more permissive validation
     }
 
