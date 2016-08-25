@@ -31,6 +31,8 @@ import java.util.Set;
  **/
 public class AddressBook {
 
+    private static final String REGEX_NAME = "(\\w|\\s)+";
+
     private static final int INDEX_OF_SECONDARY_CONTACT = 2;
 
     private static final int INDEX_OF_PRIMARY_CONTACT = 1;
@@ -1087,7 +1089,7 @@ public class AddressBook {
      * @return whether arg is a valid person name
      */
     private static boolean isPersonNameValid(String name) {
-        return name.matches("(\\w|\\s)+");  // name is nonempty mixture of alphabets and whitespace
+        return name.matches(REGEX_NAME);  // name is nonempty mixture of alphabets and whitespace
         //TODO: implement a more permissive validation
     }
 
