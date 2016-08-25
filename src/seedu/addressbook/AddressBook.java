@@ -193,7 +193,11 @@ public class AddressBook {
      * ====================================================================
      */
     public static void main(String[] args) {
-        showWelcomeMessage();
+        showToUser(DIVIDER);
+		showToUser(DIVIDER);
+		showToUser(VERSION);
+		showToUser(MESSAGE_WELCOME);
+		showToUser(DIVIDER);
         if (args.length >= 2) {
 		    showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
 		    exitProgram();
@@ -213,21 +217,6 @@ public class AddressBook {
             String feedback = executeCommand(userCommand);
             showResultToUser(feedback);
         }
-    }
-
-    /*
-     * ==============NOTE TO STUDENTS======================================
-     * The method header comment can be omitted if the method is trivial
-     * and the header comment is going to be almost identical to the method
-     * signature anyway.
-     * ====================================================================
-     */
-    private static void showWelcomeMessage() {
-        showToUser(DIVIDER);
-        showToUser(DIVIDER);
-        showToUser(VERSION);
-        showToUser(MESSAGE_WELCOME);
-        showToUser(DIVIDER);
     }
 
     private static void showResultToUser(String result) {
