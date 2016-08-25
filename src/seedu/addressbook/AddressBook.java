@@ -299,7 +299,9 @@ public class AddressBook {
 			}
 			return MESSAGE_ADDRESSBOOK_CLEARED;
         case COMMAND_HELP_WORD:
-            return getUsageInfoForAddCommand() + LS
+            return String.format(MESSAGE_COMMAND_HELP, COMMAND_ADD_WORD, COMMAND_ADD_DESC) + LS
+			+ String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_ADD_PARAMETERS) + LS
+			+ String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_ADD_EXAMPLE) + LS + LS
 			+ getUsageInfoForFindCommand() + LS
 			+ getUsageInfoForViewCommand() + LS
 			+ getUsageInfoForDeleteCommand() + LS
@@ -312,7 +314,9 @@ public class AddressBook {
 			System.out.println(LINE_PREFIX + DIVIDER);
 			System.exit(0);
         default:
-            return String.format(MESSAGE_INVALID_COMMAND_FORMAT, commandType, getUsageInfoForAddCommand() + LS
+            return String.format(MESSAGE_INVALID_COMMAND_FORMAT, commandType, String.format(MESSAGE_COMMAND_HELP, COMMAND_ADD_WORD, COMMAND_ADD_DESC) + LS
+			+ String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_ADD_PARAMETERS) + LS
+			+ String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_ADD_EXAMPLE) + LS + LS
 			+ getUsageInfoForFindCommand() + LS
 			+ getUsageInfoForViewCommand() + LS
 			+ getUsageInfoForDeleteCommand() + LS
@@ -335,7 +339,9 @@ public class AddressBook {
 
         // checks if args are valid (decode result will not be present if the person is invalid)
         if (!decodeResult.isPresent()) {
-            return String.format(MESSAGE_INVALID_COMMAND_FORMAT, COMMAND_ADD_WORD, getUsageInfoForAddCommand());
+            return String.format(MESSAGE_INVALID_COMMAND_FORMAT, COMMAND_ADD_WORD, String.format(MESSAGE_COMMAND_HELP, COMMAND_ADD_WORD, COMMAND_ADD_DESC) + LS
+			+ String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_ADD_PARAMETERS) + LS
+			+ String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_ADD_EXAMPLE) + LS);
         }
 
         // add the person as specified
@@ -929,17 +935,6 @@ public class AddressBook {
         //TODO: implement a more permissive validation
     }
 
-
-    /**
-     * Builds string for showing 'add' command usage instruction
-     *
-     * @return  'add' command usage instruction
-     */
-    private static String getUsageInfoForAddCommand() {
-        return String.format(MESSAGE_COMMAND_HELP, COMMAND_ADD_WORD, COMMAND_ADD_DESC) + LS
-                + String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_ADD_PARAMETERS) + LS
-                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_ADD_EXAMPLE) + LS;
-    }
 
     /**
      * Builds string for showing 'find' command usage instruction
