@@ -459,14 +459,25 @@ public class AddressBook {
      */
     private static ArrayList<String[]> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
-        for (String[] person : getAllPersonsInAddressBook()) {
+        searchForMatch(keywords, matchedPersons);
+        return matchedPersons;
+    }
+
+    /**
+     * Search for matched person based on keyword
+     *
+     * @param keywords for searching
+     * @param array for keeping track of matchedPersons
+     * @return list of persons in full model with name containing some of the keywords
+     */
+	private static void searchForMatch(Collection<String> keywords, final ArrayList<String[]> matchedPersons) {
+		for (String[] person : getAllPersonsInAddressBook()) {
             final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
             if (!Collections.disjoint(wordsInName, keywords)) {
                 matchedPersons.add(person);
             }
         }
-        return matchedPersons;
-    }
+	}
 
     /**
      * Deletes person identified using last displayed index.
