@@ -202,12 +202,7 @@ public class AddressBook {
         showWelcomeMessage();
         processProgramArgs(args);
         loadDataFromStorage();
-        while (true) {
-            String userCommand = getUserInput();
-            echoUserCommand(userCommand);
-            String feedback = executeCommand(userCommand);
-            showResultToUser(feedback);
-        }
+        readUserCommandsUntilExit();
     }
 
     /*
@@ -327,7 +322,20 @@ public class AddressBook {
      *           COMMAND LOGIC
      * ===========================================
      */
-
+    
+    /**
+	 * Reads and executes user command in an infinite loop, until user exits.
+	 * Exit loop by typing 'exit' as a command.
+	 */
+	private static void readUserCommandsUntilExit() {
+		while (true) {
+            String userCommand = getUserInput();
+            echoUserCommand(userCommand);
+            String feedback = executeCommand(userCommand);
+            showResultToUser(feedback);
+        }
+	}
+    
     /**
      * Executes the command as specified by the {@code userInputString}
      *
@@ -352,7 +360,7 @@ public class AddressBook {
         case COMMAND_HELP_WORD:
             return getUsageInfoForAllCommands();
         case COMMAND_EXIT_WORD:
-            executeExitProgramRequest();
+        	    exitProgram();
         default:
             return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
         }
@@ -549,15 +557,6 @@ public class AddressBook {
         return getMessageForPersonsDisplayedSummary(toBeDisplayed);
     }
 
-    /**
-     * Request to terminate the program.
-     *
-     * @return feedback display message for the operation result
-     */
-    private static void executeExitProgramRequest() {
-        exitProgram();
-    }
-
     /*
      * ===========================================
      *               UI LOGIC
@@ -573,12 +572,21 @@ public class AddressBook {
     private static String getUserInput() {
         System.out.print(LINE_PREFIX + "Enter command: ");
         String inputLine = SCANNER.nextLine();
-        // silently consume all blank and comment lines
-        while (inputLine.trim().isEmpty() || inputLine.trim().charAt(0) == INPUT_COMMENT_MARKER) {
-            inputLine = SCANNER.nextLine();
-        }
+        inputLine = consumeBlankAndCommentLines(inputLine);
         return inputLine;
     }
+
+	/**
+	 * Consumes all blankspace and comments silently.
+	 * @param string from user input.
+	 * @return inputLine with blankspace and comments removed.
+	 */
+	private static String consumeBlankAndCommentLines(String inputLine) {
+		while (inputLine.trim().isEmpty() || inputLine.trim().charAt(0) == INPUT_COMMENT_MARKER) {
+            inputLine = SCANNER.nextLine();
+        }
+		return inputLine;
+	}
 
    /* ==============NOTE TO STUDENTS======================================
     * Note how the method below uses Java 'Varargs' feature so that the
