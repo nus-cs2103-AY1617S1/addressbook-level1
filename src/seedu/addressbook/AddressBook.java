@@ -470,15 +470,19 @@ public class AddressBook {
      */
     private static ArrayList<String[]> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
+        checkAllPersonsInAddressBook();
+        return matchedPersons;
+    }
+    
+    private static void checkAllPersonsInAddressBook(){
         for (String[] person : getAllPersonsInAddressBook()) {
             final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
             if (!Collections.disjoint(wordsInName, keywords)) {
                 matchedPersons.add(person);
             }
         }
-        return matchedPersons;
     }
-
+    
     /**
      * Deletes person identified using last displayed index.
      *
@@ -590,10 +594,14 @@ public class AddressBook {
         System.out.print(LINE_PREFIX + "Enter command: ");
         String inputLine = SCANNER.nextLine();
         // silently consume all blank and comment lines
-        while (inputLine.trim().isEmpty() || inputLine.trim().charAt(0) == INPUT_COMMENT_MARKER) {
+       consumeBlackAndCommentLines();
+        return inputLine;
+    }
+    
+    private static void consumeBlackAndCommentLines(){
+         while (inputLine.trim().isEmpty() || inputLine.trim().charAt(0) == INPUT_COMMENT_MARKER) {
             inputLine = SCANNER.nextLine();
         }
-        return inputLine;
     }
 
    /* ==============NOTE TO STUDENTS======================================
@@ -626,6 +634,11 @@ public class AddressBook {
      */
     private static String getDisplayString(ArrayList<String[]> persons) {
         final StringBuilder messageAccumulator = new StringBuilder();
+        goThroughListOfPersons();
+        return messageAccumulator.toString();
+    }
+    
+    private static void goThroughListOfPersons(){
         for (int i = 0; i < persons.size(); i++) {
             final String[] person = persons.get(i);
             final int displayIndex = i + DISPLAYED_INDEX_OFFSET;
@@ -633,7 +646,6 @@ public class AddressBook {
                               .append(getIndexedPersonListElementMessage(displayIndex, person))
                               .append(LS);
         }
-        return messageAccumulator.toString();
     }
 
     /**
@@ -939,6 +951,11 @@ public class AddressBook {
      */
     private static Optional<ArrayList<String[]>> decodePersonsFromStrings(ArrayList<String> encodedPersons) {
         final ArrayList<String[]> decodedPersons = new ArrayList<>();
+        decodePerson();
+        return Optional.of(decodedPersons);
+    }
+    
+    private static void decodePerson(){
         for (String encodedPerson : encodedPersons) {
             final Optional<String[]> decodedPerson = decodePersonFromString(encodedPerson);
             if (!decodedPerson.isPresent()) {
@@ -946,7 +963,6 @@ public class AddressBook {
             }
             decodedPersons.add(decodedPerson.get());
         }
-        return Optional.of(decodedPersons);
     }
 
     /**
