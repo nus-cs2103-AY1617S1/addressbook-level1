@@ -31,6 +31,10 @@ import java.util.Set;
  **/
 public class AddressBook {
 
+    private static final char LIST_OF_PERSON_PREFIX = '\t';
+
+    private static final int INDEX_OF_FIRST_PERSON = 0;
+
     private static final int INDEX_OF_FIRST_CHARACTER = 0;
 
     private static final String PROMPT_ENTER_COMMAND = "Enter command: ";
@@ -647,10 +651,10 @@ public class AddressBook {
      */
     private static String getDisplayString(ArrayList<String[]> persons) {
         final StringBuilder messageAccumulator = new StringBuilder();
-        for (int i = 0; i < persons.size(); i++) {
+        for (int i = INDEX_OF_FIRST_PERSON; i < persons.size(); i++) {
             final String[] person = persons.get(i);
             final int displayIndex = i + DISPLAYED_INDEX_OFFSET;
-            messageAccumulator.append('\t')
+            messageAccumulator.append(LIST_OF_PERSON_PREFIX)
                               .append(getIndexedPersonListElementMessage(displayIndex, person))
                               .append(LS);
         }
