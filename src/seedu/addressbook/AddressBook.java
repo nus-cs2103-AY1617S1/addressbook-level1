@@ -201,14 +201,54 @@ public class AddressBook {
     public static void main(String[] args) {
         showWelcomeMessage();
         
+        // Begin process args
         if (args.length >= 2) {
-            showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
-            exitProgram();
+        	for (String m : new String[]{ MESSAGE_INVALID_PROGRAM_ARGS }) {
+                System.out.println(LINE_PREFIX + m);
+            }
+        	for (String m : new String[]{ MESSAGE_GOODBYE, DIVIDER, DIVIDER }) {
+                System.out.println(LINE_PREFIX + m);
+            }
+            System.exit(0);
         }
 
         if (args.length == 1) {
-            setupGivenFileForStorage(args[0]);
+        	String filePath = args[0];
+        	if (!isValidFilePath(filePath)) {
+        		for (String m : new String[]{ MESSAGE_INVALID_FILE, filePath }) {
+                    System.out.println(LINE_PREFIX + m);
+                }
+        		for (String m : new String[]{ MESSAGE_GOODBYE, DIVIDER, DIVIDER }) {
+                    System.out.println(LINE_PREFIX + m);
+                }
+                System.exit(0);
+            }
+
+            storageFilePath = filePath;
+            final File storageFile = new File(filePath);
+            if (!storageFile.exists()) {
+            	for (String m : new String[]{ MESSAGE_ERROR_MISSING_STORAGE_FILE, filePath }) {
+                    System.out.println(LINE_PREFIX + m);
+                }
+
+                try {
+                    storageFile.createNewFile();
+                    for (String m : new String[]{ MESSAGE_STORAGE_FILE_CREATED, filePath }) {
+                        System.out.println(LINE_PREFIX + m);
+                    }
+                } catch (IOException ioe) {
+                	for (String m : new String[]{ MESSAGE_ERROR_CREATING_STORAGE_FILE, filePath }) {
+                        System.out.println(LINE_PREFIX + m);
+                	}
+                    
+                    for (String m : new String[]{ MESSAGE_GOODBYE, DIVIDER, DIVIDER }) {
+                        System.out.println(LINE_PREFIX + m);
+                    }
+                    System.exit(0);
+                }
+            }
         }
+        // End process args
 
         if(args.length == 0) {
             setupDefaultFileForStorage();
