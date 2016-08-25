@@ -290,10 +290,14 @@ public class AddressBook {
      * Displays the goodbye message and exits the runtime.
      */
     private static void exitProgram() {
-        showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
+        displayGoodbyeMessage();
         System.exit(0);
     }
 
+    private static void displayGoodbyeMessage() {
+        showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
+    }
+    
     /**
      * Sets up the storage based on the default file.
      * Creates file if missing.
