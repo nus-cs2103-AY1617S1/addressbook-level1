@@ -391,7 +391,7 @@ public class AddressBook {
 
         // checks if args are valid (decode result will not be present if the person is invalid)
         if (!decodeResult.isPresent()) {
-            return getMessageForInvalidCommandInput(COMMAND_ADD_WORD, getUsageInfoForAddCommand());
+            return getMessageForInvalidCommandInput(COMMAND_ADD_WORD, getUsageInfo(COMMAND_ADD_WORD, true));
         }
 
         // add the person as specified
@@ -471,7 +471,7 @@ public class AddressBook {
      */
     private static String executeDeletePerson(String commandArgs) {
         if (!isDeletePersonArgsValid(commandArgs)) {
-            return getMessageForInvalidCommandInput(COMMAND_DELETE_WORD, getUsageInfoForDeleteCommand());
+            return getMessageForInvalidCommandInput(COMMAND_DELETE_WORD, getUsageInfo(COMMAND_DELETE_WORD, true));
         }
         final int targetVisibleIndex = extractTargetIndexFromDeletePersonArgs(commandArgs);
         if (!isDisplayIndexValidForLastPersonListingView(targetVisibleIndex)) {
@@ -1072,88 +1072,61 @@ public class AddressBook {
      * @return  Usage info for all commands
      */
     private static String getUsageInfoForAllCommands() {
-        return getUsageInfoForAddCommand() + LS
-                + getUsageInfoForFindCommand() + LS
-                + getUsageInfoForViewCommand() + LS
-                + getUsageInfoForDeleteCommand() + LS
-                + getUsageInfoForClearCommand() + LS
-                + getUsageInfoForExitCommand() + LS
-                + getUsageInfoForHelpCommand();
+        return getUsageInfo(COMMAND_ADD_WORD, true) + LS
+                + getUsageInfo(COMMAND_FIND_WORD, true) + LS
+                + getUsageInfo(COMMAND_LIST_WORD, false) + LS
+                + getUsageInfo(COMMAND_DELETE_WORD, true) + LS
+                + getUsageInfo(COMMAND_CLEAR_WORD, false) + LS
+                + getUsageInfo(COMMAND_EXIT_WORD, false) + LS
+                + getUsageInfo(COMMAND_HELP_WORD, false);
     }
 
     /**
-     * Builds string for showing 'add' command usage instruction
-     *
-     * @return  'add' command usage instruction
-     */
-    private static String getUsageInfoForAddCommand() {
-        return String.format(MESSAGE_COMMAND_HELP, COMMAND_ADD_WORD, COMMAND_ADD_DESC) + LS
-                + String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_ADD_PARAMETERS) + LS
-                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_ADD_EXAMPLE) + LS;
-    }
+    * Builds string for given command usage instruction
+    *
+    * @return given command usage instruction
+    */
+    private static String getUsageInfo(String command, Boolean hasParameters) {
+        String[] constantArray = new String[4];
+        switch (command) {
+            case COMMAND_ADD_WORD:
+                constantArray = new String[] {COMMAND_ADD_WORD, COMMAND_ADD_DESC, COMMAND_ADD_PARAMETERS, COMMAND_ADD_EXAMPLE};
+                break;
+            case COMMAND_FIND_WORD:
+                constantArray = new String[] {COMMAND_FIND_WORD, COMMAND_FIND_DESC, COMMAND_FIND_PARAMETERS, COMMAND_FIND_EXAMPLE};
+                break;
+            case COMMAND_DELETE_WORD:
+                constantArray = new String[] {COMMAND_DELETE_WORD, COMMAND_DELETE_DESC, COMMAND_DELETE_PARAMETER, COMMAND_DELETE_EXAMPLE};
+                break;
+            case COMMAND_CLEAR_WORD:
+                constantArray = new String[] {COMMAND_CLEAR_WORD, COMMAND_CLEAR_DESC, COMMAND_CLEAR_EXAMPLE};
+                break;
+            case COMMAND_LIST_WORD:
+                constantArray = new String[] {COMMAND_LIST_WORD, COMMAND_LIST_DESC, COMMAND_LIST_EXAMPLE};
+                break;
+            case COMMAND_HELP_WORD:
+                constantArray = new String[] {COMMAND_HELP_WORD, COMMAND_HELP_DESC, COMMAND_HELP_EXAMPLE};
+                break;
+            case COMMAND_EXIT_WORD:
+                constantArray = new String[] {COMMAND_EXIT_WORD, COMMAND_EXIT_DESC, COMMAND_EXIT_EXAMPLE};
+                break;
+        }
 
-    /**
-     * Builds string for showing 'find' command usage instruction
-     *
-     * @return  'find' command usage instruction
-     */
-    private static String getUsageInfoForFindCommand() {
-        return String.format(MESSAGE_COMMAND_HELP, COMMAND_FIND_WORD, COMMAND_FIND_DESC) + LS
-                + String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_FIND_PARAMETERS) + LS
-                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_FIND_EXAMPLE) + LS;
-    }
+        if (hasParameters) {
+            return String.format(MESSAGE_COMMAND_HELP, constantArray[0], constantArray[1]) + LS
+                + String.format(MESSAGE_COMMAND_HELP_PARAMETERS, constantArray[2]) + LS
+                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, constantArray[3]) + LS;
+        } else {
+            if (command == COMMAND_HELP_WORD || command == COMMAND_EXIT_WORD) {
+                return String.format(MESSAGE_COMMAND_HELP, constantArray[0], constantArray[1])
+                    + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, constantArray[2]);
+            } else {
+                return String.format(MESSAGE_COMMAND_HELP, constantArray[0], constantArray[1]) + LS
+                    + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, constantArray[2]) + LS;
+            }
 
-    /**
-     * Builds string for showing 'delete' command usage instruction
-     *
-     * @return  'delete' command usage instruction
-     */
-    private static String getUsageInfoForDeleteCommand() {
-        return String.format(MESSAGE_COMMAND_HELP, COMMAND_DELETE_WORD, COMMAND_DELETE_DESC) + LS
-                + String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_DELETE_PARAMETER) + LS
-                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_DELETE_EXAMPLE) + LS;
+        }
     }
-
-    /**
-     * Builds string for showing 'clear' command usage instruction
-     *
-     * @return  'clear' command usage instruction
-     */
-    private static String getUsageInfoForClearCommand() {
-        return String.format(MESSAGE_COMMAND_HELP, COMMAND_CLEAR_WORD, COMMAND_CLEAR_DESC) + LS
-                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_CLEAR_EXAMPLE) + LS;
-    }
-
-    /**
-     * Builds string for showing 'view' command usage instruction
-     *
-     * @return  'view' command usage instruction
-     */
-    private static String getUsageInfoForViewCommand() {
-        return String.format(MESSAGE_COMMAND_HELP, COMMAND_LIST_WORD, COMMAND_LIST_DESC) + LS
-                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_LIST_EXAMPLE) + LS;
-    }
-
-    /**
-     * Builds string for showing 'help' command usage instruction
-     *
-     * @return  'help' command usage instruction
-     */
-    private static String getUsageInfoForHelpCommand() {
-        return String.format(MESSAGE_COMMAND_HELP, COMMAND_HELP_WORD, COMMAND_HELP_DESC)
-                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_HELP_EXAMPLE);
-    }
-
-    /**
-     * Builds string for showing 'exit' command usage instruction
-     *
-     * @return  'exit' command usage instruction
-     */
-    private static String getUsageInfoForExitCommand() {
-        return String.format(MESSAGE_COMMAND_HELP, COMMAND_EXIT_WORD, COMMAND_EXIT_DESC)
-                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_EXIT_EXAMPLE);
-    }
-
 
     /*
      * ============================
