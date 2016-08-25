@@ -290,7 +290,10 @@ public class AddressBook {
         case COMMAND_HELP_WORD:
             return getUsageInfoForAllCommands();
         case COMMAND_EXIT_WORD:
-            executeExitProgramRequest();
+            System.out.println(LINE_PREFIX + MESSAGE_GOODBYE);
+			System.out.println(LINE_PREFIX + DIVIDER);
+			System.out.println(LINE_PREFIX + DIVIDER);
+			System.exit(0);
         default:
             return String.format(MESSAGE_INVALID_COMMAND_FORMAT, commandType, getUsageInfoForAllCommands());
         }
@@ -465,18 +468,6 @@ public class AddressBook {
         ArrayList<HashMap<PersonProperty,String>> toBeDisplayed = getAllPersonsInAddressBook();
         showToUser(toBeDisplayed);
         return getMessageForPersonsDisplayedSummary(toBeDisplayed);
-    }
-
-    /**
-     * Request to terminate the program.
-     *
-     * @return feedback display message for the operation result
-     */
-    private static void executeExitProgramRequest() {
-        System.out.println(LINE_PREFIX + MESSAGE_GOODBYE);
-		System.out.println(LINE_PREFIX + DIVIDER);
-		System.out.println(LINE_PREFIX + DIVIDER);
-		System.exit(0);
     }
 
     /**
