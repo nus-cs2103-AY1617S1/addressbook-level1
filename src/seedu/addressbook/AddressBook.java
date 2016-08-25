@@ -17,7 +17,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
@@ -123,10 +122,6 @@ public class AddressBook {
 	private static final String COMMAND_LIST_DESC = "Displays all persons as a list with index numbers.";
 	private static final String COMMAND_LIST_EXAMPLE = COMMAND_LIST_WORD;
 
-	private static final String COMMAND_SORT_WORD = "sort";
-	private static final String COMMAND_SORT_DESC = "Lists all persons in alphabetical order of names.";
-	private static final String COMMAND_SORT_EXAMPLE = COMMAND_LIST_WORD;
-	
 	private static final String COMMAND_DELETE_WORD = "delete";
 	private static final String COMMAND_DELETE_DESC = "Deletes a person identified by the index number used in "
 			+ "the last find/list call.";
@@ -362,8 +357,6 @@ public class AddressBook {
 			return executeEditPerson(commandArgs);
 		case COMMAND_DELETE_WORD:
 			return executeDeletePerson(commandArgs);
-		case COMMAND_SORT_WORD:
-			executeSortList(commandArgs);
 		case COMMAND_CLEAR_WORD:
 			return executeClearAddressBook();
 		case COMMAND_HELP_WORD:
@@ -426,32 +419,6 @@ public class AddressBook {
 		return getMessageForSuccessfulAddPerson(personToAdd);
 	}
 
-	/**
-	 * Sorts the person's list in the address book
-	 * @param commandArgs: full command args string from the user
-	 * @return feedback display message for the operation result
-	 */
-	private static void executeSortList(String commandArgs) {
-		ArrayList<String[]> toBeDisplayed = getAllPersonsInAddressBook();
-		toBeDisplayed.sort((String[] o1, String[] o2)->o1[PERSON_DATA_INDEX_NAME].compareTo(o2[PERSON_DATA_INDEX_NAME]));
-		/*
-		ArrayList<String[]> sortedList = new ArrayList<String[]>();
-		String[] temp;
-		for (String[] person: toBeDisplayed)
-		{
-			if(sortedList.isEmpty())
-				sortedList.add(person);
-			else {
-				for(int i=0; i<sortedList.size(); i++){
-					temp = sortedList.get(i);
-					if(temp[0].compareTo(anotherString))
-				}
-			}
-		}
-		*/
-		showToUser(toBeDisplayed);
-		return;
-	}	
 	/**
 	 * Constructs a feedback message for a successful add person command
 	 * execution.
@@ -1215,7 +1182,7 @@ public class AddressBook {
 	 */
 	private static String getUsageInfoForAllCommands() {
 		return getUsageInfoForAddCommand() + LINE_SEPARATOR + getUsageInfoForFindCommand() + LINE_SEPARATOR + getUsageInfoForViewCommand() + LINE_SEPARATOR
-				+ getUsageInfoForDeleteCommand() + LINE_SEPARATOR + getUsageInfoForClearCommand() + LINE_SEPARATOR + getUsageInfoForSortCommand() + LINE_SEPARATOR
+				+ getUsageInfoForDeleteCommand() + LINE_SEPARATOR + getUsageInfoForClearCommand() + LINE_SEPARATOR
 				+ getUsageInfoForExitCommand() + LINE_SEPARATOR + getUsageInfoForHelpCommand();
 	}
 
@@ -1229,17 +1196,7 @@ public class AddressBook {
 				+ String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_ADD_PARAMETERS) + LINE_SEPARATOR
 				+ String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_ADD_EXAMPLE) + LINE_SEPARATOR;
 	}
-	
-	/**
-	 * Builds string for showing 'sort' command usage instruction
-	 *
-	 * @return 'sort' command usage instruction
-	 */
-	private static String getUsageInfoForSortCommand() {
-		return String.format(MESSAGE_COMMAND_HELP, COMMAND_SORT_WORD, COMMAND_SORT_DESC) + LINE_SEPARATOR
-				+ String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_SORT_EXAMPLE) + LINE_SEPARATOR;
-	}
-	
+
 	/**
 	 * Builds string for showing 'find' command usage instruction
 	 *
