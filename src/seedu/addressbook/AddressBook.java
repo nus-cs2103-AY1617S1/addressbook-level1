@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
@@ -454,14 +455,30 @@ public class AddressBook {
      */
     private static ArrayList<String[]> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
+        final ArrayList<String> lowercaseKeywords = getStringsInLowercase(keywords);
+        
         for (String[] person : getAllPersonsInAddressBook()) {
             final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
-            final boolean hasCommonWords = !Collections.disjoint(wordsInName, keywords);
+            final ArrayList<String> lowercaseWordsInName = getStringsInLowercase(wordsInName);
+            final boolean hasCommonWords = !Collections.disjoint(lowercaseKeywords, lowercaseWordsInName);
+            
             if (hasCommonWords) {
                 matchedPersons.add(person);
             }
         }
         return matchedPersons;
+    }
+    
+    private static ArrayList<String> getStringsInLowercase(Collection<String> inputStrings) {
+    	ArrayList<String> outputStrings = new ArrayList<String>();
+    	Iterator<String> iterator = inputStrings.iterator();
+    	
+    	while (iterator.hasNext()) {
+    		String str = iterator.next();
+    		outputStrings.add(str.toLowerCase());
+    	}
+    	
+    	return outputStrings;
     }
 
     /**
