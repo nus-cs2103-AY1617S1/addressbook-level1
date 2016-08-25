@@ -787,11 +787,11 @@ public class AddressBook {
      * @return true if the given person was found and deleted in the model
      */
     private static boolean deletePersonFromAddressBook(String[] exactPerson) {
-        final boolean isChanged = ALL_PERSONS.remove(exactPerson);
-        if (isChanged) {
+        final boolean changed = ALL_PERSONS.remove(exactPerson);
+        if (changed) {
             savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
         }
-        return isChanged;
+        return changed;
     }
 
     /**
