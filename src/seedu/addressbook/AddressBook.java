@@ -31,7 +31,9 @@ import java.util.Set;
  **/
 public class AddressBook {
 
-    private static final int INDEX_OF_FILENAME = 0;
+    private static final int EXIT_NO_ERROR = 0;
+
+	private static final int INDEX_OF_FILENAME = 0;
 
 	private static final int ARGUMENT_LENGTH_0 = 0;
 
@@ -304,7 +306,7 @@ public class AddressBook {
      */
     private static void exitProgram() {
         showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
-        System.exit(0);
+        System.exit(EXIT_NO_ERROR);
     }
 
     /**
