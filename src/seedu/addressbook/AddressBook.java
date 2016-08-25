@@ -585,10 +585,14 @@ public class AddressBook {
     }
 
 	private static String consumeBlankAndCommentLines(String inputLine) {
-		while (inputLine.trim().isEmpty() || inputLine.trim().charAt(0) == INPUT_COMMENT_MARKER) {
+		while (checkLineEmptyOrComment(inputLine)) {
             inputLine = SCANNER.nextLine();
-        }
+        } 
 		return inputLine;
+	}
+	
+	private static boolean checkLineEmptyOrComment(String inputLine) {
+		return inputLine.trim().isEmpty() || inputLine.trim().charAt(0) == INPUT_COMMENT_MARKER;
 	}
 
    /* ==============NOTE TO STUDENTS======================================
