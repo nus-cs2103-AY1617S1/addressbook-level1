@@ -416,25 +416,12 @@ public class AddressBook {
         return getMessageForSuccessfulAddPerson(personToAdd);
     }
 
-    /**
-     * Constructs a feedback message for a successful add person command execution.
-     *
-     * @see #executeAddPerson(String)
-     * @param addedPerson person who was successfully added
-     * @return successful add person feedback message
-     */
+
     private static String getMessageForSuccessfulAddPerson(String[] addedPerson) {
         return String.format(MESSAGE_ADDED,
                 getNameFromPerson(addedPerson), getPhoneFromPerson(addedPerson), getEmailFromPerson(addedPerson));
     }
 
-    /**
-     * Finds and lists all persons in address book whose name contains any of the argument keywords.
-     * Keyword matching is case sensitive.
-     *
-     * @param commandArgs full command args string from the user
-     * @return feedback display message for the operation result
-     */
     private static String executeFindPersons(String commandArgs) {
         final Set<String> keywords = extractKeywordsFromFindPersonArgs(commandArgs);
         final ArrayList<String[]> personsFound = getPersonsWithNameContainingAnyKeyword(keywords);
@@ -580,12 +567,7 @@ public class AddressBook {
      * ===========================================
      */
 
-    /**
-     * Prompts for the command and reads the text entered by the user.
-     * Ignores lines with first non-whitespace char equal to {@link #INPUT_COMMENT_MARKER} (considered comments)
-     *
-     * @return full line entered by the user
-     */
+
     private static String getUserInput() {
         System.out.print(LINE_PREFIX + "Enter command: ");
         String inputLine = SCANNER.nextLine();
