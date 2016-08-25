@@ -31,7 +31,9 @@ import java.util.Set;
  **/
 public class AddressBook {
 
-    /**
+    private static final String RESPONSE_COMMAND_ENTERED = "[Command entered:%s]";
+
+	/**
      * Default file path used if the user doesn't provide the file name.
      */
     private static final String DEFAULT_STORAGE_FILEPATH = "addressbook.txt";
@@ -240,7 +242,7 @@ public class AddressBook {
      * Echoes the user input back to the user.
      */
     private static void echoUserCommand(String userCommand) {
-        showToUser("[Command entered:" + userCommand + "]");
+        showToUser(String.format(RESPONSE_COMMAND_ENTERED, userCommand));
     }
 
     /*
