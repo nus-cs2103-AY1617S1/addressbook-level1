@@ -216,7 +216,10 @@ public class AddressBook {
         loadDataFromStorage();
         readInputAndExecuteCommands();
     }
-
+    
+    /**
+     * Reads input from user and executes commands till exit is called
+     */
     private static void readInputAndExecuteCommands() {
         while (true) {
             String userCommand = getUserInput();
