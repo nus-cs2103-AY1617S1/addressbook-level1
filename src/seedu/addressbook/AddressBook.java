@@ -200,14 +200,20 @@ public class AddressBook {
 		System.out.println(LINE_PREFIX + DIVIDER);
         if (args.length >= 2) {
 		    System.out.println(LINE_PREFIX + MESSAGE_INVALID_PROGRAM_ARGS);
-		    exitProgram();
+		    System.out.println(LINE_PREFIX + MESSAGE_GOODBYE);
+			System.out.println(LINE_PREFIX + DIVIDER);
+			System.out.println(LINE_PREFIX + DIVIDER);
+			System.exit(0);
 		}
 		
 		if (args.length == 1) {
 		    String filePath = args[0];
 			if (!filePath.endsWith(".txt")) {
 			    System.out.println(LINE_PREFIX + String.format(MESSAGE_INVALID_FILE, filePath));
-			    exitProgram();
+			    System.out.println(LINE_PREFIX + MESSAGE_GOODBYE);
+				System.out.println(LINE_PREFIX + DIVIDER);
+				System.out.println(LINE_PREFIX + DIVIDER);
+				System.exit(0);
 			}
 			
 			storageFilePath = filePath;
@@ -246,15 +252,7 @@ public class AddressBook {
      * ====================================================================
      */
 
-    /**
-     * Displays the goodbye message and exits the runtime.
-     */
-    private static void exitProgram() {
-        System.out.println(LINE_PREFIX + MESSAGE_GOODBYE);
-        System.out.println(LINE_PREFIX + DIVIDER);
-        System.out.println(LINE_PREFIX + DIVIDER);
-        System.exit(0);
-    }
+    
 
     
 
@@ -494,7 +492,10 @@ public class AddressBook {
      * @return feedback display message for the operation result
      */
     private static void executeExitProgramRequest() {
-        exitProgram();
+        System.out.println(LINE_PREFIX + MESSAGE_GOODBYE);
+		System.out.println(LINE_PREFIX + DIVIDER);
+		System.out.println(LINE_PREFIX + DIVIDER);
+		System.exit(0);
     }
 
     /**
@@ -597,7 +598,10 @@ public class AddressBook {
             System.out.println(LINE_PREFIX + String.format(MESSAGE_STORAGE_FILE_CREATED, filePath));
         } catch (IOException ioe) {
             System.out.println(LINE_PREFIX + String.format(MESSAGE_ERROR_CREATING_STORAGE_FILE, filePath));
-            exitProgram();
+            System.out.println(LINE_PREFIX + MESSAGE_GOODBYE);
+			System.out.println(LINE_PREFIX + DIVIDER);
+			System.out.println(LINE_PREFIX + DIVIDER);
+			System.exit(0);
         }
     }
 
@@ -612,7 +616,10 @@ public class AddressBook {
         final Optional<ArrayList<HashMap<PersonProperty,String>>> successfullyDecoded = decodePersonsFromStrings(getLinesInFile(filePath));
         if (!successfullyDecoded.isPresent()) {
             System.out.println(LINE_PREFIX + MESSAGE_INVALID_STORAGE_FILE_CONTENT);
-            exitProgram();
+            System.out.println(LINE_PREFIX + MESSAGE_GOODBYE);
+			System.out.println(LINE_PREFIX + DIVIDER);
+			System.out.println(LINE_PREFIX + DIVIDER);
+			System.exit(0);
         }
         return successfullyDecoded.get();
     }
@@ -627,10 +634,16 @@ public class AddressBook {
             lines = new ArrayList<String>(Files.readAllLines(Paths.get(filePath)));
         } catch (FileNotFoundException fnfe) {
             System.out.println(LINE_PREFIX + String.format(MESSAGE_ERROR_MISSING_STORAGE_FILE, filePath));
-            exitProgram();
+            System.out.println(LINE_PREFIX + MESSAGE_GOODBYE);
+			System.out.println(LINE_PREFIX + DIVIDER);
+			System.out.println(LINE_PREFIX + DIVIDER);
+			System.exit(0);
         } catch (IOException ioe) {
             System.out.println(LINE_PREFIX + String.format(MESSAGE_ERROR_READING_FROM_FILE, filePath));
-            exitProgram();
+            System.out.println(LINE_PREFIX + MESSAGE_GOODBYE);
+			System.out.println(LINE_PREFIX + DIVIDER);
+			System.out.println(LINE_PREFIX + DIVIDER);
+			System.exit(0);
         }
         return lines;
     }
@@ -647,7 +660,10 @@ public class AddressBook {
             Files.write(Paths.get(storageFilePath), linesToWrite);
         } catch (IOException ioe) {
             System.out.println(LINE_PREFIX + String.format(MESSAGE_ERROR_WRITING_TO_FILE, filePath));
-            exitProgram();
+            System.out.println(LINE_PREFIX + MESSAGE_GOODBYE);
+			System.out.println(LINE_PREFIX + DIVIDER);
+			System.out.println(LINE_PREFIX + DIVIDER);
+			System.exit(0);
         }
     }
 
