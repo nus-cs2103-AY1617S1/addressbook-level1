@@ -389,7 +389,8 @@ public class AddressBook {
         final ArrayList<HashMap<PersonProperty,String>> personsFound = getPersonsWithNameContainingAnyKeyword(keywords);
         String listAsString = getDisplayString(personsFound);
 		System.out.println(LINE_PREFIX + listAsString);
-		updateLatestViewedPersonListing(personsFound);
+		// clone to insulate from future changes to arg list
+		latestPersonListingView = new ArrayList<>(personsFound);
         return String.format(MESSAGE_PERSONS_FOUND_OVERVIEW, personsFound.size());
     }
 
@@ -486,7 +487,8 @@ public class AddressBook {
         ArrayList<HashMap<PersonProperty,String>> toBeDisplayed = ALL_PERSONS;
         String listAsString = getDisplayString(toBeDisplayed);
 		System.out.println(LINE_PREFIX + listAsString);
-		updateLatestViewedPersonListing(toBeDisplayed);
+		// clone to insulate from future changes to arg list
+		latestPersonListingView = new ArrayList<>(toBeDisplayed);
         return String.format(MESSAGE_PERSONS_FOUND_OVERVIEW, toBeDisplayed.size());
     }
 
@@ -525,16 +527,6 @@ public class AddressBook {
     private static String getMessageForFormattedPersonData(HashMap<PersonProperty,String> person) {
         return String.format(MESSAGE_DISPLAY_PERSON_DATA,
                 getNameFromPerson(person), getPhoneFromPerson(person), getEmailFromPerson(person));
-    }
-
-    /**
-     * Updates the latest person listing view the user has seen.
-     *
-     * @param newListing the new listing of persons
-     */
-    private static void updateLatestViewedPersonListing(ArrayList<HashMap<PersonProperty,String>> newListing) {
-        // clone to insulate from future changes to arg list
-        latestPersonListingView = new ArrayList<>(newListing);
     }
 
     /**
