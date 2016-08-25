@@ -424,7 +424,7 @@ public class AddressBook {
 			+ String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_DELETE_EXAMPLE) + LS);
         }
         final int targetVisibleIndex = Integer.parseInt(commandArgs.trim());
-        if (!(targetVisibleIndex >= DISPLAYED_INDEX_OFFSET && targetVisibleIndex < getLatestPersonListingView().size() + DISPLAYED_INDEX_OFFSET)) {
+        if (!(targetVisibleIndex >= DISPLAYED_INDEX_OFFSET && targetVisibleIndex < latestPersonListingView.size() + DISPLAYED_INDEX_OFFSET)) {
             return MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
         }
         final HashMap<PersonProperty,String> targetInModel = latestPersonListingView.get(targetVisibleIndex - DISPLAYED_INDEX_OFFSET);
@@ -509,12 +509,7 @@ public class AddressBook {
                 getNameFromPerson(person), getPhoneFromPerson(person), getEmailFromPerson(person));
     }
 
-    /**
-     * @return unmodifiable list view of the last person listing view
-     */
-    private static ArrayList<HashMap<PersonProperty,String>> getLatestPersonListingView() {
-        return latestPersonListingView;
-    }
+    
 
 
     /*
