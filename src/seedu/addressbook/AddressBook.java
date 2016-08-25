@@ -31,7 +31,9 @@ import java.util.Set;
  **/
 public class AddressBook {
 
-    private static final int EXIT_NO_ERROR = 0;
+    private static final String FILETYPE_TXT = ".txt";
+
+	private static final int EXIT_NO_ERROR = 0;
 
 	private static final int INDEX_OF_FILENAME = 0;
 
@@ -326,7 +328,7 @@ public class AddressBook {
      * TODO: Implement a more rigorous validity checking.
      */
     private static boolean isValidFilePath(String filePath) {
-        return filePath.endsWith(".txt");
+        return filePath.endsWith(FILETYPE_TXT);
     }
 
     /**
