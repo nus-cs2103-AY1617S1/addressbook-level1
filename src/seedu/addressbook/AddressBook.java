@@ -361,7 +361,7 @@ public class AddressBook {
         case COMMAND_SORT_WORD:
 			return executeSortAllPersons();
 		case COMMAND_EDIT_WORD:
-			return "unknown";
+			return executeEditPerson(commandArgs);
         case COMMAND_HELP_WORD:
             return getUsageInfoForAllCommands();
         case COMMAND_EXIT_WORD:
@@ -482,6 +482,23 @@ public class AddressBook {
         }
         return matchedPersons;
     }
+    
+    /**
+     * Find one specific person
+     *
+     * @param name for searching
+     * @return the person in full model
+     */
+    private static String[] getPersonsWithName(String personName) {
+        String[] matchedPerson = null;
+        for (String[] person : getAllPersonsInAddressBook()) {
+			if (person[PERSON_DATA_INDEX_NAME].compareToIgnoreCase(personName) == 0) {
+				matchedPerson = person;
+				break;
+			}
+        }
+        return matchedPerson;
+    }
 
     /**
      * Deletes person identified using last displayed index.
@@ -586,7 +603,35 @@ public class AddressBook {
 		return getMessageForPersonsDisplayedSummary(toBeDisplayed);
 	}
     
+    /**
+     * Edit information of a person
+     *
+     * @return feedback display message for the operation result
+     */
     
+    private static String executeEditPerson(String commandArgs) {
+
+    	// try decoding a person from the raw args
+        final Optional<String[]> decodeResult = decodePersonFromString(commandArgs);
+
+        // checks if args are valid (decode result will not be present if the person is invalid)
+        if (!decodeResult.isPresent()) {
+        	// TODO rmove magic string later
+            return getMessageForInvalidCommandInput("EDIT", "The correct way is ...");
+        }
+
+        // edit the person as specified
+        final String[] personToBeEdited = decodeResult.get();
+        final String[] personFound = getPersonsWithName(personToBeEdited[PERSON_DATA_INDEX_NAME]);
+        
+        //TODO situation where the person is not found should be discussed later
+        
+        personFound[PERSON_DATA_INDEX_PHONE] = personToBeEdited[PERSON_DATA_INDEX_PHONE];
+   		personFound[PERSON_DATA_INDEX_EMAIL] = personToBeEdited[PERSON_DATA_INDEX_EMAIL];
+        
+   		//TODO remove magic string later
+        return "success!";
+	}
 
     /**
      * Request to terminate the program.
