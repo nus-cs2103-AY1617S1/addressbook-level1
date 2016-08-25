@@ -199,68 +199,10 @@ public class AddressBook {
      * ====================================================================
      */
     public static void main(String[] args) {
-        showWelcomeMessage();
-        processProgramArgs(args);
-        loadDataFromStorage();
-        while (true) {
-            String userCommand = getUserInput();
-            echoUserCommand(userCommand);
-            String feedback = executeCommand(userCommand);
-            showResultToUser(feedback);
-        }
-    }
-
-    /*
-     * ==============NOTE TO STUDENTS======================================
-     * The method header comment can be omitted if the method is trivial
-     * and the header comment is going to be almost identical to the method
-     * signature anyway.
-     * ====================================================================
-     */
-    private static void showWelcomeMessage() {
-        String[] message = new String[]{DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER};
-        for (String m : message) {
+        String[] message1 = new String[]{DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER};
+        for (String m : message1) {
             System.out.println(LINE_PREFIX + m);
         }
-    }
-
-    private static void showResultToUser(String result) {
-        String[] message = new String[]{result, DIVIDER};
-        for (String m : message) {
-            System.out.println(LINE_PREFIX + m);
-        }
-    }
-
-    /*
-     * ==============NOTE TO STUDENTS======================================
-     * Parameter description can be omitted from the method header comment
-     * if the parameter name is self-explanatory.
-     * In the method below, '@param userInput' comment has been omitted.
-     * ====================================================================
-     */
-    /**
-     * Echoes the user input back to the user.
-     */
-    private static void echoUserCommand(String userCommand) {
-       System.out.println(LINE_PREFIX + "[Command entered:" + userCommand + "]");
-    }
-
-    /*
-     * ==============NOTE TO STUDENTS==========================================
-     * If the reader wants a deeper understanding of the solution, she can go
-     * to the next level of abstraction by reading the methods (given below)
-     * that is referenced by the method above.
-     * ====================================================================
-     */
-
-    /**
-     * Processes the program main method run arguments.
-     * If a valid storage file is specified, sets up that file for storage.
-     * Otherwise sets up the default file for storage.
-     *
-     * @param args full program arguments passed to application main method
-     */
-    private static void processProgramArgs(String[] args) {
         if (args.length >= 2) {
             System.out.println(LINE_PREFIX + MESSAGE_INVALID_PROGRAM_ARGS);
             String[] message = new String[]{MESSAGE_GOODBYE, DIVIDER, DIVIDER};
@@ -271,44 +213,70 @@ public class AddressBook {
         }
 
         if (args.length == 1) {
-            setupGivenFileForStorage(args[0]);
+            if (!isValidFilePath(args[0])) {
+                System.out.println(String.format(MESSAGE_INVALID_FILE, args[0]));
+                String[] message = new String[]{MESSAGE_GOODBYE, DIVIDER, DIVIDER};
+                for (String m : message) {
+                    System.out.println(LINE_PREFIX + m);
+                }
+                System.exit(0);
+                }
+                storageFilePath = args[0];
+                createFileIfMissing(args[0]);
         }
 
         if(args.length == 0) {
-            setupDefaultFileForStorage();
+            System.out.println(LINE_PREFIX + MESSAGE_USING_DEFAULT_FILE);
+            storageFilePath = DEFAULT_STORAGE_FILEPATH;
+            createFileIfMissing(storageFilePath);
         }
-    }
 
-    /**
-     * Sets up the storage file based on the supplied file path.
-     * Creates the file if it is missing.
-     * Exits if the file name is not acceptable.
-     */
-    private static void setupGivenFileForStorage(String filePath) {
+        initialiseAddressBookModel(loadPersonsFromFile(storageFilePath));
+        
+        while (true) {
+            System.out.print(LINE_PREFIX + "Enter command: ");
+            String inputLine = SCANNER.nextLine();
+            // silently consume all blank and comment lines
+            while (inputLine.trim().isEmpty() || inputLine.trim().charAt(0) == INPUT_COMMENT_MARKER) {
+                inputLine = SCANNER.nextLine();
+            }
+            String userCommand = inputLine;
 
-        if (!isValidFilePath(filePath)) {
-            System.out.println(String.format(MESSAGE_INVALID_FILE, filePath));
-            String[] message = new String[]{MESSAGE_GOODBYE, DIVIDER, DIVIDER};
-            for (String m : message) {
+            System.out.println(LINE_PREFIX + "[Command entered:" + userCommand + "]");
+            String feedback = executeCommand(userCommand);
+            String[] message2 = new String[]{feedback, DIVIDER};
+            for (String m : message2) {
                 System.out.println(LINE_PREFIX + m);
             }
-            System.exit(0);
         }
-
-        storageFilePath = filePath;
-        createFileIfMissing(filePath);
     }
 
-    /**
-     * Sets up the storage based on the default file.
-     * Creates file if missing.
-     * Exits program if the file cannot be created.
+    /*
+     * ==============NOTE TO STUDENTS======================================
+     * The method header comment can be omitted if the method is trivial
+     * and the header comment is going to be almost identical to the method
+     * signature anyway.
+     * ====================================================================
      */
-    private static void setupDefaultFileForStorage() {
-        System.out.println(LINE_PREFIX + MESSAGE_USING_DEFAULT_FILE);
-        storageFilePath = DEFAULT_STORAGE_FILEPATH;
-        createFileIfMissing(storageFilePath);
-    }
+    
+   
+    /*
+     * ==============NOTE TO STUDENTS======================================
+     * Parameter description can be omitted from the method header comment
+     * if the parameter name is self-explanatory.
+     * In the method below, '@param userInput' comment has been omitted.
+     * ====================================================================
+     */
+    
+
+    /*
+     * ==============NOTE TO STUDENTS==========================================
+     * If the reader wants a deeper understanding of the solution, she can go
+     * to the next level of abstraction by reading the methods (given below)
+     * that is referenced by the method above.
+     * ====================================================================
+     */
+
 
     /**
      * Returns true if the given file is acceptable.
@@ -317,14 +285,6 @@ public class AddressBook {
      */
     private static boolean isValidFilePath(String filePath) {
         return filePath.endsWith(".txt");
-    }
-
-    /**
-     * Initialises the in-memory data using the storage file.
-     * Assumption: The file exists.
-     */
-    private static void loadDataFromStorage() {
-        initialiseAddressBookModel(loadPersonsFromFile(storageFilePath));
     }
 
 
@@ -358,14 +318,15 @@ public class AddressBook {
 
             // add the person as specified
             final String[] personToAdd = decodeResult.get();
-            addPersonToAddressBook(personToAdd);
+            ALL_PERSONS.add(personToAdd);
+            savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
             return String.format(MESSAGE_ADDED,
                     getNameFromPerson(personToAdd), getPhoneFromPerson(personToAdd), getEmailFromPerson(personToAdd));
         case COMMAND_FIND_WORD:
-            final Set<String> keywords = new HashSet<>(splitByWhitespace(commandArgs.trim()));
+            final Set<String> keywords = new HashSet<>(new ArrayList(Arrays.asList(commandArgs.trim().split("\\s+"))));
             final ArrayList<String[]> matchedPersons = new ArrayList<>();
             for (String[] person : getAllPersonsInAddressBook()) {
-                final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
+                final Set<String> wordsInName = new HashSet<>(new ArrayList(Arrays.asList(getNameFromPerson(person).trim().split("\\s+"))));
                 if (!Collections.disjoint(wordsInName, keywords)) {
                     matchedPersons.add(person);
                 }
@@ -473,21 +434,6 @@ public class AddressBook {
      * ===========================================
      */
 
-    /**
-     * Prompts for the command and reads the text entered by the user.
-     * Ignores lines with first non-whitespace char equal to {@link #INPUT_COMMENT_MARKER} (considered comments)
-     *
-     * @return full line entered by the user
-     */
-    private static String getUserInput() {
-        System.out.print(LINE_PREFIX + "Enter command: ");
-        String inputLine = SCANNER.nextLine();
-        // silently consume all blank and comment lines
-        while (inputLine.trim().isEmpty() || inputLine.trim().charAt(0) == INPUT_COMMENT_MARKER) {
-            inputLine = SCANNER.nextLine();
-        }
-        return inputLine;
-    }
 
    /* ==============NOTE TO STUDENTS======================================
     * Note how the method below uses Java 'Varargs' feature so that the
@@ -619,16 +565,6 @@ public class AddressBook {
      *        INTERNAL ADDRESS BOOK DATA METHODS
      * ================================================================================
      */
-
-    /**
-     * Adds a person to the address book. Saves changes to storage file.
-     *
-     * @param person to add
-     */
-    private static void addPersonToAddressBook(String[] person) {
-        ALL_PERSONS.add(person);
-        savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
-    }
 
     /**
      * Deletes a person from the address book, target is identified by it's absolute index in the full list.
@@ -935,16 +871,6 @@ public class AddressBook {
      */
     private static String removePrefixSign(String s, String sign) {
         return s.replace(sign, "");
-    }
-
-    /**
-     * Splits a source string into the list of substrings that were separated by whitespace.
-     *
-     * @param toSplit source string
-     * @return split by whitespace
-     */
-    private static ArrayList<String> splitByWhitespace(String toSplit) {
-        return new ArrayList(Arrays.asList(toSplit.trim().split("\\s+")));
     }
 
 }
