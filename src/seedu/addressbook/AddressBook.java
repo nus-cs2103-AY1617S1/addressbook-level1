@@ -288,14 +288,26 @@ public class AddressBook {
         case COMMAND_CLEAR_WORD:
             return executeClearAddressBook();
         case COMMAND_HELP_WORD:
-            return getUsageInfoForAllCommands();
+            return getUsageInfoForAddCommand() + LS
+			+ getUsageInfoForFindCommand() + LS
+			+ getUsageInfoForViewCommand() + LS
+			+ getUsageInfoForDeleteCommand() + LS
+			+ getUsageInfoForClearCommand() + LS
+			+ getUsageInfoForExitCommand() + LS
+			+ getUsageInfoForHelpCommand();
         case COMMAND_EXIT_WORD:
             System.out.println(LINE_PREFIX + MESSAGE_GOODBYE);
 			System.out.println(LINE_PREFIX + DIVIDER);
 			System.out.println(LINE_PREFIX + DIVIDER);
 			System.exit(0);
         default:
-            return String.format(MESSAGE_INVALID_COMMAND_FORMAT, commandType, getUsageInfoForAllCommands());
+            return String.format(MESSAGE_INVALID_COMMAND_FORMAT, commandType, getUsageInfoForAddCommand() + LS
+			+ getUsageInfoForFindCommand() + LS
+			+ getUsageInfoForViewCommand() + LS
+			+ getUsageInfoForDeleteCommand() + LS
+			+ getUsageInfoForClearCommand() + LS
+			+ getUsageInfoForExitCommand() + LS
+			+ getUsageInfoForHelpCommand());
         }
     }
 
@@ -933,25 +945,6 @@ public class AddressBook {
         //TODO: implement a more permissive validation
     }
 
-
-    /*
-     * ===============================================
-     *         COMMAND HELP INFO FOR USERS
-     * ===============================================
-     */
-
-    /**
-     * @return  Usage info for all commands
-     */
-    private static String getUsageInfoForAllCommands() {
-        return getUsageInfoForAddCommand() + LS
-                + getUsageInfoForFindCommand() + LS
-                + getUsageInfoForViewCommand() + LS
-                + getUsageInfoForDeleteCommand() + LS
-                + getUsageInfoForClearCommand() + LS
-                + getUsageInfoForExitCommand() + LS
-                + getUsageInfoForHelpCommand();
-    }
 
     /**
      * Builds string for showing 'add' command usage instruction
