@@ -191,121 +191,74 @@ public class AddressBook {
      */
     private static String storageFilePath;
 
-    /*
-     * ==============NOTE TO STUDENTS======================================
-     * Notice how this method solves the whole problem at a very high level.
-     * We can understand the high-level logic of the program by reading this
-     * method alone.
-     * ====================================================================
-     */
     public static void main(String[] args) {
         //showWelcomeMessage();
-        showToUser(DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER);
+        String[] message = { DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER };
+		for (String m : message) {
+		    System.out.println(LINE_PREFIX + m);
+		}
         
         //processProgramArgs(args);
         if (args.length >= 2) {
-            showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
+            String[] message1 = { MESSAGE_INVALID_PROGRAM_ARGS };
+			for (String m1 : message1) {
+			    System.out.println(LINE_PREFIX + m1);
+			}
             exitProgram();
         }
 
         if (args.length == 1) {
-            setupGivenFileForStorage(args[0]);
+            String filePath = args[0];
+			if (!isValidFilePath(filePath)) {
+			    String[] message1 = { String.format(MESSAGE_INVALID_FILE, filePath) };
+				for (String m1 : message1) {
+				    System.out.println(LINE_PREFIX + m1);
+				}
+			    showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
+				System.exit(0);
+			}
+			
+			storageFilePath = filePath;
+			createFileIfMissing(filePath);
         }
 
         if(args.length == 0) {
-            setupDefaultFileForStorage();
+            String[] message1 = { MESSAGE_USING_DEFAULT_FILE };
+			for (String m1 : message1) {
+			    System.out.println(LINE_PREFIX + m1);
+			}
+			storageFilePath = DEFAULT_STORAGE_FILEPATH;
+			createFileIfMissing(storageFilePath);
         }
         
         //loadDataFromStorage();
-        initialiseAddressBookModel(loadPersonsFromFile(storageFilePath));
+        ALL_PERSONS.clear();
+		ALL_PERSONS.addAll(loadPersonsFromFile(storageFilePath));
 
         while (true) {
-            String userCommand = getUserInput();
+            System.out.print(LINE_PREFIX + "Enter command: ");
+			String inputLine = SCANNER.nextLine();
+			// silently consume all blank and comment lines
+			while (inputLine.trim().isEmpty() || inputLine.trim().charAt(0) == INPUT_COMMENT_MARKER) {
+			    inputLine = SCANNER.nextLine();
+			}
+			String userCommand = inputLine;
+			String[] message1 = { "[Command entered:" + userCommand + "]" };
 
             //echoUserCommand(userCommand);
-            showToUser("[Command entered:" + userCommand + "]");
+            for (String m1 : message1) {
+			    System.out.println(LINE_PREFIX + m1);
+			}
 
             String feedback = executeCommand(userCommand);
+			String[] message2 = { feedback, DIVIDER };
             
             //showResultToUser(feedback);
-            showToUser(feedback, DIVIDER);
+            for (String m2 : message2) {
+			    System.out.println(LINE_PREFIX + m2);
+			}
 
         }
-    }
-
-    /*
-     * ==============NOTE TO STUDENTS======================================
-     * The method header comment can be omitted if the method is trivial
-     * and the header comment is going to be almost identical to the method
-     * signature anyway.
-     * ====================================================================
-     */
-    private static void showWelcomeMessage() {
-        showToUser(DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER);
-    }
-
-    private static void showResultToUser(String result) {
-        showToUser(result, DIVIDER);
-    }
-
-    /*
-     * ==============NOTE TO STUDENTS======================================
-     * Parameter description can be omitted from the method header comment
-     * if the parameter name is self-explanatory.
-     * In the method below, '@param userInput' comment has been omitted.
-     * ====================================================================
-     */
-    /**
-     * Echoes the user input back to the user.
-     */
-    private static void echoUserCommand(String userCommand) {
-        showToUser("[Command entered:" + userCommand + "]");
-    }
-
-    /*
-     * ==============NOTE TO STUDENTS==========================================
-     * If the reader wants a deeper understanding of the solution, she can go
-     * to the next level of abstraction by reading the methods (given below)
-     * that is referenced by the method above.
-     * ====================================================================
-     */
-
-    /**
-     * Processes the program main method run arguments.
-     * If a valid storage file is specified, sets up that file for storage.
-     * Otherwise sets up the default file for storage.
-     *
-     * @param args full program arguments passed to application main method
-     */
-    private static void processProgramArgs(String[] args) {
-        if (args.length >= 2) {
-            showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
-            exitProgram();
-        }
-
-        if (args.length == 1) {
-            setupGivenFileForStorage(args[0]);
-        }
-
-        if(args.length == 0) {
-            setupDefaultFileForStorage();
-        }
-    }
-
-    /**
-     * Sets up the storage file based on the supplied file path.
-     * Creates the file if it is missing.
-     * Exits if the file name is not acceptable.
-     */
-    private static void setupGivenFileForStorage(String filePath) {
-
-        if (!isValidFilePath(filePath)) {
-            showToUser(String.format(MESSAGE_INVALID_FILE, filePath));
-            exitProgram();
-        }
-
-        storageFilePath = filePath;
-        createFileIfMissing(filePath);
     }
 
     /**
@@ -317,17 +270,6 @@ public class AddressBook {
     }
 
     /**
-     * Sets up the storage based on the default file.
-     * Creates file if missing.
-     * Exits program if the file cannot be created.
-     */
-    private static void setupDefaultFileForStorage() {
-        showToUser(MESSAGE_USING_DEFAULT_FILE);
-        storageFilePath = DEFAULT_STORAGE_FILEPATH;
-        createFileIfMissing(storageFilePath);
-    }
-
-    /**
      * Returns true if the given file is acceptable.
      * The file path is acceptable if it ends in '.txt'
      * TODO: Implement a more rigorous validity checking.
@@ -335,15 +277,6 @@ public class AddressBook {
     private static boolean isValidFilePath(String filePath) {
         return filePath.endsWith(".txt");
     }
-
-    /**
-     * Initialises the in-memory data using the storage file.
-     * Assumption: The file exists.
-     */
-    private static void loadDataFromStorage() {
-        initialiseAddressBookModel(loadPersonsFromFile(storageFilePath));
-    }
-
 
     /*
      * ===========================================
@@ -587,22 +520,6 @@ public class AddressBook {
      * ===========================================
      */
 
-    /**
-     * Prompts for the command and reads the text entered by the user.
-     * Ignores lines with first non-whitespace char equal to {@link #INPUT_COMMENT_MARKER} (considered comments)
-     *
-     * @return full line entered by the user
-     */
-    private static String getUserInput() {
-        System.out.print(LINE_PREFIX + "Enter command: ");
-        String inputLine = SCANNER.nextLine();
-        // silently consume all blank and comment lines
-        while (inputLine.trim().isEmpty() || inputLine.trim().charAt(0) == INPUT_COMMENT_MARKER) {
-            inputLine = SCANNER.nextLine();
-        }
-        return inputLine;
-    }
-
    /* ==============NOTE TO STUDENTS======================================
     * Note how the method below uses Java 'Varargs' feature so that the
     * method can accept a varying number of message parameters.
@@ -744,7 +661,7 @@ public class AddressBook {
     private static ArrayList<String> getLinesInFile(String filePath) {
         ArrayList<String> lines = null;
         try {
-            lines = new ArrayList(Files.readAllLines(Paths.get(filePath)));
+            lines = new ArrayList<String>(Files.readAllLines(Paths.get(filePath)));
         } catch (FileNotFoundException fnfe) {
             showToUser(String.format(MESSAGE_ERROR_MISSING_STORAGE_FILE, filePath));
             exitProgram();
@@ -789,17 +706,6 @@ public class AddressBook {
     }
 
     /**
-     * Deletes a person from the address book, target is identified by it's absolute index in the full list.
-     * Saves changes to storage file.
-     *
-     * @param index absolute index of person to delete (index within {@link #ALL_PERSONS})
-     */
-    private static void deletePersonFromAddressBook(int index) {
-        ALL_PERSONS.remove(index);
-        savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
-    }
-
-    /**
      * Deletes the specified person from the addressbook if it is inside. Saves any changes to storage file.
      *
      * @param exactPerson the actual person inside the address book (exactPerson == the person to delete in the full list)
@@ -827,17 +733,6 @@ public class AddressBook {
         ALL_PERSONS.clear();
         savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
     }
-
-    /**
-     * Resets the internal model with the given data. Does not save to file.
-     *
-     * @param persons list of persons to initialise the model with
-     */
-    private static void initialiseAddressBookModel(ArrayList<String[]> persons) {
-        ALL_PERSONS.clear();
-        ALL_PERSONS.addAll(persons);
-    }
-
 
     /*
      * ===========================================
@@ -1203,7 +1098,7 @@ public class AddressBook {
      * @return split by whitespace
      */
     private static ArrayList<String> splitByWhitespace(String toSplit) {
-        return new ArrayList(Arrays.asList(toSplit.trim().split("\\s+")));
+        return new ArrayList<String>(Arrays.asList(toSplit.trim().split("\\s+")));
     }
 
 }
