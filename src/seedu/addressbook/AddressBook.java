@@ -30,6 +30,8 @@ import java.util.Set;
  * in a text file.
  **/
 public class AddressBook {
+	
+	private static final String ENTER_COMMAND_MESSAGE = "Enter command: ";
 
     /**
      * Default file path used if the user doesn't provide the file name.
@@ -85,7 +87,9 @@ public class AddressBook {
     private static final String MESSAGE_STORAGE_FILE_CREATED = "Created new empty storage file: %1$s";
     private static final String MESSAGE_WELCOME = "Welcome to your Address Book!";
     private static final String MESSAGE_USING_DEFAULT_FILE = "Using default storage file : " + DEFAULT_STORAGE_FILEPATH;
-
+    
+    public static final String TAB = '\t';
+    
     // These are the prefix strings to define the data type of a command parameter
     private static final String PERSON_DATA_PREFIX_PHONE = "p/";
     private static final String PERSON_DATA_PREFIX_EMAIL = "e/";
@@ -198,11 +202,15 @@ public class AddressBook {
      * method alone.
      * ====================================================================
      */
-    public static void main(String[] args) {
+    public static void main (String[] args) {
         showWelcomeMessage();
         processProgramArgs(args);
         loadDataFromStorage();
-        while (true) {
+        exexute_main_program();
+    }
+    
+    public static void exexute_main_program () {
+    	while (true) {
             String userCommand = getUserInput();
             echoUserCommand(userCommand);
             String feedback = executeCommand(userCommand);
@@ -217,7 +225,7 @@ public class AddressBook {
      * signature anyway.
      * ====================================================================
      */
-    private static void showWelcomeMessage() {
+    private static void showWelcomeMessage () {
         showToUser(DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER);
     }
 
@@ -258,13 +266,9 @@ public class AddressBook {
         if (args.length >= 2) {
             showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
             exitProgram();
-        }
-
-        if (args.length == 1) {
+        } else if (args.length == 1) {
             setupGivenFileForStorage(args[0]);
-        }
-
-        if(args.length == 0) {
+        } else if(args.length == 0) {
             setupDefaultFileForStorage();
         }
     }
@@ -571,7 +575,7 @@ public class AddressBook {
      * @return full line entered by the user
      */
     private static String getUserInput() {
-        System.out.print(LINE_PREFIX + "Enter command: ");
+        System.out.print(LINE_PREFIX + ENTER_COMMAND_MESSAGE);
         String inputLine = SCANNER.nextLine();
         // silently consume all blank and comment lines
         while (inputLine.trim().isEmpty() || inputLine.trim().charAt(0) == INPUT_COMMENT_MARKER) {
@@ -613,7 +617,7 @@ public class AddressBook {
         for (int i = 0; i < persons.size(); i++) {
             final String[] person = persons.get(i);
             final int displayIndex = i + DISPLAYED_INDEX_OFFSET;
-            messageAccumulator.append('\t')
+            messageAccumulator.append(TAB)
                               .append(getIndexedPersonListElementMessage(displayIndex, person))
                               .append(LS);
         }
