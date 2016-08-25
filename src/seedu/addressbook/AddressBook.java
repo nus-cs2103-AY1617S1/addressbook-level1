@@ -370,7 +370,7 @@ public class AddressBook {
 
     /**
      * Constructs a generic feedback message for an invalid command from user, with instructions for correct usage.
-     *
+     *	
      * @param correctUsageInfo message showing the correct usage
      * @return invalid command args feedback message
      */
@@ -390,7 +390,7 @@ public class AddressBook {
         final Optional<String[]> decodeResult = decodePersonFromString(commandArgs);
 
         // checks if args are valid (decode result will not be present if the person is invalid)
-        if (!decodeResult.isPresent()) {
+        if (isValidPerson(decodeResult)) {
             return getMessageForInvalidCommandInput(COMMAND_ADD_WORD, getUsageInfoForAddCommand());
         }
 
@@ -399,6 +399,10 @@ public class AddressBook {
         addPersonToAddressBook(personToAdd);
         return getMessageForSuccessfulAddPerson(personToAdd);
     }
+
+	private static boolean isValidPerson(final Optional<String[]> decodeResult) {
+		return !decodeResult.isPresent();
+	}
 
     /**
      * Constructs a feedback message for a successful add person command execution.
@@ -925,7 +929,7 @@ public class AddressBook {
         final ArrayList<String[]> decodedPersons = new ArrayList<>();
         for (String encodedPerson : encodedPersons) {
             final Optional<String[]> decodedPerson = decodePersonFromString(encodedPerson);
-            if (!decodedPerson.isPresent()) {
+            if (isValidPerson(decodedPerson)) {
                 return Optional.empty();
             }
             decodedPersons.add(decodedPerson.get());
