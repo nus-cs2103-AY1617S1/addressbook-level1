@@ -882,11 +882,11 @@ public class AddressBook {
      * @return encoded strings
      */
     private static ArrayList<String> encodePersonsToStrings(ArrayList<String[]> persons) {
-        final ArrayList<String> encoded = new ArrayList<>();
+        final ArrayList<String> encodedPersons = new ArrayList<>();
         for (String[] person : persons) {
-            encoded.add(encodePersonToString(person));
+            encodedPersons.add(encodePersonToString(person));
         }
-        return encoded;
+        return encodedPersons;
     }
 
     /*
@@ -898,19 +898,19 @@ public class AddressBook {
     /**
      * Decodes a person from it's supposed string representation.
      *
-     * @param encoded string to be decoded
+     * @param encodedPerson string to be decoded
      * @return if cannot decode: empty Optional
      *         else: Optional containing decoded person
      */
-    private static Optional<String[]> decodePersonFromString(String encoded) {
+    private static Optional<String[]> decodePersonFromString(String encodedPerson) {
         // check that we can extract the parts of a person from the encoded string
-        if (!isPersonDataExtractableFrom(encoded)) {
+        if (!isPersonDataExtractableFrom(encodedPerson)) {
             return Optional.empty();
         }
         final String[] decodedPerson = makePersonFromData(
-                extractNameFromPersonString(encoded),
-                extractPhoneFromPersonString(encoded),
-                extractEmailFromPersonString(encoded)
+                extractNameFromPersonString(encodedPerson),
+                extractPhoneFromPersonString(encodedPerson),
+                extractEmailFromPersonString(encodedPerson)
         );
         // check that the constructed person is valid
         return isPersonDataValid(decodedPerson) ? Optional.of(decodedPerson) : Optional.empty();
