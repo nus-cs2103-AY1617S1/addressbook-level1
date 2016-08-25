@@ -137,8 +137,6 @@ public class AddressBook {
      */
     private static final int DISPLAYED_INDEX_OFFSET = 1;
 
-
-
     /**
      * If the first non-whitespace character in a user's input line is this, that line will be ignored.
      */
@@ -441,17 +439,29 @@ public class AddressBook {
      */
     private static ArrayList<Person> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
         final ArrayList<Person> matchedPersons = new ArrayList<>();        
-        Collection<String> upperCasedKeywords = keywords.stream()
-        											   .map(String::toUpperCase)
-        											   .collect(Collectors.toList());
         for (Person person : getAllPersonsInAddressBook()) {
-            final Set<String> wordsInName = new HashSet<>(splitByWhitespace(person.getName().toUpperCase()));
-            if (!Collections.disjoint(wordsInName, upperCasedKeywords)) {
+            if (hasMatchingNameKeywords(keywords, person)) {
                 matchedPersons.add(person);
             }
         }
         return matchedPersons;
     }
+   
+   /**
+    * Checks if a person's name matched any of the keywords given.
+    * 
+    * @param keywords for searching, person for comparison
+    * @return true if person's name contains any keyword
+    */
+   private static boolean hasMatchingNameKeywords(Collection<String> keywords, Person person) {
+	   Collection<String> upperCasedKeywords = keywords.stream()
+			   										   .map(String::toUpperCase)
+			   										   .collect(Collectors.toList());
+       final Set<String> wordsInName = new HashSet<>(splitByWhitespace(person.getName().toUpperCase()));
+       
+       return !Collections.disjoint(wordsInName, upperCasedKeywords);
+
+   }
 
     /**
      * Deletes person identified using last displayed index.
