@@ -1,9 +1,4 @@
 package seedu.addressbook;
-/* ==============NOTE TO STUDENTS======================================
- * This class is written in a procedural fashion (i.e. not Object-Oriented)
- * Yes, it is possible to write non-OO code using an OO language.
- * ====================================================================
- */
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -19,47 +14,16 @@ import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
 
-/* ==============NOTE TO STUDENTS======================================
- * This class header comment below is brief because details of how to
- * use this class are documented elsewhere.
- * ====================================================================
- */
-
-/**
- * This class is used to maintain a list of person data which are saved
- * in a text file.
- **/
 public class AddressBook {
 
-    /**
-     * Default file path used if the user doesn't provide the file name.
-     */
     private static final String DEFAULT_STORAGE_FILEPATH = "addressbook.txt";
 
-    /**
-     * Version info of the program.
-     */
     private static final String VERSION = "AddessBook Level 1 - Version 1.0";
 
-    /**
-     * A decorative prefix added to the beginning of lines printed by AddressBook
-     */
     public static final String LINE_PREFIX = "|| ";
 
-    /**
-     * A platform independent line separator.
-     */
     private static final String LS = System.lineSeparator() + LINE_PREFIX;
 
-    /*
-     * ==============NOTE TO STUDENTS======================================
-     * These messages shown to the user are defined in one place for convenient
-     * editing and proof reading. Such messages are considered part of the UI
-     * and may be subjected to review by UI experts or technical writers. Note
-     * that Some of the strings below include '%1$s' etc to mark the locations
-     * at which java String.format(...) method can insert values.
-     * ====================================================================
-     */
     private static final String MESSAGE_ADDED = "New person added: %1$s, Phone: %2$s, Email: %3$s";
     private static final String MESSAGE_ADDRESSBOOK_CLEARED = "Address book has been cleared!";
     private static final String MESSAGE_COMMAND_HELP = "%1$s: %2$s";
@@ -130,131 +94,20 @@ public class AddressBook {
 
     private static final String DIVIDER = "===================================================";
 
-
-    /* We use a String array to store details of a single person.
-     * The constants given below are the indexes for the different data elements of a person
-     * used by the internal String[] storage format.
-     * For example, a person's name is stored as the 0th element in the array.
-     */
-    private static final int PERSON_DATA_INDEX_NAME = 0;
-    private static final int PERSON_DATA_INDEX_PHONE = 1;
-    private static final int PERSON_DATA_INDEX_EMAIL = 2;
-
-    /**
-     * The number of data elements for a single person.
-     */
-    private static final int PERSON_DATA_COUNT = 3;
-
-    /**
-     * Offset required to convert between 1-indexing and 0-indexing.COMMAND_
-     */
-    private static final int DISPLAYED_INDEX_OFFSET = 1;
-
-
-
-    /**
-     * If the first non-whitespace character in a user's input line is this, that line will be ignored.
-     */
     private static final char INPUT_COMMENT_MARKER = '#';
 
-    /*
-     * This variable is declared for the whole class (instead of declaring it
-     * inside the readUserCommand() method to facilitate automated testing using
-     * the I/O redirection technique. If not, only the first line of the input
-     * text file will be processed.
-     */
+
     private static final Scanner SCANNER = new Scanner(System.in);
-    /*
-     * ==============NOTE TO STUDENTS======================================================================
-     * Note that the type of the variable below can also be declared as List<String[]>, as follows:
-     *    private static final List<String[]> ALL_PERSONS = new ArrayList<>()
-     * That is because List is an interface implemented by the ArrayList class.
-     * In this code we use ArrayList instead because we wanted to to stay away from advanced concepts
-     * such as interface inheritance.
-     * ====================================================================================================
-     */
-    /**
-     * List of all persons in the address book.
-     */
+
     private static final ArrayList<String[]> ALL_PERSONS = new ArrayList<>();
 
-
-    /**
-     * Stores the most recent list of persons shown to the user as a result of a user command.
-     * This is a subset of the full list. Deleting persons in the pull list does not delete
-     * those persons from this list.
-     */
     private static ArrayList<String[]> latestPersonListingView = getAllPersonsInAddressBook(); // initial view is of all
 
-    /**
-     * The path to the file used for storing person data.
-     */
     private static String storageFilePath;
 
-    /*
-     * ==============NOTE TO STUDENTS======================================
-     * Notice how this method solves the whole problem at a very high level.
-     * We can understand the high-level logic of the program by reading this
-     * method alone.
-     * ====================================================================
-     */
     public static void main(String[] args) {
-        showWelcomeMessage();
-        processProgramArgs(args);
-        loadDataFromStorage();
-        while (true) {
-            String userCommand = getUserInput();
-            echoUserCommand(userCommand);
-            String feedback = executeCommand(userCommand);
-            showResultToUser(feedback);
-        }
-    }
-
-    /*
-     * ==============NOTE TO STUDENTS======================================
-     * The method header comment can be omitted if the method is trivial
-     * and the header comment is going to be almost identical to the method
-     * signature anyway.
-     * ====================================================================
-     */
-    private static void showWelcomeMessage() {
-        showToUser(DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER);
-    }
-
-    private static void showResultToUser(String result) {
-        showToUser(result, DIVIDER);
-    }
-
-    /*
-     * ==============NOTE TO STUDENTS======================================
-     * Parameter description can be omitted from the method header comment
-     * if the parameter name is self-explanatory.
-     * In the method below, '@param userInput' comment has been omitted.
-     * ====================================================================
-     */
-    /**
-     * Echoes the user input back to the user.
-     */
-    private static void echoUserCommand(String userCommand) {
-        showToUser("[Command entered:" + userCommand + "]");
-    }
-
-    /*
-     * ==============NOTE TO STUDENTS==========================================
-     * If the reader wants a deeper understanding of the solution, she can go
-     * to the next level of abstraction by reading the methods (given below)
-     * that is referenced by the method above.
-     * ====================================================================
-     */
-
-    /**
-     * Processes the program main method run arguments.
-     * If a valid storage file is specified, sets up that file for storage.
-     * Otherwise sets up the default file for storage.
-     *
-     * @param args full program arguments passed to application main method
-     */
-    private static void processProgramArgs(String[] args) {
+    	showToUser(DIVIDER, DIVIDER, "AddessBook Level 1 - Version 1.0", MESSAGE_WELCOME, DIVIDER);
+        
         if (args.length >= 2) {
             showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
             exitProgram();
@@ -267,13 +120,38 @@ public class AddressBook {
         if(args.length == 0) {
             setupDefaultFileForStorage();
         }
-    }
+        
+        initialiseAddressBookModel(loadPersonsFromFile(storageFilePath));
+        while (true) {
+            String userCommand = getUserInput();
+            showToUser("[Command entered:" + userCommand + "]");
 
-    /**
-     * Sets up the storage file based on the supplied file path.
-     * Creates the file if it is missing.
-     * Exits if the file name is not acceptable.
-     */
+            final String[] commandTypeAndParams = splitCommandWordAndArgs(userCommand);        
+            final String commandType = commandTypeAndParams[0];
+            final String commandArgs = commandTypeAndParams[1];
+            switch (commandType) {
+            case COMMAND_ADD_WORD:
+                return executeAddPerson(commandArgs);
+            case COMMAND_FIND_WORD:
+                return executeFindPersons(commandArgs);
+            case COMMAND_LIST_WORD:
+                return executeListAllPersonsInAddressBook();
+            case COMMAND_DELETE_WORD:
+                return executeDeletePerson(commandArgs);
+            case COMMAND_CLEAR_WORD:
+                return executeClearAddressBook();
+            case COMMAND_HELP_WORD:
+                return getUsageInfoForAllCommands();
+            case COMMAND_EXIT_WORD:
+                executeExitProgramRequest();
+            default:
+                return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
+            }
+            
+            showToUser(feedback, DIVIDER);
+        }
+    }
+    
     private static void setupGivenFileForStorage(String filePath) {
 
         if (!isValidFilePath(filePath)) {
@@ -285,77 +163,23 @@ public class AddressBook {
         createFileIfMissing(filePath);
     }
 
-    /**
-     * Displays the goodbye message and exits the runtime.
-     */
     private static void exitProgram() {
         showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
         System.exit(0);
     }
 
-    /**
-     * Sets up the storage based on the default file.
-     * Creates file if missing.
-     * Exits program if the file cannot be created.
-     */
     private static void setupDefaultFileForStorage() {
         showToUser(MESSAGE_USING_DEFAULT_FILE);
         storageFilePath = DEFAULT_STORAGE_FILEPATH;
         createFileIfMissing(storageFilePath);
     }
 
-    /**
-     * Returns true if the given file is acceptable.
-     * The file path is acceptable if it ends in '.txt'
-     * TODO: Implement a more rigorous validity checking.
-     */
     private static boolean isValidFilePath(String filePath) {
         return filePath.endsWith(".txt");
     }
 
-    /**
-     * Initialises the in-memory data using the storage file.
-     * Assumption: The file exists.
-     */
-    private static void loadDataFromStorage() {
-        initialiseAddressBookModel(loadPersonsFromFile(storageFilePath));
-    }
-
-
-    /*
-     * ===========================================
-     *           COMMAND LOGIC
-     * ===========================================
-     */
-
-    /**
-     * Executes the command as specified by the {@code userInputString}
-     *
-     * @param userInputString  raw input from user
-     * @return  feedback about how the command was executed
-     */
     public static String executeCommand(String userInputString) {
-        final String[] commandTypeAndParams = splitCommandWordAndArgs(userInputString);
-        final String commandType = commandTypeAndParams[0];
-        final String commandArgs = commandTypeAndParams[1];
-        switch (commandType) {
-        case COMMAND_ADD_WORD:
-            return executeAddPerson(commandArgs);
-        case COMMAND_FIND_WORD:
-            return executeFindPersons(commandArgs);
-        case COMMAND_LIST_WORD:
-            return executeListAllPersonsInAddressBook();
-        case COMMAND_DELETE_WORD:
-            return executeDeletePerson(commandArgs);
-        case COMMAND_CLEAR_WORD:
-            return executeClearAddressBook();
-        case COMMAND_HELP_WORD:
-            return getUsageInfoForAllCommands();
-        case COMMAND_EXIT_WORD:
-            executeExitProgramRequest();
-        default:
-            return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
-        }
+        
     }
 
     /**
@@ -491,7 +315,7 @@ public class AddressBook {
     private static boolean isDeletePersonArgsValid(String rawArgs) {
         try {
             final int extractedIndex = Integer.parseInt(rawArgs.trim()); // use standard libraries to parse
-            return extractedIndex >= DISPLAYED_INDEX_OFFSET;
+            return extractedIndex >= 1;
         } catch (NumberFormatException nfe) {
             return false;
         }
@@ -514,7 +338,7 @@ public class AddressBook {
      * @return whether it is valid
      */
     private static boolean isDisplayIndexValidForLastPersonListingView(int index) {
-        return index >= DISPLAYED_INDEX_OFFSET && index < getLatestPersonListingView().size() + DISPLAYED_INDEX_OFFSET;
+        return index >= 1 && index < getLatestPersonListingView().size() + 1;
     }
 
     /**
@@ -558,12 +382,6 @@ public class AddressBook {
         exitProgram();
     }
 
-    /*
-     * ===========================================
-     *               UI LOGIC
-     * ===========================================
-     */
-
     /**
      * Prompts for the command and reads the text entered by the user.
      * Ignores lines with first non-whitespace char equal to {@link #INPUT_COMMENT_MARKER} (considered comments)
@@ -580,11 +398,6 @@ public class AddressBook {
         return inputLine;
     }
 
-   /* ==============NOTE TO STUDENTS======================================
-    * Note how the method below uses Java 'Varargs' feature so that the
-    * method can accept a varying number of message parameters.
-    * ====================================================================
-    */
     /**
      * Shows a message to the user
      */
@@ -612,7 +425,7 @@ public class AddressBook {
         final StringBuilder messageAccumulator = new StringBuilder();
         for (int i = 0; i < persons.size(); i++) {
             final String[] person = persons.get(i);
-            final int displayIndex = i + DISPLAYED_INDEX_OFFSET;
+            final int displayIndex = i + 1;
             messageAccumulator.append('\t')
                               .append(getIndexedPersonListElementMessage(displayIndex, person))
                               .append(LS);
@@ -659,7 +472,7 @@ public class AddressBook {
      * @return the actual person object in the last shown person listing
      */
     private static String[] getPersonByLastVisibleIndex(int lastVisibleIndex) {
-       return latestPersonListingView.get(lastVisibleIndex - DISPLAYED_INDEX_OFFSET);
+       return latestPersonListingView.get(lastVisibleIndex - 1);
     }
 
     /**
@@ -668,13 +481,6 @@ public class AddressBook {
     private static ArrayList<String[]> getLatestPersonListingView() {
         return latestPersonListingView;
     }
-
-
-    /*
-     * ===========================================
-     *             STORAGE LOGIC
-     * ===========================================
-     */
 
     /**
      * Creates storage file if it does not exist. Shows feedback to user.
@@ -748,13 +554,6 @@ public class AddressBook {
         }
     }
 
-
-    /*
-     * ================================================================================
-     *        INTERNAL ADDRESS BOOK DATA METHODS
-     * ================================================================================
-     */
-
     /**
      * Adds a person to the address book. Saves changes to storage file.
      *
@@ -815,19 +614,12 @@ public class AddressBook {
         ALL_PERSONS.addAll(persons);
     }
 
-
-    /*
-     * ===========================================
-     *             PERSON METHODS
-     * ===========================================
-     */
-
     /**
      * @param person whose name you want
      * @return person's name
      */
     private static String getNameFromPerson(String[] person) {
-        return person[PERSON_DATA_INDEX_NAME];
+        return person[0];
     }
 
     /**
@@ -835,7 +627,7 @@ public class AddressBook {
      * @return person's phone number
      */
     private static String getPhoneFromPerson(String[] person) {
-        return person[PERSON_DATA_INDEX_PHONE];
+        return person[1];
     }
 
     /**
@@ -843,7 +635,7 @@ public class AddressBook {
      * @return person's email
      */
     private static String getEmailFromPerson(String[] person) {
-        return person[PERSON_DATA_INDEX_EMAIL];
+        return person[2];
     }
 
     /**
@@ -855,10 +647,10 @@ public class AddressBook {
      * @return constructed person
      */
     private static String[] makePersonFromData(String name, String phone, String email) {
-        final String[] person = new String[PERSON_DATA_COUNT];
-        person[PERSON_DATA_INDEX_NAME] = name;
-        person[PERSON_DATA_INDEX_PHONE] = phone;
-        person[PERSON_DATA_INDEX_EMAIL] = email;
+        final String[] person = new String[3];
+        person[0] = name;
+        person[1] = phone;
+        person[2] = email;
         return person;
     }
 
@@ -887,12 +679,6 @@ public class AddressBook {
         return encoded;
     }
 
-    /*
-     * ==============NOTE TO STUDENTS======================================
-     * Note the use of Java's new 'Optional' feature to indicate that
-     * the return value may not always be present.
-     * ====================================================================
-     */
     /**
      * Decodes a person from it's supposed string representation.
      *
@@ -1016,18 +802,11 @@ public class AddressBook {
      * @return whether the given person has valid data
      */
     private static boolean isPersonDataValid(String[] person) {
-        return isPersonNameValid(person[PERSON_DATA_INDEX_NAME])
-                && isPersonPhoneValid(person[PERSON_DATA_INDEX_PHONE])
-                && isPersonEmailValid(person[PERSON_DATA_INDEX_EMAIL]);
+        return isPersonNameValid(person[0])
+                && isPersonPhoneValid(person[1])
+                && isPersonEmailValid(person[2]);
     }
 
-    /*
-     * ==============NOTE TO STUDENTS======================================
-     * Note the use of 'regular expressions' in the method below.
-     * Regular expressions can be very useful in checking if a a string
-     * follows a sepcific format.
-     * ====================================================================
-     */
     /**
      * Validates string as a legal person name
      *
@@ -1060,13 +839,6 @@ public class AddressBook {
         return email.matches("\\S+@\\S+\\.\\S+"); // email is [non-whitespace]@[non-whitespace].[non-whitespace]
         //TODO: implement a more permissive validation
     }
-
-
-    /*
-     * ===============================================
-     *         COMMAND HELP INFO FOR USERS
-     * ===============================================
-     */
 
     /**
      * @return  Usage info for all commands
@@ -1153,13 +925,6 @@ public class AddressBook {
         return String.format(MESSAGE_COMMAND_HELP, COMMAND_EXIT_WORD, COMMAND_EXIT_DESC)
                 + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_EXIT_EXAMPLE);
     }
-
-
-    /*
-     * ============================
-     *         UTILITY METHODS
-     * ============================
-     */
 
     /**
      * Removes sign(p/, d/, etc) from parameter string
