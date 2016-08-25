@@ -775,11 +775,11 @@ public class AddressBook {
      *
      * @param index absolute index of person to delete (index within {@link #ALL_PERSONS})
      */
-    private static void deletePersonFromAddressBook(int index) {
+/*    private static void deletePersonFromAddressBook(int index) {
         ALL_PERSONS.remove(index);
         savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
     }
-
+*/
     /**
      * Deletes the specified person from the addressbook if it is inside. Saves any changes to storage file.
      *
