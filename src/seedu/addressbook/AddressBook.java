@@ -205,10 +205,18 @@ public class AddressBook {
             exitProgram();
         }
         if (args.length == 1) {
-            setupGivenFileForStorage(args[0]);
+            if (!isValidFilePath(args[0])) {
+                showToUser(String.format(MESSAGE_INVALID_FILE, args[0]));
+                exitProgram();
+            }
+
+            storageFilePath = args[0];
+            createFileIfMissing(args[0]);
         }
         if(args.length == 0) {
-            setupDefaultFileForStorage();
+            showToUser(MESSAGE_USING_DEFAULT_FILE);
+            storageFilePath = DEFAULT_STORAGE_FILEPATH;
+            createFileIfMissing(storageFilePath);
         }
         loadDataFromStorage();
         while (true) {
@@ -344,10 +352,23 @@ public class AddressBook {
      * @return  feedback about how the command was executed
      */
     public static String executeCommand(String userInputString) {
-        final String[] commandTypeAndParams = splitCommandWordAndArgs(userInputString);
-        final String commandType = commandTypeAndParams[0];
+        return doCommand(userInputString);
+    }
+
+	private static String doCommand(String userInputString) {
+		final String[] commandTypeAndParams = splitCommandWordAndArgs(userInputString);
+        return extractCommand(commandTypeAndParams);
+	}
+
+	private static String extractCommand(final String[] commandTypeAndParams) {
+		final String commandType = commandTypeAndParams[0];
         final String commandArgs = commandTypeAndParams[1];
-        switch (commandType) {
+        return chooseCommand(commandType, commandArgs);
+	}
+
+	private static String chooseCommand(final String commandType,
+			final String commandArgs) {
+		switch (commandType) {
 	        case COMMAND_ADD_WORD:
 	            return executeAddPerson(commandArgs);
 	        case COMMAND_FIND_WORD:
@@ -365,7 +386,7 @@ public class AddressBook {
 	        default:
 	            return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
 	    }
-    }
+	}
 
     /**
      * Splits raw user input into command word and command arguments string
@@ -942,7 +963,20 @@ public class AddressBook {
     private static Optional<ArrayList<String[]>> decodePersonsFromStrings(ArrayList<String> encodedPersons) {
         final ArrayList<String[]> decodedPersons = new ArrayList<>();
         for (String encodedPerson : encodedPersons) {
-            final Optional<String[]> decodedPerson = decodePersonFromString(encodedPerson);
+            Optional<String[]> decodedPerson;
+            // check that we can extract the parts of a person from the encoded string
+            if (!isPersonDataExtractableFrom(encodedPerson)) {
+                return Optional.empty();
+            }
+            final String[] dp = makePersonFromData(
+                    extractNameFromPersonString(encodedPerson),
+                    extractPhoneFromPersonString(encodedPerson),
+                    extractEmailFromPersonString(encodedPerson)
+            );
+            // check that the constructed person is valid
+            decodedPerson = isPersonDataValid(dp) ? Optional.of(dp) : Optional.empty();
+
+            
             if (isValidPerson(decodedPerson)) {
                 return Optional.empty();
             }
