@@ -1,0 +1,278 @@
+[33mcommit de816009494a1b3706a08b9ad694058d88462042[m
+Author: e0003892 <e0003892.u.nus.edu>
+Date:   Thu Aug 25 19:40:11 2016 +0800
+
+    Changeconstant name LS to LINE_SEPARATOR
+
+[33mcommit a2c90b73921c84a7fe944e33fca05fa14da6e5a0[m
+Author: Damith C. Rajapakse <damith@gmail.com>
+Date:   Sat Aug 20 15:29:22 2016 +0800
+
+    Use correct phrasing for example commit message
+
+[33mcommit 54cf7c43346f6a6b71d6492a900eba2d406bdc8c[m
+Author: Wang Leng Tan <tanwangleng@outlook.com>
+Date:   Sat Aug 20 11:41:46 2016 +0800
+
+    [16][LO-Refactor] refers to the same learning outcome twice
+
+[33mcommit 3a8c7e8c5f0b8490afd104bb715507b436aa098b[m
+Author: Zhang Yi Jiang <mediumdeviation@gmail.com>
+Date:   Tue Aug 16 12:04:44 2016 +0800
+
+    [3] cd to script directory in runtests.sh and fix typo
+    
+    The script will not run properly otherwise if run from outside
+    the /tests directory.
+
+[33mcommit 1ec0bbf2bd7155c6de9baf2a5eed47a45328a8a8[m
+Author: Damith C. Rajapakse <damith@gmail.com>
+Date:   Sun Aug 14 13:29:58 2016 +0800
+
+    Fix 2nd broken link to coding best practices
+    Fixes #14
+
+[33mcommit 68467674ff11a4d36321647819c24600c9566efa[m
+Author: Damith C. Rajapakse <damith@gmail.com>
+Date:   Sun Aug 14 13:27:03 2016 +0800
+
+    Fix broken link to coding best practices
+    Fixes #14
+
+[33mcommit 1a8e61c0e7ccdd2fd8311c224f843ed48f156c8a[m
+Author: Wei Kang <weikangchia@gmail.com>
+Date:   Sat Aug 13 16:21:30 2016 +0800
+
+    [13] Add missing data type to README.md
+
+[33mcommit 150cec80a47a1488456488d5e2be4dc9c27a26f0[m
+Author: Thien Nguyen <thiennguyen1993@gmail.com>
+Date:   Thu Aug 11 14:12:33 2016 +0800
+
+    Add a runtests.sh #6 (#10)
+    
+    [6] Add a runtests.sh
+
+[33mcommit f33e570c13f03f1c91020c32109c4ebf569a23ce[m
+Author: Martin Choo <m133225@users.noreply.github.com>
+Date:   Thu Aug 11 12:58:57 2016 +0800
+
+    [12] Refine README (cosmetic)
+
+[33mcommit ceccce908102fefe059bf4e3dda8ab4385eaa54d[m
+Author: Damith C. Rajapakse <damith@gmail.com>
+Date:   Thu Aug 11 09:55:57 2016 +0800
+
+    [9] Make userCommand variable local scope
+    
+    * Make userCommand variable local scope
+    
+    * updated I/O tests accordingly
+
+[33mcommit 22b0445020aa5cc946c103ffb237b619aad73ec0[m
+Author: Damith C. Rajapakse <damith@gmail.com>
+Date:   Thu Aug 11 09:32:05 2016 +0800
+
+    [8] Rename _WORD_ constants to be consistent with others
+
+[33mcommit 2b90746fa72dab2622caf785d1f68759826b03c4[m
+Author: Damith C. Rajapakse <damith@gmail.com>
+Date:   Wed Aug 10 23:08:52 2016 +0800
+
+    Rephrase method comment to describe WHAT, not HOW, the method does
+
+[33mcommit e2253d6269b71d777e1040a84dc9667e2d5cfde3[m
+Author: Damith C. Rajapakse <damith@gmail.com>
+Date:   Sun Aug 7 19:12:59 2016 +0800
+
+    Add link to reference process
+
+[33mcommit f62f7366f54acff4c9c92f6511c99186501f3363[m
+Author: Damith C. Rajapakse <damith@gmail.com>
+Date:   Sat Aug 6 15:30:23 2016 +0800
+
+    Tweak README text (cosmetic)
+
+[33mcommit bdf4fa639cb9d0ad0aaa4418fdc23f071c461e14[m
+Author: Damith C. Rajapakse <damith@gmail.com>
+Date:   Sat Aug 6 15:08:42 2016 +0800
+
+    Change case of main headings, bold keywords
+
+[33mcommit b10d6e3589d8c055ddab3f917cac08c3eadaae07[m
+Author: Damith C. Rajapakse <damith@gmail.com>
+Date:   Fri Aug 5 18:49:05 2016 +0800
+
+    Added description to an LO
+
+[33mcommit f9d85f555eb2950cbbcc28a125330bd5ca314216[m
+Author: Damith C. Rajapakse <damith@gmail.com>
+Date:   Fri Aug 5 17:44:34 2016 +0800
+
+    Cross-linked LOs
+
+[33mcommit 01ee64f3dba59fa7a0c59a8426b33a2fe90e2bde[m
+Author: Damith C. Rajapakse <damith@gmail.com>
+Date:   Fri Aug 5 17:40:54 2016 +0800
+
+    Refined Refactoring exercise
+
+[33mcommit 48d147c7cbb83aaced46714a3fa9d7a418ee831a[m
+Author: Damith C. Rajapakse <damith@gmail.com>
+Date:   Fri Aug 5 17:25:13 2016 +0800
+
+    Reordered the LOs
+
+[33mcommit 648e9fd7f0d55f5e2d307a7ec0471498f691004d[m
+Author: Damith C. Rajapakse <damith@gmail.com>
+Date:   Fri Aug 5 15:31:40 2016 +0800
+
+    Added resources to refactoring LO
+
+[33mcommit 656694f3e3e5d7455900c1f6d7b5443825bee28d[m
+Author: Damith C. Rajapakse <damith@gmail.com>
+Date:   Thu Aug 4 15:26:29 2016 +0800
+
+    Tweaks to exercises
+
+[33mcommit 2172a006b571bc7c67510d829b3b217778919dc5[m
+Author: Damith C. Rajapakse <damith@gmail.com>
+Date:   Thu Aug 4 11:28:18 2016 +0800
+
+    Minor tweaks to LOs
+
+[33mcommit d781cb093026adbb2eb361e3a58723f2a73eee9b[m
+Author: Damith C. Rajapakse <damith@gmail.com>
+Date:   Thu Aug 4 00:00:52 2016 +0800
+
+    Fixed minor typo
+
+[33mcommit 8dedcf8cd257e2ba4ce74545b0567f7393055335[m
+Author: Damith C. Rajapakse <damith@gmail.com>
+Date:   Wed Aug 3 23:49:55 2016 +0800
+
+    Updated links to slides
+
+[33mcommit 2877c3f4e0e8575469074cdf9663da56665e8adf[m
+Author: Damith C. Rajapakse <damith@gmail.com>
+Date:   Wed Aug 3 23:39:41 2016 +0800
+
+    Added eclipse slides
+
+[33mcommit ca7d628b66bcbe94599ca7a273586a56cf5e26b8[m
+Author: Damith C. Rajapakse <damith@gmail.com>
+Date:   Tue Aug 2 22:35:33 2016 +0800
+
+    Added another LO
+
+[33mcommit 50e4a47b036dfedd95b3b33eede4e3b4cd0210c4[m
+Author: Damith C. Rajapakse <damith@gmail.com>
+Date:   Tue Aug 2 20:25:43 2016 +0800
+
+    Added runtests.bat
+
+[33mcommit f2b874c86b1f936cf2a48b4fe9da92166784ff7d[m
+Author: Damith C. Rajapakse <damith@gmail.com>
+Date:   Tue Aug 2 19:57:41 2016 +0800
+
+    Refined usage documentation
+
+[33mcommit 57a60e7bf5c796f724448a0a4740b819d92377d8[m
+Author: Damith C. Rajapakse <damith@gmail.com>
+Date:   Tue Aug 2 18:27:08 2016 +0800
+
+    Refined .ignore file
+
+[33mcommit 3f060158a6865f705db10a1a03cd0e963fdb19db[m
+Author: Damith C. Rajapakse <damith@gmail.com>
+Date:   Tue Aug 2 18:22:00 2016 +0800
+
+    renamed package
+
+[33mcommit da92603c6bfeb204914632c672f9c81a37880411[m
+Author: Damith C. Rajapakse <damith@gmail.com>
+Date:   Tue Aug 2 18:16:51 2016 +0800
+
+    Minor tweaks to README
+
+[33mcommit 3a430884b2128758de123c28123f6fecff89e3c8[m
+Author: Damith C. Rajapakse <damith@gmail.com>
+Date:   Tue Aug 2 18:11:13 2016 +0800
+
+    Added the enum exercise
+
+[33mcommit 34c7dda9ad710b95406b3428ce9705479cee510c[m
+Author: Damith C. Rajapakse <damith@gmail.com>
+Date:   Tue Aug 2 17:00:15 2016 +0800
+
+    Replaces List<> with ArrayList<>
+
+[33mcommit b0b59b89c21f1100488716f95869ff9a122e0c2a[m
+Author: Damith C. Rajapakse <damith@gmail.com>
+Date:   Tue Aug 2 15:57:32 2016 +0800
+
+    Fixed some broken links to internal anchors
+
+[33mcommit e1611bb6699c783fe6b8e523264f26361bdf8bb7[m
+Author: Damith C. Rajapakse <damith@gmail.com>
+Date:   Tue Aug 2 00:05:22 2016 +0800
+
+    Added blank line
+
+[33mcommit 73067d160b500507e18d63134bdf182f76ec61dd[m
+Author: Damith C. Rajapakse <damith@gmail.com>
+Date:   Mon Aug 1 23:14:02 2016 +0800
+
+    Added more exercises
+
+[33mcommit fa388458f82d3664d8b072e43f558c6f00212432[m
+Author: Damith C. Rajapakse <damith@gmail.com>
+Date:   Mon Aug 1 22:06:48 2016 +0800
+
+    Added var args
+
+[33mcommit d557ff454a95ccc2c39692a02daff18c20b70484[m
+Author: Damith C. Rajapakse <damith@gmail.com>
+Date:   Mon Aug 1 21:27:32 2016 +0800
+
+    Avoided dummy return
+
+[33mcommit 9899c2bcf4b95165811e2d421575255cddfee9c3[m
+Author: Damith C. Rajapakse <damith@gmail.com>
+Date:   Mon Aug 1 21:22:31 2016 +0800
+
+    Exit -> Exits
+
+[33mcommit 6dd84278507fd59adac9c1ba2bde1d556582510f[m
+Author: Damith C. Rajapakse <damith@gmail.com>
+Date:   Mon Aug 1 21:20:09 2016 +0800
+
+    renamed default storage file
+
+[33mcommit e1549fd05891a213da302c5c0ff5141702f85ce0[m
+Author: Damith C. Rajapakse <damith@gmail.com>
+Date:   Mon Aug 1 21:12:39 2016 +0800
+
+    Fixed broken links
+
+[33mcommit 6a10e606d924dfa83687577c1c862dadd09665b7[m
+Author: Damith C. Rajapakse <damith@gmail.com>
+Date:   Mon Aug 1 19:06:52 2016 +0800
+
+    Added some exercises
+
+[33mcommit fe5655a29979a15e66717ab9543ae40453d8e547[m
+Author: Damith C. Rajapakse <damith@gmail.com>
+Date:   Sun Jul 31 22:31:20 2016 +0800
+
+    Polish code, readme, tests (#2)
+
+[33mcommit 57ab42de42e484efa16ccd717376f75255dbbb00[m
+Author: Leow Yijin <leowyijin@gmail.com>
+Date:   Sun Jul 31 10:26:45 2016 +0800
+
+    Cleaned, refactored, finished features, converted to address book context (#1)
+    
+    First full draft of AddressBook code
+
+[33mcommit b23349968081646a05451237fbd96e6f8f3
