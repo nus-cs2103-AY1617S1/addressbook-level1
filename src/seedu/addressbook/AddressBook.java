@@ -1008,7 +1008,7 @@ public class AddressBook {
      * ==============NOTE TO STUDENTS======================================
      * Note the use of 'regular expressions' in the method below.
      * Regular expressions can be very useful in checking if a a string
-     * follows a sepcific format.
+     * follows a specific format.
      * ====================================================================
      */
     /**
