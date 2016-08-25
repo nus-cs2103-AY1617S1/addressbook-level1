@@ -1092,27 +1092,27 @@ public class AddressBook {
     private static String getUsageInfo(String c, Boolean hasParameters) {
         String[] constantArray = new String[4];
         switch (c) {
-            case COMMAND_ADD_WORD:
-                constantArray = new String[] {COMMAND_ADD_WORD, COMMAND_ADD_DESC, COMMAND_ADD_PARAMETERS, COMMAND_ADD_EXAMPLE};
-                break;
-            case COMMAND_FIND_WORD:
-                constantArray = new String[] {COMMAND_FIND_WORD, COMMAND_FIND_DESC, COMMAND_FIND_PARAMETERS, COMMAND_FIND_EXAMPLE};
-                break;
-            case COMMAND_DELETE_WORD:
-                constantArray = new String[] {COMMAND_DELETE_WORD, COMMAND_DELETE_DESC, COMMAND_DELETE_PARAMETER, COMMAND_DELETE_EXAMPLE};
-                break;
-            case COMMAND_CLEAR_WORD:
-                constantArray = new String[] {COMMAND_CLEAR_WORD, COMMAND_CLEAR_DESC, COMMAND_CLEAR_EXAMPLE};
-                break;
-            case COMMAND_LIST_WORD:
-                constantArray = new String[] {COMMAND_LIST_WORD, COMMAND_LIST_DESC, COMMAND_LIST_EXAMPLE};
-                break;
-            case COMMAND_HELP_WORD:
-                constantArray = new String[] {COMMAND_HELP_WORD, COMMAND_HELP_DESC, COMMAND_HELP_EXAMPLE};
-                break;
-            case COMMAND_EXIT_WORD:
-                constantArray = new String[] {COMMAND_EXIT_WORD, COMMAND_EXIT_DESC, COMMAND_EXIT_EXAMPLE};
-                break;
+        case COMMAND_ADD_WORD:
+            constantArray = new String[] {COMMAND_ADD_WORD, COMMAND_ADD_DESC, COMMAND_ADD_PARAMETERS, COMMAND_ADD_EXAMPLE};
+            break;
+        case COMMAND_FIND_WORD:
+            constantArray = new String[] {COMMAND_FIND_WORD, COMMAND_FIND_DESC, COMMAND_FIND_PARAMETERS, COMMAND_FIND_EXAMPLE};
+            break;
+        case COMMAND_DELETE_WORD:
+            constantArray = new String[] {COMMAND_DELETE_WORD, COMMAND_DELETE_DESC, COMMAND_DELETE_PARAMETER, COMMAND_DELETE_EXAMPLE};
+            break;
+        case COMMAND_CLEAR_WORD:
+            constantArray = new String[] {COMMAND_CLEAR_WORD, COMMAND_CLEAR_DESC, COMMAND_CLEAR_EXAMPLE};
+            break;
+        case COMMAND_LIST_WORD:
+            constantArray = new String[] {COMMAND_LIST_WORD, COMMAND_LIST_DESC, COMMAND_LIST_EXAMPLE};
+            break;
+        case COMMAND_HELP_WORD:
+            constantArray = new String[] {COMMAND_HELP_WORD, COMMAND_HELP_DESC, COMMAND_HELP_EXAMPLE};
+            break;
+        case COMMAND_EXIT_WORD:
+            constantArray = new String[] {COMMAND_EXIT_WORD, COMMAND_EXIT_DESC, COMMAND_EXIT_EXAMPLE};
+            break;
         }
 
         if (hasParameters) {
