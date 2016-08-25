@@ -197,18 +197,14 @@ public class AddressBook {
      * We can understand the high-level logic of the program by reading this
      * method alone.
      * ====================================================================
-     * T2A3 Method Abstraction - SLAP
+     * T2A3 Refactor - SLAP inline on processProgramArgs(args)
      */
-    
     public static void main(String[] args) {
-        String[] message = { DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER };
-		for (String m : message) {
-		    System.out.println(LINE_PREFIX + m);
-		}
+        showWelcomeMessage();
         if (args.length >= 2) {
-		    String[] message1 = { MESSAGE_INVALID_PROGRAM_ARGS };
-			for (String m1 : message1) {
-			    System.out.println(LINE_PREFIX + m1);
+		    String[] message = { MESSAGE_INVALID_PROGRAM_ARGS };
+			for (String m : message) {
+			    System.out.println(LINE_PREFIX + m);
 			}
 		    exitProgram();
 		}
@@ -216,10 +212,7 @@ public class AddressBook {
 		if (args.length == 1) {
 		    String filePath = args[0];
 			if (!isValidFilePath(filePath)) {
-			    String[] message1 = { String.format(MESSAGE_INVALID_FILE, filePath) };
-				for (String m1 : message1) {
-				    System.out.println(LINE_PREFIX + m1);
-				}
+			    showToUser(String.format(MESSAGE_INVALID_FILE, filePath));
 			    exitProgram();
 			}
 			
@@ -228,23 +221,19 @@ public class AddressBook {
 		}
 		
 		if(args.length == 0) {
-		    String[] message1 = { MESSAGE_USING_DEFAULT_FILE };
-			for (String m1 : message1) {
-			    System.out.println(LINE_PREFIX + m1);
+		    String[] message = { MESSAGE_USING_DEFAULT_FILE };
+			for (String m : message) {
+			    System.out.println(LINE_PREFIX + m);
 			}
 			storageFilePath = DEFAULT_STORAGE_FILEPATH;
 			createFileIfMissing(storageFilePath);
 		}
-        ALL_PERSONS.clear();
-		ALL_PERSONS.addAll(loadPersonsFromFile(storageFilePath));
+        loadDataFromStorage();
         while (true) {
             String userCommand = getUserInput();
-            showToUser("[Command entered:" + userCommand + "]");
+            echoUserCommand(userCommand);
             String feedback = executeCommand(userCommand);
-			String[] message1 = { feedback, DIVIDER };
-            for (String m1 : message1) {
-			    System.out.println(LINE_PREFIX + m1);
-			}
+            showResultToUser(feedback);
         }
     }
 
