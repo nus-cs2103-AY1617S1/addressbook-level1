@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Scanner;
@@ -599,6 +600,7 @@ public class AddressBook {
             System.out.println(LINE_PREFIX + m);
         }
     }
+    
 
     /**
      * Shows the list of persons to the user.
@@ -606,7 +608,12 @@ public class AddressBook {
      *
      */
     private static void showToUser(ArrayList<String[]> persons) {
-        String listAsString = getDisplayString(persons);
+    	Collections.sort(persons, new Comparator<String[]>(){
+        	public int compare(String[] first, String[] second){
+        		return first[0].compareTo(second[0]);
+        	}
+        });
+    	String listAsString = getDisplayString(persons);
         showToUser(listAsString);
         updateLatestViewedPersonListing(persons);
     }
