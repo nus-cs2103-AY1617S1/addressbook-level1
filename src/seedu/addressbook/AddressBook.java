@@ -199,7 +199,10 @@ public class AddressBook {
      * ====================================================================
      */
     public static void main(String[] args) {
-        showWelcomeMessage();
+        String[] message = { DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER };
+		for (String m : message) {
+		    System.out.println(LINE_PREFIX + m);
+		}
         
         // Inlining processProgramArgs(args)
         if (args.length >= 2) {
@@ -214,26 +217,16 @@ public class AddressBook {
 		if(args.length == 0) {
 		    setupDefaultFileForStorage();
 		}
-		// End of extraction
+		// End of inline
 		
-        loadDataFromStorage();
+		ALL_PERSONS.clear();
+		ALL_PERSONS.addAll(loadPersonsFromFile(storageFilePath));
         while (true) {
             String userCommand = getUserInput();
             echoUserCommand(userCommand);
             String feedback = executeCommand(userCommand);
             showResultToUser(feedback);
         }
-    }
-
-    /*
-     * ==============NOTE TO STUDENTS======================================
-     * The method header comment can be omitted if the method is trivial
-     * and the header comment is going to be almost identical to the method
-     * signature anyway.
-     * ====================================================================
-     */
-    private static void showWelcomeMessage() {
-        showToUser(DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER);
     }
 
     private static void showResultToUser(String result) {
@@ -305,15 +298,6 @@ public class AddressBook {
     private static boolean isValidFilePath(String filePath) {
         return filePath.endsWith(".txt");
     }
-
-    /**
-     * Initialises the in-memory data using the storage file.
-     * Assumption: The file exists.
-     */
-    private static void loadDataFromStorage() {
-        initialiseAddressBookModel(loadPersonsFromFile(storageFilePath));
-    }
-
 
     /*
      * ===========================================
