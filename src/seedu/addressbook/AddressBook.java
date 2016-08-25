@@ -395,10 +395,33 @@ public class AddressBook {
         }
 
         // add the person as specified
-        final String[] personToAdd = decodeResult.get();
-        addPersonToAddressBook(personToAdd);
-        return getMessageForSuccessfulAddPerson(personToAdd);
+        final String[] personToAdd = addPerson(decodeResult);
+        return displaySuccesfulMessageforAddPerson(personToAdd);
     }
+
+    /**
+     * Refactor
+     * Display a message for adding a person to the address book.
+     *
+     * @param The person full model 
+     * @return The message that the person had been added to the address book.
+     */
+	private static String displaySuccesfulMessageforAddPerson(final String[] personToAdd) {
+		return getMessageForSuccessfulAddPerson(personToAdd);
+	}
+
+    /**
+     * Refactor
+     * Adds a person (specified by the command args) to the address book.
+     *
+     * @param decoded result from the Param
+     * @return the person full model
+     */
+	private static String[] addPerson(final Optional<String[]> decodeResult) {
+		final String[] personToAdd = decodeResult.get();
+        addPersonToAddressBook(personToAdd);
+		return personToAdd;
+	}
 
     /**
      * Constructs a feedback message for a successful add person command execution.
@@ -421,10 +444,22 @@ public class AddressBook {
      */
     private static String executeFindPersons(String commandArgs) {
         final Set<String> keywords = extractKeywordsFromFindPersonArgs(commandArgs);
-        final ArrayList<String[]> personsFound = getPersonsWithNameContainingAnyKeyword(keywords);
+        return findPersons(keywords);
+    }
+
+    /**
+     * Refactor
+     * Finds and lists all persons in address book whose name contains any of the argument keywords.
+     * Keyword matching is case sensitive.
+     *
+     * @param commandArgs full command args string from the user
+     * @return feedback display message for the operation result
+     */
+	private static String findPersons(final Set<String> keywords) {
+		final ArrayList<String[]> personsFound = getPersonsWithNameContainingAnyKeyword(keywords);
         showToUser(personsFound);
         return getMessageForPersonsDisplayedSummary(personsFound);
-    }
+	}
 
     /**
      * Constructs a feedback message to summarise an operation that displayed a listing of persons.
@@ -454,14 +489,24 @@ public class AddressBook {
      */
     private static ArrayList<String[]> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
-        for (String[] person : getAllPersonsInAddressBook()) {
+        searchAllInAddressBook(keywords, matchedPersons);
+        return matchedPersons;
+    }
+
+    /**
+     * Search all persons in the full model whose names contain some of the specified keywords.
+     *
+     * @param keywords for searching
+     * @return list of persons in full model with name containing some of the keywords
+     */
+	private static void searchAllInAddressBook(Collection<String> keywords, final ArrayList<String[]> matchedPersons) {
+		for (String[] person : getAllPersonsInAddressBook()) {
             final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
             if (!Collections.disjoint(wordsInName, keywords)) {
                 matchedPersons.add(person);
             }
         }
-        return matchedPersons;
-    }
+	}
 
     /**
      * Deletes person identified using last displayed index.
