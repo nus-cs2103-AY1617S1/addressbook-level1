@@ -388,17 +388,7 @@ public class AddressBook {
         final Set<String> keywords = new HashSet<>(splitByWhitespace(commandArgs.trim()));
         final ArrayList<HashMap<PersonProperty,String>> personsFound = getPersonsWithNameContainingAnyKeyword(keywords);
         showToUser(personsFound);
-        return getMessageForPersonsDisplayedSummary(personsFound);
-    }
-
-    /**
-     * Constructs a feedback message to summarise an operation that displayed a listing of persons.
-     *
-     * @param personsDisplayed used to generate summary
-     * @return summary message for persons displayed
-     */
-    private static String getMessageForPersonsDisplayedSummary(ArrayList<HashMap<PersonProperty,String>> personsDisplayed) {
-        return String.format(MESSAGE_PERSONS_FOUND_OVERVIEW, personsDisplayed.size());
+        return String.format(MESSAGE_PERSONS_FOUND_OVERVIEW, personsFound.size());
     }
 
     /**
@@ -493,7 +483,7 @@ public class AddressBook {
     private static String executeListAllPersonsInAddressBook() {
         ArrayList<HashMap<PersonProperty,String>> toBeDisplayed = ALL_PERSONS;
         showToUser(toBeDisplayed);
-        return getMessageForPersonsDisplayedSummary(toBeDisplayed);
+        return String.format(MESSAGE_PERSONS_FOUND_OVERVIEW, toBeDisplayed.size());
     }
 
     /**
