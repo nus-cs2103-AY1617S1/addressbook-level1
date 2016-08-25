@@ -31,6 +31,17 @@ import java.util.Set;
  **/
 public class AddressBook {
 
+    private static final int INDEX_OF_SECONDARY_CONTACT = 2;
+
+    private static final int INDEX_OF_PRIMARY_CONTACT = 1;
+
+    private static final int INDEX_OF_NAME = 0;
+
+    private static final int SPLIT_ARGUMENT_EXPECTED_LENGTH = 3 // 3 arguments
+;
+
+    private static final char REGEX_OR = '|';
+
     private static final char LIST_OF_PERSON_PREFIX = '\t';
 
     private static final int INDEX_OF_FIRST_PERSON = 0;
@@ -982,12 +993,12 @@ public class AddressBook {
      * @return whether format of add command arguments allows parsing into individual arguments
      */
     private static boolean isPersonDataExtractableFrom(String personData) {
-        final String matchAnyPersonDataPrefix = PERSON_DATA_PREFIX_PHONE + '|' + PERSON_DATA_PREFIX_EMAIL;
+        final String matchAnyPersonDataPrefix = PERSON_DATA_PREFIX_PHONE + REGEX_OR + PERSON_DATA_PREFIX_EMAIL;
         final String[] splitArgs = personData.trim().split(matchAnyPersonDataPrefix);
-        return splitArgs.length == 3 // 3 arguments
-                && !splitArgs[0].isEmpty() // non-empty arguments
-                && !splitArgs[1].isEmpty()
-                && !splitArgs[2].isEmpty();
+        return splitArgs.length == SPLIT_ARGUMENT_EXPECTED_LENGTH
+                && !splitArgs[INDEX_OF_NAME].isEmpty() // non-empty arguments
+                && !splitArgs[INDEX_OF_PRIMARY_CONTACT].isEmpty()
+                && !splitArgs[INDEX_OF_SECONDARY_CONTACT].isEmpty();
     }
 
     /**
