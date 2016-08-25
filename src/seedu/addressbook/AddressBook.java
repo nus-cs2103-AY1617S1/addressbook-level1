@@ -201,6 +201,19 @@ public class AddressBook {
     public static void main(String[] args) {
         showWelcomeMessage();
         processProgramArgs(args);
+        
+        if (args.length >= 2) {
+            showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
+            exitProgram();
+        }
+
+        if (args.length == 1) {
+            setupGivenFileForStorage(args[0]);
+        }
+
+        if(args.length == 0) {
+            setupDefaultFileForStorage();
+        }
         loadDataFromStorage();
         while (true) {
             String userCommand = getUserInput();
@@ -454,13 +467,32 @@ public class AddressBook {
      */
     private static ArrayList<String[]> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
+        
         for (String[] person : getAllPersonsInAddressBook()) {
+        	
+        	
             final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
+            
+            replace1(wordsInName);
+            replace1(keywords);
+            
             if (!Collections.disjoint(wordsInName, keywords)) {
                 matchedPersons.add(person);
             }
         }
         return matchedPersons;
+    }
+    
+    
+    public static void replace1(Collection<String> strings)
+    {
+        String[] stringsArray = strings.toArray(new String[0]);
+        for (int i=0; i<stringsArray.length; ++i)
+        {
+            stringsArray[i] = stringsArray[i].toLowerCase();
+        }
+        strings.clear();
+        strings.addAll(Arrays.asList(stringsArray));
     }
 
     /**
