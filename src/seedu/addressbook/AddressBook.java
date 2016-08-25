@@ -202,12 +202,7 @@ public class AddressBook {
         showWelcomeMessage();
         processProgramArgs(args);
         loadDataFromStorage();
-        while (true) {
-            String userCommand = getUserInput();
-            echoUserCommand(userCommand);
-            String feedback = executeCommand(userCommand);
-            showResultToUser(feedback);
-        }
+        ifTrue();
     }
 
     /*
@@ -217,6 +212,7 @@ public class AddressBook {
      * signature anyway.
      * ====================================================================
      */
+     
     private static void showWelcomeMessage() {
         showToUser(DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER);
     }
@@ -224,7 +220,16 @@ public class AddressBook {
     private static void showResultToUser(String result) {
         showToUser(result, DIVIDER);
     }
-
+    
+     private static void ifTrue(){
+        while(true){
+            String userCommand = getUserInput();
+            echoUserCommand(UserCommand);
+            String feedback = executeCommand(userCommand);
+            showResultToUser(feedback);
+        }
+    } 
+    
     /*
      * ==============NOTE TO STUDENTS======================================
      * Parameter description can be omitted from the method header comment
@@ -275,16 +280,18 @@ public class AddressBook {
      * Exits if the file name is not acceptable.
      */
     private static void setupGivenFileForStorage(String filePath) {
-
-        if (!isValidFilePath(filePath)) {
-            showToUser(String.format(MESSAGE_INVALID_FILE, filePath));
-            exitProgram();
-        }
-
+        checkForFilePath();
         storageFilePath = filePath;
         createFileIfMissing(filePath);
     }
-
+    
+    private static void checkForFilePath(){
+         if (!isValidFilePath(filePath)) {
+            showToUser(String.format(MESSAGE_INVALID_FILE, filePath));
+            exitProgram();
+        }
+    }
+    
     /**
      * Displays the goodbye message and exits the runtime.
      */
@@ -388,13 +395,18 @@ public class AddressBook {
     private static String executeAddPerson(String commandArgs) {
         // try decoding a person from the raw args
         final Optional<String[]> decodeResult = decodePersonFromString(commandArgs);
-
         // checks if args are valid (decode result will not be present if the person is invalid)
+        ifArgsAreValid();
+        // add the person as specified
+        addPerson();
+    
+    private static void ifArgsAreValid(){
         if (!decodeResult.isPresent()) {
             return getMessageForInvalidCommandInput(COMMAND_ADD_WORD, getUsageInfoForAddCommand());
         }
-
-        // add the person as specified
+    } 
+    
+    private static void addPerson(){
         final String[] personToAdd = decodeResult.get();
         addPersonToAddressBook(personToAdd);
         return getMessageForSuccessfulAddPerson(personToAdd);
