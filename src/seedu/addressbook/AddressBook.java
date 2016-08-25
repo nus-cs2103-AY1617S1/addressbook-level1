@@ -354,7 +354,8 @@ public class AddressBook {
         case COMMAND_EXIT_WORD:
             executeExitProgramRequest();
         default:
-            return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
+            return getMessageForInvalidCommandInput(commandType, 
+                getUsageInfoForAllCommands());
         }
     }
 
@@ -374,8 +375,10 @@ public class AddressBook {
      * @param correctUsageInfo message showing the correct usage
      * @return invalid command args feedback message
      */
-    private static String getMessageForInvalidCommandInput(String userCommand, String correctUsageInfo) {
-        return String.format(MESSAGE_INVALID_COMMAND_FORMAT, userCommand, correctUsageInfo);
+    private static String getMessageForInvalidCommandInput(String userCommand, 
+        String correctUsageInfo) {
+        return String.format(MESSAGE_INVALID_COMMAND_FORMAT, 
+            userCommand, correctUsageInfo);
     }
 
     /**
@@ -391,7 +394,8 @@ public class AddressBook {
 
         // checks if args are valid (decode result will not be present if the person is invalid)
         if (!decodeResult.isPresent()) {
-            return getMessageForInvalidCommandInput(COMMAND_ADD_WORD, getUsageInfoForAddCommand());
+            return getMessageForInvalidCommandInput(COMMAND_ADD_WORD, 
+                getUsageInfoForAddCommand());
         }
 
         // add the person as specified
@@ -409,7 +413,8 @@ public class AddressBook {
      */
     private static String getMessageForSuccessfulAddPerson(String[] addedPerson) {
         return String.format(MESSAGE_ADDED,
-                getNameFromPerson(addedPerson), getPhoneFromPerson(addedPerson), getEmailFromPerson(addedPerson));
+                getNameFromPerson(addedPerson), getPhoneFromPerson(addedPerson), 
+                getEmailFromPerson(addedPerson));
     }
 
     /**
@@ -454,14 +459,25 @@ public class AddressBook {
      */
     private static ArrayList<String[]> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
-        for (String[] person : getAllPersonsInAddressBook()) {
+        searchForMatch(keywords, matchedPersons);
+        return matchedPersons;
+    }
+
+    /**
+     * Search for matched person based on keyword
+     *
+     * @param keywords for searching
+     * @param array for keeping track of matchedPersons
+     * @return list of persons in full model with name containing some of the keywords
+     */
+	private static void searchForMatch(Collection<String> keywords, final ArrayList<String[]> matchedPersons) {
+		for (String[] person : getAllPersonsInAddressBook()) {
             final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
             if (!Collections.disjoint(wordsInName, keywords)) {
                 matchedPersons.add(person);
             }
         }
-        return matchedPersons;
-    }
+	}
 
     /**
      * Deletes person identified using last displayed index.
@@ -471,7 +487,8 @@ public class AddressBook {
      */
     private static String executeDeletePerson(String commandArgs) {
         if (!isDeletePersonArgsValid(commandArgs)) {
-            return getMessageForInvalidCommandInput(COMMAND_DELETE_WORD, getUsageInfoForDeleteCommand());
+            return getMessageForInvalidCommandInput(COMMAND_DELETE_WORD, 
+                getUsageInfoForDeleteCommand());
         }
         final int targetVisibleIndex = extractTargetIndexFromDeletePersonArgs(commandArgs);
         if (!isDisplayIndexValidForLastPersonListingView(targetVisibleIndex)) {
@@ -514,7 +531,8 @@ public class AddressBook {
      * @return whether it is valid
      */
     private static boolean isDisplayIndexValidForLastPersonListingView(int index) {
-        return index >= DISPLAYED_INDEX_OFFSET && index < getLatestPersonListingView().size() + DISPLAYED_INDEX_OFFSET;
+        return index >= DISPLAYED_INDEX_OFFSET && index < getLatestPersonListingView().size() 
+        + DISPLAYED_INDEX_OFFSET;
     }
 
     /**
@@ -628,7 +646,8 @@ public class AddressBook {
      * @return formatted listing message with index
      */
     private static String getIndexedPersonListElementMessage(int visibleIndex, String[] person) {
-        return String.format(MESSAGE_DISPLAY_LIST_ELEMENT_INDEX, visibleIndex) + getMessageForFormattedPersonData(person);
+        return String.format(MESSAGE_DISPLAY_LIST_ELEMENT_INDEX, visibleIndex) 
+        + getMessageForFormattedPersonData(person);
     }
 
     /**
