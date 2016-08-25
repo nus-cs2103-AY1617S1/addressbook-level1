@@ -1101,11 +1101,22 @@ public class AddressBook {
                 + getUsageInfoForViewCommand() + LS
                 + getUsageInfoForDeleteCommand() + LS
                 + getUsageInfoForClearCommand() + LS
+                + getUsageInforForSortCommand() + LS
                 + getUsageInfoForExitCommand() + LS
                 + getUsageInfoForHelpCommand();
     }
 
     /**
+     * Builds string for showing 'sort' command usage instruction
+     * 
+     * @return 'sort' command usage instruction
+     */
+    private static String getUsageInforForSortCommand() {
+		return String.format(MESSAGE_COMMAND_HELP, COMMAND_SORT_WORD, COMMAND_SORT_DESC) + LS
+				+ String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_SORT_EXAMPLE) + LS;
+	}
+
+	/**
      * Builds string for showing 'add' command usage instruction
      *
      * @return  'add' command usage instruction
