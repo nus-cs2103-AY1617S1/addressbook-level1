@@ -373,19 +373,8 @@ public class AddressBook {
 			System.out.println(LINE_PREFIX + DIVIDER);
 			System.exit(0);
 		}
-        return getMessageForSuccessfulAddPerson(personToAdd);
-    }
-
-    /**
-     * Constructs a feedback message for a successful add person command execution.
-     *
-     * @see #executeAddPerson(String)
-     * @param addedPerson person who was successfully added
-     * @return successful add person feedback message
-     */
-    private static String getMessageForSuccessfulAddPerson(HashMap<PersonProperty,String> addedPerson) {
         return String.format(MESSAGE_ADDED,
-                getNameFromPerson(addedPerson), getPhoneFromPerson(addedPerson), getEmailFromPerson(addedPerson));
+		getNameFromPerson(personToAdd), getPhoneFromPerson(personToAdd), getEmailFromPerson(personToAdd));
     }
 
     /**
