@@ -771,18 +771,7 @@ public class AddressBook {
     private static boolean isPersonDataValid(HashMap<PersonProperty,String> person) {
         return person.get(PersonProperty.NAME).matches("(\\w|\\s)+")
                 && person.get(PersonProperty.PHONE).matches("\\d+")
-                && isPersonEmailValid(person.get(PersonProperty.EMAIL));
-    }
-
-    /**
-     * Validates string as a legal person email
-     *
-     * @param email to be validated
-     * @return whether arg is a valid person email
-     */
-    private static boolean isPersonEmailValid(String email) {
-        return email.matches("\\S+@\\S+\\.\\S+"); // email is [non-whitespace]@[non-whitespace].[non-whitespace]
-        //TODO: implement a more permissive validation
+                && person.get(PersonProperty.EMAIL).matches("\\S+@\\S+\\.\\S+");
     }
 
 }
