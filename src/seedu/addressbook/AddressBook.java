@@ -1105,16 +1105,32 @@ public class AddressBook {
     	return buildUsageInfoForCommands(COMMAND_EXIT_WORD, COMMAND_EXIT_DESC, COMMAND_EXIT_EXAMPLE);
     }
     
-    private static String buildUsageInfoForCommands(String cmdWord, String cmdDesc, String cmdExample) {
-        return String.format(MESSAGE_COMMAND_HELP, cmdWord, cmdDesc) + LS
-               + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, cmdExample) +LS;   	
-    }
+    /**
+     * Builds string for showing usage information of given commands, description, example and parameters.
+     * 
+     * @param cmdWord Command which string is built for.
+     * @param cmdDesc Description of Command.
+     * @param cmdExample Example of how command is used.
+     * @param cmdParams Parameters needed by the given command.
+     * 
+     * @return String which will format the input given into a usage information for the command given.
+     */    
     private static String buildUsageInfoForCommands(String cmdWord, String cmdDesc, String cmdExample, String cmdParams) {
         return String.format(MESSAGE_COMMAND_HELP, cmdWord, cmdDesc) + LS
                + String.format(MESSAGE_COMMAND_HELP_PARAMETERS, cmdParams) + LS
                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, cmdExample) + LS;   	
     }
-
+    
+    /**
+     * Works just like {@link buildUsageInfoForCommands(String, String, String, String)} expect that some commands do not
+     * have parameters, hence it is simply removed from the string printed.
+     * 
+     * @see buildUsageInfoForCommands(String, String, String, String)     
+     */    
+    private static String buildUsageInfoForCommands(String cmdWord, String cmdDesc, String cmdExample) {
+        return String.format(MESSAGE_COMMAND_HELP, cmdWord, cmdDesc) + LS
+               + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, cmdExample) +LS;   	
+    }
     /*
      * ============================
      *         UTILITY METHODS
