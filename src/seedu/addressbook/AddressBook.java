@@ -229,26 +229,14 @@ public class AddressBook {
 			    inputLine = SCANNER.nextLine();
 			}
 			String userCommand = inputLine;
-            echoUserCommand(userCommand);
+            showToUser("[Command entered:" + userCommand + "]");
             String feedback = executeCommand(userCommand);
             showToUser(feedback);
 			showToUser(DIVIDER);
         }
     }
 
-    /*
-     * ==============NOTE TO STUDENTS======================================
-     * Parameter description can be omitted from the method header comment
-     * if the parameter name is self-explanatory.
-     * In the method below, '@param userInput' comment has been omitted.
-     * ====================================================================
-     */
-    /**
-     * Echoes the user input back to the user.
-     */
-    private static void echoUserCommand(String userCommand) {
-        showToUser("[Command entered:" + userCommand + "]");
-    }
+    
 
     /*
      * ==============NOTE TO STUDENTS==========================================
