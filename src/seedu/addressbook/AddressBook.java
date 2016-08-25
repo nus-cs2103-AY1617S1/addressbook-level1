@@ -199,8 +199,7 @@ public class AddressBook {
      * ====================================================================
      */
     public static void main(String[] args) {
-        showWelcomeMessage();
-        
+        showToUser(DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER);
         
         if (args.length >= 2) {
 		    showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
@@ -216,8 +215,10 @@ public class AddressBook {
 		}
         
         
-        loadDataFromStorage();
-        while (true) {
+        ALL_PERSONS.clear();
+	ALL_PERSONS.addAll(loadPersonsFromFile(storageFilePath));
+        
+	while (true) {
             String userCommand = getUserInput();
             echoUserCommand(userCommand);
             String feedback = executeCommand(userCommand);
