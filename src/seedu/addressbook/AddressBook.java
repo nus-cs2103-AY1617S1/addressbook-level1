@@ -428,7 +428,7 @@ public class AddressBook {
             return MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
         }
         final HashMap<PersonProperty,String> targetInModel = latestPersonListingView.get(targetVisibleIndex - DISPLAYED_INDEX_OFFSET);
-        return deletePersonFromAddressBook(targetInModel) ? getMessageForSuccessfulDelete(targetInModel) // success
+        return deletePersonFromAddressBook(targetInModel) ? String.format(MESSAGE_DELETE_PERSON_SUCCESS, getMessageForFormattedPersonData(targetInModel)) // success
                                                           : MESSAGE_PERSON_NOT_IN_ADDRESSBOOK; // not found
     }
 
@@ -445,17 +445,6 @@ public class AddressBook {
         } catch (NumberFormatException nfe) {
             return false;
         }
-    }
-
-    /**
-     * Constructs a feedback message for a successful delete person command execution.
-     *
-     * @see #executeDeletePerson(String)
-     * @param deletedPerson successfully deleted
-     * @return successful delete person feedback message
-     */
-    private static String getMessageForSuccessfulDelete(HashMap<PersonProperty,String> deletedPerson) {
-        return String.format(MESSAGE_DELETE_PERSON_SUCCESS, getMessageForFormattedPersonData(deletedPerson));
     }
 
     /**
