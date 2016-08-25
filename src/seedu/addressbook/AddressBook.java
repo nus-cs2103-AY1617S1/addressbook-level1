@@ -31,6 +31,10 @@ import java.util.Set;
  **/
 public class AddressBook {
 
+    private static final int INDEX_OF_FIRST_CHARACTER = 0;
+
+    private static final String PROMPT_ENTER_COMMAND = "Enter command: ";
+
     private static final String PARAMETER_EMPTY = "";
 
 	private static final int INDEX_OF_COMMAND = 0;
@@ -604,10 +608,10 @@ public class AddressBook {
      * @return full line entered by the user
      */
     private static String getUserInput() {
-        System.out.print(LINE_PREFIX + "Enter command: ");
+        System.out.print(LINE_PREFIX + PROMPT_ENTER_COMMAND);
         String inputLine = SCANNER.nextLine();
         // silently consume all blank and comment lines
-        while (inputLine.trim().isEmpty() || inputLine.trim().charAt(0) == INPUT_COMMENT_MARKER) {
+        while (inputLine.trim().isEmpty() || inputLine.trim().charAt(INDEX_OF_FIRST_CHARACTER) == INPUT_COMMENT_MARKER) {
             inputLine = SCANNER.nextLine();
         }
         return inputLine;
