@@ -229,13 +229,9 @@ public class AddressBook {
 			String userCommand = inputLine;
             echoUserCommand(userCommand);
             String feedback = executeCommand(userCommand);
-            showResultToUser(feedback);
+            showToUser(feedback);
+			showToUser(DIVIDER);
         }
-    }
-
-    private static void showResultToUser(String result) {
-        showToUser(result);
-        showToUser(DIVIDER);
     }
 
     /*
