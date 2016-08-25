@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Scanner;
@@ -562,18 +563,30 @@ public class AddressBook {
      *
      * @return feedback display message for the operation result
      */
+    
     private static String executeListAllPersonsInAddressBook() {
         ArrayList<String[]> toBeDisplayed = getAllPersonsInAddressBook();
         showToUser(toBeDisplayed);
         return getMessageForPersonsDisplayedSummary(toBeDisplayed);
     }
     
+    /**
+     * Displays all persons in alpabetical order.
+     *
+     * @return feedback display message for the operation result
+     */
+    
     private static String executeSortAllPersons() {
 		ArrayList<String[]> toBeDisplayed = getAllPersonsInAddressBook();
-		//Collections.sort(toBeDisplayed);
+		
+		// sort toBeDisplayed in alphabetical order
+		Collections.sort(toBeDisplayed, comparatorForAlphabeting());
+		
 		showToUser(toBeDisplayed);
 		return getMessageForPersonsDisplayedSummary(toBeDisplayed);
 	}
+    
+    
 
     /**
      * Request to terminate the program.
@@ -1209,4 +1222,18 @@ public class AddressBook {
         return new ArrayList(Arrays.asList(toSplit.trim().split("\\s+")));
     }
 
+    /*
+     * ============================
+     *     COMPARATOR METHODS
+     * ============================
+     */
+    private static Comparator<String[]> comparatorForAlphabeting() {
+		return new Comparator<String[]>() {
+			@Override
+			 	public int compare(String[] o1, String[] o2) {
+			 		if (o1[0].toLowerCase().charAt(0) > o2[0].toLowerCase().charAt(0)) return 1;
+			 		else return -1;
+			 	}
+		};
+	}
 }
