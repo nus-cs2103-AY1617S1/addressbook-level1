@@ -31,7 +31,11 @@ import java.util.Set;
  **/
 public class AddressBook {
 
-    private static final String FILETYPE_TXT = ".txt";
+    private static final int INDEX_OF_COMMAND_PARAMETERS = 1;
+
+	private static final int INDEX_OF_COMMAND_TYPE = 0;
+
+	private static final String FILETYPE_TXT = ".txt";
 
 	private static final int EXIT_NO_ERROR = 0;
 
@@ -354,8 +358,8 @@ public class AddressBook {
      */
     public static String executeCommand(String userInputString) {
         final String[] commandTypeAndParams = splitCommandWordAndArgs(userInputString);
-        final String commandType = commandTypeAndParams[0];
-        final String commandArgs = commandTypeAndParams[1];
+        final String commandType = commandTypeAndParams[INDEX_OF_COMMAND_TYPE];
+        final String commandArgs = commandTypeAndParams[INDEX_OF_COMMAND_PARAMETERS];
         switch (commandType) {
         case COMMAND_ADD_WORD:
             return executeAddPerson(commandArgs);
