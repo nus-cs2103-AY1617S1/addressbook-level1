@@ -632,17 +632,6 @@ public class AddressBook {
     }
 
     /**
-     * Encodes a person into a decodable and readable string representation.
-     *
-     * @param person to be encoded
-     * @return encoded string
-     */
-    private static String encodePersonToString(HashMap<PersonProperty,String> person) {
-        return String.format(PERSON_STRING_REPRESENTATION,
-                getNameFromPerson(person), getPhoneFromPerson(person), getEmailFromPerson(person));
-    }
-
-    /**
      * Encodes list of persons into list of decodable and readable string representations.
      *
      * @param persons to be encoded
@@ -651,7 +640,8 @@ public class AddressBook {
     private static ArrayList<String> encodePersonsToStrings(ArrayList<HashMap<PersonProperty,String>> persons) {
         final ArrayList<String> encoded = new ArrayList<>();
         for (HashMap<PersonProperty,String> person : persons) {
-            encoded.add(encodePersonToString(person));
+            encoded.add(String.format(PERSON_STRING_REPRESENTATION,
+			getNameFromPerson(person), getPhoneFromPerson(person), getEmailFromPerson(person)));
         }
         return encoded;
     }
