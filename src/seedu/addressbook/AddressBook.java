@@ -1181,7 +1181,8 @@ public class AddressBook {
      * @return split by whitespace
      */
     private static ArrayList<String> splitByWhitespace(String toSplit) {
-        return new ArrayList(Arrays.asList(toSplit.trim().split("\\s+")));
+    	final String[] splitStrings = toSplit.trim().split("\\s+");
+        return new ArrayList<String>(Arrays.asList(splitStrings));
     }
 
 }
