@@ -199,10 +199,27 @@ public class AddressBook {
      * ====================================================================
      */
     public static void main(String[] args) {
-        showWelcomeMessage();
-        processProgramArgs(args);
+        showToUser(DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER);
+         if (args.length >= 2) {
+            showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
+            exitProgram();
+        }
+
+        if (args.length == 1) {
+            setupGivenFileForStorage(args[0]);
+        }
+
+        if(args.length == 0) {
+            setupDefaultFileForStorage();
+        }
+        
         loadDataFromStorage();
-        ifTrue();
+         while(true){
+            String userCommand = getUserInput();
+            echoUserCommand(UserCommand);
+            String feedback = executeCommand(userCommand);
+            showToUser(result, DIVIDER);
+        }
     }
 
     /*
@@ -212,23 +229,6 @@ public class AddressBook {
      * signature anyway.
      * ====================================================================
      */
-     
-    private static void showWelcomeMessage() {
-        showToUser(DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER);
-    }
-
-    private static void showResultToUser(String result) {
-        showToUser(result, DIVIDER);
-    }
-    
-     private static void ifTrue(){
-        while(true){
-            String userCommand = getUserInput();
-            echoUserCommand(UserCommand);
-            String feedback = executeCommand(userCommand);
-            showResultToUser(feedback);
-        }
-    } 
     
     /*
      * ==============NOTE TO STUDENTS======================================
@@ -259,20 +259,6 @@ public class AddressBook {
      *
      * @param args full program arguments passed to application main method
      */
-    private static void processProgramArgs(String[] args) {
-        if (args.length >= 2) {
-            showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
-            exitProgram();
-        }
-
-        if (args.length == 1) {
-            setupGivenFileForStorage(args[0]);
-        }
-
-        if(args.length == 0) {
-            setupDefaultFileForStorage();
-        }
-    }
 
     /**
      * Sets up the storage file based on the supplied file path.
@@ -280,25 +266,18 @@ public class AddressBook {
      * Exits if the file name is not acceptable.
      */
     private static void setupGivenFileForStorage(String filePath) {
-        checkForFilePath();
+        if (!isValidFilePath(filePath)) {
+            showToUser(String.format(MESSAGE_INVALID_FILE, filePath));
+            showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
+            System.exit(0);
+        }
         storageFilePath = filePath;
         createFileIfMissing(filePath);
-    }
-    
-    private static void checkForFilePath(){
-         if (!isValidFilePath(filePath)) {
-            showToUser(String.format(MESSAGE_INVALID_FILE, filePath));
-            exitProgram();
-        }
     }
     
     /**
      * Displays the goodbye message and exits the runtime.
      */
-    private static void exitProgram() {
-        showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
-        System.exit(0);
-    }
 
     /**
      * Sets up the storage based on the default file.
@@ -396,21 +375,13 @@ public class AddressBook {
         // try decoding a person from the raw args
         final Optional<String[]> decodeResult = decodePersonFromString(commandArgs);
         // checks if args are valid (decode result will not be present if the person is invalid)
-        ifArgsAreValid();
-        // add the person as specified
-        addPerson();
-    
-    private static void ifArgsAreValid(){
         if (!decodeResult.isPresent()) {
             return getMessageForInvalidCommandInput(COMMAND_ADD_WORD, getUsageInfoForAddCommand());
         }
-    } 
-    
-    private static void addPerson(){
+        // add the person as specified
         final String[] personToAdd = decodeResult.get();
         addPersonToAddressBook(personToAdd);
         return getMessageForSuccessfulAddPerson(personToAdd);
-    }
 
     /**
      * Constructs a feedback message for a successful add person command execution.
@@ -435,7 +406,7 @@ public class AddressBook {
         final Set<String> keywords = extractKeywordsFromFindPersonArgs(commandArgs);
         final ArrayList<String[]> personsFound = getPersonsWithNameContainingAnyKeyword(keywords);
         showToUser(personsFound);
-        return getMessageForPersonsDisplayedSummary(personsFound);
+        return String.format(MESSAGE_PERSONS_FOUND_OVERVIEW, personsDisplayed.size());
     }
 
     /**
@@ -444,9 +415,6 @@ public class AddressBook {
      * @param personsDisplayed used to generate summary
      * @return summary message for persons displayed
      */
-    private static String getMessageForPersonsDisplayedSummary(ArrayList<String[]> personsDisplayed) {
-        return String.format(MESSAGE_PERSONS_FOUND_OVERVIEW, personsDisplayed.size());
-    }
 
     /**
      * Extract keywords from the command arguments given for the find persons command.
