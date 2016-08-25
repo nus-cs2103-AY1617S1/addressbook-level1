@@ -279,7 +279,7 @@ public class AddressBook {
      */
     private static void exitProgram() {
         showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
-        System.exit(0);
+        Runtime.getRuntime().exit(0);
     }
 
     /**
