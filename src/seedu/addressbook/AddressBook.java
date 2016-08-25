@@ -108,7 +108,9 @@ public class AddressBook {
 
     private static final String COMMAND_LIST_WORD = "list";
     private static final String COMMAND_LIST_DESC = "Displays all persons as a list with index numbers.";
-    private static final String COMMAND_LIST_EXAMPLE = COMMAND_LIST_WORD;
+    private static final String COMMAND_LIST_PARAMETER_SORT = "sort";
+    private static final String COMMAND_LIST_PARAMETERS = " [SORT]";
+    private static final String COMMAND_LIST_EXAMPLE = COMMAND_LIST_WORD + COMMAND_LIST_PARAMETERS;
 
     private static final String COMMAND_DELETE_WORD = "delete";
     private static final String COMMAND_DELETE_DESC = "Deletes a person identified by the index number used in "
@@ -406,7 +408,7 @@ public class AddressBook {
         case COMMAND_FIND_WORD:
             return executeFindPersons(commandArgs);
         case COMMAND_LIST_WORD:
-            return executeListAllPersonsInAddressBook();
+            return executeListAllPersonsInAddressBook(commandArgs);
         case COMMAND_DELETE_WORD:
             return executeDeletePerson(commandArgs);
         case COMMAND_CLEAR_WORD:
@@ -606,10 +608,25 @@ public class AddressBook {
      *
      * @return feedback display message for the operation result
      */
-    private static String executeListAllPersonsInAddressBook() {
+    private static String executeListAllPersonsInAddressBook(String commandArgs) {
         ArrayList<String[]> toBeDisplayed = getAllPersonsInAddressBook();
+        if (isSortCommand(commandArgs)) {
+        	Collections.sort(toBeDisplayed, (person1, person2) -> sortPeople(person1, person2));
+        }
         showToUser(toBeDisplayed);
         return getMessageForPersonsDisplayedSummary(toBeDisplayed);
+    }
+    
+    private static boolean isSortCommand(String commandArgs) {
+    	commandArgs = commandArgs.toLowerCase();
+    	HashSet<String> commands = new HashSet<>(splitByWhitespace(commandArgs));
+    	return commands.contains(COMMAND_LIST_PARAMETER_SORT);
+    }
+    
+    private static int sortPeople(String[] person1, String[] person2) {
+    	String person1Name = getNameFromPerson(person1);
+    	String person2Name = getNameFromPerson(person2);
+    	return person1Name.compareTo(person2Name);
     }
 
     /**
