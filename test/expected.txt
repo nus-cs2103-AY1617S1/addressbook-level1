@@ -24,6 +24,9 @@
 || clear: Clears address book permanently.
 || 	Example: clear
 || 
+|| sort: Sorts the address book alphabetically and displays the list.
+|| 	Example: sort
+|| 
 || exit: Exits the program.	Example: exit
 || help: Shows program usage instructions.	Example: help
 || ===================================================
