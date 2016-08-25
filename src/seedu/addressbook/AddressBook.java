@@ -55,6 +55,7 @@ public class AddressBook {
 	 * ====================================================================
 	 */
 	private static final String MESSAGE_ADDED = "New person added: %1$s, Phone: %2$s, Email: %3$s";
+	private static final String MESSAGE_EDITED = "The new data edited: %1$s, Phone: %2$s, Email: %3$s";
 	private static final String MESSAGE_ADDRESSBOOK_CLEARED = "Address book has been cleared!";
 	private static final String MESSAGE_COMMAND_HELP = "%1$s: %2$s";
 	private static final String MESSAGE_COMMAND_HELP_PARAMETERS = "\tParameters: %1$s";
@@ -68,6 +69,7 @@ public class AddressBook {
 	private static final String MESSAGE_INVALID_FILE = "The given file name [%1$s] is not a valid file name!";
 	private static final String MESSAGE_INVALID_PROGRAM_ARGS = "Too many parameters! Correct program argument format:"
 			+ LS + "\tjava AddressBook" + LS + "\tjava AddressBook [custom storage file path]";
+	private static final String MESSAGE_INVALID_PERSON_NAME_TOBE_CHANGED = "The name provided does not exist in the address book.";
 	private static final String MESSAGE_INVALID_PERSON_DISPLAYED_INDEX = "The person index provided is invalid";
 	private static final String MESSAGE_INVALID_STORAGE_FILE_CONTENT = "Storage file has invalid content";
 	private static final String MESSAGE_PERSON_NOT_IN_ADDRESSBOOK = "Person could not be found in address book";
@@ -115,8 +117,13 @@ public class AddressBook {
 	private static final String COMMAND_CLEAR_EXAMPLE = COMMAND_WORD_CLEAR;
 
 	private static final String COMMAND_WORD_SORT = "sort";
-	private static final String COMMAND_SORT_DESC = "Sort the AddressBook by Name.";
-	
+	private static final String COMMAND_SORT_DESC = "Sort the address book by Name.";
+	private static final String COMMAND_SORT_EXAMPLE = COMMAND_WORD_SORT;
+
+	private static final String COMMAND_WORD_EDIT = "edit";
+	private static final String COMMAND_EDIT_DESC = "Edit the information of the person stated in the address book .";
+	private static final String COMMAND_EDIT_EXAMPLE = COMMAND_WORD_EDIT + " John Doe p/98765432 e/johnd@gmail.com";
+
 	private static final String COMMAND_WORD_HELP = "help";
 	private static final String COMMAND_HELP_DESC = "Shows program usage instructions.";
 	private static final String COMMAND_HELP_EXAMPLE = COMMAND_WORD_HELP;
@@ -357,12 +364,15 @@ public class AddressBook {
 			return getUsageInfoForAllCommands();
 		case COMMAND_WORD_SORT: 
 			return executeSortAddressBook(); 
+		case COMMAND_WORD_EDIT: 
+			return executeEditAddressBook(commandArgs); 
 		case COMMAND_WORD_EXIT:
 			executeExitProgramRequest();
 		default:
 			return getMessageForInvalidCommandInput(getUsageInfoForAllCommands());
 		}
 	}
+
 
 	/**
 	 * Splits raw user input into command word and command arguments string
@@ -1145,8 +1155,8 @@ public class AddressBook {
 	 */
 	private static String getUsageInfoForAllCommands() {
 		return getUsageInfoForAddCommand() + LS + getUsageInfoForFindCommand() + LS + getUsageInfoForViewCommand() + LS
-				+ getUsageInfoForDeleteCommand() + LS + getUsageInfoForClearCommand() + LS
-				+ getUsageInfoForExitCommand() + LS + getUsageInfoForHelpCommand();
+				+ getUsageInfoForDeleteCommand() + LS + getUsageInfoForClearCommand() + LS + getUsageInfoForSortCommand()+ 
+				LS+ getUsageInfoForEditCommand()+ LS + getUsageInfoForExitCommand() + LS + getUsageInfoForHelpCommand();
 	}
 
 	/**
@@ -1201,7 +1211,28 @@ public class AddressBook {
 		return String.format(MESSAGE_COMMAND_HELP, COMMAND_WORD_LIST, COMMAND_LIST_DESC) + LS
 				+ String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_LIST_EXAMPLE) + LS;
 	}
-
+	
+	/**
+	 * Builds string for showing 'Edit' command usage instruction
+	 *
+	 * @return 'view' command usage instruction
+	 */
+	private static String getUsageInfoForEditCommand() {
+		return String.format(MESSAGE_COMMAND_HELP, COMMAND_WORD_EDIT, COMMAND_EDIT_DESC) + LS
+				+ String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_ADD_PARAMETERS) + LS
+				+ String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_EDIT_EXAMPLE) + LS;
+	}
+	
+	/**
+	 * Builds string for showing 'view' command usage instruction
+	 *
+	 * @return 'view' command usage instruction
+	 */
+	private static String getUsageInfoForSortCommand() {
+		return String.format(MESSAGE_COMMAND_HELP, COMMAND_WORD_SORT, COMMAND_SORT_DESC) + LS
+				+ String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_SORT_EXAMPLE) + LS;
+	}
+	
 	/**
 	 * Builds string for showing 'help' command usage instruction
 	 *
@@ -1260,7 +1291,7 @@ public class AddressBook {
 	 * @return feedback display message for the operation result
 	 */
 	private static String executeSortAddressBook() {
-		sortingTheAdressBook(); 
+		sortTheAdressBook(); 
 		return getMessageForSuccessfulSorting();
 	}
 	/** 
@@ -1287,7 +1318,85 @@ public class AddressBook {
 	 /** 
 	  * Sort the addressBook
 	  */
-	 private static void sortingTheAdressBook (){ 
+	 private static void sortTheAdressBook (){ 
 		 Collections.sort(getAllPersonsInAddressBook(), new NameComparator());
 	 }
+	 
+	/**
+	 * Edit a person in addressbook 
+	 * @param commandArgs
+	 * @return feedback display message for the operation result
+	 */
+	private static String executeEditAddressBook(String commandArgs){
+		final Optional<HashMap<PersonProperty, String>> decodeResult = decodePersonFromString(commandArgs);
+
+		if (!decodeResult.isPresent()) {
+			return getMessageForInvalidCommandInput(getUsageInfoForAddCommand());
+		}
+		
+		HashMap<PersonProperty, String> personToEdit = decodeResult.get();
+		
+		int thePersonNumberInAddressBook = findThePersonInTheAddressBook(personToEdit);
+		
+		if (!checkIfThePersonExist(thePersonNumberInAddressBook)) {
+			return MESSAGE_INVALID_PERSON_NAME_TOBE_CHANGED;
+		}
+		
+		final HashMap<PersonProperty, String> PersonToEditWithOriginalName = editThePersonInTheAddressBook(personToEdit,
+				thePersonNumberInAddressBook);
+		
+		return getMessageForSuccessfulEdit(PersonToEditWithOriginalName);
+	}
+
+	private static HashMap<PersonProperty, String> editThePersonInTheAddressBook(
+			HashMap<PersonProperty, String> personToEdit, int thePersonNumberInAddressBook) {
+		final HashMap<PersonProperty, String> PersonToEditWithOriginalName = editNameToUseTheOriginalName(personToEdit, thePersonNumberInAddressBook);
+		
+		executeDeletePerson(Integer.toString(thePersonNumberInAddressBook));
+		addPersonToAddressBook(PersonToEditWithOriginalName);
+		return PersonToEditWithOriginalName;
+	}
+
+	private static int findThePersonInTheAddressBook(HashMap<PersonProperty, String> personToEdit) {
+		final Set<String> keywords = extractKeywordsFromFindPersonArgs(getNameFromPerson(personToEdit).toLowerCase());
+		int thePersonNumberInAddressBook = getTheNumberOfThePersonInAddressBookFromKeyword(keywords);
+		return thePersonNumberInAddressBook;
+	}
+
+
+	private static HashMap<PersonProperty, String> editNameToUseTheOriginalName (HashMap<PersonProperty, String> person, 
+			int ListNumber) {
+		HashMap<PersonProperty, String> personWithOriginalName = new HashMap<>(); 
+		personWithOriginalName.put(PersonProperty.NAME, getAllPersonsInAddressBook().get(ListNumber-1).get(PersonProperty.NAME));
+		personWithOriginalName.put(PersonProperty.PHONE, person.get(PersonProperty.PHONE));
+		personWithOriginalName.put(PersonProperty.EMAIL, person.get(PersonProperty.EMAIL));
+
+		return personWithOriginalName;
+	}
+
+	private static Boolean checkIfThePersonExist(int listNumber) {
+		if (listNumber>0){
+			return true;
+		}
+		return false;
+	}
+
+	private static String getMessageForSuccessfulEdit(HashMap<PersonProperty, String> editedPerson) {
+		return String.format(MESSAGE_EDITED, getNameFromPerson(editedPerson), getPhoneFromPerson(editedPerson),
+				getEmailFromPerson(editedPerson));	
+	}
+	 
+	private static int getTheNumberOfThePersonInAddressBookFromKeyword (Collection<String> keywords) {
+		for (int i = 0; i < getAllPersonsInAddressBook().size(); i++) {
+			final HashMap<PersonProperty, String> person = getAllPersonsInAddressBook().get(i);
+			final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person).toLowerCase()));
+			if (!Collections.disjoint(wordsInName, keywords)) {
+				return i+1;
+			}
+		}
+		return -1;
+
+	}
+
+	
 }
