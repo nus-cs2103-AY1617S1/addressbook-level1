@@ -62,6 +62,8 @@ public class AddressBook {
      */
     private static final String MESSAGE_ADDED = "New person added: %1$s, Phone: %2$s, Email: %3$s";
     private static final String MESSAGE_ADDRESSBOOK_CLEARED = "Address book has been cleared!";
+    private static final String MESSAGE_ADDRESSBOOK_SORT = "Address book has been sorted!";
+    private static final String MESSAGE_ADDRESSBOOK_EDIT = "Address book has been edited!";
     private static final String MESSAGE_COMMAND_HELP = "%1$s: %2$s";
     private static final String MESSAGE_COMMAND_HELP_PARAMETERS = "\tParameters: %1$s";
     private static final String MESSAGE_COMMAND_HELP_EXAMPLE = "\tExample: %1$s";
@@ -85,7 +87,7 @@ public class AddressBook {
     private static final String MESSAGE_STORAGE_FILE_CREATED = "Created new empty storage file: %1$s";
     private static final String MESSAGE_WELCOME = "Welcome to your Address Book!";
     private static final String MESSAGE_USING_DEFAULT_FILE = "Using default storage file : " + DEFAULT_STORAGE_FILEPATH;
-
+    
     // These are the prefix strings to define the data type of a command parameter
     private static final String PERSON_DATA_PREFIX_PHONE = "p/";
     private static final String PERSON_DATA_PREFIX_EMAIL = "e/";
@@ -100,6 +102,15 @@ public class AddressBook {
                                                       + PERSON_DATA_PREFIX_EMAIL + "EMAIL";
     private static final String COMMAND_ADD_EXAMPLE = COMMAND_ADD_WORD + " John Doe p/98765432 e/johnd@gmail.com";
 
+    private static final String COMMAND_SORT_WORD = "sort";
+    private static final String COMMAND_EDIT_WORD = "edit";
+    private static final String COMMAND_EDIT_DESC = "Edit a person to the address book.";
+    private static final String COMMAND_EDIT_PARAMETERS = "NAME "
+    													+ "NAME "
+    													+ PERSON_DATA_PREFIX_PHONE + "PHONE_NUMBER "
+    													+ PERSON_DATA_PREFIX_EMAIL + "EMAIL";
+    private static final String COMMAND_EDIT_EXAMPLE = COMMAND_EDIT_WORD + " John Doe John Doert p/98765432 e/johnd@gmail.com";
+    
     private static final String COMMAND_FIND_WORD = "find";
     private static final String COMMAND_FIND_DESC = "Finds all persons whose names contain any of the specified "
                                         + "keywords (case-sensitive) and displays them as a list with index numbers.";
@@ -176,7 +187,7 @@ public class AddressBook {
     /**
      * List of all persons in the address book.
      */
-    private static final ArrayList<String[]> ALL_PERSONS = new ArrayList<>();
+    private static ArrayList<String[]> ALL_PERSONS = new ArrayList<>();
 
 
     /**
@@ -349,6 +360,10 @@ public class AddressBook {
             return executeDeletePerson(commandArgs);
         case COMMAND_CLEAR_WORD:
             return executeClearAddressBook();
+        case COMMAND_SORT_WORD:
+        	return executeSort();
+        case COMMAND_EDIT_WORD:
+        	return executeEdit(commandArgs);
         case COMMAND_HELP_WORD:
             return getUsageInfoForAllCommands();
         case COMMAND_EXIT_WORD:
@@ -378,6 +393,57 @@ public class AddressBook {
         return String.format(MESSAGE_INVALID_COMMAND_FORMAT, userCommand, correctUsageInfo);
     }
 
+    
+    /**
+     * Sorting the address book by name lexicographically.
+	 *
+     * @return feedback display message for the operation result
+     */    
+    private static String executeSort(){
+    	sortAddressbook();
+    	return MESSAGE_ADDRESSBOOK_SORT;
+    }    
+    
+    /**
+     * Edit a person (specified by the command args) to the address book.
+     * The entire command arguments string is treated as a string representation of the person to edit.
+     *
+     * @param commandArgs full command args string from the user
+     * @return feedback display message for the operation result
+     */
+    private static String executeEdit(String commandArgs){
+    	ArrayList<String> param = new ArrayList<String>();
+    	param = splitByWhitespace(commandArgs);
+    	String searchName = "";
+    	String newPerson = "";
+    	if(param.size() == 4){
+	    	searchName = param.get(0);
+	    	newPerson = param.get(1) + " " + param.get(2) + " " + param.get(3);
+    	}	
+    	final Optional<String[]> decodeResult = decodePersonFromString(newPerson);
+        // checks if args are valid (decode result will not be present if the person is invalid)
+        if (!decodeResult.isPresent()) {
+            return getMessageForInvalidCommandInput(COMMAND_EDIT_WORD, getUsageInfoForEditCommand());
+        }
+    	
+    	boolean isEdited = false;
+    	ArrayList<String[]> currAddressBook = getAllPersonsInAddressBook();
+    	for(int i = 0; i < currAddressBook.size(); i ++){
+    		String [] person = currAddressBook.get(i);
+    		if(person[0].equals(searchName)){
+    			executeDeletePerson(Integer.toString(i + 1));
+    			executeAddPerson(newPerson);
+    			isEdited = true;
+    			break;
+    		}
+    	}
+    	if(isEdited){
+    		return MESSAGE_ADDRESSBOOK_EDIT;
+    	} else{
+    		return MESSAGE_PERSON_NOT_IN_ADDRESSBOOK;
+    	}
+    }    
+    
     /**
      * Adds a person (specified by the command args) to the address book.
      * The entire command arguments string is treated as a string representation of the person to add.
@@ -443,7 +509,7 @@ public class AddressBook {
      * @return set of keywords as specified by args
      */
     private static Set<String> extractKeywordsFromFindPersonArgs(String findPersonCommandArgs) {
-        return new HashSet<>(splitByWhitespace(findPersonCommandArgs.trim()));
+        return new HashSet<>(splitByWhitespace(findPersonCommandArgs.trim().toLowerCase()));
     }
 
     /**
@@ -455,7 +521,7 @@ public class AddressBook {
     private static ArrayList<String[]> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
         for (String[] person : getAllPersonsInAddressBook()) {
-            final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
+            final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person).toLowerCase()));
             if (!Collections.disjoint(wordsInName, keywords)) {
                 matchedPersons.add(person);
             }
@@ -755,6 +821,45 @@ public class AddressBook {
      * ================================================================================
      */
 
+    /**
+     * Sort all person in the address book according to name.
+     */
+
+    private static void sortAddressbook(){
+    	ArrayList<String[]> currAddressBook = getAllPersonsInAddressBook();
+    	ArrayList<String[]> newAddressBook = new ArrayList<String[]>();
+    	for(int i = 0; i < currAddressBook.size(); i ++){
+    		String [] person = currAddressBook.get(i);
+    		if(newAddressBook.size() == 0){
+    			
+    			newAddressBook.add(person);
+    		} else{
+    			
+    			String currPersonName = getNameFromPerson(person);
+    			for(int index = 0; index < newAddressBook.size(); index ++){
+    				String [] newPerson = newAddressBook.get(index);
+    				String newPersonName = getNameFromPerson(newPerson);
+    				if(newPersonName.compareToIgnoreCase(currPersonName) < 0 && index == newAddressBook.size() - 1){
+    					
+    					newAddressBook.add(person);
+    					break;
+    				}
+    				else if(newPersonName.compareToIgnoreCase(currPersonName) == 0){
+    					
+    					newAddressBook.add(index + 1, person);
+    					break;
+    				}
+    				else if(newPersonName.compareToIgnoreCase(currPersonName) > 0){
+    					newAddressBook.add(index, person);
+    					break;
+    				}
+    			}
+    		}
+    	}
+    	ALL_PERSONS = newAddressBook;
+    	savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
+    }
+    
     /**
      * Adds a person to the address book. Saves changes to storage file.
      *
@@ -1081,6 +1186,17 @@ public class AddressBook {
                 + getUsageInfoForHelpCommand();
     }
 
+    /**
+     * Builds string for showing 'edit' command usage instruction
+     *
+     * @return  'edit' command usage instruction
+     */
+    private static String getUsageInfoForEditCommand() {
+        return String.format(MESSAGE_COMMAND_HELP, COMMAND_EDIT_WORD, COMMAND_EDIT_DESC) + LS
+                + String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_EDIT_PARAMETERS) + LS
+                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_EDIT_EXAMPLE) + LS;
+    }     
+    
     /**
      * Builds string for showing 'add' command usage instruction
      *
