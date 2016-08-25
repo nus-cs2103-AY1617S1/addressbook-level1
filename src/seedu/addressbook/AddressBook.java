@@ -302,7 +302,9 @@ public class AddressBook {
             return String.format(MESSAGE_COMMAND_HELP, COMMAND_ADD_WORD, COMMAND_ADD_DESC) + LS
 			+ String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_ADD_PARAMETERS) + LS
 			+ String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_ADD_EXAMPLE) + LS + LS
-			+ getUsageInfoForFindCommand() + LS
+			+ String.format(MESSAGE_COMMAND_HELP, COMMAND_FIND_WORD, COMMAND_FIND_DESC) + LS
+			+ String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_FIND_PARAMETERS) + LS
+			+ String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_FIND_EXAMPLE) + LS + LS
 			+ getUsageInfoForViewCommand() + LS
 			+ getUsageInfoForDeleteCommand() + LS
 			+ getUsageInfoForClearCommand() + LS
@@ -317,7 +319,9 @@ public class AddressBook {
             return String.format(MESSAGE_INVALID_COMMAND_FORMAT, commandType, String.format(MESSAGE_COMMAND_HELP, COMMAND_ADD_WORD, COMMAND_ADD_DESC) + LS
 			+ String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_ADD_PARAMETERS) + LS
 			+ String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_ADD_EXAMPLE) + LS + LS
-			+ getUsageInfoForFindCommand() + LS
+			+ String.format(MESSAGE_COMMAND_HELP, COMMAND_FIND_WORD, COMMAND_FIND_DESC) + LS
+			+ String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_FIND_PARAMETERS) + LS
+			+ String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_FIND_EXAMPLE) + LS + LS
 			+ getUsageInfoForViewCommand() + LS
 			+ getUsageInfoForDeleteCommand() + LS
 			+ getUsageInfoForClearCommand() + LS
@@ -935,17 +939,6 @@ public class AddressBook {
         //TODO: implement a more permissive validation
     }
 
-
-    /**
-     * Builds string for showing 'find' command usage instruction
-     *
-     * @return  'find' command usage instruction
-     */
-    private static String getUsageInfoForFindCommand() {
-        return String.format(MESSAGE_COMMAND_HELP, COMMAND_FIND_WORD, COMMAND_FIND_DESC) + LS
-                + String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_FIND_PARAMETERS) + LS
-                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_FIND_EXAMPLE) + LS;
-    }
 
     /**
      * Builds string for showing 'delete' command usage instruction
