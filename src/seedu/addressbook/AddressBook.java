@@ -424,7 +424,7 @@ public class AddressBook {
 			+ String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_DELETE_EXAMPLE) + LS);
         }
         final int targetVisibleIndex = Integer.parseInt(commandArgs.trim());
-        if (!isDisplayIndexValidForLastPersonListingView(targetVisibleIndex)) {
+        if (!(targetVisibleIndex >= DISPLAYED_INDEX_OFFSET && targetVisibleIndex < getLatestPersonListingView().size() + DISPLAYED_INDEX_OFFSET)) {
             return MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
         }
         final HashMap<PersonProperty,String> targetInModel = getPersonByLastVisibleIndex(targetVisibleIndex);
@@ -445,16 +445,6 @@ public class AddressBook {
         } catch (NumberFormatException nfe) {
             return false;
         }
-    }
-
-    /**
-     * Checks that the given index is within bounds and valid for the last shown person list view.
-     *
-     * @param index to check
-     * @return whether it is valid
-     */
-    private static boolean isDisplayIndexValidForLastPersonListingView(int index) {
-        return index >= DISPLAYED_INDEX_OFFSET && index < getLatestPersonListingView().size() + DISPLAYED_INDEX_OFFSET;
     }
 
     /**
