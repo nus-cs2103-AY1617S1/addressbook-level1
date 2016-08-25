@@ -200,8 +200,18 @@ public class AddressBook {
      */
     public static void main(String[] args) {
         showWelcomeMessage();
-        processProgramArgs(args);
-        loadDataFromStorage();
+        if (args.length >= 2) {
+            showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
+            exitProgram();
+        }
+
+        if (args.length == 1) {
+            setupGivenFileForStorage(args[0]);
+        }
+
+        if(args.length == 0) {
+            setupDefaultFileForStorage();
+        }        loadDataFromStorage();
         while (true) {
             String userCommand = getUserInput();
             echoUserCommand(userCommand);
@@ -246,28 +256,6 @@ public class AddressBook {
      * that is referenced by the method above.
      * ====================================================================
      */
-
-    /**
-     * Processes the program main method run arguments.
-     * If a valid storage file is specified, sets up that file for storage.
-     * Otherwise sets up the default file for storage.
-     *
-     * @param args full program arguments passed to application main method
-     */
-    private static void processProgramArgs(String[] args) {
-        if (args.length >= 2) {
-            showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
-            exitProgram();
-        }
-
-        if (args.length == 1) {
-            setupGivenFileForStorage(args[0]);
-        }
-
-        if(args.length == 0) {
-            setupDefaultFileForStorage();
-        }
-    }
 
     /**
      * Sets up the storage file based on the supplied file path.
@@ -354,7 +342,8 @@ public class AddressBook {
         case COMMAND_EXIT_WORD:
             executeExitProgramRequest();
         default:
-            return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
+            return getMessageForInvalidCommandInput(commandType, 
+                getUsageInfoForAllCommands());
         }
     }
 
@@ -374,8 +363,10 @@ public class AddressBook {
      * @param correctUsageInfo message showing the correct usage
      * @return invalid command args feedback message
      */
-    private static String getMessageForInvalidCommandInput(String userCommand, String correctUsageInfo) {
-        return String.format(MESSAGE_INVALID_COMMAND_FORMAT, userCommand, correctUsageInfo);
+    private static String getMessageForInvalidCommandInput(String userCommand, 
+        String correctUsageInfo) {
+        return String.format(MESSAGE_INVALID_COMMAND_FORMAT, 
+            userCommand, correctUsageInfo);
     }
 
     /**
@@ -391,7 +382,8 @@ public class AddressBook {
 
         // checks if args are valid (decode result will not be present if the person is invalid)
         if (!decodeResult.isPresent()) {
-            return getMessageForInvalidCommandInput(COMMAND_ADD_WORD, getUsageInfoForAddCommand());
+            return getMessageForInvalidCommandInput(COMMAND_ADD_WORD, 
+                getUsageInfoForAddCommand());
         }
 
         // add the person as specified
@@ -409,7 +401,8 @@ public class AddressBook {
      */
     private static String getMessageForSuccessfulAddPerson(String[] addedPerson) {
         return String.format(MESSAGE_ADDED,
-                getNameFromPerson(addedPerson), getPhoneFromPerson(addedPerson), getEmailFromPerson(addedPerson));
+                getNameFromPerson(addedPerson), getPhoneFromPerson(addedPerson), 
+                getEmailFromPerson(addedPerson));
     }
 
     /**
@@ -471,7 +464,8 @@ public class AddressBook {
      */
     private static String executeDeletePerson(String commandArgs) {
         if (!isDeletePersonArgsValid(commandArgs)) {
-            return getMessageForInvalidCommandInput(COMMAND_DELETE_WORD, getUsageInfoForDeleteCommand());
+            return getMessageForInvalidCommandInput(COMMAND_DELETE_WORD, 
+                getUsageInfoForDeleteCommand());
         }
         final int targetVisibleIndex = extractTargetIndexFromDeletePersonArgs(commandArgs);
         if (!isDisplayIndexValidForLastPersonListingView(targetVisibleIndex)) {
@@ -514,7 +508,8 @@ public class AddressBook {
      * @return whether it is valid
      */
     private static boolean isDisplayIndexValidForLastPersonListingView(int index) {
-        return index >= DISPLAYED_INDEX_OFFSET && index < getLatestPersonListingView().size() + DISPLAYED_INDEX_OFFSET;
+        return index >= DISPLAYED_INDEX_OFFSET && index < getLatestPersonListingView().size() 
+        + DISPLAYED_INDEX_OFFSET;
     }
 
     /**
@@ -628,7 +623,8 @@ public class AddressBook {
      * @return formatted listing message with index
      */
     private static String getIndexedPersonListElementMessage(int visibleIndex, String[] person) {
-        return String.format(MESSAGE_DISPLAY_LIST_ELEMENT_INDEX, visibleIndex) + getMessageForFormattedPersonData(person);
+        return String.format(MESSAGE_DISPLAY_LIST_ELEMENT_INDEX, visibleIndex) 
+        + getMessageForFormattedPersonData(person);
     }
 
     /**
