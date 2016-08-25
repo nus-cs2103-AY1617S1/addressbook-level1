@@ -482,9 +482,13 @@ public class AddressBook {
             return MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
         }
         final String[] targetInModel = getPersonByLastVisibleIndex(targetVisibleIndex);
-        return deletePersonFromAddressBook(targetInModel) ? getMessageForSuccessfulDelete(targetInModel) // success
-                                                          : MESSAGE_PERSON_NOT_IN_ADDRESSBOOK; // not found
+        return getMessageForDeleteAttempt(targetInModel);
     }
+
+	private static String getMessageForDeleteAttempt(final String[] targetInModel) {
+		return deletePersonFromAddressBook(targetInModel) ? getMessageForSuccessfulDelete(targetInModel) // success
+                                                          : MESSAGE_PERSON_NOT_IN_ADDRESSBOOK; // not found
+	}
 
     /**
      * Checks validity of delete person argument string's format.
