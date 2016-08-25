@@ -215,7 +215,9 @@ public class AddressBook {
 		}
 		
 		if(args.length == 0) {
-		    setupDefaultFileForStorage();
+		    showToUser(MESSAGE_USING_DEFAULT_FILE);
+			storageFilePath = DEFAULT_STORAGE_FILEPATH;
+			createFileIfMissing(storageFilePath);
 		}
         ALL_PERSONS.clear();
 		ALL_PERSONS.addAll(loadPersonsFromFile(storageFilePath));
@@ -264,17 +266,6 @@ public class AddressBook {
         showToUser(DIVIDER);
         showToUser(DIVIDER);
         System.exit(0);
-    }
-
-    /**
-     * Sets up the storage based on the default file.
-     * Creates file if missing.
-     * Exits program if the file cannot be created.
-     */
-    private static void setupDefaultFileForStorage() {
-        showToUser(MESSAGE_USING_DEFAULT_FILE);
-        storageFilePath = DEFAULT_STORAGE_FILEPATH;
-        createFileIfMissing(storageFilePath);
     }
 
     /**
