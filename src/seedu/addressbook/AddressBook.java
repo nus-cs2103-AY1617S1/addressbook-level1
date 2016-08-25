@@ -31,7 +31,15 @@ import java.util.Set;
  **/
 public class AddressBook {
 
-    private static final String RESPONSE_COMMAND_ENTERED = "[Command entered:%s]";
+    private static final int INDEX_OF_FILENAME = 0;
+
+	private static final int ARGUMENT_LENGTH_0 = 0;
+
+	private static final int ARGUMENT_LENGTH_1 = 1;
+
+	private static final int ARGUMENT_LENGTH_2 = 2;
+
+	private static final String RESPONSE_COMMAND_ENTERED = "[Command entered:%s]";
 
 	/**
      * Default file path used if the user doesn't provide the file name.
@@ -261,16 +269,16 @@ public class AddressBook {
      * @param args full program arguments passed to application main method
      */
     private static void processProgramArgs(String[] args) {
-        if (args.length >= 2) {
+        if (args.length >= ARGUMENT_LENGTH_2) {
             showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
             exitProgram();
         }
 
-        if (args.length == 1) {
-            setupGivenFileForStorage(args[0]);
+        if (args.length == ARGUMENT_LENGTH_1) {
+            setupGivenFileForStorage(args[INDEX_OF_FILENAME]);
         }
 
-        if(args.length == 0) {
+        if(args.length == ARGUMENT_LENGTH_0) {
             setupDefaultFileForStorage();
         }
     }
