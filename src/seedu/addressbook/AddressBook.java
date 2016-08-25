@@ -1012,7 +1012,7 @@ public class AddressBook {
         final int indexOfEmailPrefix = encoded.indexOf(PERSON_DATA_PREFIX_EMAIL);
         // name is leading substring up to first data prefix symbol
         int indexOfFirstPrefix = Math.min(indexOfEmailPrefix, indexOfPhonePrefix);
-        return encoded.substring(0, indexOfFirstPrefix).trim();
+        return encoded.substring(INDEX_OF_FIRST_CHARACTER, indexOfFirstPrefix).trim();
     }
 
     /**
