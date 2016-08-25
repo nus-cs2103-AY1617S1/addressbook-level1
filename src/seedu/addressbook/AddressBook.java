@@ -197,16 +197,54 @@ public class AddressBook {
      * We can understand the high-level logic of the program by reading this
      * method alone.
      * ====================================================================
+     * T2A3 Method Abstraction - SLAP
      */
+    
     public static void main(String[] args) {
-        showWelcomeMessage();
-        processProgramArgs(args);
-        loadDataFromStorage();
+        String[] message = { DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER };
+		for (String m : message) {
+		    System.out.println(LINE_PREFIX + m);
+		}
+        if (args.length >= 2) {
+		    String[] message1 = { MESSAGE_INVALID_PROGRAM_ARGS };
+			for (String m1 : message1) {
+			    System.out.println(LINE_PREFIX + m1);
+			}
+		    exitProgram();
+		}
+		
+		if (args.length == 1) {
+		    String filePath = args[0];
+			if (!isValidFilePath(filePath)) {
+			    String[] message1 = { String.format(MESSAGE_INVALID_FILE, filePath) };
+				for (String m1 : message1) {
+				    System.out.println(LINE_PREFIX + m1);
+				}
+			    exitProgram();
+			}
+			
+			storageFilePath = filePath;
+			createFileIfMissing(filePath);
+		}
+		
+		if(args.length == 0) {
+		    String[] message1 = { MESSAGE_USING_DEFAULT_FILE };
+			for (String m1 : message1) {
+			    System.out.println(LINE_PREFIX + m1);
+			}
+			storageFilePath = DEFAULT_STORAGE_FILEPATH;
+			createFileIfMissing(storageFilePath);
+		}
+        ALL_PERSONS.clear();
+		ALL_PERSONS.addAll(loadPersonsFromFile(storageFilePath));
         while (true) {
             String userCommand = getUserInput();
-            echoUserCommand(userCommand);
+            showToUser("[Command entered:" + userCommand + "]");
             String feedback = executeCommand(userCommand);
-            showResultToUser(feedback);
+			String[] message1 = { feedback, DIVIDER };
+            for (String m1 : message1) {
+			    System.out.println(LINE_PREFIX + m1);
+			}
         }
     }
 
