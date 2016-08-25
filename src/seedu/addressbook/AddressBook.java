@@ -314,7 +314,8 @@ public class AddressBook {
 			+ String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_CLEAR_EXAMPLE) + LS + LS
 			+ String.format(MESSAGE_COMMAND_HELP, COMMAND_EXIT_WORD, COMMAND_EXIT_DESC)
 			+ String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_EXIT_EXAMPLE) + LS
-			+ getUsageInfoForHelpCommand();
+			+ String.format(MESSAGE_COMMAND_HELP, COMMAND_HELP_WORD, COMMAND_HELP_DESC)
+			+ String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_HELP_EXAMPLE);
         case COMMAND_EXIT_WORD:
             System.out.println(LINE_PREFIX + MESSAGE_GOODBYE);
 			System.out.println(LINE_PREFIX + DIVIDER);
@@ -336,7 +337,8 @@ public class AddressBook {
 			+ String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_CLEAR_EXAMPLE) + LS + LS
 			+ String.format(MESSAGE_COMMAND_HELP, COMMAND_EXIT_WORD, COMMAND_EXIT_DESC)
 			+ String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_EXIT_EXAMPLE) + LS
-			+ getUsageInfoForHelpCommand());
+			+ String.format(MESSAGE_COMMAND_HELP, COMMAND_HELP_WORD, COMMAND_HELP_DESC)
+			+ String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_HELP_EXAMPLE));
         }
     }
 
@@ -952,15 +954,7 @@ public class AddressBook {
     }
 
 
-    /**
-     * Builds string for showing 'help' command usage instruction
-     *
-     * @return  'help' command usage instruction
-     */
-    private static String getUsageInfoForHelpCommand() {
-        return String.format(MESSAGE_COMMAND_HELP, COMMAND_HELP_WORD, COMMAND_HELP_DESC)
-                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_HELP_EXAMPLE);
-    }
+    
 
     
 
