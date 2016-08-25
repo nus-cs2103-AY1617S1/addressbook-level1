@@ -647,10 +647,10 @@ public class AddressBook {
     	final List<String> list = new ArrayList<String>(keywords);
     	String[] newPerson = personsFound.get(0);
     	for (int i = 0; i < list.size(); i++) {
-			if (list.get(i).contains(PERSON_DATA_PREFIX_PHONE)) {
+			if (list.get(i).substring(0,2).equals(PERSON_DATA_PREFIX_PHONE)) {
 				newPerson[PERSON_DATA_INDEX_PHONE] = list.get(i).substring(2, list.get(i).length());
 			}
-			else if (list.get(i).contains(PERSON_DATA_PREFIX_EMAIL)) {
+			else if (list.get(i).substring(0,2).equals(PERSON_DATA_PREFIX_EMAIL)) {
 				newPerson[PERSON_DATA_INDEX_EMAIL] = list.get(i).substring(2, list.get(i).length());
 			}
 		}
