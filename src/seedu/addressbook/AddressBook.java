@@ -769,27 +769,9 @@ public class AddressBook {
      * @return whether the given person has valid data
      */
     private static boolean isPersonDataValid(HashMap<PersonProperty,String> person) {
-        return isPersonNameValid(person.get(PersonProperty.NAME))
+        return person.get(PersonProperty.NAME).matches("(\\w|\\s)+")
                 && isPersonPhoneValid(person.get(PersonProperty.PHONE))
                 && isPersonEmailValid(person.get(PersonProperty.EMAIL));
-    }
-
-    /*
-     * ==============NOTE TO STUDENTS======================================
-     * Note the use of 'regular expressions' in the method below.
-     * Regular expressions can be very useful in checking if a a string
-     * follows a sepcific format.
-     * ====================================================================
-     */
-    /**
-     * Validates string as a legal person name
-     *
-     * @param name to be validated
-     * @return whether arg is a valid person name
-     */
-    private static boolean isPersonNameValid(String name) {
-        return name.matches("(\\w|\\s)+");  // name is nonempty mixture of alphabets and whitespace
-        //TODO: implement a more permissive validation
     }
 
     /**
