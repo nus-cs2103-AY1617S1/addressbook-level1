@@ -643,7 +643,8 @@ public class AddressBook {
      * @return formatted listing message with index
      */
     private static String getIndexedPersonListElementMessage(int visibleIndex, String[] person) {
-        return String.format(MESSAGE_DISPLAY_LIST_ELEMENT_INDEX, visibleIndex) + getMessageForFormattedPersonData(person);
+        return String.format(MESSAGE_DISPLAY_LIST_ELEMENT_INDEX, visibleIndex) 
+        					+ getMessageForFormattedPersonData(person);
     }
 
     /**
@@ -654,7 +655,9 @@ public class AddressBook {
      */
     private static String getMessageForFormattedPersonData(String[] person) {
         return String.format(MESSAGE_DISPLAY_PERSON_DATA,
-                getNameFromPerson(person), getPhoneFromPerson(person), getEmailFromPerson(person));
+                			getNameFromPerson(person), 
+                			getPhoneFromPerson(person), 
+                			getEmailFromPerson(person));
     }
 
     /**
@@ -928,7 +931,8 @@ public class AddressBook {
                 extractEmailFromPersonString(encoded)
         );
         // check that the constructed person is valid
-        return isPersonDataValid(decodedPerson) ? Optional.of(decodedPerson) : Optional.empty();
+        return isPersonDataValid(decodedPerson) ? Optional.of(decodedPerson) 
+        										: Optional.empty();
     }
 
     /**
