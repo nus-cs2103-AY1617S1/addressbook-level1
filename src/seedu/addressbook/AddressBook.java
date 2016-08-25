@@ -337,20 +337,28 @@ public class AddressBook {
         switch (commandType) {
         case COMMAND_ADD_WORD:
             return executeAddPerson(commandArgs);
+            // Fallthrough
         case COMMAND_FIND_WORD:
             return executeFindPersons(commandArgs);
+            // Fallthrough         
         case COMMAND_LIST_WORD:
             return executeListAllPersonsInAddressBook();
+            // Fallthrough
         case COMMAND_DELETE_WORD:
             return executeDeletePerson(commandArgs);
+            // Fallthrough
         case COMMAND_CLEAR_WORD:
             return executeClearAddressBook();
+            // Fallthrough
         case COMMAND_HELP_WORD:
             return getUsageInfoForAllCommands();
+            // Fallthrough
         case COMMAND_EXIT_WORD:
             executeExitProgramRequest();
+            // Fallthrough
         default:
             return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
+            // Fallthrough
         }
     }
 
