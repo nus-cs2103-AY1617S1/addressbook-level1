@@ -421,12 +421,29 @@ public class AddressBook {
      */
     private static String executeFindPersons(String commandArgs) {
         final Set<String> keywords = extractKeywordsFromFindPersonArgs(commandArgs);
-        final ArrayList<String[]> personsFound = getPersonsWithNameContainingAnyKeyword(keywords);
+        final Set<String> lowerCaseKeywords = changeToLowerCase(keywords);
+        System.out.println(lowerCaseKeywords);
+        final ArrayList<String[]> personsFound = getPersonsWithNameContainingAnyKeyword(lowerCaseKeywords);
         showToUser(personsFound);
         return getMessageForPersonsDisplayedSummary(personsFound);
     }
 
+    
     /**
+     * change all strings in a set to lowercase
+     * 
+     * @param keywords
+     */
+    private static Set<String> changeToLowerCase(Collection<String> keywords) {
+    	Set<String> lowerCaseStrings = new HashSet<String>();
+		for (String i: keywords){
+			lowerCaseStrings.add(i.toLowerCase());
+		}
+		
+		return lowerCaseStrings;
+	}
+
+	/**
      * Constructs a feedback message to summarise an operation that displayed a listing of persons.
      *
      * @param personsDisplayed used to generate summary
@@ -454,9 +471,11 @@ public class AddressBook {
      */
     private static ArrayList<String[]> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
+        
         for (String[] person : getAllPersonsInAddressBook()) {
             final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
-            if (!Collections.disjoint(wordsInName, keywords)) {
+            final Set<String> lowerCaseWordsInName = changeToLowerCase(wordsInName);
+            if (!Collections.disjoint(lowerCaseWordsInName, keywords)) {
                 matchedPersons.add(person);
             }
         }
