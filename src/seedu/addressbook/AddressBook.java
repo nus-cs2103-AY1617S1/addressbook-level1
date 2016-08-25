@@ -215,7 +215,7 @@ public class AddressBook {
         initialiseAddressBookModel(loadPersonsFromFile(storageFilePath));
         while (true) {
             String userCommand = getUserInput();
-            echoUserCommand(userCommand);
+            showToUser("[Command entered:" + userCommand + "]");
             String feedback = executeCommand(userCommand);
             showResultToUser(feedback);
         }
@@ -246,9 +246,7 @@ public class AddressBook {
     /**
      * Echoes the user input back to the user.
      */
-    private static void echoUserCommand(String userCommand) {
-        showToUser("[Command entered:" + userCommand + "]");
-    }
+
 
     /*
      * ==============NOTE TO STUDENTS==========================================
