@@ -1083,12 +1083,15 @@ public class AddressBook {
 
     /**
     * Builds string for given command usage instruction
+    * 
+    * @param c Command to get usage instruction of
+    * @param hasParameters boolean to specify if command has parameters
     *
     * @return given command usage instruction
     */
-    private static String getUsageInfo(String command, Boolean hasParameters) {
+    private static String getUsageInfo(String c, Boolean hasParameters) {
         String[] constantArray = new String[4];
-        switch (command) {
+        switch (c) {
             case COMMAND_ADD_WORD:
                 constantArray = new String[] {COMMAND_ADD_WORD, COMMAND_ADD_DESC, COMMAND_ADD_PARAMETERS, COMMAND_ADD_EXAMPLE};
                 break;
