@@ -287,7 +287,16 @@ public class AddressBook {
             return executeDeletePerson(commandArgs);
         case COMMAND_CLEAR_WORD:
             ALL_PERSONS.clear();
-			savePersonsToFile(ALL_PERSONS, storageFilePath);
+			final ArrayList<String> linesToWrite = encodePersonsToStrings(ALL_PERSONS);
+			try {
+			    Files.write(Paths.get(storageFilePath), linesToWrite);
+			} catch (IOException ioe) {
+			    System.out.println(LINE_PREFIX + String.format(MESSAGE_ERROR_WRITING_TO_FILE, storageFilePath));
+			    System.out.println(LINE_PREFIX + MESSAGE_GOODBYE);
+				System.out.println(LINE_PREFIX + DIVIDER);
+				System.out.println(LINE_PREFIX + DIVIDER);
+				System.exit(0);
+			}
 			return MESSAGE_ADDRESSBOOK_CLEARED;
         case COMMAND_HELP_WORD:
             return getUsageInfoForAddCommand() + LS
@@ -624,24 +633,7 @@ public class AddressBook {
         return lines;
     }
 
-    /**
-     * Saves all data to the file.
-     * Exits program if there is an error saving to file.
-     *
-     * @param filePath file for saving
-     */
-    private static void savePersonsToFile(ArrayList<HashMap<PersonProperty,String>> persons, String filePath) {
-        final ArrayList<String> linesToWrite = encodePersonsToStrings(persons);
-        try {
-            Files.write(Paths.get(storageFilePath), linesToWrite);
-        } catch (IOException ioe) {
-            System.out.println(LINE_PREFIX + String.format(MESSAGE_ERROR_WRITING_TO_FILE, filePath));
-            System.out.println(LINE_PREFIX + MESSAGE_GOODBYE);
-			System.out.println(LINE_PREFIX + DIVIDER);
-			System.out.println(LINE_PREFIX + DIVIDER);
-			System.exit(0);
-        }
-    }
+    
 
 
     /*
@@ -657,7 +649,16 @@ public class AddressBook {
      */
     private static void addPersonToAddressBook(HashMap<PersonProperty,String> person) {
         ALL_PERSONS.add(person);
-        savePersonsToFile(ALL_PERSONS, storageFilePath);
+        final ArrayList<String> linesToWrite = encodePersonsToStrings(ALL_PERSONS);
+		try {
+		    Files.write(Paths.get(storageFilePath), linesToWrite);
+		} catch (IOException ioe) {
+		    System.out.println(LINE_PREFIX + String.format(MESSAGE_ERROR_WRITING_TO_FILE, storageFilePath));
+		    System.out.println(LINE_PREFIX + MESSAGE_GOODBYE);
+			System.out.println(LINE_PREFIX + DIVIDER);
+			System.out.println(LINE_PREFIX + DIVIDER);
+			System.exit(0);
+		}
     }
 
     /**
@@ -669,7 +670,16 @@ public class AddressBook {
     private static boolean deletePersonFromAddressBook(HashMap<PersonProperty,String> exactPerson) {
         final boolean changed = ALL_PERSONS.remove(exactPerson);
         if (changed) {
-            savePersonsToFile(ALL_PERSONS, storageFilePath);
+            final ArrayList<String> linesToWrite = encodePersonsToStrings(ALL_PERSONS);
+			try {
+			    Files.write(Paths.get(storageFilePath), linesToWrite);
+			} catch (IOException ioe) {
+			    System.out.println(LINE_PREFIX + String.format(MESSAGE_ERROR_WRITING_TO_FILE, storageFilePath));
+			    System.out.println(LINE_PREFIX + MESSAGE_GOODBYE);
+				System.out.println(LINE_PREFIX + DIVIDER);
+				System.out.println(LINE_PREFIX + DIVIDER);
+				System.exit(0);
+			}
         }
         return changed;
     }
