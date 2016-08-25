@@ -427,7 +427,7 @@ public class AddressBook {
         if (!(targetVisibleIndex >= DISPLAYED_INDEX_OFFSET && targetVisibleIndex < getLatestPersonListingView().size() + DISPLAYED_INDEX_OFFSET)) {
             return MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
         }
-        final HashMap<PersonProperty,String> targetInModel = getPersonByLastVisibleIndex(targetVisibleIndex);
+        final HashMap<PersonProperty,String> targetInModel = latestPersonListingView.get(targetVisibleIndex - DISPLAYED_INDEX_OFFSET);
         return deletePersonFromAddressBook(targetInModel) ? getMessageForSuccessfulDelete(targetInModel) // success
                                                           : MESSAGE_PERSON_NOT_IN_ADDRESSBOOK; // not found
     }
@@ -507,16 +507,6 @@ public class AddressBook {
     private static String getMessageForFormattedPersonData(HashMap<PersonProperty,String> person) {
         return String.format(MESSAGE_DISPLAY_PERSON_DATA,
                 getNameFromPerson(person), getPhoneFromPerson(person), getEmailFromPerson(person));
-    }
-
-    /**
-     * Retrieves the person identified by the displayed index from the last shown listing of persons.
-     *
-     * @param lastVisibleIndex displayed index from last shown person listing
-     * @return the actual person object in the last shown person listing
-     */
-    private static HashMap<PersonProperty,String> getPersonByLastVisibleIndex(int lastVisibleIndex) {
-       return latestPersonListingView.get(lastVisibleIndex - DISPLAYED_INDEX_OFFSET);
     }
 
     /**
