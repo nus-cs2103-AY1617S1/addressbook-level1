@@ -31,6 +31,8 @@ import java.util.Set;
  **/
 public class AddressBook {
 
+    private static final String REGEX_EMAIL = "\\S+@\\S+\\.\\S+";
+
     private static final String REGEX_PHONE = "\\d+";
 
     private static final String REGEX_NAME = "(\\w|\\s)+";
@@ -1113,7 +1115,7 @@ public class AddressBook {
      * @return whether arg is a valid person email
      */
     private static boolean isPersonEmailValid(String email) {
-        return email.matches("\\S+@\\S+\\.\\S+"); // email is [non-whitespace]@[non-whitespace].[non-whitespace]
+        return email.matches(REGEX_EMAIL); // email is [non-whitespace]@[non-whitespace].[non-whitespace]
         //TODO: implement a more permissive validation
     }
 
