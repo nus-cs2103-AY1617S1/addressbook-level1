@@ -200,7 +200,24 @@ public class AddressBook {
      */
     public static void main(String[] args) {
         showWelcomeMessage();
-        processProgramArgs(args);
+        if (args.length >= 2) {
+            showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
+            exitProgram();
+        }
+        if (args.length == 1) {
+            if (!isValidFilePath(args[0])) {
+                showToUser(String.format(MESSAGE_INVALID_FILE, args[0]));
+                exitProgram();
+            }
+
+            storageFilePath = args[0];
+            createFileIfMissing(args[0]);
+        }
+        if(args.length == 0) {
+            showToUser(MESSAGE_USING_DEFAULT_FILE);
+            storageFilePath = DEFAULT_STORAGE_FILEPATH;
+            createFileIfMissing(storageFilePath);
+        }
         loadDataFromStorage();
         while (true) {
             String userCommand = getUserInput();
@@ -335,28 +352,41 @@ public class AddressBook {
      * @return  feedback about how the command was executed
      */
     public static String executeCommand(String userInputString) {
-        final String[] commandTypeAndParams = splitCommandWordAndArgs(userInputString);
-        final String commandType = commandTypeAndParams[0];
-        final String commandArgs = commandTypeAndParams[1];
-        switch (commandType) {
-        case COMMAND_ADD_WORD:
-            return executeAddPerson(commandArgs);
-        case COMMAND_FIND_WORD:
-            return executeFindPersons(commandArgs);
-        case COMMAND_LIST_WORD:
-            return executeListAllPersonsInAddressBook();
-        case COMMAND_DELETE_WORD:
-            return executeDeletePerson(commandArgs);
-        case COMMAND_CLEAR_WORD:
-            return executeClearAddressBook();
-        case COMMAND_HELP_WORD:
-            return getUsageInfoForAllCommands();
-        case COMMAND_EXIT_WORD:
-            executeExitProgramRequest();
-        default:
-            return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
-        }
+        return doCommand(userInputString);
     }
+
+	private static String doCommand(String userInputString) {
+		final String[] commandTypeAndParams = splitCommandWordAndArgs(userInputString);
+        return extractCommand(commandTypeAndParams);
+	}
+
+	private static String extractCommand(final String[] commandTypeAndParams) {
+		final String commandType = commandTypeAndParams[0];
+        final String commandArgs = commandTypeAndParams[1];
+        return chooseCommand(commandType, commandArgs);
+	}
+
+	private static String chooseCommand(final String commandType,
+			final String commandArgs) {
+		switch (commandType) {
+	        case COMMAND_ADD_WORD:
+	            return executeAddPerson(commandArgs);
+	        case COMMAND_FIND_WORD:
+	            return executeFindPersons(commandArgs);
+	        case COMMAND_LIST_WORD:
+	            return executeListAllPersonsInAddressBook();
+	        case COMMAND_DELETE_WORD:
+	            return executeDeletePerson(commandArgs);
+	        case COMMAND_CLEAR_WORD:
+	            return executeClearAddressBook();
+	        case COMMAND_HELP_WORD:
+	            return getUsageInfoForAllCommands();
+	        case COMMAND_EXIT_WORD:
+	            executeExitProgramRequest();
+	        default:
+	            return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
+	    }
+	}
 
     /**
      * Splits raw user input into command word and command arguments string
@@ -370,7 +400,7 @@ public class AddressBook {
 
     /**
      * Constructs a generic feedback message for an invalid command from user, with instructions for correct usage.
-     *
+     *	
      * @param correctUsageInfo message showing the correct usage
      * @return invalid command args feedback message
      */
@@ -390,7 +420,7 @@ public class AddressBook {
         final Optional<String[]> decodeResult = decodePersonFromString(commandArgs);
 
         // checks if args are valid (decode result will not be present if the person is invalid)
-        if (!decodeResult.isPresent()) {
+        if (isValidPerson(decodeResult)) {
             return getMessageForInvalidCommandInput(COMMAND_ADD_WORD, getUsageInfoForAddCommand());
         }
 
@@ -399,6 +429,10 @@ public class AddressBook {
         addPersonToAddressBook(personToAdd);
         return getMessageForSuccessfulAddPerson(personToAdd);
     }
+
+	private static boolean isValidPerson(final Optional<String[]> decodeResult) {
+		return !decodeResult.isPresent();
+	}
 
     /**
      * Constructs a feedback message for a successful add person command execution.
@@ -448,15 +482,20 @@ public class AddressBook {
 
     /**
      * Retrieve all persons in the full model whose names contain some of the specified keywords.
-     *
+     * Modified to be case insensitive
      * @param keywords for searching
      * @return list of persons in full model with name containing some of the keywords
      */
     private static ArrayList<String[]> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
+    	Set<String> lowerCaseKeywords = new HashSet<String>(); 
+    	for(String x : keywords){
+    		lowerCaseKeywords.add(x.toLowerCase());
+    	}
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
         for (String[] person : getAllPersonsInAddressBook()) {
-            final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
-            if (!Collections.disjoint(wordsInName, keywords)) {
+            final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person).toLowerCase()));
+
+            if (!Collections.disjoint(wordsInName, lowerCaseKeywords)) {
                 matchedPersons.add(person);
             }
         }
@@ -573,12 +612,17 @@ public class AddressBook {
     private static String getUserInput() {
         System.out.print(LINE_PREFIX + "Enter command: ");
         String inputLine = SCANNER.nextLine();
-        // silently consume all blank and comment lines
+        inputLine = consumeBlankAndCommentLines(inputLine);
+        return inputLine;
+    }
+
+	private static String consumeBlankAndCommentLines(String inputLine) {
+		// silently consume all blank and comment lines
         while (inputLine.trim().isEmpty() || inputLine.trim().charAt(0) == INPUT_COMMENT_MARKER) {
             inputLine = SCANNER.nextLine();
         }
-        return inputLine;
-    }
+		return inputLine;
+	}
 
    /* ==============NOTE TO STUDENTS======================================
     * Note how the method below uses Java 'Varargs' feature so that the
@@ -924,8 +968,21 @@ public class AddressBook {
     private static Optional<ArrayList<String[]>> decodePersonsFromStrings(ArrayList<String> encodedPersons) {
         final ArrayList<String[]> decodedPersons = new ArrayList<>();
         for (String encodedPerson : encodedPersons) {
-            final Optional<String[]> decodedPerson = decodePersonFromString(encodedPerson);
-            if (!decodedPerson.isPresent()) {
+            Optional<String[]> decodedPerson;
+            // check that we can extract the parts of a person from the encoded string
+            if (!isPersonDataExtractableFrom(encodedPerson)) {
+                return Optional.empty();
+            }
+            final String[] dp = makePersonFromData(
+                    extractNameFromPersonString(encodedPerson),
+                    extractPhoneFromPersonString(encodedPerson),
+                    extractEmailFromPersonString(encodedPerson)
+            );
+            // check that the constructed person is valid
+            decodedPerson = isPersonDataValid(dp) ? Optional.of(dp) : Optional.empty();
+
+            
+            if (isValidPerson(decodedPerson)) {
                 return Optional.empty();
             }
             decodedPersons.add(decodedPerson.get());
