@@ -286,7 +286,8 @@ public class AddressBook {
         case COMMAND_DELETE_WORD:
             return executeDeletePerson(commandArgs);
         case COMMAND_CLEAR_WORD:
-            clearAddressBook();
+            ALL_PERSONS.clear();
+			savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
 			return MESSAGE_ADDRESSBOOK_CLEARED;
         case COMMAND_HELP_WORD:
             return getUsageInfoForAddCommand() + LS
@@ -679,17 +680,6 @@ public class AddressBook {
     private static ArrayList<HashMap<PersonProperty,String>> getAllPersonsInAddressBook() {
         return ALL_PERSONS;
     }
-
-    /**
-     * Clears all persons in the address book and saves changes to file.
-     */
-    private static void clearAddressBook() {
-        ALL_PERSONS.clear();
-        savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
-    }
-
-    
-
 
     /*
      * ===========================================
