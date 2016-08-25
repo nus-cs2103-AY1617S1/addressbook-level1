@@ -127,7 +127,7 @@ public class AddressBook {
 	 * used by the internal String[] storage format. For example, a person's
 	 * name is stored as the 0th element in the array.
 	 */
-		// private static final int PERSON_DATA_INDEX_NAME = 0;
+	// private static final int PERSON_DATA_INDEX_NAME = 0;
 	// private static final int PERSON_DATA_INDEX_PHONE = 1;
 	// private static final int PERSON_DATA_INDEX_EMAIL = 2;
 	private static final String PERSON_PROPERTY_NAME = "name";
@@ -158,16 +158,14 @@ public class AddressBook {
 	 */
 	private static final Scanner SCANNER = new Scanner(System.in);
 	/*
-	 * ==============NOTE TO
-	 * STUDENTS=================================================================
-	 * ===== Note that the type of the variable below can also be declared as
+	 * ==============NOTE TO STUDENTS=========================================================
+	 * Note that the type of the variable below can also be declared as
 	 * List<String[]>, as follows: private static final List<String[]>
 	 * ALL_PERSONS = new ArrayList<>() That is because List is an interface
 	 * implemented by the ArrayList class. In this code we use ArrayList instead
 	 * because we wanted to to stay away from advanced concepts such as
 	 * interface inheritance.
-	 * =========================================================================
-	 * ===========================
+	 * =====================================================================================
 	 */
 	/**
 	 * List of all persons in the address book.
@@ -597,8 +595,7 @@ public class AddressBook {
 	}
 
 	/*
-	 * =========================================== UI LOGIC
-	 * ===========================================
+	 * =========================================== UI LOGIC ===========================================
 	 */
 
 	/**
@@ -619,8 +616,8 @@ public class AddressBook {
 	}
 
 	/*
-	 * ==============NOTE TO STUDENTS====================================== Note
-	 * how the method below uses Java 'Varargs' feature so that the method can
+	 * ==============NOTE TO STUDENTS====================================== 
+	 * Note how the method below uses Java 'Varargs' feature so that the method can
 	 * accept a varying number of message parameters.
 	 * ====================================================================
 	 */
@@ -715,8 +712,7 @@ public class AddressBook {
 	}
 
 	/*
-	 * =========================================== STORAGE LOGIC
-	 * ===========================================
+	 * =========================================== STORAGE LOGIC ===========================================
 	 */
 
 	/**
@@ -797,10 +793,9 @@ public class AddressBook {
 	}
 
 	/*
-	 * =========================================================================
-	 * ======= INTERNAL ADDRESS BOOK DATA METHODS
-	 * =========================================================================
-	 * =======
+	 * ================================================================================ 
+	 * INTERNAL ADDRESS BOOK DATA METHODS
+	 * ================================================================================
 	 */
 
 	/**
@@ -951,8 +946,8 @@ public class AddressBook {
 	}	
 
 	/*
-	 * ==============NOTE TO STUDENTS====================================== Note
-	 * the use of Java's new 'Optional' feature to indicate that the return
+	 * ==============NOTE TO STUDENTS====================================== 
+	 * Note the use of Java's new 'Optional' feature to indicate that the return
 	 * value may not always be present.
 	 * ====================================================================
 	 */
