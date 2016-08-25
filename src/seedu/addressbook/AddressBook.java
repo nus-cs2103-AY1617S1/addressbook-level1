@@ -108,7 +108,9 @@ public class AddressBook {
 
     private static final String COMMAND_LIST_WORD = "list";
     private static final String COMMAND_LIST_DESC = "Displays all persons as a list with index numbers.";
-    private static final String COMMAND_LIST_EXAMPLE = COMMAND_LIST_WORD;
+    private static final String COMMAND_LIST_PARAMETER_SORT = "sort";
+    private static final String COMMAND_LIST_PARAMETERS = " [SORT]";
+    private static final String COMMAND_LIST_EXAMPLE = COMMAND_LIST_WORD + COMMAND_LIST_PARAMETERS;
 
     private static final String COMMAND_DELETE_WORD = "delete";
     private static final String COMMAND_DELETE_DESC = "Deletes a person identified by the index number used in "
@@ -200,13 +202,75 @@ public class AddressBook {
      */
     public static void main(String[] args) {
         showWelcomeMessage();
-        processProgramArgs(args);
+        
+        // Begin process args
+        if (args.length >= 2) {
+        	for (String m : new String[]{ MESSAGE_INVALID_PROGRAM_ARGS }) 
+        	{
+            System.out.println(LINE_PREFIX + m);
+            }
+        	for (String m : new String[]{ MESSAGE_GOODBYE, DIVIDER, DIVIDER }) 
+        	{
+            System.out.println(LINE_PREFIX + m);
+            }
+            System.exit(0);
+        }
+
+        if (args.length == 1) {
+        	String filePath = args[0];
+        	if (!isValidFilePath(filePath))
+        	{
+        	for (String m : new String[]{ MESSAGE_INVALID_FILE, filePath })
+        	{
+            System.out.println(LINE_PREFIX + m);
+            }
+        	for (String m : new String[]{ MESSAGE_GOODBYE, DIVIDER, DIVIDER })
+        	{
+            System.out.println(LINE_PREFIX + m);
+            }
+            System.exit(0);
+            }
+
+            storageFilePath = filePath;
+            File storageFile = new File(filePath);
+            if (!storageFile.exists())
+            {
+            for (String m : new String[]{ MESSAGE_ERROR_MISSING_STORAGE_FILE, filePath }) 
+            { 
+            System.out.println(LINE_PREFIX + m);
+            }
+
+            try { storageFile.createNewFile();
+            for (String m : new String[]{ MESSAGE_STORAGE_FILE_CREATED, filePath }) {
+            System.out.println(LINE_PREFIX + m);
+            }
+            } 
+            catch (IOException ioe)
+            {
+            for (String m : new String[]{ MESSAGE_ERROR_CREATING_STORAGE_FILE, filePath })
+            {
+            System.out.println(LINE_PREFIX + m);
+            }
+                    
+            for (String m : new String[]{ MESSAGE_GOODBYE, DIVIDER, DIVIDER })
+            {
+            System.out.println(LINE_PREFIX + m);
+            }
+            System.exit(0);
+            }}
+        }
+        // End process args
+
+        if(args.length == 0) {
+            setupDefaultFileForStorage();
+        }
+        
         loadDataFromStorage();
         while (true) {
-            String userCommand = getUserInput();
-            echoUserCommand(userCommand);
-            String feedback = executeCommand(userCommand);
-            showResultToUser(feedback);
+            String upt = getUserInput();
+            echoUserCommand(upt);
+            String fb = executeCommand(upt);
+            showResultToUser(fb);
         }
     }
 
@@ -344,7 +408,7 @@ public class AddressBook {
         case COMMAND_FIND_WORD:
             return executeFindPersons(commandArgs);
         case COMMAND_LIST_WORD:
-            return executeListAllPersonsInAddressBook();
+            return executeListAllPersonsInAddressBook(commandArgs);
         case COMMAND_DELETE_WORD:
             return executeDeletePerson(commandArgs);
         case COMMAND_CLEAR_WORD:
@@ -443,7 +507,7 @@ public class AddressBook {
      * @return set of keywords as specified by args
      */
     private static Set<String> extractKeywordsFromFindPersonArgs(String findPersonCommandArgs) {
-        return new HashSet<>(splitByWhitespace(findPersonCommandArgs.trim()));
+        return new HashSet<>(splitByWhitespace(findPersonCommandArgs.toLowerCase().trim()));
     }
 
     /**
@@ -455,7 +519,8 @@ public class AddressBook {
     private static ArrayList<String[]> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
         for (String[] person : getAllPersonsInAddressBook()) {
-            final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
+        	String personName = getNameFromPerson(person).toLowerCase();
+            final Set<String> wordsInName = new HashSet<>(splitByWhitespace(personName));
             if (!Collections.disjoint(wordsInName, keywords)) {
                 matchedPersons.add(person);
             }
@@ -543,10 +608,25 @@ public class AddressBook {
      *
      * @return feedback display message for the operation result
      */
-    private static String executeListAllPersonsInAddressBook() {
+    private static String executeListAllPersonsInAddressBook(String commandArgs) {
         ArrayList<String[]> toBeDisplayed = getAllPersonsInAddressBook();
+        if (isSortCommand(commandArgs)) {
+        	Collections.sort(toBeDisplayed, (person1, person2) -> sortPeople(person1, person2));
+        }
         showToUser(toBeDisplayed);
         return getMessageForPersonsDisplayedSummary(toBeDisplayed);
+    }
+    
+    private static boolean isSortCommand(String commandArgs) {
+    	commandArgs = commandArgs.toLowerCase();
+    	HashSet<String> commands = new HashSet<>(splitByWhitespace(commandArgs));
+    	return commands.contains(COMMAND_LIST_PARAMETER_SORT);
+    }
+    
+    private static int sortPeople(String[] person1, String[] person2) {
+    	String person1Name = getNameFromPerson(person1);
+    	String person2Name = getNameFromPerson(person2);
+    	return person1Name.compareTo(person2Name);
     }
 
     /**
