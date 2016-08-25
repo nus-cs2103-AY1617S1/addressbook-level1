@@ -362,7 +362,17 @@ public class AddressBook {
 
         // add the person as specified
         final HashMap<PersonProperty,String> personToAdd = decodeResult.get();
-        addPersonToAddressBook(personToAdd);
+        ALL_PERSONS.add(personToAdd);
+		final ArrayList<String> linesToWrite = encodePersonsToStrings(ALL_PERSONS);
+		try {
+		    Files.write(Paths.get(storageFilePath), linesToWrite);
+		} catch (IOException ioe) {
+		    System.out.println(LINE_PREFIX + String.format(MESSAGE_ERROR_WRITING_TO_FILE, storageFilePath));
+		    System.out.println(LINE_PREFIX + MESSAGE_GOODBYE);
+			System.out.println(LINE_PREFIX + DIVIDER);
+			System.out.println(LINE_PREFIX + DIVIDER);
+			System.exit(0);
+		}
         return getMessageForSuccessfulAddPerson(personToAdd);
     }
 
@@ -659,31 +669,6 @@ public class AddressBook {
 
     
 
-
-    /*
-     * ================================================================================
-     *        INTERNAL ADDRESS BOOK DATA METHODS
-     * ================================================================================
-     */
-
-    /**
-     * Adds a person to the address book. Saves changes to storage file.
-     *
-     * @param person to add
-     */
-    private static void addPersonToAddressBook(HashMap<PersonProperty,String> person) {
-        ALL_PERSONS.add(person);
-        final ArrayList<String> linesToWrite = encodePersonsToStrings(ALL_PERSONS);
-		try {
-		    Files.write(Paths.get(storageFilePath), linesToWrite);
-		} catch (IOException ioe) {
-		    System.out.println(LINE_PREFIX + String.format(MESSAGE_ERROR_WRITING_TO_FILE, storageFilePath));
-		    System.out.println(LINE_PREFIX + MESSAGE_GOODBYE);
-			System.out.println(LINE_PREFIX + DIVIDER);
-			System.out.println(LINE_PREFIX + DIVIDER);
-			System.exit(0);
-		}
-    }
 
     /**
      * Deletes the specified person from the addressbook if it is inside. Saves any changes to storage file.
