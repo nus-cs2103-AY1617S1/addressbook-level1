@@ -387,7 +387,9 @@ public class AddressBook {
     private static String executeFindPersons(String commandArgs) {
         final Set<String> keywords = new HashSet<>(new ArrayList<String>(Arrays.asList(commandArgs.trim().trim().split("\\s+"))));
         final ArrayList<HashMap<PersonProperty,String>> personsFound = getPersonsWithNameContainingAnyKeyword(keywords);
-        showToUser(personsFound);
+        String listAsString = getDisplayString(personsFound);
+		System.out.println(LINE_PREFIX + listAsString);
+		updateLatestViewedPersonListing(personsFound);
         return String.format(MESSAGE_PERSONS_FOUND_OVERVIEW, personsFound.size());
     }
 
@@ -482,19 +484,10 @@ public class AddressBook {
      */
     private static String executeListAllPersonsInAddressBook() {
         ArrayList<HashMap<PersonProperty,String>> toBeDisplayed = ALL_PERSONS;
-        showToUser(toBeDisplayed);
+        String listAsString = getDisplayString(toBeDisplayed);
+		System.out.println(LINE_PREFIX + listAsString);
+		updateLatestViewedPersonListing(toBeDisplayed);
         return String.format(MESSAGE_PERSONS_FOUND_OVERVIEW, toBeDisplayed.size());
-    }
-
-    /**
-     * Shows the list of persons to the user.
-     * The list will be indexed, starting from 1.
-     *
-     */
-    private static void showToUser(ArrayList<HashMap<PersonProperty,String>> persons) {
-        String listAsString = getDisplayString(persons);
-        System.out.println(LINE_PREFIX + listAsString);
-        updateLatestViewedPersonListing(persons);
     }
 
     /**
