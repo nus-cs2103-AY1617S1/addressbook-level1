@@ -37,6 +37,7 @@ public class AddressBook {
      */
     private static final String REGEX_PERSON_NAME = "(\\w|\\s)+";
     private static final String REGEX_PERSON_PHONE = "\\d+";
+    private static final String REGEX_PERSON_EMAIL = "\\S+@\\S+\\.\\S+";
 
     /**
      * Default file path used if the user doesn't provide the file name.
@@ -1186,7 +1187,7 @@ public class AddressBook {
      * @return whether arg is a valid person email
      */
     private static boolean isPersonEmailValid(String email) {
-        return email.matches("\\S+@\\S+\\.\\S+"); // email is
+        return email.matches(REGEX_PERSON_EMAIL); // email is
                                                   // [non-whitespace]@[non-whitespace].[non-whitespace]
         // TODO: implement a more permissive validation
     }
