@@ -28,9 +28,12 @@
   add Valid Name p/12345 e/notAnEmail
 
   # should add correctly
-  add Adam Brown p/111111 e/adam@gmail.com
+  add Esther Potato p/555555 e/esther@notreal.potato
   list
   add Betsy Choo p/222222 e/benchoo@nus.edu.sg
+  list
+  
+  add Adam Brown p/111111 e/adam@gmail.com
   list
 
   # order of phone and email should not matter
@@ -38,8 +41,8 @@
   list
   add Dickson Ee e/dickson@nus.edu.sg p/444444
   list
-  add Esther Potato p/555555 e/esther@notreal.potato
-  list
+  
+  sort
 
 ##########################################################
 # test find persons command
@@ -51,7 +54,7 @@
   find bet
   # does not match if none have keyword
   find 23912039120
-  # matching should be case-sensitive
+  # matching should be case-insensitive
   find betsy
 
   # find unique keyword
@@ -80,6 +83,14 @@
   delete 2
   delete 2
 
+  sort
+  edit a -n mike
+  edit 1 -n bob
+  edit 5 -n bob
+  edit 10 -n bob
+  edit 1 -e asdasd
+  edit 2 -p z
+  
   # should have deleted based on last active view's index
   list
 
@@ -90,7 +101,8 @@
   # listing indexes get updated on next request
   delete 1
   list
-
+  sort
+  list
 ##########################################################
 # test clear command
 ##########################################################
@@ -103,6 +115,8 @@
 # test exit command
 ##########################################################
 
+  sort
+  list
   # exits properly
   exit
   list
