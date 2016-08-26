@@ -34,7 +34,7 @@ public class AddressBook {
     /**
      * Program Args length.
      */
-    private static final int MAX_PROGRAM_ARGS_LENGTH = 2;
+    private static final int PROGRAM_ARGS_LENGTH_EXIT = 2;
     private static final int PROGRAM_ARGS_LENGTH_FOR_SET_UP = 1;
     private static final int PROGRAM_ARGS_LENGTH_FOR_DEFAULT = 0;
     
@@ -262,7 +262,7 @@ public class AddressBook {
      * @param args full program arguments passed to application main method
      */
     private static void processProgramArgs(String[] args) {
-        if (args.length >= MAX_PROGRAM_ARGS_LENGTH) {
+        if (args.length >= PROGRAM_ARGS_LENGTH_EXIT) {
             showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
             exitProgram();
         }
@@ -779,11 +779,11 @@ public class AddressBook {
      * @return true if the given person was found and deleted in the model
      */
     private static boolean deletePersonFromAddressBook(String[] exactPerson) {
-        final boolean hasChanged = ALL_PERSONS.remove(exactPerson);
-        if (hasChanged) {
+        final boolean isChanged = ALL_PERSONS.remove(exactPerson);
+        if (isChanged) {
             savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
         }
-        return hasChanged;
+        return isChanged;
     }
 
     /**
