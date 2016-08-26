@@ -259,28 +259,6 @@ public class AddressBook {
      */
 
     /**
-     * Processes the program main method run arguments.
-     * If a valid storage file is specified, sets up that file for storage.
-     * Otherwise sets up the default file for storage.
-     *
-     * @param args full program arguments passed to application main method
-     */
-    private static void processProgramArgs(String[] args) {
-        if (args.length >= 2) {
-            showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
-            exitProgram();
-        }
-
-        if (args.length == 1) {
-            setupGivenFileForStorage(args[0]);
-        }
-
-        if(args.length == 0) {
-            setupDefaultFileForStorage();
-        }
-    }
-
-    /**
      * Sets up the storage file based on the supplied file path.
      * Creates the file if it is missing.
      * Exits if the file name is not acceptable.
