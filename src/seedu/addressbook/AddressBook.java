@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Scanner;
@@ -124,6 +125,14 @@ public class AddressBook {
     private static final String COMMAND_HELP_DESC = "Shows program usage instructions.";
     private static final String COMMAND_HELP_EXAMPLE = COMMAND_HELP_WORD;
 
+	private static final String COMMAND_SORT_WORD = "sort";
+	private static final String COMMAND_SORT_DESC = "List the persons in alphabetical order.";
+	private static final String COMMAND_SORT_EXAMPLE = COMMAND_SORT_WORD;
+	
+	private static final String COMMAND_EDIT_WORD = "edit";
+	private static final String COMMAND_EDIT_DESC = "Edit properties of a specific person.";
+	private static final String COMMAND_EDIT_EXAMPLE = COMMAND_EDIT_WORD;
+    
     private static final String COMMAND_EXIT_WORD = "exit";
     private static final String COMMAND_EXIT_DESC = "Exits the program.";
     private static final String COMMAND_EXIT_EXAMPLE = COMMAND_EXIT_WORD;
@@ -349,6 +358,10 @@ public class AddressBook {
             return executeDeletePerson(commandArgs);
         case COMMAND_CLEAR_WORD:
             return executeClearAddressBook();
+        case COMMAND_SORT_WORD:
+			return executeSortAllPersons();
+		case COMMAND_EDIT_WORD:
+			return executeEditPerson(commandArgs);
         case COMMAND_HELP_WORD:
             return getUsageInfoForAllCommands();
         case COMMAND_EXIT_WORD:
@@ -420,6 +433,7 @@ public class AddressBook {
      * @return feedback display message for the operation result
      */
     private static String executeFindPersons(String commandArgs) {
+    	commandArgs = commandArgs.toLowerCase();
         final Set<String> keywords = extractKeywordsFromFindPersonArgs(commandArgs);
         final ArrayList<String[]> personsFound = getPersonsWithNameContainingAnyKeyword(keywords);
         showToUser(personsFound);
@@ -455,12 +469,35 @@ public class AddressBook {
     private static ArrayList<String[]> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
         for (String[] person : getAllPersonsInAddressBook()) {
+        	
+        	//convert all word into lower case
+			for(int i = 0; i < person.length; i ++){
+				person[i] = person[i].toLowerCase();
+			}
+			
             final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
             if (!Collections.disjoint(wordsInName, keywords)) {
                 matchedPersons.add(person);
             }
         }
         return matchedPersons;
+    }
+    
+    /**
+     * Find one specific person
+     *
+     * @param name for searching
+     * @return the person in full model
+     */
+    private static String[] getPersonsWithName(String personName) {
+        String[] matchedPerson = null;
+        for (String[] person : getAllPersonsInAddressBook()) {
+			if (person[PERSON_DATA_INDEX_NAME].compareToIgnoreCase(personName) == 0) {
+				matchedPerson = person;
+				break;
+			}
+        }
+        return matchedPerson;
     }
 
     /**
@@ -543,11 +580,58 @@ public class AddressBook {
      *
      * @return feedback display message for the operation result
      */
+    
     private static String executeListAllPersonsInAddressBook() {
         ArrayList<String[]> toBeDisplayed = getAllPersonsInAddressBook();
         showToUser(toBeDisplayed);
         return getMessageForPersonsDisplayedSummary(toBeDisplayed);
     }
+    
+    /**
+     * Displays all persons in alpabetical order.
+     *
+     * @return feedback display message for the operation result
+     */
+    
+    private static String executeSortAllPersons() {
+		ArrayList<String[]> toBeDisplayed = getAllPersonsInAddressBook();
+		
+		// sort toBeDisplayed in alphabetical order
+		Collections.sort(toBeDisplayed, comparatorForAlphabeting());
+		
+		showToUser(toBeDisplayed);
+		return getMessageForPersonsDisplayedSummary(toBeDisplayed);
+	}
+    
+    /**
+     * Edit information of a person
+     *
+     * @return feedback display message for the operation result
+     */
+    
+    private static String executeEditPerson(String commandArgs) {
+
+    	// try decoding a person from the raw args
+        final Optional<String[]> decodeResult = decodePersonFromString(commandArgs);
+
+        // checks if args are valid (decode result will not be present if the person is invalid)
+        if (!decodeResult.isPresent()) {
+        	// TODO rmove magic string later
+            return getMessageForInvalidCommandInput("EDIT", "The correct way is ...");
+        }
+
+        // edit the person as specified
+        final String[] personToBeEdited = decodeResult.get();
+        final String[] personFound = getPersonsWithName(personToBeEdited[PERSON_DATA_INDEX_NAME]);
+        
+        //TODO situation where the person is not found should be discussed later
+        
+        personFound[PERSON_DATA_INDEX_PHONE] = personToBeEdited[PERSON_DATA_INDEX_PHONE];
+   		personFound[PERSON_DATA_INDEX_EMAIL] = personToBeEdited[PERSON_DATA_INDEX_EMAIL];
+        
+   		//TODO remove magic string later
+        return "success!";
+	}
 
     /**
      * Request to terminate the program.
@@ -1183,4 +1267,18 @@ public class AddressBook {
         return new ArrayList(Arrays.asList(toSplit.trim().split("\\s+")));
     }
 
+    /*
+     * ============================
+     *     COMPARATOR METHODS
+     * ============================
+     */
+    private static Comparator<String[]> comparatorForAlphabeting() {
+		return new Comparator<String[]>() {
+			@Override
+			 	public int compare(String[] o1, String[] o2) {
+			 		if (o1[0].toLowerCase().charAt(0) > o2[0].toLowerCase().charAt(0)) return 1;
+			 		else return -1;
+			 	}
+		};
+	}
 }
