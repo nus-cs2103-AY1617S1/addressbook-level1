@@ -185,7 +185,7 @@ public class AddressBook {
     /**
      * List of all persons in the address book.
      */
-    private static final ArrayList<String[]> ALL_PERSONS = new ArrayList<>();
+    private static final ArrayList<String[]> ALL_PERSONS = new ArrayList<String[]>();
 
     /**
      * Stores the most recent list of persons shown to the user as a result of a
@@ -495,7 +495,7 @@ public class AddressBook {
      */
     private static ArrayList<String[]> getPersonsWithNameContainingAnyKeyword(
             Collection<String> keywords) {
-        final ArrayList<String[]> matchedPersons = new ArrayList<>();
+        final ArrayList<String[]> matchedPersons = new ArrayList<String[]>();
         for (String[] person : getAllPersonsInAddressBook()) {
             final Set<String> wordsInName = new HashSet<>(
                     splitByWhitespace(getNameFromPerson(person)));
@@ -723,7 +723,7 @@ public class AddressBook {
     private static void updateLatestViewedPersonListing(
             ArrayList<String[]> newListing) {
         // clone to insulate from future changes to arg list
-        latestPersonListingView = new ArrayList<>(newListing);
+        latestPersonListingView = new ArrayList<String[]>(newListing);
     }
 
     /**
@@ -801,7 +801,7 @@ public class AddressBook {
     private static ArrayList<String> getLinesInFile(String filePath) {
         ArrayList<String> lines = null;
         try {
-            lines = new ArrayList(Files.readAllLines(Paths.get(filePath)));
+            lines = new ArrayList<String>(Files.readAllLines(Paths.get(filePath)));
         } catch (FileNotFoundException fnfe) {
             showToUser(String.format(MESSAGE_ERROR_MISSING_STORAGE_FILE,
                     filePath));
@@ -982,7 +982,7 @@ public class AddressBook {
      */
     private static ArrayList<String> encodePersonsToStrings(
             ArrayList<String[]> persons) {
-        final ArrayList<String> encoded = new ArrayList<>();
+        final ArrayList<String> encoded = new ArrayList<String>();
         for (String[] person : persons) {
             encoded.add(encodePersonToString(person));
         }
@@ -1028,7 +1028,7 @@ public class AddressBook {
      */
     private static Optional<ArrayList<String[]>> decodePersonsFromStrings(
             ArrayList<String> encodedPersons) {
-        final ArrayList<String[]> decodedPersons = new ArrayList<>();
+        final ArrayList<String[]> decodedPersons = new ArrayList<String[]>();
         for (String encodedPerson : encodedPersons) {
             final Optional<String[]> decodedPerson = decodePersonFromString(
                     encodedPerson);
@@ -1333,7 +1333,7 @@ public class AddressBook {
      * @return split by whitespace
      */
     private static ArrayList<String> splitByWhitespace(String toSplit) {
-        return new ArrayList(Arrays.asList(toSplit.trim().split("\\s+")));
+        return new ArrayList<String>(Arrays.asList(toSplit.trim().split("\\s+")));
     }
 
 }
