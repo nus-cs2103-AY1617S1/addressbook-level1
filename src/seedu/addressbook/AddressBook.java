@@ -44,7 +44,7 @@ public class AddressBook {
     /**
      * A decorative prefix added to the beginning of lines printed by AddressBook
      */
-    public static final String LINE_PREFIX = "|| ";
+    private static final String LINE_PREFIX = "|| ";
 
     /**
      * A platform independent line separator.
@@ -199,14 +199,41 @@ public class AddressBook {
      * ====================================================================
      */
     public static void main(String[] args) {
-        showWelcomeMessage();
-        processProgramArgs(args);
-        loadDataFromStorage();
+        //showWelcomeMessage();
+        
+    	showToUser(DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER);
+    	
+    	//processProgramArgs(args);
+        
+        if (args.length >= 2) {
+            showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
+            exitProgram();
+        }
+
+        else if (args.length == 1) {
+            setupGivenFileForStorage(args[0]);
+        }
+
+        else if (args.length == 0) {
+            setupDefaultFileForStorage();
+        }
+    
+
+        //loadDataFromStorage();
+        
+        initialiseAddressBookModel(loadPersonsFromFile(storageFilePath));
+        
         while (true) {
             String userCommand = getUserInput();
-            echoUserCommand(userCommand);
+            //echoUserCommand(userCommand);
+            
+            showToUser("[Command entered:" + userCommand + "]");
+            
             String feedback = executeCommand(userCommand);
-            showResultToUser(feedback);
+            //showResultToUser(feedback);
+            
+            showToUser(feedback, DIVIDER);
+            
         }
     }
 
@@ -215,6 +242,9 @@ public class AddressBook {
      * The method header comment can be omitted if the method is trivial
      * and the header comment is going to be almost identical to the method
      * signature anyway.
+     * 
+     * There will be many unused functions because I have made the code holy 
+     * smelly that almost no one can understand my code.
      * ====================================================================
      */
     private static void showWelcomeMessage() {
@@ -260,11 +290,11 @@ public class AddressBook {
             exitProgram();
         }
 
-        if (args.length == 1) {
+        else if (args.length == 1) {
             setupGivenFileForStorage(args[0]);
         }
 
-        if(args.length == 0) {
+        else if (args.length == 0) {
             setupDefaultFileForStorage();
         }
     }
@@ -514,7 +544,17 @@ public class AddressBook {
      * @return whether it is valid
      */
     private static boolean isDisplayIndexValidForLastPersonListingView(int index) {
-        return index >= DISPLAYED_INDEX_OFFSET && index < getLatestPersonListingView().size() + DISPLAYED_INDEX_OFFSET;
+        //return index >= DISPLAYED_INDEX_OFFSET && index < getLatestPersonListingView().size() + DISPLAYED_INDEX_OFFSET;
+    	
+    	boolean isLargerThanOffset = (index >= DISPLAYED_INDEX_OFFSET);
+    	boolean isSmallerThanOffsetPlusSize = index < (getLatestPersonListingView().size() + DISPLAYED_INDEX_OFFSET);
+    	
+    	if(isLargerThanOffset == true && isSmallerThanOffsetPlusSize == true) {
+    		return true;
+    	}
+    	else{
+    		return false;
+    	}
     }
 
     /**
