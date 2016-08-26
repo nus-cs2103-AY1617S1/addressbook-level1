@@ -184,12 +184,12 @@ For example, <kbd>F3</kbd> will navigate to the definition of the method/field a
 Learn some Eclipse code navigation shortcuts 
 (you can use Web resources like [this one](https://www.shortcutworld.com/en/win/Eclipse.html)). 
 For example, learn the shortcuts to,
-  * go to the definition of a method
-  * go back to the previous location
+  * go to the definition of a method: F3
+  * go back to the previous location: alt + left arrow
   * view the documentation of a method from where the method is being used, 
-    without navigating to the method itself
-  * find where a method/field is being used
-  * ...
+    without navigating to the method itself: F2
+  * find where a method/field is being used: ctrl + alt + h
+  * find all methods in a class: ctrl + o
 
 ### Use a debugger `[LO-Debugging]`
 
@@ -204,9 +204,9 @@ Here are some things you can do in your demonstration.
 
 1. Set a 'break point'
 2. Run the program in debug mode
-3. 'Step through' a few lines of code while examining variable values
-4. 'Step into', and 'step out of', methods as you step through the code
-5. ...
+3. 'Step through' a few lines of code while examining variable values: F6
+4. 'Step into', and 'step out of', methods as you step through the code: F5, F7
+5. Skip to next breakpoint: F8
 
 ### Automate CLI testing `[LO-AutomatedCliTesting]`
 
