@@ -150,8 +150,6 @@ public class AddressBook {
      */
     private static final int DISPLAYED_INDEX_OFFSET = 1;
 
-
-
     /**
      * If the first non-whitespace character in a user's input line is this, that line will be ignored.
      */
@@ -199,14 +197,14 @@ public class AddressBook {
      * ====================================================================
      */
     public static void main(String[] args) {
-        showWelcomeMessage();
+        showToUser(DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER);
         processProgramArgs(args);
         loadDataFromStorage();
         while (true) {
             String userCommand = getUserInput();
-            echoUserCommand(userCommand);
+            showToUser("[Command entered:" + userCommand + "]");
             String feedback = executeCommand(userCommand);
-            showResultToUser(feedback);
+            showToUser(feedback, DIVIDER);
         }
     }
 
@@ -217,13 +215,7 @@ public class AddressBook {
      * signature anyway.
      * ====================================================================
      */
-    private static void showWelcomeMessage() {
-        showToUser(DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER);
-    }
 
-    private static void showResultToUser(String result) {
-        showToUser(result, DIVIDER);
-    }
 
     /*
      * ==============NOTE TO STUDENTS======================================
@@ -232,12 +224,6 @@ public class AddressBook {
      * In the method below, '@param userInput' comment has been omitted.
      * ====================================================================
      */
-    /**
-     * Echoes the user input back to the user.
-     */
-    private static void echoUserCommand(String userCommand) {
-        showToUser("[Command entered:" + userCommand + "]");
-    }
 
     /*
      * ==============NOTE TO STUDENTS==========================================
@@ -354,7 +340,7 @@ public class AddressBook {
         case COMMAND_EXIT_WORD:
             executeExitProgramRequest();
         default:
-            return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
+            return String.format(MESSAGE_INVALID_COMMAND_FORMAT, commandType, getUsageInfoForAllCommands());
         }
     }
 
@@ -366,16 +352,6 @@ public class AddressBook {
     private static String[] splitCommandWordAndArgs(String rawUserInput) {
         final String[] split =  rawUserInput.trim().split("\\s+", 2);
         return split.length == 2 ? split : new String[] { split[0] , "" }; // else case: no parameters
-    }
-
-    /**
-     * Constructs a generic feedback message for an invalid command from user, with instructions for correct usage.
-     *
-     * @param correctUsageInfo message showing the correct usage
-     * @return invalid command args feedback message
-     */
-    private static String getMessageForInvalidCommandInput(String userCommand, String correctUsageInfo) {
-        return String.format(MESSAGE_INVALID_COMMAND_FORMAT, userCommand, correctUsageInfo);
     }
 
     /**
@@ -391,7 +367,7 @@ public class AddressBook {
 
         // checks if args are valid (decode result will not be present if the person is invalid)
         if (!decodeResult.isPresent()) {
-            return getMessageForInvalidCommandInput(COMMAND_ADD_WORD, getUsageInfoForAddCommand());
+            return String.format(MESSAGE_INVALID_COMMAND_FORMAT, COMMAND_ADD_WORD, getUsageInfoForAddCommand());
         }
 
         // add the person as specified
@@ -420,30 +396,10 @@ public class AddressBook {
      * @return feedback display message for the operation result
      */
     private static String executeFindPersons(String commandArgs) {
-        final Set<String> keywords = extractKeywordsFromFindPersonArgs(commandArgs);
+        final Set<String> keywords = new HashSet<>(splitByWhitespace(commandArgs.trim()));
         final ArrayList<String[]> personsFound = getPersonsWithNameContainingAnyKeyword(keywords);
         showToUser(personsFound);
-        return getMessageForPersonsDisplayedSummary(personsFound);
-    }
-
-    /**
-     * Constructs a feedback message to summarise an operation that displayed a listing of persons.
-     *
-     * @param personsDisplayed used to generate summary
-     * @return summary message for persons displayed
-     */
-    private static String getMessageForPersonsDisplayedSummary(ArrayList<String[]> personsDisplayed) {
-        return String.format(MESSAGE_PERSONS_FOUND_OVERVIEW, personsDisplayed.size());
-    }
-
-    /**
-     * Extract keywords from the command arguments given for the find persons command.
-     *
-     * @param findPersonCommandArgs full command args string for the find persons command
-     * @return set of keywords as specified by args
-     */
-    private static Set<String> extractKeywordsFromFindPersonArgs(String findPersonCommandArgs) {
-        return new HashSet<>(splitByWhitespace(findPersonCommandArgs.trim()));
+        return String.format(MESSAGE_PERSONS_FOUND_OVERVIEW, personsFound.size());
     }
 
     /**
@@ -471,9 +427,9 @@ public class AddressBook {
      */
     private static String executeDeletePerson(String commandArgs) {
         if (!isDeletePersonArgsValid(commandArgs)) {
-            return getMessageForInvalidCommandInput(COMMAND_DELETE_WORD, getUsageInfoForDeleteCommand());
+            return String.format(MESSAGE_INVALID_COMMAND_FORMAT, COMMAND_DELETE_WORD, getUsageInfoForDeleteCommand());
         }
-        final int targetVisibleIndex = extractTargetIndexFromDeletePersonArgs(commandArgs);
+        final int targetVisibleIndex = Integer.parseInt(commandArgs.trim());
         if (!isDisplayIndexValidForLastPersonListingView(targetVisibleIndex)) {
             return MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
         }
@@ -495,16 +451,6 @@ public class AddressBook {
         } catch (NumberFormatException nfe) {
             return false;
         }
-    }
-
-    /**
-     * Extracts the target's index from the raw delete person args string
-     *
-     * @param rawArgs raw command args string for the delete person command
-     * @return extracted index
-     */
-    private static int extractTargetIndexFromDeletePersonArgs(String rawArgs) {
-        return Integer.parseInt(rawArgs.trim());
     }
 
     /**
@@ -546,7 +492,7 @@ public class AddressBook {
     private static String executeListAllPersonsInAddressBook() {
         ArrayList<String[]> toBeDisplayed = getAllPersonsInAddressBook();
         showToUser(toBeDisplayed);
-        return getMessageForPersonsDisplayedSummary(toBeDisplayed);
+        return String.format(MESSAGE_PERSONS_FOUND_OVERVIEW, toBeDisplayed.size());
     }
 
     /**
