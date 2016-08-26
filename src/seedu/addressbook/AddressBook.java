@@ -256,8 +256,7 @@ public class AddressBook {
      */
     private static void processProgramArgs(String[] args) {
         if (args.length >= 2) {
-            showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
-            exitProgram();
+            showInvalidAndExit();
         }
 
         if (args.length == 1) {
@@ -268,6 +267,14 @@ public class AddressBook {
             setupDefaultFileForStorage();
         }
     }
+/**
+ * Shows an invalid error message to the user.
+ * Exits the program
+ */
+	private static void showInvalidAndExit() {
+		showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
+		exitProgram();
+	}
 
     /**
      * Sets up the storage file based on the supplied file path.
@@ -281,9 +288,16 @@ public class AddressBook {
             exitProgram();
         }
 
-        storageFilePath = filePath;
-        createFileIfMissing(filePath);
+        createFile(filePath);
     }
+/**
+ * Creates a file on the given filepath.
+ * @param filePath
+ */
+	private static void createFile(String filePath) {
+		storageFilePath = filePath;
+        createFileIfMissing(filePath);
+	}
 
     /**
      * Displays the goodbye message and exits the runtime.
