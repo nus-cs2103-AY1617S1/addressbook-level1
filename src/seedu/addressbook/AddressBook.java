@@ -32,6 +32,13 @@ import java.util.Set;
 public class AddressBook {
 
     /**
+     * Program Args length.
+     */
+    private static final int MAX_PROGRAM_ARGS_LENGTH = 2;
+    private static final int PROGRAM_ARGS_LENGTH_FOR_SET_UP = 1;
+    private static final int PROGRAM_ARGS_LENGTH_FOR_DEFAULT = 0;
+    
+    /**
      * Default file path used if the user doesn't provide the file name.
      */
     private static final String DEFAULT_STORAGE_FILEPATH = "addressbook.txt";
@@ -49,7 +56,7 @@ public class AddressBook {
     /**
      * A platform independent line separator.
      */
-    private static final String LS = System.lineSeparator() + LINE_PREFIX;
+    private static final String LINE_SEPARATOR = System.lineSeparator() + LINE_PREFIX;
 
     /*
      * ==============NOTE TO STUDENTS======================================
@@ -69,11 +76,11 @@ public class AddressBook {
     private static final String MESSAGE_DISPLAY_PERSON_DATA = "%1$s  Phone Number: %2$s  Email: %3$s";
     private static final String MESSAGE_DISPLAY_LIST_ELEMENT_INDEX = "%1$d. ";
     private static final String MESSAGE_GOODBYE = "Exiting Address Book... Good bye!";
-    private static final String MESSAGE_INVALID_COMMAND_FORMAT = "Invalid command format: %1$s " + LS + "%2$s";
+    private static final String MESSAGE_INVALID_COMMAND_FORMAT = "Invalid command format: %1$s " + LINE_SEPARATOR + "%2$s";
     private static final String MESSAGE_INVALID_FILE = "The given file name [%1$s] is not a valid file name!";
     private static final String MESSAGE_INVALID_PROGRAM_ARGS = "Too many parameters! Correct program argument format:"
-                                                            + LS + "\tjava AddressBook"
-                                                            + LS + "\tjava AddressBook [custom storage file path]";
+                                                            + LINE_SEPARATOR + "\tjava AddressBook"
+                                                            + LINE_SEPARATOR + "\tjava AddressBook [custom storage file path]";
     private static final String MESSAGE_INVALID_PERSON_DISPLAYED_INDEX = "The person index provided is invalid";
     private static final String MESSAGE_INVALID_STORAGE_FILE_CONTENT = "Storage file has invalid content";
     private static final String MESSAGE_PERSON_NOT_IN_ADDRESSBOOK = "Person could not be found in address book";
@@ -255,16 +262,16 @@ public class AddressBook {
      * @param args full program arguments passed to application main method
      */
     private static void processProgramArgs(String[] args) {
-        if (args.length >= 2) {
+        if (args.length >= MAX_PROGRAM_ARGS_LENGTH) {
             showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
             exitProgram();
         }
 
-        if (args.length == 1) {
+        if (args.length == PROGRAM_ARGS_LENGTH_FOR_SET_UP) {
             setupGivenFileForStorage(args[0]);
         }
 
-        if(args.length == 0) {
+        if(args.length == PROGRAM_ARGS_LENGTH_FOR_DEFAULT) {
             setupDefaultFileForStorage();
         }
     }
@@ -615,7 +622,7 @@ public class AddressBook {
             final int displayIndex = i + DISPLAYED_INDEX_OFFSET;
             messageAccumulator.append('\t')
                               .append(getIndexedPersonListElementMessage(displayIndex, person))
-                              .append(LS);
+                              .append(LINE_SEPARATOR);
         }
         return messageAccumulator.toString();
     }
@@ -1072,12 +1079,12 @@ public class AddressBook {
      * @return  Usage info for all commands
      */
     private static String getUsageInfoForAllCommands() {
-        return getUsageInfo(COMMAND_ADD_WORD, true) + LS
-                + getUsageInfo(COMMAND_FIND_WORD, true) + LS
-                + getUsageInfo(COMMAND_LIST_WORD, false) + LS
-                + getUsageInfo(COMMAND_DELETE_WORD, true) + LS
-                + getUsageInfo(COMMAND_CLEAR_WORD, false) + LS
-                + getUsageInfo(COMMAND_EXIT_WORD, false) + LS
+        return getUsageInfo(COMMAND_ADD_WORD, true) + LINE_SEPARATOR
+                + getUsageInfo(COMMAND_FIND_WORD, true) + LINE_SEPARATOR
+                + getUsageInfo(COMMAND_LIST_WORD, false) + LINE_SEPARATOR
+                + getUsageInfo(COMMAND_DELETE_WORD, true) + LINE_SEPARATOR
+                + getUsageInfo(COMMAND_CLEAR_WORD, false) + LINE_SEPARATOR
+                + getUsageInfo(COMMAND_EXIT_WORD, false) + LINE_SEPARATOR
                 + getUsageInfo(COMMAND_HELP_WORD, false);
     }
 
@@ -1116,16 +1123,16 @@ public class AddressBook {
         }
 
         if (hasParameters) {
-            return String.format(MESSAGE_COMMAND_HELP, constantArray[0], constantArray[1]) + LS
-                + String.format(MESSAGE_COMMAND_HELP_PARAMETERS, constantArray[2]) + LS
-                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, constantArray[3]) + LS;
+            return String.format(MESSAGE_COMMAND_HELP, constantArray[0], constantArray[1]) +LINE_SEPARATOR
+                + String.format(MESSAGE_COMMAND_HELP_PARAMETERS, constantArray[2]) + LINE_SEPARATOR
+                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, constantArray[3]) + LINE_SEPARATOR;
         } else {
             if (command == COMMAND_HELP_WORD || command == COMMAND_EXIT_WORD) {
                 return String.format(MESSAGE_COMMAND_HELP, constantArray[0], constantArray[1])
                     + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, constantArray[2]);
             } else {
-                return String.format(MESSAGE_COMMAND_HELP, constantArray[0], constantArray[1]) + LS
-                    + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, constantArray[2]) + LS;
+                return String.format(MESSAGE_COMMAND_HELP, constantArray[0], constantArray[1]) + LINE_SEPARATOR
+                    + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, constantArray[2]) + LINE_SEPARATOR;
             }
 
         }
