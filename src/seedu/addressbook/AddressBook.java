@@ -156,6 +156,11 @@ public class AddressBook {
      * If the first non-whitespace character in a user's input line is this, that line will be ignored.
      */
     private static final char INPUT_COMMENT_MARKER = '#';
+    
+    /**
+    * The size of the command with one parameter. It is used to differentiate commands with or without parameters.
+    */
+    private static final char INPUT_SIZE_HAS_PARA = 2;
 
     /*
      * This variable is declared for the whole class (instead of declaring it
@@ -255,18 +260,15 @@ public class AddressBook {
      * @param args full program arguments passed to application main method
      */
     private static void processProgramArgs(String[] args) {
-        if (args.length >= 2) {
-            showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
+    	switch (args.length){
+    	case 0:
+    		setupDefaultFileForStorage();
+    	case 1:
+    		setupGivenFileForStorage(args[0]);
+    	default:
+    		showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
             exitProgram();
-        }
-
-        if (args.length == 1) {
-            setupGivenFileForStorage(args[0]);
-        }
-
-        if(args.length == 0) {
-            setupDefaultFileForStorage();
-        }
+    	}
     }
 
     /**
@@ -352,7 +354,7 @@ public class AddressBook {
         case COMMAND_HELP_WORD:
             return getUsageInfoForAllCommands();
         case COMMAND_EXIT_WORD:
-            executeExitProgramRequest();
+            exitProgram();
         default:
             return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
         }
@@ -364,8 +366,8 @@ public class AddressBook {
      * @return  size 2 array; first element is the command type and second element is the arguments string
      */
     private static String[] splitCommandWordAndArgs(String rawUserInput) {
-        final String[] split =  rawUserInput.trim().split("\\s+", 2);
-        return split.length == 2 ? split : new String[] { split[0] , "" }; // else case: no parameters
+        final String[] split =  rawUserInput.trim().split("\\s+", INPUT_SIZE_HAS_PARA);
+        return split.length == INPUT_SIZE_HAS_PARA ? split : new String[] { split[0] , "" }; // else case: no parameters
     }
 
     /**
@@ -456,11 +458,21 @@ public class AddressBook {
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
         for (String[] person : getAllPersonsInAddressBook()) {
             final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
-            if (!Collections.disjoint(wordsInName, keywords)) {
+            if (!isMatched(wordsInName, keywords)) {
                 matchedPersons.add(person);
             }
         }
         return matchedPersons;
+    }
+    
+    /**
+     * Check if a person matched the key word searched. 
+     * @param keywords
+     * @param wordsInName
+     * @return
+     */
+    private static boolean isMatched(Set<String> wordsInName, Collection<String> keywords) {
+    	return Collections.disjoint(wordsInName, keywords);
     }
 
     /**
@@ -549,14 +561,7 @@ public class AddressBook {
         return getMessageForPersonsDisplayedSummary(toBeDisplayed);
     }
 
-    /**
-     * Request to terminate the program.
-     *
-     * @return feedback display message for the operation result
-     */
-    private static void executeExitProgramRequest() {
-        exitProgram();
-    }
+    
 
     /*
      * ===========================================
