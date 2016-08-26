@@ -199,15 +199,23 @@ public class AddressBook {
      * ====================================================================
      */
     public static void main(String[] args) {
+        initialiseProgram(args);
+        while (true) {
+            runProgram();
+        }
+    }
+
+    private static void runProgram() {
+        String userCommand = getUserInput();
+        echoUserCommand(userCommand);
+        String feedback = executeCommand(userCommand);
+        showResultToUser(feedback);
+    }
+
+    private static void initialiseProgram(String[] args) {
         showWelcomeMessage();
         processProgramArgs(args);
         loadDataFromStorage();
-        while (true) {
-            String userCommand = getUserInput();
-            echoUserCommand(userCommand);
-            String feedback = executeCommand(userCommand);
-            showResultToUser(feedback);
-        }
     }
 
     /*
