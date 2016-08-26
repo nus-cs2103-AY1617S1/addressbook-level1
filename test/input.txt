@@ -14,7 +14,7 @@
   list
 
 ##########################################################
-# test add person command, setup state for futuer tests
+# test add person command, setup state for future tests
 ##########################################################
 
   # should catch invalid args format
@@ -38,8 +38,10 @@
   list
   add Dickson Ee e/dickson@nus.edu.sg p/444444
   list
+  add Wei Kang p/999999 e/weikang@gmail.com
   add Esther Potato p/555555 e/esther@notreal.potato
   list
+  sort
 
 ##########################################################
 # test find persons command
@@ -51,7 +53,7 @@
   find bet
   # does not match if none have keyword
   find 23912039120
-  # matching should be case-sensitive
+  # matching should be case-insensitive
   find betsy
 
   # find unique keyword
@@ -89,6 +91,19 @@
 
   # listing indexes get updated on next request
   delete 1
+  list
+
+##########################################################
+# test edit command
+##########################################################
+  # should catch invalid args format
+  edit
+  
+  # should catch invalid index
+  edit -1 Wei Kang e/weikang@mailinator.com p/123456
+
+  # should edit the 1st index of list
+  edit 1 Wei Kang e/weikang@mailinator.com p/123456
   list
 
 ##########################################################
