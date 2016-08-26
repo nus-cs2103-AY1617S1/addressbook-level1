@@ -202,12 +202,7 @@ public class AddressBook {
         showWelcomeMessage();
         processProgramArgs(args);
         loadDataFromStorage();
-        while (true) {
-            String userCommand = getUserInput();
-            echoUserCommand(userCommand);
-            String feedback = executeCommand(userCommand);
-            showResultToUser(feedback);
-        }
+        processUserInput();
     }
 
     /*
@@ -239,6 +234,15 @@ public class AddressBook {
         showToUser("[Command entered:" + userCommand + "]");
     }
 
+	private static void processUserInput() {
+		while (true) {
+            String userCommand = getUserInput();
+            echoUserCommand(userCommand);
+            String feedback = executeCommand(userCommand);
+            showResultToUser(feedback);
+        }
+	}
+	
     /*
      * ==============NOTE TO STUDENTS==========================================
      * If the reader wants a deeper understanding of the solution, she can go
