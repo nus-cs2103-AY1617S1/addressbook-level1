@@ -156,6 +156,8 @@ public class AddressBook {
      * If the first non-whitespace character in a user's input line is this, that line will be ignored.
      */
     private static final char INPUT_COMMENT_MARKER = '#';
+    
+    private static final boolean PROGRAM_IS_RUNNING = true;
 
     /*
      * This variable is declared for the whole class (instead of declaring it
@@ -200,9 +202,29 @@ public class AddressBook {
      */
     public static void main(String[] args) {
         showWelcomeMessage();
-        processProgramArgs(args);
+        
+        /**
+         * Processes the program main method run arguments.
+         * If a valid storage file is specified, sets up that file for storage.
+         * Otherwise sets up the default file for storage.
+         *
+         * @param args full program arguments passed to application main method
+         */
+        if (args.length >= 2) {
+            showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
+            exitProgram();
+        }
+
+        if (args.length == 1) {
+            setupGivenFileForStorage(args[0]);
+        }
+
+        if(args.length == 0) {
+            setupDefaultFileForStorage();
+        }
+        
         loadDataFromStorage();
-        while (true) {
+        while (PROGRAM_IS_RUNNING) {
             String userCommand = getUserInput();
             echoUserCommand(userCommand);
             String feedback = executeCommand(userCommand);
@@ -246,28 +268,7 @@ public class AddressBook {
      * that is referenced by the method above.
      * ====================================================================
      */
-
-    /**
-     * Processes the program main method run arguments.
-     * If a valid storage file is specified, sets up that file for storage.
-     * Otherwise sets up the default file for storage.
-     *
-     * @param args full program arguments passed to application main method
-     */
-    private static void processProgramArgs(String[] args) {
-        if (args.length >= 2) {
-            showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
-            exitProgram();
-        }
-
-        if (args.length == 1) {
-            setupGivenFileForStorage(args[0]);
-        }
-
-        if(args.length == 0) {
-            setupDefaultFileForStorage();
-        }
-    }
+ 
 
     /**
      * Sets up the storage file based on the supplied file path.
@@ -289,10 +290,14 @@ public class AddressBook {
      * Displays the goodbye message and exits the runtime.
      */
     private static void exitProgram() {
-        showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
+        displayGoodbyeMessage();
         System.exit(0);
     }
 
+    private static void displayGoodbyeMessage() {
+        showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
+    }
+    
     /**
      * Sets up the storage based on the default file.
      * Creates file if missing.
