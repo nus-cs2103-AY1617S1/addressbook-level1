@@ -282,14 +282,19 @@ public class AddressBook {
      */
     private static void setupGivenFileForStorage(String filePath) {
 
-        if (!isValidFilePath(filePath)) {
-            showToUser(String.format(MESSAGE_INVALID_FILE, filePath));
-            exitProgram();
-        }
+        exitIfNotValidFilePath(filePath);
 
         storageFilePath = filePath;
         createFileIfMissing(filePath);
     }
+
+
+	private static void exitIfNotValidFilePath(String filePath) {
+		if (!isValidFilePath(filePath)) {
+            showToUser(String.format(MESSAGE_INVALID_FILE, filePath));
+            exitProgram();
+        }
+	}
 
     /**
      * Displays the goodbye message and exits the runtime.
