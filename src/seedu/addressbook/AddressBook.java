@@ -128,7 +128,7 @@ public class AddressBook {
     private static final String COMMAND_EXIT_DESC = "Exits the program.";
     private static final String COMMAND_EXIT_EXAMPLE = COMMAND_EXIT_WORD;
 
-    private static final String DIVIDER = "===================================================";
+    private static final String LINE_DIVIDER = "===================================================";
 
 
     /* We use a String array to store details of a single person.
@@ -222,11 +222,11 @@ public class AddressBook {
      * ====================================================================
      */
     private static void showWelcomeMessage() {
-        showToUser(DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER);
+        showToUser(LINE_DIVIDER, LINE_DIVIDER, VERSION, MESSAGE_WELCOME, LINE_DIVIDER);
     }
 
     private static void showResultToUser(String result) {
-        showToUser(result, DIVIDER);
+        showToUser(result, LINE_DIVIDER);
     }
 
     /*
@@ -293,7 +293,7 @@ public class AddressBook {
      * Displays the goodbye message and exits the runtime.
      */
     private static void exitProgram() {
-        showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
+        showToUser(MESSAGE_GOODBYE, LINE_DIVIDER, LINE_DIVIDER);
         System.exit(0);
     }
 
