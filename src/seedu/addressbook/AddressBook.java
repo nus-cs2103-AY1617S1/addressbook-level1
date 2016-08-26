@@ -31,7 +31,60 @@ import java.util.Set;
  **/
 public class AddressBook {
 
-    /**
+    private static final String REGEX_EMAIL = "\\S+@\\S+\\.\\S+";
+
+    private static final String REGEX_PHONE = "\\d+";
+
+    private static final String REGEX_NAME = "(\\w|\\s)+";
+
+    private static final int INDEX_OF_SECONDARY_CONTACT = 2;
+
+    private static final int INDEX_OF_PRIMARY_CONTACT = 1;
+
+    private static final int INDEX_OF_NAME = 0;
+
+    private static final int SPLIT_ARGUMENT_EXPECTED_LENGTH = 3 // 3 arguments
+;
+
+    private static final char REGEX_OR = '|';
+
+    private static final char LIST_OF_PERSON_PREFIX = '\t';
+
+    private static final int INDEX_OF_FIRST_PERSON = 0;
+
+    private static final int INDEX_OF_FIRST_CHARACTER = 0;
+
+    private static final String PROMPT_ENTER_COMMAND = "Enter command: ";
+
+    private static final String PARAMETER_EMPTY = "";
+
+	private static final int INDEX_OF_COMMAND = 0;
+
+	private static final int SPLIT_LENGTH_WITH_PARAMETERS = 2;
+
+	private static final int SPLIT_LENGTH_LIMIT = 2;
+
+	private static final String REGEX_ONE_OR_MORE_WHITESPACE = "\\s+";
+
+	private static final int INDEX_OF_COMMAND_PARAMETERS = 1;
+
+	private static final int INDEX_OF_COMMAND_TYPE = 0;
+
+	private static final String FILETYPE_TXT = ".txt";
+
+	private static final int EXIT_NO_ERROR = 0;
+
+	private static final int INDEX_OF_FILENAME = 0;
+
+	private static final int ARGUMENT_LENGTH_0 = 0;
+
+	private static final int ARGUMENT_LENGTH_1 = 1;
+
+	private static final int ARGUMENT_LENGTH_2 = 2;
+
+	private static final String RESPONSE_COMMAND_ENTERED = "[Command entered:%s]";
+
+	/**
      * Default file path used if the user doesn't provide the file name.
      */
     private static final String DEFAULT_STORAGE_FILEPATH = "addressbook.txt";
@@ -202,13 +255,17 @@ public class AddressBook {
         showWelcomeMessage();
         processProgramArgs(args);
         loadDataFromStorage();
-        while (true) {
+        getAndExecuteCommands();
+    }
+
+	private static void getAndExecuteCommands() {
+		while (true) {
             String userCommand = getUserInput();
             echoUserCommand(userCommand);
             String feedback = executeCommand(userCommand);
             showResultToUser(feedback);
         }
-    }
+	}
 
     /*
      * ==============NOTE TO STUDENTS======================================
@@ -236,7 +293,7 @@ public class AddressBook {
      * Echoes the user input back to the user.
      */
     private static void echoUserCommand(String userCommand) {
-        showToUser("[Command entered:" + userCommand + "]");
+        showToUser(String.format(RESPONSE_COMMAND_ENTERED, userCommand));
     }
 
     /*
@@ -255,16 +312,16 @@ public class AddressBook {
      * @param args full program arguments passed to application main method
      */
     private static void processProgramArgs(String[] args) {
-        if (args.length >= 2) {
+        if (args.length >= ARGUMENT_LENGTH_2) {
             showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
             exitProgram();
         }
 
-        if (args.length == 1) {
-            setupGivenFileForStorage(args[0]);
+        if (args.length == ARGUMENT_LENGTH_1) {
+            setupGivenFileForStorage(args[INDEX_OF_FILENAME]);
         }
 
-        if(args.length == 0) {
+        if(args.length == ARGUMENT_LENGTH_0) {
             setupDefaultFileForStorage();
         }
     }
@@ -290,7 +347,7 @@ public class AddressBook {
      */
     private static void exitProgram() {
         showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
-        System.exit(0);
+        System.exit(EXIT_NO_ERROR);
     }
 
     /**
@@ -310,7 +367,7 @@ public class AddressBook {
      * TODO: Implement a more rigorous validity checking.
      */
     private static boolean isValidFilePath(String filePath) {
-        return filePath.endsWith(".txt");
+        return filePath.endsWith(FILETYPE_TXT);
     }
 
     /**
@@ -336,8 +393,8 @@ public class AddressBook {
      */
     public static String executeCommand(String userInputString) {
         final String[] commandTypeAndParams = splitCommandWordAndArgs(userInputString);
-        final String commandType = commandTypeAndParams[0];
-        final String commandArgs = commandTypeAndParams[1];
+        final String commandType = commandTypeAndParams[INDEX_OF_COMMAND_TYPE];
+        final String commandArgs = commandTypeAndParams[INDEX_OF_COMMAND_PARAMETERS];
         switch (commandType) {
         case COMMAND_ADD_WORD:
             return executeAddPerson(commandArgs);
@@ -364,8 +421,8 @@ public class AddressBook {
      * @return  size 2 array; first element is the command type and second element is the arguments string
      */
     private static String[] splitCommandWordAndArgs(String rawUserInput) {
-        final String[] split =  rawUserInput.trim().split("\\s+", 2);
-        return split.length == 2 ? split : new String[] { split[0] , "" }; // else case: no parameters
+        final String[] split =  rawUserInput.trim().split(REGEX_ONE_OR_MORE_WHITESPACE, SPLIT_LENGTH_LIMIT);
+        return split.length == SPLIT_LENGTH_WITH_PARAMETERS ? split : new String[] { split[INDEX_OF_COMMAND] , PARAMETER_EMPTY }; // else case: no parameters
     }
 
     /**
@@ -514,7 +571,8 @@ public class AddressBook {
      * @return whether it is valid
      */
     private static boolean isDisplayIndexValidForLastPersonListingView(int index) {
-        return index >= DISPLAYED_INDEX_OFFSET && index < getLatestPersonListingView().size() + DISPLAYED_INDEX_OFFSET;
+        return index >= DISPLAYED_INDEX_OFFSET 
+                && index < getLatestPersonListingView().size() + DISPLAYED_INDEX_OFFSET;
     }
 
     /**
@@ -571,10 +629,10 @@ public class AddressBook {
      * @return full line entered by the user
      */
     private static String getUserInput() {
-        System.out.print(LINE_PREFIX + "Enter command: ");
+        System.out.print(LINE_PREFIX + PROMPT_ENTER_COMMAND);
         String inputLine = SCANNER.nextLine();
         // silently consume all blank and comment lines
-        while (inputLine.trim().isEmpty() || inputLine.trim().charAt(0) == INPUT_COMMENT_MARKER) {
+        while (inputLine.trim().isEmpty() || inputLine.trim().charAt(INDEX_OF_FIRST_CHARACTER) == INPUT_COMMENT_MARKER) {
             inputLine = SCANNER.nextLine();
         }
         return inputLine;
@@ -610,10 +668,10 @@ public class AddressBook {
      */
     private static String getDisplayString(ArrayList<String[]> persons) {
         final StringBuilder messageAccumulator = new StringBuilder();
-        for (int i = 0; i < persons.size(); i++) {
+        for (int i = INDEX_OF_FIRST_PERSON; i < persons.size(); i++) {
             final String[] person = persons.get(i);
             final int displayIndex = i + DISPLAYED_INDEX_OFFSET;
-            messageAccumulator.append('\t')
+            messageAccumulator.append(LIST_OF_PERSON_PREFIX)
                               .append(getIndexedPersonListElementMessage(displayIndex, person))
                               .append(LS);
         }
@@ -941,12 +999,12 @@ public class AddressBook {
      * @return whether format of add command arguments allows parsing into individual arguments
      */
     private static boolean isPersonDataExtractableFrom(String personData) {
-        final String matchAnyPersonDataPrefix = PERSON_DATA_PREFIX_PHONE + '|' + PERSON_DATA_PREFIX_EMAIL;
+        final String matchAnyPersonDataPrefix = PERSON_DATA_PREFIX_PHONE + REGEX_OR + PERSON_DATA_PREFIX_EMAIL;
         final String[] splitArgs = personData.trim().split(matchAnyPersonDataPrefix);
-        return splitArgs.length == 3 // 3 arguments
-                && !splitArgs[0].isEmpty() // non-empty arguments
-                && !splitArgs[1].isEmpty()
-                && !splitArgs[2].isEmpty();
+        return splitArgs.length == SPLIT_ARGUMENT_EXPECTED_LENGTH
+                && !splitArgs[INDEX_OF_NAME].isEmpty() // non-empty arguments
+                && !splitArgs[INDEX_OF_PRIMARY_CONTACT].isEmpty()
+                && !splitArgs[INDEX_OF_SECONDARY_CONTACT].isEmpty();
     }
 
     /**
@@ -960,7 +1018,7 @@ public class AddressBook {
         final int indexOfEmailPrefix = encoded.indexOf(PERSON_DATA_PREFIX_EMAIL);
         // name is leading substring up to first data prefix symbol
         int indexOfFirstPrefix = Math.min(indexOfEmailPrefix, indexOfPhonePrefix);
-        return encoded.substring(0, indexOfFirstPrefix).trim();
+        return encoded.substring(INDEX_OF_FIRST_CHARACTER, indexOfFirstPrefix).trim();
     }
 
     /**
@@ -1035,7 +1093,7 @@ public class AddressBook {
      * @return whether arg is a valid person name
      */
     private static boolean isPersonNameValid(String name) {
-        return name.matches("(\\w|\\s)+");  // name is nonempty mixture of alphabets and whitespace
+        return name.matches(REGEX_NAME);  // name is nonempty mixture of alphabets and whitespace
         //TODO: implement a more permissive validation
     }
 
@@ -1046,7 +1104,7 @@ public class AddressBook {
      * @return whether arg is a valid person phone number
      */
     private static boolean isPersonPhoneValid(String phone) {
-        return phone.matches("\\d+");    // phone nonempty sequence of digits
+        return phone.matches(REGEX_PHONE);    // phone nonempty sequence of digits
         //TODO: implement a more permissive validation
     }
 
@@ -1057,7 +1115,7 @@ public class AddressBook {
      * @return whether arg is a valid person email
      */
     private static boolean isPersonEmailValid(String email) {
-        return email.matches("\\S+@\\S+\\.\\S+"); // email is [non-whitespace]@[non-whitespace].[non-whitespace]
+        return email.matches(REGEX_EMAIL); // email is [non-whitespace]@[non-whitespace].[non-whitespace]
         //TODO: implement a more permissive validation
     }
 
@@ -1170,7 +1228,7 @@ public class AddressBook {
      * @return  Priority string without p/
      */
     private static String removePrefixSign(String s, String sign) {
-        return s.replace(sign, "");
+        return s.replace(sign, PARAMETER_EMPTY);
     }
 
     /**
@@ -1180,7 +1238,7 @@ public class AddressBook {
      * @return split by whitespace
      */
     private static ArrayList<String> splitByWhitespace(String toSplit) {
-        return new ArrayList(Arrays.asList(toSplit.trim().split("\\s+")));
+        return new ArrayList(Arrays.asList(toSplit.trim().split(REGEX_ONE_OR_MORE_WHITESPACE)));
     }
 
 }
