@@ -11,6 +11,7 @@ fi
 
 # compile the code into the bin folder
 javac  ../src/seedu/addressbook/AddressBook.java -d ../bin
+javac  ../src/seedu/addressbook/Person.java -d ../bin
 
 # run the program, feed commands from input.txt file and redirect the output to the actual.txt
 java -classpath ../bin seedu.addressbook.AddressBook < input.txt > actual.txt
