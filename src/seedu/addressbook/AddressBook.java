@@ -72,7 +72,8 @@ public class AddressBook {
 	private static final String MESSAGE_DISPLAY_PERSON_DATA = "%1$s  Phone Number: %2$s  Email: %3$s";
 	private static final String MESSAGE_DISPLAY_LIST_ELEMENT_INDEX = "%1$d. ";
 	private static final String MESSAGE_GOODBYE = "Exiting Address Book... Good bye!";
-	private static final String MESSAGE_INVALID_COMMAND_FORMAT = "Invalid command format: %1$s " + LINE_SEPARATOR + "%2$s";
+	private static final String MESSAGE_INVALID_COMMAND_FORMAT = "Invalid command format: %1$s " + LINE_SEPARATOR
+			+ "%2$s";
 	private static final String MESSAGE_INVALID_FILE = "The given file name [%1$s] is not a valid file name!";
 	private static final String MESSAGE_INVALID_PROGRAM_ARGS = "Too many parameters! Correct program argument format:"
 			+ LINE_SEPARATOR + "\tjava AddressBook" + LINE_SEPARATOR + "\tjava AddressBook [custom storage file path]";
@@ -110,8 +111,9 @@ public class AddressBook {
 
 	private static final String COMMAND_EDIT_WORD = "edit";
 	private static final String COMMAND_EDIT_DESC = "Displays all persons as a list with index numbers.";
-	private static final String COMMAND_EDIT_EXAMPLE = COMMAND_EDIT_WORD + " 1 Pankaj Bhootra p/96145687 e/pankaj@google.com";
-	
+	private static final String COMMAND_EDIT_EXAMPLE = COMMAND_EDIT_WORD
+			+ " 1 Pankaj Bhootra p/96145687 e/pankaj@google.com";
+
 	private static final String COMMAND_LIST_WORD = "list";
 	private static final String COMMAND_LIST_DESC = "Displays all persons as a list with index numbers.";
 	private static final String COMMAND_LIST_EXAMPLE = COMMAND_LIST_WORD;
@@ -488,34 +490,37 @@ public class AddressBook {
 	 *            full command args string from the user
 	 * @return feedback display message for the operation result
 	 */
-	
+
 	private static final String SUCCESSFUL_EDIT_MESSAGE = "Edited successfully!";
 	private static final String FAIL_EDIT_MESSAGE = "Editing failed!";
+
 	private static String executeEditPerson(String commandArgs) {
-		//decode person from given string
+		// decode person from given string
 		final Optional<String[]> decodeResult = decodePersonFromString(commandArgs);
 		int index = getIndexFromInput(commandArgs);
 		String[] personEdits = decodeResult.get();
 		personEdits[0] = removeFirstWord(personEdits[0]);
-		return updateInAddressBook(index, personEdits)?SUCCESSFUL_EDIT_MESSAGE:FAIL_EDIT_MESSAGE;
+		return updateInAddressBook(index, personEdits) ? SUCCESSFUL_EDIT_MESSAGE : FAIL_EDIT_MESSAGE;
 	}
-	
-    private static String removeFirstWord(String words){
-    	words = words.substring(words.indexOf(" ")).trim();
-    	return words;
-    }
-	
-    private static int getIndexFromInput(String words){
-    	return Integer.parseInt(words.substring(0, words.indexOf(" ")));
-    }
 
-    private static boolean updateInAddressBook(int index, String[] personEdits){
-    	ALL_PERSONS.remove(index - DISPLAYED_INDEX_OFFSET);
-        ALL_PERSONS.add(index - DISPLAYED_INDEX_OFFSET, personEdits);
-    	return true;
-    }
-    
-    /**
+	private static String removeFirstWord(String words) {
+		words = words.substring(words.indexOf(" ")).trim();
+		return words;
+	}
+
+	private static int getIndexFromInput(String words) {
+		return Integer.parseInt(words.substring(0, words.indexOf(" ")));
+	}
+
+	private static boolean updateInAddressBook(int index, String[] personEdits) {
+		ALL_PERSONS.remove(index - DISPLAYED_INDEX_OFFSET);
+		ALL_PERSONS.add(index - DISPLAYED_INDEX_OFFSET, personEdits);
+		savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
+		;
+		return true;
+	}
+
+	/**
 	 * Deletes person identified using last displayed index.
 	 *
 	 * @param commandArgs
@@ -639,14 +644,14 @@ public class AddressBook {
 		String inputLine = SCANNER.nextLine();
 		// silently consume all blank and comment lines
 		while (inputLine.trim().isEmpty() || isLineComment(inputLine)) {
-            inputLine = SCANNER.nextLine();
-        }
+			inputLine = SCANNER.nextLine();
+		}
 		return inputLine;
 	}
-	
+
 	private static boolean isLineComment(String inputLine) {
 		return inputLine.trim().charAt(0) == INPUT_COMMENT_MARKER;
-    }
+	}
 
 	/*
 	 * ==============NOTE TO STUDENTS====================================== Note
@@ -682,7 +687,8 @@ public class AddressBook {
 		for (int i = 0; i < persons.size(); i++) {
 			final String[] person = persons.get(i);
 			final int displayIndex = i + DISPLAYED_INDEX_OFFSET;
-			messageAccumulator.append('\t').append(getIndexedPersonListElementMessage(displayIndex, person)).append(LINE_SEPARATOR);
+			messageAccumulator.append('\t').append(getIndexedPersonListElementMessage(displayIndex, person))
+					.append(LINE_SEPARATOR);
 		}
 		return messageAccumulator.toString();
 	}
@@ -1133,7 +1139,7 @@ public class AddressBook {
 	private static boolean isPersonNameValid(String name) {
 		String matchingFormat = "(\\w|\\s)+";
 		return name.matches(matchingFormat); // name is nonempty mixture of
-											// alphabets and whitespace
+												// alphabets and whitespace
 		// TODO: implement a more permissive validation
 	}
 
@@ -1146,7 +1152,8 @@ public class AddressBook {
 	 */
 	private static boolean isPersonPhoneValid(String phone) {
 		String matchingFormat = "\\d+";
-		return phone.matches(matchingFormat); // phone nonempty sequence of digits
+		return phone.matches(matchingFormat); // phone nonempty sequence of
+												// digits
 		// TODO: implement a more permissive validation
 	}
 
@@ -1160,7 +1167,7 @@ public class AddressBook {
 	private static boolean isPersonEmailValid(String email) {
 		String matchingFormat = "\\S+@\\S+\\.\\S+";
 		return email.matches(matchingFormat); // email is
-													// [non-whitespace]@[non-whitespace].[non-whitespace]
+												// [non-whitespace]@[non-whitespace].[non-whitespace]
 		// TODO: implement a more permissive validation
 	}
 
@@ -1173,9 +1180,10 @@ public class AddressBook {
 	 * @return Usage info for all commands
 	 */
 	private static String getUsageInfoForAllCommands() {
-		return getUsageInfoForAddCommand() + LINE_SEPARATOR + getUsageInfoForFindCommand() + LINE_SEPARATOR + getUsageInfoForViewCommand() + LINE_SEPARATOR
-				+ getUsageInfoForDeleteCommand() + LINE_SEPARATOR + getUsageInfoForClearCommand() + LINE_SEPARATOR
-				+ getUsageInfoForExitCommand() + LINE_SEPARATOR + getUsageInfoForHelpCommand();
+		return getUsageInfoForAddCommand() + LINE_SEPARATOR + getUsageInfoForFindCommand() + LINE_SEPARATOR
+				+ getUsageInfoForViewCommand() + LINE_SEPARATOR + getUsageInfoForDeleteCommand() + LINE_SEPARATOR
+				+ getUsageInfoForClearCommand() + LINE_SEPARATOR + getUsageInfoForExitCommand() + LINE_SEPARATOR
+				+ getUsageInfoForHelpCommand();
 	}
 
 	/**
