@@ -199,14 +199,31 @@ public class AddressBook {
      * ====================================================================
      */
     public static void main(String[] args) {
-        showWelcomeMessage();
-        processProgramArgs(args);
-        loadDataFromStorage();
+        showToUser(DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER);
+        if (args.length >= 2) {
+		    showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
+		    exitProgram();
+		}
+		
+		if (args.length == 1) {
+		    setupGivenFileForStorage(args[0]);
+		}
+		
+		if(args.length == 0) {
+		    setupDefaultFileForStorage();
+		}
+        initialiseAddressBookModel(loadPersonsFromFile(storageFilePath));
         while (true) {
-            String userCommand = getUserInput();
-            echoUserCommand(userCommand);
+            System.out.print(LINE_PREFIX + "Enter command: ");
+			String inputLine = SCANNER.nextLine();
+			// silently consume all blank and comment lines
+			while (inputLine.trim().isEmpty() || inputLine.trim().charAt(0) == INPUT_COMMENT_MARKER) {
+			    inputLine = SCANNER.nextLine();
+			}
+			String userCommand = inputLine;
+            showToUser("[Command entered:" + userCommand + "]");
             String feedback = executeCommand(userCommand);
-            showResultToUser(feedback);
+            showToUser(feedback, DIVIDER);
         }
     }
 
@@ -248,28 +265,6 @@ public class AddressBook {
      */
 
     /**
-     * Processes the program main method run arguments.
-     * If a valid storage file is specified, sets up that file for storage.
-     * Otherwise sets up the default file for storage.
-     *
-     * @param args full program arguments passed to application main method
-     */
-    private static void processProgramArgs(String[] args) {
-        if (args.length >= 2) {
-            showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
-            exitProgram();
-        }
-
-        if (args.length == 1) {
-            setupGivenFileForStorage(args[0]);
-        }
-
-        if(args.length == 0) {
-            setupDefaultFileForStorage();
-        }
-    }
-
-    /**
      * Sets up the storage file based on the supplied file path.
      * Creates the file if it is missing.
      * Exits if the file name is not acceptable.
@@ -277,7 +272,10 @@ public class AddressBook {
     private static void setupGivenFileForStorage(String filePath) {
 
         if (!isValidFilePath(filePath)) {
-            showToUser(String.format(MESSAGE_INVALID_FILE, filePath));
+            String[] message = { String.format(MESSAGE_INVALID_FILE, filePath) };
+			for (String m : message) {
+			    System.out.println(LINE_PREFIX + m);
+			}
             exitProgram();
         }
 
@@ -289,7 +287,10 @@ public class AddressBook {
      * Displays the goodbye message and exits the runtime.
      */
     private static void exitProgram() {
-        showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
+        String[] message = { MESSAGE_GOODBYE, DIVIDER, DIVIDER };
+		for (String m : message) {
+		    System.out.println(LINE_PREFIX + m);
+		}
         System.exit(0);
     }
 
@@ -299,7 +300,10 @@ public class AddressBook {
      * Exits program if the file cannot be created.
      */
     private static void setupDefaultFileForStorage() {
-        showToUser(MESSAGE_USING_DEFAULT_FILE);
+        String[] message = { MESSAGE_USING_DEFAULT_FILE };
+		for (String m : message) {
+		    System.out.println(LINE_PREFIX + m);
+		}
         storageFilePath = DEFAULT_STORAGE_FILEPATH;
         createFileIfMissing(storageFilePath);
     }
@@ -335,7 +339,8 @@ public class AddressBook {
      * @return  feedback about how the command was executed
      */
     public static String executeCommand(String userInputString) {
-        final String[] commandTypeAndParams = splitCommandWordAndArgs(userInputString);
+        final String[] split =  userInputString.trim().split("\\s+", 2);
+		final String[] commandTypeAndParams = split.length == 2 ? split : new String[] { split[0] , "" };
         final String commandType = commandTypeAndParams[0];
         final String commandArgs = commandTypeAndParams[1];
         switch (commandType) {
@@ -354,18 +359,8 @@ public class AddressBook {
         case COMMAND_EXIT_WORD:
             executeExitProgramRequest();
         default:
-            return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
+            return String.format(MESSAGE_INVALID_COMMAND_FORMAT, commandType, getUsageInfoForAllCommands());
         }
-    }
-
-    /**
-     * Splits raw user input into command word and command arguments string
-     *
-     * @return  size 2 array; first element is the command type and second element is the arguments string
-     */
-    private static String[] splitCommandWordAndArgs(String rawUserInput) {
-        final String[] split =  rawUserInput.trim().split("\\s+", 2);
-        return split.length == 2 ? split : new String[] { split[0] , "" }; // else case: no parameters
     }
 
     /**
@@ -391,13 +386,15 @@ public class AddressBook {
 
         // checks if args are valid (decode result will not be present if the person is invalid)
         if (!decodeResult.isPresent()) {
-            return getMessageForInvalidCommandInput(COMMAND_ADD_WORD, getUsageInfoForAddCommand());
+            return String.format(MESSAGE_INVALID_COMMAND_FORMAT, COMMAND_ADD_WORD, getUsageInfoForAddCommand());
         }
 
         // add the person as specified
         final String[] personToAdd = decodeResult.get();
-        addPersonToAddressBook(personToAdd);
-        return getMessageForSuccessfulAddPerson(personToAdd);
+        ALL_PERSONS.add(personToAdd);
+		savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
+        return String.format(MESSAGE_ADDED,
+		getNameFromPerson(personToAdd), getPhoneFromPerson(personToAdd), getEmailFromPerson(personToAdd));
     }
 
     /**
@@ -409,7 +406,7 @@ public class AddressBook {
      */
     private static String getMessageForSuccessfulAddPerson(String[] addedPerson) {
         return String.format(MESSAGE_ADDED,
-                getNameFromPerson(addedPerson), getPhoneFromPerson(addedPerson), getEmailFromPerson(addedPerson));
+                addedPerson[PERSON_DATA_INDEX_NAME], addedPerson[PERSON_DATA_INDEX_PHONE], addedPerson[PERSON_DATA_INDEX_EMAIL]);
     }
 
     /**
@@ -471,7 +468,7 @@ public class AddressBook {
      */
     private static String executeDeletePerson(String commandArgs) {
         if (!isDeletePersonArgsValid(commandArgs)) {
-            return getMessageForInvalidCommandInput(COMMAND_DELETE_WORD, getUsageInfoForDeleteCommand());
+            return String.format(MESSAGE_INVALID_COMMAND_FORMAT, COMMAND_DELETE_WORD, getUsageInfoForDeleteCommand());
         }
         final int targetVisibleIndex = extractTargetIndexFromDeletePersonArgs(commandArgs);
         if (!isDisplayIndexValidForLastPersonListingView(targetVisibleIndex)) {
@@ -534,7 +531,8 @@ public class AddressBook {
      * @return feedback display message for the operation result
      */
     private static String executeClearAddressBook() {
-        clearAddressBook();
+        ALL_PERSONS.clear();
+		savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
         return MESSAGE_ADDRESSBOOK_CLEARED;
     }
 
@@ -544,9 +542,11 @@ public class AddressBook {
      * @return feedback display message for the operation result
      */
     private static String executeListAllPersonsInAddressBook() {
-        ArrayList<String[]> toBeDisplayed = getAllPersonsInAddressBook();
-        showToUser(toBeDisplayed);
-        return getMessageForPersonsDisplayedSummary(toBeDisplayed);
+        ArrayList<String[]> toBeDisplayed = ALL_PERSONS;
+        String listAsString = getDisplayString(toBeDisplayed);
+		showToUser(listAsString);
+		updateLatestViewedPersonListing(toBeDisplayed);
+        return String.format(MESSAGE_PERSONS_FOUND_OVERVIEW, toBeDisplayed.size());
     }
 
     /**
@@ -600,9 +600,21 @@ public class AddressBook {
      *
      */
     private static void showToUser(ArrayList<String[]> persons) {
-        String listAsString = getDisplayString(persons);
-        showToUser(listAsString);
-        updateLatestViewedPersonListing(persons);
+        final StringBuilder messageAccumulator = new StringBuilder();
+		for (int i = 0; i < persons.size(); i++) {
+		    final String[] person = persons.get(i);
+		    final int displayIndex = i + DISPLAYED_INDEX_OFFSET;
+		    messageAccumulator.append('\t')
+		                      .append(getIndexedPersonListElementMessage(displayIndex, person))
+		                      .append(LS);
+		}
+		String listAsString = messageAccumulator.toString();
+		String[] message = { listAsString };
+        for (String m : message) {
+		    System.out.println(LINE_PREFIX + m);
+		}
+        // clone to insulate from future changes to arg list
+		latestPersonListingView = new ArrayList<>(persons);
     }
 
     /**
@@ -614,7 +626,7 @@ public class AddressBook {
             final String[] person = persons.get(i);
             final int displayIndex = i + DISPLAYED_INDEX_OFFSET;
             messageAccumulator.append('\t')
-                              .append(getIndexedPersonListElementMessage(displayIndex, person))
+                              .append(String.format(MESSAGE_DISPLAY_LIST_ELEMENT_INDEX, displayIndex) + getMessageForFormattedPersonData(person))
                               .append(LS);
         }
         return messageAccumulator.toString();
@@ -628,7 +640,8 @@ public class AddressBook {
      * @return formatted listing message with index
      */
     private static String getIndexedPersonListElementMessage(int visibleIndex, String[] person) {
-        return String.format(MESSAGE_DISPLAY_LIST_ELEMENT_INDEX, visibleIndex) + getMessageForFormattedPersonData(person);
+        return String.format(MESSAGE_DISPLAY_LIST_ELEMENT_INDEX, visibleIndex) + String.format(MESSAGE_DISPLAY_PERSON_DATA,
+		getNameFromPerson(person), getPhoneFromPerson(person), getEmailFromPerson(person));
     }
 
     /**
@@ -639,7 +652,7 @@ public class AddressBook {
      */
     private static String getMessageForFormattedPersonData(String[] person) {
         return String.format(MESSAGE_DISPLAY_PERSON_DATA,
-                getNameFromPerson(person), getPhoneFromPerson(person), getEmailFromPerson(person));
+                person[PERSON_DATA_INDEX_NAME], person[PERSON_DATA_INDEX_PHONE], person[PERSON_DATA_INDEX_EMAIL]);
     }
 
     /**
@@ -708,8 +721,15 @@ public class AddressBook {
     private static ArrayList<String[]> loadPersonsFromFile(String filePath) {
         final Optional<ArrayList<String[]>> successfullyDecoded = decodePersonsFromStrings(getLinesInFile(filePath));
         if (!successfullyDecoded.isPresent()) {
-            showToUser(MESSAGE_INVALID_STORAGE_FILE_CONTENT);
-            exitProgram();
+            String[] message1 = { MESSAGE_INVALID_STORAGE_FILE_CONTENT };
+			for (String m1 : message1) {
+			    System.out.println(LINE_PREFIX + m1);
+			}
+            String[] message = { MESSAGE_GOODBYE, DIVIDER, DIVIDER };
+			for (String m : message) {
+			    System.out.println(LINE_PREFIX + m);
+			}
+			System.exit(0);
         }
         return successfullyDecoded.get();
     }
@@ -723,11 +743,25 @@ public class AddressBook {
         try {
             lines = new ArrayList(Files.readAllLines(Paths.get(filePath)));
         } catch (FileNotFoundException fnfe) {
-            showToUser(String.format(MESSAGE_ERROR_MISSING_STORAGE_FILE, filePath));
-            exitProgram();
+            String[] message = { String.format(MESSAGE_ERROR_MISSING_STORAGE_FILE, filePath) };
+			for (String m : message) {
+			    System.out.println(LINE_PREFIX + m);
+			}
+            String[] message1 = { MESSAGE_GOODBYE, DIVIDER, DIVIDER };
+			for (String m1 : message1) {
+			    System.out.println(LINE_PREFIX + m1);
+			}
+			System.exit(0);
         } catch (IOException ioe) {
-            showToUser(String.format(MESSAGE_ERROR_READING_FROM_FILE, filePath));
-            exitProgram();
+            String[] message1 = { String.format(MESSAGE_ERROR_READING_FROM_FILE, filePath) };
+			for (String m1 : message1) {
+			    System.out.println(LINE_PREFIX + m1);
+			}
+            String[] message = { MESSAGE_GOODBYE, DIVIDER, DIVIDER };
+			for (String m : message) {
+			    System.out.println(LINE_PREFIX + m);
+			}
+			System.exit(0);
         }
         return lines;
     }
@@ -743,8 +777,15 @@ public class AddressBook {
         try {
             Files.write(Paths.get(storageFilePath), linesToWrite);
         } catch (IOException ioe) {
-            showToUser(String.format(MESSAGE_ERROR_WRITING_TO_FILE, filePath));
-            exitProgram();
+            String[] message = { String.format(MESSAGE_ERROR_WRITING_TO_FILE, filePath) };
+			for (String m : message) {
+			    System.out.println(LINE_PREFIX + m);
+			}
+            String[] message1 = { MESSAGE_GOODBYE, DIVIDER, DIVIDER };
+			for (String m1 : message1) {
+			    System.out.println(LINE_PREFIX + m1);
+			}
+			System.exit(0);
         }
     }
 
@@ -762,7 +803,20 @@ public class AddressBook {
      */
     private static void addPersonToAddressBook(String[] person) {
         ALL_PERSONS.add(person);
-        savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
+        final ArrayList<String> linesToWrite = encodePersonsToStrings(getAllPersonsInAddressBook());
+		try {
+		    Files.write(Paths.get(storageFilePath), linesToWrite);
+		} catch (IOException ioe) {
+		    String[] message = { String.format(MESSAGE_ERROR_WRITING_TO_FILE, storageFilePath) };
+			for (String m : message) {
+			    System.out.println(LINE_PREFIX + m);
+			}
+		    String[] message1 = { MESSAGE_GOODBYE, DIVIDER, DIVIDER };
+			for (String m1 : message1) {
+			    System.out.println(LINE_PREFIX + m1);
+			}
+			System.exit(0);
+		}
     }
 
     /**
@@ -773,7 +827,20 @@ public class AddressBook {
      */
     private static void deletePersonFromAddressBook(int index) {
         ALL_PERSONS.remove(index);
-        savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
+        final ArrayList<String> linesToWrite = encodePersonsToStrings(getAllPersonsInAddressBook());
+		try {
+		    Files.write(Paths.get(storageFilePath), linesToWrite);
+		} catch (IOException ioe) {
+		    String[] message = { String.format(MESSAGE_ERROR_WRITING_TO_FILE, storageFilePath) };
+			for (String m : message) {
+			    System.out.println(LINE_PREFIX + m);
+			}
+		    String[] message1 = { MESSAGE_GOODBYE, DIVIDER, DIVIDER };
+			for (String m1 : message1) {
+			    System.out.println(LINE_PREFIX + m1);
+			}
+			System.exit(0);
+		}
     }
 
     /**
@@ -802,7 +869,20 @@ public class AddressBook {
      */
     private static void clearAddressBook() {
         ALL_PERSONS.clear();
-        savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
+        final ArrayList<String> linesToWrite = encodePersonsToStrings(getAllPersonsInAddressBook());
+		try {
+		    Files.write(Paths.get(storageFilePath), linesToWrite);
+		} catch (IOException ioe) {
+		    String[] message = { String.format(MESSAGE_ERROR_WRITING_TO_FILE, storageFilePath) };
+			for (String m : message) {
+			    System.out.println(LINE_PREFIX + m);
+			}
+		    String[] message1 = { MESSAGE_GOODBYE, DIVIDER, DIVIDER };
+			for (String m1 : message1) {
+			    System.out.println(LINE_PREFIX + m1);
+			}
+			System.exit(0);
+		}
     }
 
     /**
@@ -882,7 +962,8 @@ public class AddressBook {
     private static ArrayList<String> encodePersonsToStrings(ArrayList<String[]> persons) {
         final ArrayList<String> encoded = new ArrayList<>();
         for (String[] person : persons) {
-            encoded.add(encodePersonToString(person));
+            encoded.add(String.format(PERSON_STRING_REPRESENTATION,
+			getNameFromPerson(person), getPhoneFromPerson(person), getEmailFromPerson(person)));
         }
         return encoded;
     }
@@ -911,7 +992,9 @@ public class AddressBook {
                 extractEmailFromPersonString(encoded)
         );
         // check that the constructed person is valid
-        return isPersonDataValid(decodedPerson) ? Optional.of(decodedPerson) : Optional.empty();
+        return isPersonNameValid(decodedPerson[PERSON_DATA_INDEX_NAME])
+		&& isPersonPhoneValid(decodedPerson[PERSON_DATA_INDEX_PHONE])
+		&& isPersonEmailValid(decodedPerson[PERSON_DATA_INDEX_EMAIL]) ? Optional.of(decodedPerson) : Optional.empty();
     }
 
     /**
