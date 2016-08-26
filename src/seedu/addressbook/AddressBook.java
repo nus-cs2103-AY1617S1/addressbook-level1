@@ -65,6 +65,7 @@ public class AddressBook {
 	 * ====================================================================
 	 */
 	private static final String MESSAGE_ADDED = "New person added: %1$s, Phone: %2$s, Email: %3$s";
+	private static final String MESSAGE_EDITED = "Person edited: %1$s, Phone: %2$s, Email: %3$s";
 	private static final String MESSAGE_ADDRESSBOOK_CLEARED = "Address book has been cleared!";
 	private static final String MESSAGE_ADDRESSBOOK_SORTED = "Address book sorted!";
 	private static final String MESSAGE_COMMAND_HELP = "%1$s: %2$s";
@@ -92,6 +93,7 @@ public class AddressBook {
 
 	// These are the prefix strings to define the data type of a command
 	// parameter
+	private static final String PERSON_DATA_PREFIX_NAME = "n/";
 	private static final String PERSON_DATA_PREFIX_PHONE = "p/";
 	private static final String PERSON_DATA_PREFIX_EMAIL = "e/";
 
@@ -127,6 +129,12 @@ public class AddressBook {
 	private static final String COMMAND_SORT_WORD = "sort";
 	private static final String COMMAND_SORT_DESC = "Sorts persons in alphabatical order.";
 	private static final String COMMAND_SORT_EXAMPLE = COMMAND_SORT_WORD;
+	
+	private static final String COMMAND_EDIT_WORD = "edit";
+	private static final String COMMAND_EDIT_DESC = "Edits a person's phone and/or email.";
+	private static final String COMMAND_EDIT_PARAMETER = "INDEX " + PERSON_DATA_PREFIX_NAME + "NAME " + PERSON_DATA_PREFIX_PHONE + "PHONE_NUMBER "
+			+ PERSON_DATA_PREFIX_EMAIL + "EMAIL"; 
+	private static final String COMMAND_EDIT_EXAMPLE = COMMAND_EDIT_WORD + " 1 n/John Doe p/98765432 e/johnd@gmail.com";
 
 	private static final String COMMAND_HELP_WORD = "help";
 	private static final String COMMAND_HELP_DESC = "Shows program usage instructions.";
@@ -403,6 +411,8 @@ public class AddressBook {
 			return executeClearAddressBook();
 		case COMMAND_SORT_WORD:
 			return executeSortAddressBook();
+		case COMMAND_EDIT_WORD:
+			return executeEditPerson(commandArgs);
 		case COMMAND_HELP_WORD:
 			return getUsageInfoForAllCommands();
 		case COMMAND_EXIT_WORD:
@@ -475,6 +485,13 @@ public class AddressBook {
 	private static String getMessageForSuccessfulAddPerson(HashMap<PersonDetails, String> addedPerson) {
 		return String.format(MESSAGE_ADDED, getNameFromPerson(addedPerson), getPhoneFromPerson(addedPerson),
 				getEmailFromPerson(addedPerson));
+	}
+	
+	private static String getMessageForSuccessfulEditPerson(Integer indexOfPerson){
+		HashMap<PersonDetails, String> editedPerson = ALL_PERSONS.get(indexOfPerson-1);
+		
+		return String.format(MESSAGE_EDITED, getNameFromPerson(editedPerson), getPhoneFromPerson(editedPerson),
+				getEmailFromPerson(editedPerson));
 	}
 
 	/**
@@ -660,6 +677,34 @@ public class AddressBook {
 		ArrayList<HashMap<PersonDetails, String>> toBeDisplayed = getAllPersonsInAddressBook();
 		showToUser(toBeDisplayed);
 		return getMessageForSortedAddressBook(toBeDisplayed);
+	}
+	
+	/**
+	 * Edits a person's details
+	 * 
+	 * @param commandArgs
+	 * @return feedback display message for the operation result
+	 */
+	
+	private static String executeEditPerson(String commandArgs) {
+		
+		if (!isPersonDataWithIndexExtractableFrom(commandArgs)) {
+			return getMessageForInvalidCommandInput(COMMAND_EDIT_WORD, getUsageInfoForEditCommand());
+		};
+		
+		// try decoding a person from the raw args
+		final Optional<Integer> decodedIndex = decodeIndexFromStringWithIndex(commandArgs);
+		if(!decodedIndex.isPresent()){
+			return MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
+		}
+		final Optional<ArrayList<String>> decodedPerson = decodePersonFromStringWithIndex(commandArgs);
+		if(decodedPerson.isPresent())
+		{			
+			editPerson(decodedIndex.get(), decodedPerson.get());
+			savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
+			return getMessageForSuccessfulEditPerson(decodedIndex.get());
+		}
+		return getMessageForInvalidCommandInput(COMMAND_EDIT_WORD, getUsageInfoForEditCommand());
 	}
 
 	/**
@@ -1102,7 +1147,92 @@ public class AddressBook {
 		}
 		return Optional.of(decodedPersons);
 	}
-
+	
+	/**
+	 * Decodes the index from it's supposed string representation. Used for edit command
+	 *
+	 * @param encoded
+	 *            string to be decoded
+	 * @return if cannot decode: empty Optional else: Optional containing
+	 *         decoded index
+	 */
+	
+	private static Optional<Integer> decodeIndexFromStringWithIndex(String encoded) {
+		// check that we can extract the index from the encoded
+		// string
+		if (!isPersonDataWithIndexExtractableFrom(encoded)) {
+			return Optional.empty();
+		}
+		// extract the index is possible
+		final String decodedIndex = extractIndexFromPersonString(encoded);
+		// check that the extracted index is valid
+		if (isPersonIndexValid(decodedIndex)&&isDisplayIndexValidForLastPersonListingView(Integer.parseInt(decodedIndex))){
+			return Optional.of(Integer.parseInt(decodedIndex));
+		} else
+			return Optional.empty();
+	}
+	
+	/**
+	 * Decodes a person from it's supposed string representation with index. For editing
+	 *
+	 * @param encoded
+	 *            string to be decoded
+	 * @return if cannot decode: empty Optional else: Optional containing
+	 *         decoded person
+	 */
+	
+	private static Optional<ArrayList<String>> decodePersonFromStringWithIndex(String encoded) {
+		String stringWithoutIndex = removeIndexFromString(encoded);
+		ArrayList<String> detailsToEdit =  orderPersonDataInList(stringWithoutIndex);
+		boolean isEmpty = true;
+		for(String s : detailsToEdit){
+            if(s != null) isEmpty = false; 
+		}
+		if(!isEmpty) return Optional.of(detailsToEdit);
+		return Optional.empty();
+	}
+	
+	private static String removeIndexFromString(String encoded){
+		final int indexOfNamePrefix = encoded.indexOf(PERSON_DATA_PREFIX_NAME);
+		final int indexOfPhonePrefix = encoded.indexOf(PERSON_DATA_PREFIX_PHONE);
+		final int indexOfEmailPrefix = encoded.indexOf(PERSON_DATA_PREFIX_EMAIL);
+		// index is leading substring up to first data prefix symbol
+	int indexOfFirstPrefix = indexOfNamePrefix;
+		
+		if(indexOfFirstPrefix==-1 && indexOfPhonePrefix>-1){
+			indexOfFirstPrefix = indexOfPhonePrefix;
+		} else if(indexOfPhonePrefix != -1 && indexOfPhonePrefix < indexOfFirstPrefix){
+			indexOfFirstPrefix = indexOfPhonePrefix;
+		}
+		
+		if(indexOfFirstPrefix==-1 && indexOfEmailPrefix>-1){
+			indexOfFirstPrefix = indexOfEmailPrefix;
+		} else if(indexOfEmailPrefix != -1 && indexOfEmailPrefix < indexOfFirstPrefix){
+			indexOfFirstPrefix = indexOfEmailPrefix;
+		}
+		// returns the string without the index
+		return encoded.substring(indexOfFirstPrefix,encoded.length()).trim();
+	}
+	
+	
+	/**
+	 * Checks whether person data (index, email, name, phone etc) can be extracted from
+	 * the argument string. Format is [index n/[name] p/[phone] e/[email], phone and
+	 * email positions can be swapped.
+	 *
+	 * @param personData
+	 *            person string representation
+	 * @return whether format of add command arguments allows parsing into
+	 *         individual arguments
+	 */
+	private static boolean isPersonDataWithIndexExtractableFrom(String personData) {
+		final String matchAnyPersonDataPrefix = PERSON_DATA_PREFIX_NAME + '|' + PERSON_DATA_PREFIX_PHONE + '|' + PERSON_DATA_PREFIX_EMAIL;
+		final String[] splitArgs = personData.trim().split(matchAnyPersonDataPrefix);
+		return splitArgs.length <= 4 // 4 arguments
+				&& !splitArgs[0].isEmpty() 
+				&& !splitArgs[1].isEmpty(); // non-empty arguments
+	}
+	
 	/**
 	 * Checks whether person data (email, name, phone etc) can be extracted from
 	 * the argument string. Format is [name] p/[phone] e/[email], phone and
@@ -1119,6 +1249,36 @@ public class AddressBook {
 		return splitArgs.length == 3 // 3 arguments
 				&& !splitArgs[0].isEmpty() // non-empty arguments
 				&& !splitArgs[1].isEmpty() && !splitArgs[2].isEmpty();
+	}
+	
+	/**
+	 * Extracts substring representing person index from person string
+	 * representation
+	 *
+	 * @param encoded
+	 *            person string representation
+	 * @return name argument
+	 */
+	private static String extractIndexFromPersonString(String encoded) {
+		final int indexOfNamePrefix = encoded.indexOf(PERSON_DATA_PREFIX_NAME);
+		final int indexOfPhonePrefix = encoded.indexOf(PERSON_DATA_PREFIX_PHONE);
+		final int indexOfEmailPrefix = encoded.indexOf(PERSON_DATA_PREFIX_EMAIL);
+		// index is leading substring up to first data prefix symbol
+		int indexOfFirstPrefix = indexOfNamePrefix;
+		
+		if(indexOfFirstPrefix==-1 && indexOfPhonePrefix>-1){
+			indexOfFirstPrefix = indexOfPhonePrefix;
+		} else if(indexOfPhonePrefix != -1 && indexOfPhonePrefix < indexOfFirstPrefix){
+			indexOfFirstPrefix = indexOfPhonePrefix;
+		}
+		
+		if(indexOfFirstPrefix==-1 && indexOfEmailPrefix>-1){
+			indexOfFirstPrefix = indexOfEmailPrefix;
+		} else if(indexOfEmailPrefix != -1 && indexOfEmailPrefix < indexOfFirstPrefix){
+			indexOfFirstPrefix = indexOfEmailPrefix;
+		}
+		
+		return encoded.substring(0, indexOfFirstPrefix).trim();
 	}
 
 	/**
@@ -1183,6 +1343,84 @@ public class AddressBook {
 					PERSON_DATA_PREFIX_EMAIL);
 		}
 	}
+	
+	/**
+	 * Extracts all person details from string representation and order it in
+	 * the list {name, phone, email}
+	 *
+	 * @param encoded
+	 *            person string representation
+	 * @return ArrayList of person's data WITHOUT prefix
+	 */
+	
+	private static ArrayList <String> orderPersonDataInList(String encoded) {
+		ArrayList<String> orderedPersonDetailList = new ArrayList<String>();
+		final int indexOfNamePrefix = encoded.indexOf(PERSON_DATA_PREFIX_NAME);
+		final int indexOfPhonePrefix = encoded.indexOf(PERSON_DATA_PREFIX_PHONE);
+		final int indexOfEmailPrefix = encoded.indexOf(PERSON_DATA_PREFIX_EMAIL);
+		//Add name to list first, if not found, add null
+		if(indexOfNamePrefix>-1){
+			String nameToAdd = removePrefixSign(extractPersonDataForList(encoded, 
+					indexOfNamePrefix, indexOfPhonePrefix, indexOfEmailPrefix),
+					PERSON_DATA_PREFIX_NAME);
+			//Check if name is valid
+			if(isPersonNameValid(nameToAdd)){
+				orderedPersonDetailList.add(nameToAdd);
+			} else
+				orderedPersonDetailList.add(null);
+		}else{
+			orderedPersonDetailList.add(null);
+		}
+		//Add phone to list second, if not found, add null
+		if(indexOfPhonePrefix>-1){
+			String phoneToAdd = removePrefixSign(extractPersonDataForList(encoded, 
+					indexOfPhonePrefix, indexOfNamePrefix, indexOfEmailPrefix),
+					PERSON_DATA_PREFIX_PHONE);
+			//Check if phone is valid
+			if(isPersonPhoneValid(phoneToAdd)){
+				orderedPersonDetailList.add(phoneToAdd);
+			} else
+				orderedPersonDetailList.addAll(null);
+		}else{
+			orderedPersonDetailList.add(null);
+		}
+		
+		//Add email to list last, if not found, add null
+		if(indexOfEmailPrefix>-1){
+			String emailToAdd = removePrefixSign(extractPersonDataForList(encoded, 
+					indexOfEmailPrefix, indexOfNamePrefix, indexOfPhonePrefix),
+					PERSON_DATA_PREFIX_EMAIL);
+			//Check if email is valid
+			if(isPersonEmailValid(emailToAdd)){
+				orderedPersonDetailList.add(emailToAdd);
+			} else
+				orderedPersonDetailList.add(null);
+		}else{
+			orderedPersonDetailList.add(null);
+		}
+		
+		
+		return orderedPersonDetailList;
+	}
+	
+	private static String extractPersonDataForList(String encoded, int requiredIndex, int index1, int index2) {
+		String extractedData = null;
+		//Case 1: required data is at the end of the string
+		if(requiredIndex > Math.max(index1, index2)){
+			extractedData = encoded.substring(requiredIndex, encoded.length()).trim();
+		}
+		//Case 2: required data is in the front of the string
+		if(requiredIndex < Math.min(index1,  index2)){
+			extractedData = encoded.substring(requiredIndex, Math.min(index1,  index2)).trim();
+		}
+		
+		//Case 3: required data is in the middle of the two data
+		if(requiredIndex < Math.max(index1, index2) && requiredIndex > Math.min(index1,  index2))
+		{
+			extractedData = encoded.substring(requiredIndex, Math.max(index1,  index2)).trim();
+		}
+		return extractedData;
+	}
 
 	/**
 	 * Validates a person's data fields
@@ -1202,6 +1440,19 @@ public class AddressBook {
 	 * can be very useful in checking if a a string follows a sepcific format.
 	 * ====================================================================
 	 */
+	
+	/**
+	 * Validates string as a legal person index in the address book
+	 *
+	 * @param index
+	 *            to be validated
+	 * @return whether arg is a valid person index in the addres book
+	 */
+	private static boolean isPersonIndexValid(String index) {
+		return index.matches("\\d+"); 
+		// TODO: implement a more permissive validation
+	}
+	
 	/**
 	 * Validates string as a legal person name
 	 *
@@ -1250,7 +1501,7 @@ public class AddressBook {
 	 */
 	private static String getUsageInfoForAllCommands() {
 		return getUsageInfoForAddCommand() + LS + getUsageInfoForFindCommand() + LS + getUsageInfoForViewCommand() + LS
-				+ getUsageInfoForSortCommand() + LS + getUsageInfoForDeleteCommand() + LS + getUsageInfoForClearCommand() + LS
+				+ getUsageInfoForSortCommand() + LS + getUsageInfoForEditCommand() + LS + getUsageInfoForDeleteCommand() + LS + getUsageInfoForClearCommand() + LS
 				+ getUsageInfoForExitCommand() + LS + getUsageInfoForHelpCommand();
 	}
 
@@ -1317,6 +1568,18 @@ public class AddressBook {
 		return String.format(MESSAGE_COMMAND_HELP,  COMMAND_SORT_WORD, COMMAND_SORT_DESC) + LS 
 				+ String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_SORT_EXAMPLE) + LS;
 	}
+	
+	/**
+	 * Builds string for showing 'edit' command usage instruction
+	 *
+	 * @return 'edit' command usage instruction
+	 */
+	
+	private static String getUsageInfoForEditCommand() {
+		return String.format(MESSAGE_COMMAND_HELP,  COMMAND_EDIT_WORD, COMMAND_EDIT_DESC) + LS
+				+ String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_EDIT_PARAMETER) + LS
+				+ String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_EDIT_EXAMPLE) + LS;
+	}
 
 	/**
 	 * Builds string for showing 'help' command usage instruction
@@ -1378,6 +1641,22 @@ public class AddressBook {
 			}
 		});
 		savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
+	}
+	
+	private static void editPerson(Integer indexToEdit, ArrayList<String> detailsToEdit){
+		HashMap<PersonDetails, String> personToEdit = ALL_PERSONS.get(indexToEdit-1);
+		
+		if(detailsToEdit.get(0) != null){
+			personToEdit.replace(PersonDetails.NAME, detailsToEdit.get(0));
+		}
+		if(detailsToEdit.get(1) != null){
+			personToEdit.replace(PersonDetails.PHONE, detailsToEdit.get(1));
+		}
+		if(detailsToEdit.get(2) != null){
+			personToEdit.replace(PersonDetails.EMAIL, detailsToEdit.get(2));
+		}
+
+		ALL_PERSONS.set(indexToEdit-1, personToEdit);
 	}
 
 }
