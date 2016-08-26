@@ -205,14 +205,6 @@ public class AddressBook {
         executeUserCommandTillExit();
     }
 
-	private static void executeUserCommandTillExit() {
-		while (true) {
-            String userCommand = getUserInput();
-            echoUserCommand(userCommand);
-            String feedback = executeCommand(userCommand);
-            showResultToUser(feedback);
-        }
-	}
 
     /*
      * ==============NOTE TO STUDENTS======================================
@@ -242,6 +234,16 @@ public class AddressBook {
     private static void echoUserCommand(String userCommand) {
         showToUser("[Command entered:" + userCommand + "]");
     }
+    
+
+	private static void executeUserCommandTillExit() {
+		while (true) {
+            String userCommand = getUserInput();
+            echoUserCommand(userCommand);
+            String feedback = executeCommand(userCommand);
+            showResultToUser(feedback);
+        }
+	}
 
     /*
      * ==============NOTE TO STUDENTS==========================================
