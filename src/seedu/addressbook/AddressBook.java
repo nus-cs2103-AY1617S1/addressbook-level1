@@ -36,7 +36,10 @@ public class AddressBook {
      */
     private static final String DEFAULT_STORAGE_FILEPATH = "addressbook.txt";
 
-
+    /**
+     * Version info of the program.
+     */
+    private static final String VERSION = "AddessBook Level 1 - Version 1.0";
 
     /**
      * A decorative prefix added to the beginning of lines printed by AddressBook
@@ -80,6 +83,7 @@ public class AddressBook {
     private static final String MESSAGE_ERROR_WRITING_TO_FILE = "Unexpected error: unable to write to file: %1$s";
     private static final String MESSAGE_PERSONS_FOUND_OVERVIEW = "%1$d persons found!";
     private static final String MESSAGE_STORAGE_FILE_CREATED = "Created new empty storage file: %1$s";
+    private static final String MESSAGE_WELCOME = "Welcome to your Address Book!";
     private static final String MESSAGE_USING_DEFAULT_FILE = "Using default storage file : " + DEFAULT_STORAGE_FILEPATH;
 
     // These are the prefix strings to define the data type of a command parameter
@@ -195,16 +199,10 @@ public class AddressBook {
      * ====================================================================
      */
     public static void main(String[] args) {
-    	System.out.println("|| " + "===================================================");
-    	System.out.println("|| " + "===================================================");
-    	System.out.println("|| " + "AddessBook Level 1 - Version 1.0");
-    	System.out.println("|| " + "Welcome to your Address Book!");
-    	System.out.println("|| " + "===================================================");
-    	
+        showWelcomeMessage();
         if (args.length >= 2) {
             showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
-            showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
-            System.exit(0);
+            exitProgram();
         }
 
         if (args.length == 1) {
@@ -214,23 +212,12 @@ public class AddressBook {
         if(args.length == 0) {
             setupDefaultFileForStorage();
         }
-        
-        initialiseAddressBookModel(loadPersonsFromFile(storageFilePath));
-        
+        loadDataFromStorage();
         while (true) {
-
-            System.out.print(LINE_PREFIX + "Enter command: ");
-            String inputLine = SCANNER.nextLine();
-            // silently consume all blank and comment lines
-            while (inputLine.trim().isEmpty() || inputLine.trim().charAt(0) == INPUT_COMMENT_MARKER) {
-                inputLine = SCANNER.nextLine();
-            }
-            
-            System.out.println(LINE_PREFIX + "[Command entered:" + inputLine + "]");
-            String feedback = executeCommand(inputLine);
-
-            System.out.println("|| " + feedback);
-            System.out.println("|| " + DIVIDER);
+            String userCommand = getUserInput();
+            echoUserCommand(userCommand);
+            String feedback = executeCommand(userCommand);
+            showResultToUser(feedback);
         }
     }
 
@@ -241,9 +228,13 @@ public class AddressBook {
      * signature anyway.
      * ====================================================================
      */
+    private static void showWelcomeMessage() {
+        showToUser(DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER);
+    }
 
-
-
+    private static void showResultToUser(String result) {
+        showToUser(result, DIVIDER);
+    }
 
     /*
      * ==============NOTE TO STUDENTS======================================
@@ -252,7 +243,12 @@ public class AddressBook {
      * In the method below, '@param userInput' comment has been omitted.
      * ====================================================================
      */
- 
+    /**
+     * Echoes the user input back to the user.
+     */
+    private static void echoUserCommand(String userCommand) {
+        showToUser("[Command entered:" + userCommand + "]");
+    }
 
     /*
      * ==============NOTE TO STUDENTS==========================================
@@ -262,6 +258,7 @@ public class AddressBook {
      * ====================================================================
      */
 
+   
 
     /**
      * Sets up the storage file based on the supplied file path.
@@ -272,15 +269,20 @@ public class AddressBook {
 
         if (!isValidFilePath(filePath)) {
             showToUser(String.format(MESSAGE_INVALID_FILE, filePath));
-            showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
-            System.exit(0);
+            exitProgram();
         }
 
         storageFilePath = filePath;
         createFileIfMissing(filePath);
     }
 
-
+    /**
+     * Displays the goodbye message and exits the runtime.
+     */
+    private static void exitProgram() {
+        showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
+        System.exit(0);
+    }
 
     /**
      * Sets up the storage based on the default file.
@@ -329,68 +331,21 @@ public class AddressBook {
         final String commandArgs = commandTypeAndParams[1];
         switch (commandType) {
         case COMMAND_ADD_WORD:
-        	 // try decoding a person from the raw args
-            final Optional<String[]> decodeResult = decodePersonFromString(commandArgs);
-
-            // checks if args are valid (decode result will not be present if the person is invalid)
-            if (!decodeResult.isPresent()) {
-                return getMessageForInvalidCommandInput(COMMAND_ADD_WORD, getUsageInfoForAddCommand());
-            }
-
-            // add the person as specified
-            final String[] personToAdd = decodeResult.get();
-            addPersonToAddressBook(personToAdd);
-            return getMessageForSuccessfulAddPerson(personToAdd);
-
+            return executeAddPerson(commandArgs);
         case COMMAND_FIND_WORD:
-        	final Set<String> keywords = extractKeywordsFromFindPersonArgs(commandArgs);
-            final ArrayList<String[]> personsFound = getPersonsWithNameContainingAnyKeyword(keywords);
-            showToUser(personsFound);
-            return getMessageForPersonsDisplayedSummary(personsFound);
-            
+            return executeFindPersons(commandArgs);
         case COMMAND_LIST_WORD:
-        	ArrayList<String[]> toBeDisplayed = getAllPersonsInAddressBook();
-            showToUser(toBeDisplayed);
-            return getMessageForPersonsDisplayedSummary(toBeDisplayed);
-
+            return executeListAllPersonsInAddressBook();
         case COMMAND_DELETE_WORD:
-        	if (!isDeletePersonArgsValid(commandArgs)) {
-                return getMessageForInvalidCommandInput(COMMAND_DELETE_WORD, getUsageInfoForDeleteCommand());
-            }
-            final int targetVisibleIndex = extractTargetIndexFromDeletePersonArgs(commandArgs);
-            if (!isDisplayIndexValidForLastPersonListingView(targetVisibleIndex)) {
-                return MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
-            }
-            final String[] targetInModel = getPersonByLastVisibleIndex(targetVisibleIndex);
-            return deletePersonFromAddressBook(targetInModel) ? getMessageForSuccessfulDelete(targetInModel) // success
-                                                              : MESSAGE_PERSON_NOT_IN_ADDRESSBOOK; // not found
-            
+            return executeDeletePerson(commandArgs);
         case COMMAND_CLEAR_WORD:
-        	clearAddressBook();
-            return MESSAGE_ADDRESSBOOK_CLEARED;
-           
+            return executeClearAddressBook();
         case COMMAND_HELP_WORD:
-        	return getUsageInfoForAddCommand() + LS
-                    + getUsageInfoForFindCommand() + LS
-                    + getUsageInfoForViewCommand() + LS
-                    + getUsageInfoForDeleteCommand() + LS
-                    + getUsageInfoForClearCommand() + LS
-                    + getUsageInfoForExitCommand() + LS
-                    + getUsageInfoForHelpCommand();
-
+            return getUsageInfoForAllCommands();
         case COMMAND_EXIT_WORD:
-        	showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
-            System.exit(0);
+            executeExitProgramRequest();
         default:
-        	String correctUsageInfo = getUsageInfoForAddCommand() + LS
-                    + getUsageInfoForFindCommand() + LS
-                    + getUsageInfoForViewCommand() + LS
-                    + getUsageInfoForDeleteCommand() + LS
-                    + getUsageInfoForClearCommand() + LS
-                    + getUsageInfoForExitCommand() + LS
-                    + getUsageInfoForHelpCommand();
-            return String.format(MESSAGE_INVALID_COMMAND_FORMAT, commandType, correctUsageInfo);
-      
+            return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
         }
     }
 
@@ -414,7 +369,27 @@ public class AddressBook {
         return String.format(MESSAGE_INVALID_COMMAND_FORMAT, userCommand, correctUsageInfo);
     }
 
-   
+    /**
+     * Adds a person (specified by the command args) to the address book.
+     * The entire command arguments string is treated as a string representation of the person to add.
+     *
+     * @param commandArgs full command args string from the user
+     * @return feedback display message for the operation result
+     */
+    private static String executeAddPerson(String commandArgs) {
+        // try decoding a person from the raw args
+        final Optional<String[]> decodeResult = decodePersonFromString(commandArgs);
+
+        // checks if args are valid (decode result will not be present if the person is invalid)
+        if (!decodeResult.isPresent()) {
+            return getMessageForInvalidCommandInput(COMMAND_ADD_WORD, getUsageInfoForAddCommand());
+        }
+
+        // add the person as specified
+        final String[] personToAdd = decodeResult.get();
+        addPersonToAddressBook(personToAdd);
+        return getMessageForSuccessfulAddPerson(personToAdd);
+    }
 
     /**
      * Constructs a feedback message for a successful add person command execution.
@@ -428,7 +403,19 @@ public class AddressBook {
                 getNameFromPerson(addedPerson), getPhoneFromPerson(addedPerson), getEmailFromPerson(addedPerson));
     }
 
-  
+    /**
+     * Finds and lists all persons in address book whose name contains any of the argument keywords.
+     * Keyword matching is case sensitive.
+     *
+     * @param commandArgs full command args string from the user
+     * @return feedback display message for the operation result
+     */
+    private static String executeFindPersons(String commandArgs) {
+        final Set<String> keywords = extractKeywordsFromFindPersonArgs(commandArgs);
+        final ArrayList<String[]> personsFound = getPersonsWithNameContainingAnyKeyword(keywords);
+        showToUser(personsFound);
+        return getMessageForPersonsDisplayedSummary(personsFound);
+    }
 
     /**
      * Constructs a feedback message to summarise an operation that displayed a listing of persons.
@@ -467,7 +454,24 @@ public class AddressBook {
         return matchedPersons;
     }
 
-   
+    /**
+     * Deletes person identified using last displayed index.
+     *
+     * @param commandArgs full command args string from the user
+     * @return feedback display message for the operation result
+     */
+    private static String executeDeletePerson(String commandArgs) {
+        if (!isDeletePersonArgsValid(commandArgs)) {
+            return getMessageForInvalidCommandInput(COMMAND_DELETE_WORD, getUsageInfoForDeleteCommand());
+        }
+        final int targetVisibleIndex = extractTargetIndexFromDeletePersonArgs(commandArgs);
+        if (!isDisplayIndexValidForLastPersonListingView(targetVisibleIndex)) {
+            return MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
+        }
+        final String[] targetInModel = getPersonByLastVisibleIndex(targetVisibleIndex);
+        return deletePersonFromAddressBook(targetInModel) ? getMessageForSuccessfulDelete(targetInModel) // success
+                                                          : MESSAGE_PERSON_NOT_IN_ADDRESSBOOK; // not found
+    }
 
     /**
      * Checks validity of delete person argument string's format.
@@ -515,7 +519,35 @@ public class AddressBook {
         return String.format(MESSAGE_DELETE_PERSON_SUCCESS, getMessageForFormattedPersonData(deletedPerson));
     }
 
+    /**
+     * Clears all persons in the address book.
+     *
+     * @return feedback display message for the operation result
+     */
+    private static String executeClearAddressBook() {
+        clearAddressBook();
+        return MESSAGE_ADDRESSBOOK_CLEARED;
+    }
 
+    /**
+     * Displays all persons in the address book to the user; in added order.
+     *
+     * @return feedback display message for the operation result
+     */
+    private static String executeListAllPersonsInAddressBook() {
+        ArrayList<String[]> toBeDisplayed = getAllPersonsInAddressBook();
+        showToUser(toBeDisplayed);
+        return getMessageForPersonsDisplayedSummary(toBeDisplayed);
+    }
+
+    /**
+     * Request to terminate the program.
+     *
+     * @return feedback display message for the operation result
+     */
+    private static void executeExitProgramRequest() {
+        exitProgram();
+    }
 
     /*
      * ===========================================
@@ -529,6 +561,15 @@ public class AddressBook {
      *
      * @return full line entered by the user
      */
+    private static String getUserInput() {
+        System.out.print(LINE_PREFIX + "Enter command: ");
+        String inputLine = SCANNER.nextLine();
+        // silently consume all blank and comment lines
+        while (inputLine.trim().isEmpty() || inputLine.trim().charAt(0) == INPUT_COMMENT_MARKER) {
+            inputLine = SCANNER.nextLine();
+        }
+        return inputLine;
+    }
 
    /* ==============NOTE TO STUDENTS======================================
     * Note how the method below uses Java 'Varargs' feature so that the
@@ -644,8 +685,7 @@ public class AddressBook {
             showToUser(String.format(MESSAGE_STORAGE_FILE_CREATED, filePath));
         } catch (IOException ioe) {
             showToUser(String.format(MESSAGE_ERROR_CREATING_STORAGE_FILE, filePath));
-            showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
-            System.exit(0);
+            exitProgram();
         }
     }
 
@@ -660,8 +700,7 @@ public class AddressBook {
         final Optional<ArrayList<String[]>> successfullyDecoded = decodePersonsFromStrings(getLinesInFile(filePath));
         if (!successfullyDecoded.isPresent()) {
             showToUser(MESSAGE_INVALID_STORAGE_FILE_CONTENT);
-            showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
-            System.exit(0);
+            exitProgram();
         }
         return successfullyDecoded.get();
     }
@@ -676,12 +715,10 @@ public class AddressBook {
             lines = new ArrayList(Files.readAllLines(Paths.get(filePath)));
         } catch (FileNotFoundException fnfe) {
             showToUser(String.format(MESSAGE_ERROR_MISSING_STORAGE_FILE, filePath));
-            showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
-            System.exit(0);
+            exitProgram();
         } catch (IOException ioe) {
             showToUser(String.format(MESSAGE_ERROR_READING_FROM_FILE, filePath));
-            showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
-            System.exit(0);
+            exitProgram();
         }
         return lines;
     }
@@ -698,8 +735,7 @@ public class AddressBook {
             Files.write(Paths.get(storageFilePath), linesToWrite);
         } catch (IOException ioe) {
             showToUser(String.format(MESSAGE_ERROR_WRITING_TO_FILE, filePath));
-            showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
-            System.exit(0);
+            exitProgram();
         }
     }
 
