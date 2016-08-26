@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Scanner;
@@ -119,6 +120,10 @@ public class AddressBook {
     private static final String COMMAND_CLEAR_WORD = "clear";
     private static final String COMMAND_CLEAR_DESC = "Clears address book permanently.";
     private static final String COMMAND_CLEAR_EXAMPLE = COMMAND_CLEAR_WORD;
+    
+    private static final String COMMAND_SORT_WORD = "sort";
+    private static final String COMMAND_SORT_DESC = "List all persons in alphabetic order.";
+    private static final String COMMAND_SORT_EXAMPLE = COMMAND_SORT_WORD;
 
     private static final String COMMAND_HELP_WORD = "help";
     private static final String COMMAND_HELP_DESC = "Shows program usage instructions.";
@@ -356,6 +361,8 @@ public class AddressBook {
             return executeDeletePerson(commandArgs);
         case COMMAND_CLEAR_WORD:
             return executeClearAddressBook();
+        case COMMAND_SORT_WORD:
+        	return executeSortAllPersonsInAddressBook();
         case COMMAND_HELP_WORD:
             return getUsageInfoForAllCommands();
         case COMMAND_EXIT_WORD:
@@ -569,6 +576,18 @@ public class AddressBook {
         ArrayList<String[]> toBeDisplayed = getAllPersonsInAddressBook();
         showToUser(toBeDisplayed);
         return getMessageForPersonsDisplayedSummary(toBeDisplayed);
+    }
+    
+    /**
+     * List all persons in the address book in an alphabetic order.
+     * 
+     * @return feedback display message for the operation result
+     */
+    private static String executeSortAllPersonsInAddressBook() {
+    	ArrayList<String[]> toBeDisplayed = getAllPersonsInAddressBook();
+    	Collections.sort(toBeDisplayed, alphabeticComparator());
+    	showToUser(toBeDisplayed);
+    	return getMessageForPersonsDisplayedSummary(toBeDisplayed);
     }
 
     /**
@@ -1174,8 +1193,21 @@ public class AddressBook {
     private static String getUsageInfoForExitCommand() {
         return String.format(MESSAGE_COMMAND_HELP, COMMAND_EXIT_WORD, COMMAND_EXIT_DESC)
                 + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_EXIT_EXAMPLE);
+    }  
+    
+    /**
+     * Creates a comparator that compare Strings in alphabetic order.
+     * 
+     * @return an alphabetic comparator
+     */
+    private static Comparator<String[]> alphabeticComparator() {
+    	return new Comparator<String[]>() {
+    		@Override
+    		public int compare(String[] o1, String[] o2) {
+    			return o1[0].toUpperCase().charAt(0) - o2[0].toUpperCase().charAt(0);
+    		}
+    	};
     }
-
 
     /*
      * ============================
