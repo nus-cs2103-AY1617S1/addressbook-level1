@@ -31,7 +31,9 @@ import java.util.Set;
  **/
 public class AddressBook {
 
-    /**
+    private static final String TXT_EXTENSION = ".txt";
+
+	/**
      * Default file path used if the user doesn't provide the file name.
      */
     private static final String DEFAULT_STORAGE_FILEPATH = "addressbook.txt";
@@ -176,7 +178,7 @@ public class AddressBook {
     /**
      * List of all persons in the address book.
      */
-    private static final ArrayList<String[]> ALL_PERSONS = new ArrayList<>();
+    private static final ArrayList<String[]> PERSONS = new ArrayList<>();
 
 
     /**
@@ -310,7 +312,7 @@ public class AddressBook {
      * TODO: Implement a more rigorous validity checking.
      */
     private static boolean isValidFilePath(String filePath) {
-        return filePath.endsWith(".txt");
+        return filePath.endsWith(TXT_EXTENSION);
     }
 
     /**
@@ -340,11 +342,11 @@ public class AddressBook {
         final String commandArgs = commandTypeAndParams[1];
         switch (commandType) {
         case COMMAND_ADD_WORD:
-            return executeAddPerson(commandArgs);
+            return addPerson(commandArgs);
         case COMMAND_FIND_WORD:
-            return executeFindPersons(commandArgs);
+            return findPersons(commandArgs);
         case COMMAND_LIST_WORD:
-            return executeListAllPersonsInAddressBook();
+            return listAllPersonsInAddressBook();
         case COMMAND_DELETE_WORD:
             return executeDeletePerson(commandArgs);
         case COMMAND_CLEAR_WORD:
@@ -353,6 +355,7 @@ public class AddressBook {
             return getUsageInfoForAllCommands();
         case COMMAND_EXIT_WORD:
             executeExitProgramRequest();
+            //Fallthrough
         default:
             return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
         }
@@ -385,7 +388,7 @@ public class AddressBook {
      * @param commandArgs full command args string from the user
      * @return feedback display message for the operation result
      */
-    private static String executeAddPerson(String commandArgs) {
+    private static String addPerson(String commandArgs) {
         // try decoding a person from the raw args
         final Optional<String[]> decodeResult = decodePersonFromString(commandArgs);
 
@@ -403,7 +406,7 @@ public class AddressBook {
     /**
      * Constructs a feedback message for a successful add person command execution.
      *
-     * @see #executeAddPerson(String)
+     * @see #addPerson(String)
      * @param addedPerson person who was successfully added
      * @return successful add person feedback message
      */
@@ -419,7 +422,7 @@ public class AddressBook {
      * @param commandArgs full command args string from the user
      * @return feedback display message for the operation result
      */
-    private static String executeFindPersons(String commandArgs) {
+    private static String findPersons(String commandArgs) {
         final Set<String> keywords = extractKeywordsFromFindPersonArgs(commandArgs);
         final ArrayList<String[]> personsFound = getPersonsWithNameContainingAnyKeyword(keywords);
         showToUser(personsFound);
@@ -543,7 +546,7 @@ public class AddressBook {
      *
      * @return feedback display message for the operation result
      */
-    private static String executeListAllPersonsInAddressBook() {
+    private static String listAllPersonsInAddressBook() {
         ArrayList<String[]> toBeDisplayed = getAllPersonsInAddressBook();
         showToUser(toBeDisplayed);
         return getMessageForPersonsDisplayedSummary(toBeDisplayed);
@@ -628,7 +631,8 @@ public class AddressBook {
      * @return formatted listing message with index
      */
     private static String getIndexedPersonListElementMessage(int visibleIndex, String[] person) {
-        return String.format(MESSAGE_DISPLAY_LIST_ELEMENT_INDEX, visibleIndex) + getMessageForFormattedPersonData(person);
+        return String.format(MESSAGE_DISPLAY_LIST_ELEMENT_INDEX, visibleIndex) 
+        		+ getMessageForFormattedPersonData(person);
     }
 
     /**
@@ -761,7 +765,7 @@ public class AddressBook {
      * @param person to add
      */
     private static void addPersonToAddressBook(String[] person) {
-        ALL_PERSONS.add(person);
+        PERSONS.add(person);
         savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
     }
 
@@ -769,10 +773,10 @@ public class AddressBook {
      * Deletes a person from the address book, target is identified by it's absolute index in the full list.
      * Saves changes to storage file.
      *
-     * @param index absolute index of person to delete (index within {@link #ALL_PERSONS})
+     * @param index absolute index of person to delete (index within {@link #PERSONS})
      */
     private static void deletePersonFromAddressBook(int index) {
-        ALL_PERSONS.remove(index);
+        PERSONS.remove(index);
         savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
     }
 
@@ -783,7 +787,7 @@ public class AddressBook {
      * @return true if the given person was found and deleted in the model
      */
     private static boolean deletePersonFromAddressBook(String[] exactPerson) {
-        final boolean changed = ALL_PERSONS.remove(exactPerson);
+        final boolean changed = PERSONS.remove(exactPerson);
         if (changed) {
             savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
         }
@@ -794,14 +798,14 @@ public class AddressBook {
      * @return unmodifiable list view of all persons in the address book
      */
     private static ArrayList<String[]> getAllPersonsInAddressBook() {
-        return ALL_PERSONS;
+        return PERSONS;
     }
 
     /**
      * Clears all persons in the address book and saves changes to file.
      */
     private static void clearAddressBook() {
-        ALL_PERSONS.clear();
+        PERSONS.clear();
         savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
     }
 
@@ -811,8 +815,8 @@ public class AddressBook {
      * @param persons list of persons to initialise the model with
      */
     private static void initialiseAddressBookModel(ArrayList<String[]> persons) {
-        ALL_PERSONS.clear();
-        ALL_PERSONS.addAll(persons);
+        PERSONS.clear();
+        PERSONS.addAll(persons);
     }
 
 
@@ -1016,9 +1020,9 @@ public class AddressBook {
      * @return whether the given person has valid data
      */
     private static boolean isPersonDataValid(String[] person) {
-        return isPersonNameValid(person[PERSON_DATA_INDEX_NAME])
-                && isPersonPhoneValid(person[PERSON_DATA_INDEX_PHONE])
-                && isPersonEmailValid(person[PERSON_DATA_INDEX_EMAIL]);
+        return isValidPersonName(person[PERSON_DATA_INDEX_NAME])
+                && isValidPersonPhone(person[PERSON_DATA_INDEX_PHONE])
+                && isValidPersonEmail(person[PERSON_DATA_INDEX_EMAIL]);
     }
 
     /*
@@ -1034,7 +1038,7 @@ public class AddressBook {
      * @param name to be validated
      * @return whether arg is a valid person name
      */
-    private static boolean isPersonNameValid(String name) {
+    private static boolean isValidPersonName(String name) {
         return name.matches("(\\w|\\s)+");  // name is nonempty mixture of alphabets and whitespace
         //TODO: implement a more permissive validation
     }
@@ -1045,7 +1049,7 @@ public class AddressBook {
      * @param phone to be validated
      * @return whether arg is a valid person phone number
      */
-    private static boolean isPersonPhoneValid(String phone) {
+    private static boolean isValidPersonPhone(String phone) {
         return phone.matches("\\d+");    // phone nonempty sequence of digits
         //TODO: implement a more permissive validation
     }
@@ -1056,7 +1060,7 @@ public class AddressBook {
      * @param email to be validated
      * @return whether arg is a valid person email
      */
-    private static boolean isPersonEmailValid(String email) {
+    private static boolean isValidPersonEmail(String email) {
         return email.matches("\\S+@\\S+\\.\\S+"); // email is [non-whitespace]@[non-whitespace].[non-whitespace]
         //TODO: implement a more permissive validation
     }
