@@ -27,8 +27,7 @@ import java.util.Set;
  */
 
 /**
- * This class is used to maintain a list of person data which are saved
- * in a text file.
+ * This class is used to maintain a list of person data which are saved in a text file.
  **/
 public class AddressBook {
 
@@ -337,22 +336,22 @@ public class AddressBook {
         final String commandType = commandTypeAndParams[0];
         final String commandArgs = commandTypeAndParams[1];
         switch (commandType) {
-        case COMMAND_ADD_WORD:
-            return executeAddPerson(commandArgs);
-        case COMMAND_FIND_WORD:
-            return executeFindPersons(commandArgs);
-        case COMMAND_LIST_WORD:
-            return executeListAllPersonsInAddressBook();
-        case COMMAND_DELETE_WORD:
-            return executeDeletePerson(commandArgs);
-        case COMMAND_CLEAR_WORD:
-            return executeClearAddressBook();
-        case COMMAND_HELP_WORD:
-            return getUsageInfoForAllCommands();
-        case COMMAND_EXIT_WORD:
-            exitProgram();
-        default:
-            return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
+            case COMMAND_ADD_WORD :
+                return executeAddPerson(commandArgs);
+            case COMMAND_FIND_WORD :
+                return executeFindPersons(commandArgs);
+            case COMMAND_LIST_WORD :
+                return executeListAllPersonsInAddressBook();
+            case COMMAND_DELETE_WORD :
+                return executeDeletePerson(commandArgs);
+            case COMMAND_CLEAR_WORD :
+                return executeClearAddressBook();
+            case COMMAND_HELP_WORD :
+                return getUsageInfoForAllCommands();
+            case COMMAND_EXIT_WORD :
+                exitProgram();
+            default:
+                return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
         }
     }
 
@@ -488,7 +487,8 @@ public class AddressBook {
      */
     private static boolean isDeletePersonArgsValid(String rawArgs) {
         try {
-            final int extractedIndex = Integer.parseInt(rawArgs.trim()); // use standard libraries to parse
+            final int extractedIndex = Integer.parseInt(rawArgs.trim()); // use standard libraries
+                                                                         // to parse
             return extractedIndex >= DISPLAYED_INDEX_OFFSET;
         } catch (NumberFormatException nfe) {
             return false;
@@ -512,7 +512,8 @@ public class AddressBook {
      * @return whether it is valid
      */
     private static boolean isDisplayIndexValidForLastPersonListingView(int index) {
-        return index >= DISPLAYED_INDEX_OFFSET && index < getLatestPersonListingView().size() + DISPLAYED_INDEX_OFFSET;
+        return index >= DISPLAYED_INDEX_OFFSET
+                && index < getLatestPersonListingView().size() + DISPLAYED_INDEX_OFFSET;
     }
 
     /**
