@@ -199,8 +199,23 @@ public class AddressBook {
      * ====================================================================
      */
     public static void main(String[] args) {
-        showWelcomeMessage();
-        processProgramArgs(args);
+        String[] message = { DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER };
+		for (String m : message) {
+		    System.out.println(LINE_PREFIX + m);
+		}
+        if (args.length >= 2) {
+		    showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
+		    showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
+			System.exit(0);
+		}
+		
+		if (args.length == 1) {
+		    setupGivenFileForStorage(args[0]);
+		}
+		
+		if(args.length == 0) {
+		    setupDefaultFileForStorage();
+		}
         loadDataFromStorage();
         executeUserCommandTillExit();
     }
@@ -263,7 +278,8 @@ public class AddressBook {
     private static void processProgramArgs(String[] args) {
         if (args.length >= 2) {
             showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
-            exitProgram();
+            showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
+			System.exit(0);
         }
 
         if (args.length == 1) {
@@ -271,7 +287,9 @@ public class AddressBook {
         }
 
         if(args.length == 0) {
-            setupDefaultFileForStorage();
+            showToUser(MESSAGE_USING_DEFAULT_FILE);
+			storageFilePath = DEFAULT_STORAGE_FILEPATH;
+			createFileIfMissing(storageFilePath);
         }
     }
 
@@ -346,7 +364,8 @@ public class AddressBook {
      * @return  feedback about how the command was executed
      */
     public static String executeCommand(String userInputString) {
-        final String[] commandTypeAndParams = splitCommandWordAndArgs(userInputString);
+        final String[] split =  userInputString.trim().split("\\s+", 2);
+		final String[] commandTypeAndParams = split.length == 2 ? split : new String[] { split[0] , "" };
         final String commandType = commandTypeAndParams[0];
         final String commandArgs = commandTypeAndParams[1];
         switch (commandType) {
@@ -402,7 +421,7 @@ public class AddressBook {
 
         // checks if args are valid (decode result will not be present if the person is invalid)
         if (!decodeResult.isPresent()) {
-            return getMessageForInvalidCommandInput(COMMAND_ADD_WORD, getUsageInfoForAddCommand());
+            return String.format(MESSAGE_INVALID_COMMAND_FORMAT, COMMAND_ADD_WORD, getUsageInfoForAddCommand());
         }
 
         // add the person as specified
@@ -601,7 +620,7 @@ public class AddressBook {
      */
     private static void showToUser(String... message) {
         for (String m : message) {
-            System.out.println(LINE_PREFIX + m);
+            System.out.println("|| " + m);
         }
     }
 
@@ -649,7 +668,7 @@ public class AddressBook {
      * @return formatted message showing internal state
      */
     private static String getMessageForFormattedPersonData(String[] person) {
-        return String.format(MESSAGE_DISPLAY_PERSON_DATA,
+        return String.format("%1$s  Phone Number: %2$s  Email: %3$s",
                 getNameFromPerson(person), getPhoneFromPerson(person), getEmailFromPerson(person));
     }
 
