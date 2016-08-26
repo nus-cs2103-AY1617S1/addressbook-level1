@@ -137,21 +137,21 @@ public class AddressBook {
      * For example, a person's name is stored as the 0th element in the array.
      */
   
-    private static final int PERSON_DATA_INDEX_NAME = 0;
-    private static final int PERSON_DATA_INDEX_PHONE = 1;
-    private static final int PERSON_DATA_INDEX_EMAIL = 2;
+//    private static final int PERSON_DATA_INDEX_NAME = 0;
+//    private static final int PERSON_DATA_INDEX_PHONE = 1;
+//    private static final int PERSON_DATA_INDEX_EMAIL = 2;
     
     // To modify into a HashMap, we need some new keys
     
-    private static final String PERSON_PROPERTY_NAME = "name";
-    private static final String PERSON_PROPERTY_EMAIL = "email";
-    private static final String PERSON_PROPERTY_NUMBER = "number";
+//    private static final String PERSON_PROPERTY_NAME = "name";
+//    private static final String PERSON_PROPERTY_EMAIL = "email";
+//    private static final String PERSON_PROPERTY_NUMBER = "number";
     
     private enum PersonProperty  {NAME, EMAIL, PHONE};
     /**
      * The number of data elements for a single person.
      */
-    private static final int PERSON_DATA_COUNT = 3;
+//    private static final int PERSON_DATA_COUNT = 3;
 
     /**
      * Offset required to convert between 1-indexing and 0-indexing.COMMAND_
@@ -206,19 +206,29 @@ public class AddressBook {
      * method alone.
      * ====================================================================
      */
+    
+    // refactored into two big functions, one to start programme, second to process a query
     public static void main(String[] args) {
-        showWelcomeMessage();
-        processProgramArgs(args);
-        loadDataFromStorage();
-        while (true) {
-            String userCommand = getUserInput();
-            echoUserCommand(userCommand);
-            String feedback = executeCommand(userCommand);
-            showResultToUser(feedback);
-        }
+        startProgram(args);
+        processCommand();
     }
 
-    /*
+	private static void startProgram(String[] args) {
+		showWelcomeMessage();
+		processProgramArgs(args);
+		loadDataFromStorage();
+	}
+
+	private static void processCommand() {
+		while (true) {
+		    String userCommand = getUserInput();
+		    echoUserCommand(userCommand);
+		    String feedback = executeCommand(userCommand);
+		    showResultToUser(feedback);
+		}
+	}
+
+	/*
      * ==============NOTE TO STUDENTS======================================
      * The method header comment can be omitted if the method is trivial
      * and the header comment is going to be almost identical to the method
@@ -262,17 +272,22 @@ public class AddressBook {
      *
      * @param args full program arguments passed to application main method
      */
+    
+    private static final int INVALID_NUMBER_PROGRAM_ARGS = 2;
+    private static final int VALID_NUMBER_PROGRAM_ARGS = 1;
+    private static final int NO_PROGRAM_ARGS = 0;
+    
     private static void processProgramArgs(String[] args) {
-        if (args.length >= 2) {
+        if (args.length >= INVALID_NUMBER_PROGRAM_ARGS) {
             showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
             exitProgram();
         }
 
-        if (args.length == 1) {
+        if (args.length == VALID_NUMBER_PROGRAM_ARGS) {
             setupGivenFileForStorage(args[0]);
         }
 
-        if(args.length == 0) {
+        if(args.length == NO_PROGRAM_ARGS) {
             setupDefaultFileForStorage();
         }
     }
@@ -342,10 +357,14 @@ public class AddressBook {
      * @param userInputString  raw input from user
      * @return  feedback about how the command was executed
      */
+    
+    private static final int COMMAND_TYPE_INDEX = 0;
+    private static final int COMMAND_ARG_INDEX = 1;
+    
     public static String executeCommand(String userInputString) {
         final String[] commandTypeAndParams = splitCommandWordAndArgs(userInputString);
-        final String commandType = commandTypeAndParams[0];
-        final String commandArgs = commandTypeAndParams[1];
+        final String commandType = commandTypeAndParams[COMMAND_TYPE_INDEX];
+        final String commandArgs = commandTypeAndParams[COMMAND_ARG_INDEX];
         switch (commandType) {
         case COMMAND_ADD_WORD:
             return executeAddPerson(commandArgs);
@@ -461,7 +480,7 @@ public class AddressBook {
      * @return list of persons in full model with name containing some of the keywords
      */
     private static ArrayList<HashMap<PersonProperty, String>> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
-        final ArrayList<HashMap<PersonProperty, String>> matchedPersons = new ArrayList<>();
+        ArrayList<HashMap<PersonProperty, String>> matchedPersons = new ArrayList<>();
         for (HashMap<PersonProperty, String> person : getAllPersonsInAddressBook()) {
             final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
             if (!Collections.disjoint(wordsInName, keywords)) {
@@ -647,7 +666,7 @@ public class AddressBook {
             messageAccumulator.append('\t')
                               .append(getIndexedPersonListElementMessage(displayIndex, person))
                               .append(LS);
-        }
+        }	
         return messageAccumulator.toString();
     }
 
@@ -984,7 +1003,8 @@ public class AddressBook {
     /**
      * Extracts substring representing person name from person string representation
      *
-     * @param encoded person string representation
+     * @param encoded person st
+     * ring representation
      * @return name argument
      */
     private static String extractNameFromPersonString(String encoded) {
@@ -1212,7 +1232,7 @@ public class AddressBook {
      * @return split by whitespace
      */
     private static ArrayList<String> splitByWhitespace(String toSplit) {
-        return new ArrayList(Arrays.asList(toSplit.trim().split("\\s+")));
+        return new ArrayList<String>(Arrays.asList(toSplit.trim().split("\\s+")));
     }
 
 }
