@@ -137,6 +137,12 @@ public class AddressBook {
 
     private static final String DIVIDER = "===================================================";
 
+    /**
+     * File extensions
+     * @author darren
+     */
+    private static final String FILE_TXT_EXTENSION = ".txt";
+    
     /*
      * We use a String array to store details of a single person. The constants
      * given below are the indexes for the different data elements of a person
@@ -320,7 +326,7 @@ public class AddressBook {
      * if it ends in '.txt' TODO: Implement a more rigorous validity checking.
      */
     private static boolean isValidFilePath(String filePath) {
-        return filePath.endsWith(".txt");
+        return filePath.endsWith(FILE_TXT_EXTENSION);
     }
 
     /**
