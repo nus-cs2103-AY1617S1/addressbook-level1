@@ -51,7 +51,7 @@
   find bet
   # does not match if none have keyword
   find 23912039120
-  # matching should be case-sensitive
+  # matching should be case-insensitive
   find betsy
 
   # find unique keyword
@@ -89,6 +89,25 @@
 
   # listing indexes get updated on next request
   delete 1
+  list
+
+##########################################################
+# test sort command
+##########################################################
+  
+  add AdmiralBulldog e/bulldog@alliance.gg p/123456
+  sort
+  delete 2
+  list
+
+##########################################################
+# test edit command
+##########################################################
+  edit AdmiralBulldog e/bulldong@alliance.gg
+  list
+  edit AdmiralBulldog p/420123
+  list
+  edit AdmiralBulldog e/bulldog@alliance.gg p/123456
   list
 
 ##########################################################

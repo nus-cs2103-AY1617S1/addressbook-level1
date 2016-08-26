@@ -10,12 +10,19 @@
 || 	Parameters: NAME p/PHONE_NUMBER e/EMAIL
 || 	Example: add John Doe p/98765432 e/johnd@gmail.com
 || 
-|| find: Finds all persons whose names contain any of the specified keywords (case-sensitive) and displays them as a list with index numbers.
+|| find: Finds all persons whose names contain any of the specified keywords (case-insensitive) and displays them as a list with index numbers.
 || 	Parameters: KEYWORD [MORE_KEYWORDS]
 || 	Example: find alice bob charlie
 || 
+|| edit: Edits the details of a person with the given name in the address book with the new details. (if ommited, the details will remain unchanged)
+|| 	Parameters: NAME p/PHONE_NUMBER e/EMAIL
+|| 	Example: edit John Doe [p/98765432 e/johnd@gmail.com]
+|| 
 || list: Displays all persons as a list with index numbers.
 || 	Example: list
+|| 
+|| sort: Displays all persons in alphebatical order as a list with index numbers.
+|| 	Example: sort
 || 
 || delete: Deletes a person identified by the index number used in the last find/list call.
 || 	Parameters: INDEX
@@ -139,8 +146,9 @@
 || 0 persons found!
 || ===================================================
 || Enter command: || [Command entered:  find betsy]
+|| 	1. Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
 || 
-|| 0 persons found!
+|| 1 persons found!
 || ===================================================
 || Enter command: || [Command entered:  find Betsy]
 || 	1. Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
@@ -219,6 +227,52 @@
 || ===================================================
 || Enter command: || [Command entered:  list]
 || 	1. Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
+|| 	2. Dickson Ee  Phone Number: 444444  Email: dickson@nus.edu.sg
+|| 
+|| 2 persons found!
+|| ===================================================
+|| Enter command: || [Command entered:  add AdmiralBulldog e/bulldog@alliance.gg p/123456]
+|| New person added: AdmiralBulldog, Phone: 123456, Email: bulldog@alliance.gg
+|| ===================================================
+|| Enter command: || [Command entered:  sort]
+|| 	1. AdmiralBulldog  Phone Number: 123456  Email: bulldog@alliance.gg
+|| 	2. Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
+|| 	3. Dickson Ee  Phone Number: 444444  Email: dickson@nus.edu.sg
+|| 
+|| 3 persons found!
+|| ===================================================
+|| Enter command: || [Command entered:  delete 2]
+|| Deleted Person: Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
+|| ===================================================
+|| Enter command: || [Command entered:  list]
+|| 	1. AdmiralBulldog  Phone Number: 123456  Email: bulldog@alliance.gg
+|| 	2. Dickson Ee  Phone Number: 444444  Email: dickson@nus.edu.sg
+|| 
+|| 2 persons found!
+|| ===================================================
+|| Enter command: || [Command entered:  edit AdmiralBulldog e/bulldong@alliance.gg]
+|| Person AdmiralBulldog details edited: Phone: 123456, Email: bulldong@alliance.gg
+|| ===================================================
+|| Enter command: || [Command entered:  list]
+|| 	1. AdmiralBulldog  Phone Number: 123456  Email: bulldong@alliance.gg
+|| 	2. Dickson Ee  Phone Number: 444444  Email: dickson@nus.edu.sg
+|| 
+|| 2 persons found!
+|| ===================================================
+|| Enter command: || [Command entered:  edit AdmiralBulldog p/420123]
+|| Person AdmiralBulldog details edited: Phone: 420123, Email: bulldong@alliance.gg
+|| ===================================================
+|| Enter command: || [Command entered:  list]
+|| 	1. AdmiralBulldog  Phone Number: 420123  Email: bulldong@alliance.gg
+|| 	2. Dickson Ee  Phone Number: 444444  Email: dickson@nus.edu.sg
+|| 
+|| 2 persons found!
+|| ===================================================
+|| Enter command: || [Command entered:  edit AdmiralBulldog e/bulldog@alliance.gg p/123456]
+|| Person AdmiralBulldog details edited: Phone: 123456, Email: bulldog@alliance.gg
+|| ===================================================
+|| Enter command: || [Command entered:  list]
+|| 	1. AdmiralBulldog  Phone Number: 123456  Email: bulldog@alliance.gg
 || 	2. Dickson Ee  Phone Number: 444444  Email: dickson@nus.edu.sg
 || 
 || 2 persons found!
