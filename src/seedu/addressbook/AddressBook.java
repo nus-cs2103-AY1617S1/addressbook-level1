@@ -420,10 +420,15 @@ public class AddressBook {
      * @return feedback display message for the operation result
      */
     private static String executeFindPersons(String commandArgs) {
-        final Set<String> keywords = extractKeywordsFromFindPersonArgs(commandArgs);
+    	String lowerCaseCommandArg= makeLowerCase(commandArgs);
+        final Set<String> keywords = extractKeywordsFromFindPersonArgs(lowerCaseCommandArg);
         final ArrayList<String[]> personsFound = getPersonsWithNameContainingAnyKeyword(keywords);
         showToUser(personsFound);
         return getMessageForPersonsDisplayedSummary(personsFound);
+    }
+    
+    private static String makeLowerCase(String commandArgs){
+    	return commandArgs.toLowerCase();
     }
 
     /**
@@ -455,7 +460,8 @@ public class AddressBook {
     private static ArrayList<String[]> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
         for (String[] person : getAllPersonsInAddressBook()) {
-            final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
+        	String lowerCaseNameOfPerson= makeLowerCase(getNameFromPerson(person));
+            final Set<String> wordsInName = new HashSet<>(splitByWhitespace(lowerCaseNameOfPerson));
             if (!Collections.disjoint(wordsInName, keywords)) {
                 matchedPersons.add(person);
             }
