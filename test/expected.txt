@@ -17,7 +17,14 @@
 || list: Displays all persons as a list with index numbers.
 || 	Example: list
 || 
-|| delete: Deletes a person identified by the index number used in the last find/list call.
+|| sort: Displays all persons as a list with index numbers in alphabetical order.
+|| 	Example: sort
+|| 
+|| edit: Edits a person identified by the index number used in the last find/list/sort call.
+|| 	Parameters: INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL]
+|| 	Example: edit 1 [n/{new name}] [p/{new phone number}] [e/{new email}]
+|| 
+|| delete: Deletes a person identified by the index number used in the last find/list/sort call.
 || 	Parameters: INDEX
 || 	Example: delete 1
 || 
@@ -161,28 +168,28 @@
 || ===================================================
 || Enter command: || [Command entered:  delete]
 || Invalid command format: delete 
-|| delete: Deletes a person identified by the index number used in the last find/list call.
+|| delete: Deletes a person identified by the index number used in the last find/list/sort call.
 || 	Parameters: INDEX
 || 	Example: delete 1
 || 
 || ===================================================
 || Enter command: || [Command entered:  delete should be only one number]
 || Invalid command format: delete 
-|| delete: Deletes a person identified by the index number used in the last find/list call.
+|| delete: Deletes a person identified by the index number used in the last find/list/sort call.
 || 	Parameters: INDEX
 || 	Example: delete 1
 || 
 || ===================================================
 || Enter command: || [Command entered:  delete -1]
 || Invalid command format: delete 
-|| delete: Deletes a person identified by the index number used in the last find/list call.
+|| delete: Deletes a person identified by the index number used in the last find/list/sort call.
 || 	Parameters: INDEX
 || 	Example: delete 1
 || 
 || ===================================================
 || Enter command: || [Command entered:  delete 0]
 || Invalid command format: delete 
-|| delete: Deletes a person identified by the index number used in the last find/list call.
+|| delete: Deletes a person identified by the index number used in the last find/list/sort call.
 || 	Parameters: INDEX
 || 	Example: delete 1
 || 
@@ -222,6 +229,53 @@
 || 	2. Dickson Ee  Phone Number: 444444  Email: dickson@nus.edu.sg
 || 
 || 2 persons found!
+|| ===================================================
+|| Enter command: || [Command entered:  add Adele Ang p/111111 e/adele@gmail.com]
+|| New person added: Adele Ang, Phone: 111111, Email: adele@gmail.com
+|| ===================================================
+|| Enter command: || [Command entered:  list]
+|| 	1. Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
+|| 	2. Dickson Ee  Phone Number: 444444  Email: dickson@nus.edu.sg
+|| 	3. Adele Ang  Phone Number: 111111  Email: adele@gmail.com
+|| 
+|| 3 persons found!
+|| ===================================================
+|| Enter command: || [Command entered:  sort]
+|| 	1. Adele Ang  Phone Number: 111111  Email: adele@gmail.com
+|| 	2. Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
+|| 	3. Dickson Ee  Phone Number: 444444  Email: dickson@nus.edu.sg
+|| 
+|| 3 persons found!
+|| ===================================================
+|| Enter command: || [Command entered:  edit 1]
+|| Invalid command format: edit 
+|| edit: Edits a person identified by the index number used in the last find/list/sort call.
+|| 	Parameters: INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL]
+|| 	Example: edit 1 [n/{new name}] [p/{new phone number}] [e/{new email}]
+|| 
+|| ===================================================
+|| Enter command: || [Command entered:  edit should be only one number]
+|| Invalid command format: edit 
+|| edit: Edits a person identified by the index number used in the last find/list/sort call.
+|| 	Parameters: INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL]
+|| 	Example: edit 1 [n/{new name}] [p/{new phone number}] [e/{new email}]
+|| 
+|| ===================================================
+|| Enter command: || [Command entered:  edit 1 p/123456]
+|| Edited Person: Adele Ang  Phone Number: 111111  Email: adele@gmail.com
+|| After Edit: Adele Ang  Phone Number: 123456  Email: adele@gmail.com
+|| ===================================================
+|| Enter command: || [Command entered:  edit 1 n/Adeline Ang e/adeline@gmail.com]
+|| Edited Person: Adele Ang  Phone Number: 123456  Email: adele@gmail.com
+|| After Edit: Adeline Ang  Phone Number: 123456  Email: adeline@gmail.com
+|| ===================================================
+|| Enter command: || [Command entered:  edit 2 e/betsychoo@nus.edu.sg]
+|| Edited Person: Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
+|| After Edit: Betsy Choo  Phone Number: 222222  Email: betsychoo@nus.edu.sg
+|| ===================================================
+|| Enter command: || [Command entered:  edit 3 n/Dickson Ong p/333333 e/dickson@gmail.com]
+|| Edited Person: Dickson Ee  Phone Number: 444444  Email: dickson@nus.edu.sg
+|| After Edit: Dickson Ong  Phone Number: 333333  Email: dickson@gmail.com
 || ===================================================
 || Enter command: || [Command entered:  clear]
 || Address book has been cleared!

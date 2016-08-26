@@ -90,6 +90,28 @@
   # listing indexes get updated on next request
   delete 1
   list
+  
+##########################################################
+# test sort command
+##########################################################
+
+  add Adele Ang p/111111 e/adele@gmail.com
+  list
+  sort
+  
+##########################################################
+# test edit command
+##########################################################
+
+  # should catch invalid args format
+  edit 1
+  edit should be only one number
+  
+  # should edit correctly
+  edit 1 p/123456
+  edit 1 n/Adeline Ang e/adeline@gmail.com
+  edit 2 e/betsychoo@nus.edu.sg
+  edit 3 n/Dickson Ong p/333333 e/dickson@gmail.com
 
 ##########################################################
 # test clear command
