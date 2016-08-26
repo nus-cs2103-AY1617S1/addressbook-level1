@@ -199,14 +199,27 @@ public class AddressBook {
      * ====================================================================
      */
     public static void main(String[] args) {
-        showWelcomeMessage();
-        processProgramArgs(args);
+        showToUser(DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER);
+        
+        if (args.length >= 2) {
+            showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
+            showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
+            System.exit(0);
+        }
+
+        if (args.length == 1) {
+            setupGivenFileForStorage(args[0]);
+        }
+
+        if(args.length == 0) {
+            setupDefaultFileForStorage();
+        }
         loadDataFromStorage();
         while (true) {
             String userCommand = getUserInput();
             echoUserCommand(userCommand);
             String feedback = executeCommand(userCommand);
-            showResultToUser(feedback);
+            showToUser(feedback, DIVIDER);
         }
     }
 
@@ -217,13 +230,9 @@ public class AddressBook {
      * signature anyway.
      * ====================================================================
      */
-    private static void showWelcomeMessage() {
-        showToUser(DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER);
-    }
+    
 
-    private static void showResultToUser(String result) {
-        showToUser(result, DIVIDER);
-    }
+  
 
     /*
      * ==============NOTE TO STUDENTS======================================
@@ -254,20 +263,7 @@ public class AddressBook {
      *
      * @param args full program arguments passed to application main method
      */
-    private static void processProgramArgs(String[] args) {
-        if (args.length >= 2) {
-            showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
-            exitProgram();
-        }
-
-        if (args.length == 1) {
-            setupGivenFileForStorage(args[0]);
-        }
-
-        if(args.length == 0) {
-            setupDefaultFileForStorage();
-        }
-    }
+    
 
     /**
      * Sets up the storage file based on the supplied file path.
@@ -278,7 +274,10 @@ public class AddressBook {
 
         if (!isValidFilePath(filePath)) {
             showToUser(String.format(MESSAGE_INVALID_FILE, filePath));
-            exitProgram();
+            showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
+            System.exit(0);
+            showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
+            System.exit(0);
         }
 
         storageFilePath = filePath;
@@ -288,10 +287,7 @@ public class AddressBook {
     /**
      * Displays the goodbye message and exits the runtime.
      */
-    private static void exitProgram() {
-        showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
-        System.exit(0);
-    }
+    
 
     /**
      * Sets up the storage based on the default file.
@@ -555,7 +551,8 @@ public class AddressBook {
      * @return feedback display message for the operation result
      */
     private static void executeExitProgramRequest() {
-        exitProgram();
+    	showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
+        System.exit(0);
     }
 
     /*
@@ -694,7 +691,8 @@ public class AddressBook {
             showToUser(String.format(MESSAGE_STORAGE_FILE_CREATED, filePath));
         } catch (IOException ioe) {
             showToUser(String.format(MESSAGE_ERROR_CREATING_STORAGE_FILE, filePath));
-            exitProgram();
+            showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
+            System.exit(0);
         }
     }
 
@@ -709,7 +707,8 @@ public class AddressBook {
         final Optional<ArrayList<String[]>> successfullyDecoded = decodePersonsFromStrings(getLinesInFile(filePath));
         if (!successfullyDecoded.isPresent()) {
             showToUser(MESSAGE_INVALID_STORAGE_FILE_CONTENT);
-            exitProgram();
+            showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
+            System.exit(0);
         }
         return successfullyDecoded.get();
     }
@@ -724,10 +723,12 @@ public class AddressBook {
             lines = new ArrayList(Files.readAllLines(Paths.get(filePath)));
         } catch (FileNotFoundException fnfe) {
             showToUser(String.format(MESSAGE_ERROR_MISSING_STORAGE_FILE, filePath));
-            exitProgram();
+            showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
+            System.exit(0);
         } catch (IOException ioe) {
             showToUser(String.format(MESSAGE_ERROR_READING_FROM_FILE, filePath));
-            exitProgram();
+            showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
+            System.exit(0);
         }
         return lines;
     }
@@ -744,7 +745,8 @@ public class AddressBook {
             Files.write(Paths.get(storageFilePath), linesToWrite);
         } catch (IOException ioe) {
             showToUser(String.format(MESSAGE_ERROR_WRITING_TO_FILE, filePath));
-            exitProgram();
+            showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
+            System.exit(0);
         }
     }
 
