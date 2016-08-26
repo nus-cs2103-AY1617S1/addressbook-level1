@@ -34,22 +34,22 @@ public class AddressBook {
     /**
      * Default file path used if the user doesn't provide the file name.
      */
-    private static final String DEFAULT_STORAGE_FILEPATH = "addressbook.txt";
+    private static final String a = "addressbook.txt";
 
     /**
      * Version info of the program.
      */
-    private static final String VERSION = "AddessBook Level 1 - Version 1.0";
+    private static final String b = "AddessBook Level 1 - Version 1.0";
 
     /**
      * A decorative prefix added to the beginning of lines printed by AddressBook
      */
-    public static final String LINE_PREFIX = "|| ";
+    public static final String c = "|| ";
 
     /**
      * A platform independent line separator.
      */
-    private static final String LS = System.lineSeparator() + LINE_PREFIX;
+    private static final String d = System.lineSeparator() + c;
 
     /*
      * ==============NOTE TO STUDENTS======================================
@@ -60,75 +60,75 @@ public class AddressBook {
      * at which java String.format(...) method can insert values.
      * ====================================================================
      */
-    private static final String MESSAGE_ADDED = "New person added: %1$s, Phone: %2$s, Email: %3$s";
-    private static final String MESSAGE_ADDRESSBOOK_CLEARED = "Address book has been cleared!";
-    private static final String MESSAGE_COMMAND_HELP = "%1$s: %2$s";
-    private static final String MESSAGE_COMMAND_HELP_PARAMETERS = "\tParameters: %1$s";
-    private static final String MESSAGE_COMMAND_HELP_EXAMPLE = "\tExample: %1$s";
-    private static final String MESSAGE_DELETE_PERSON_SUCCESS = "Deleted Person: %1$s";
-    private static final String MESSAGE_DISPLAY_PERSON_DATA = "%1$s  Phone Number: %2$s  Email: %3$s";
-    private static final String MESSAGE_DISPLAY_LIST_ELEMENT_INDEX = "%1$d. ";
-    private static final String MESSAGE_GOODBYE = "Exiting Address Book... Good bye!";
-    private static final String MESSAGE_INVALID_COMMAND_FORMAT = "Invalid command format: %1$s " + LS + "%2$s";
-    private static final String MESSAGE_INVALID_FILE = "The given file name [%1$s] is not a valid file name!";
-    private static final String MESSAGE_INVALID_PROGRAM_ARGS = "Too many parameters! Correct program argument format:"
-                                                            + LS + "\tjava AddressBook"
-                                                            + LS + "\tjava AddressBook [custom storage file path]";
-    private static final String MESSAGE_INVALID_PERSON_DISPLAYED_INDEX = "The person index provided is invalid";
-    private static final String MESSAGE_INVALID_STORAGE_FILE_CONTENT = "Storage file has invalid content";
-    private static final String MESSAGE_PERSON_NOT_IN_ADDRESSBOOK = "Person could not be found in address book";
-    private static final String MESSAGE_ERROR_CREATING_STORAGE_FILE = "Error: unable to create file: %1$s";
-    private static final String MESSAGE_ERROR_MISSING_STORAGE_FILE = "Storage file missing: %1$s";
-    private static final String MESSAGE_ERROR_READING_FROM_FILE = "Unexpected error: unable to read from file: %1$s";
-    private static final String MESSAGE_ERROR_WRITING_TO_FILE = "Unexpected error: unable to write to file: %1$s";
-    private static final String MESSAGE_PERSONS_FOUND_OVERVIEW = "%1$d persons found!";
-    private static final String MESSAGE_STORAGE_FILE_CREATED = "Created new empty storage file: %1$s";
-    private static final String MESSAGE_WELCOME = "Welcome to your Address Book!";
-    private static final String MESSAGE_USING_DEFAULT_FILE = "Using default storage file : " + DEFAULT_STORAGE_FILEPATH;
+    private static final String e = "New person added: %1$s, Phone: %2$s, Email: %3$s";
+    private static final String f = "Address book has been cleared!";
+    private static final String g = "%1$s: %2$s";
+    private static final String h = "\tParameters: %1$s";
+    private static final String i = "\tExample: %1$s";
+    private static final String j = "Deleted Person: %1$s";
+    private static final String k = "%1$s  Phone Number: %2$s  Email: %3$s";
+    private static final String l = "%1$d. ";
+    private static final String m = "Exiting Address Book... Good bye!";
+    private static final String n = "Invalid command format: %1$s " + d + "%2$s";
+    private static final String o = "The given file name [%1$s] is not a valid file name!";
+    private static final String p = "Too many parameters! Correct program argument format:"
+                                                            + d + "\tjava AddressBook"
+                                                            + d + "\tjava AddressBook [custom storage file path]";
+    private static final String q = "The person index provided is invalid";
+    private static final String r = "Storage file has invalid content";
+    private static final String s = "Person could not be found in address book";
+    private static final String t = "Error: unable to create file: %1$s";
+    private static final String u = "Storage file missing: %1$s";
+    private static final String v = "Unexpected error: unable to read from file: %1$s";
+    private static final String w = "Unexpected error: unable to write to file: %1$s";
+    private static final String x = "%1$d persons found!";
+    private static final String y = "Created new empty storage file: %1$s";
+    private static final String z = "Welcome to your Address Book!";
+    private static final String aa = "Using default storage file : " + a;
 
     // These are the prefix strings to define the data type of a command parameter
-    private static final String PERSON_DATA_PREFIX_PHONE = "p/";
-    private static final String PERSON_DATA_PREFIX_EMAIL = "e/";
+    private static final String ab = "p/";
+    private static final String ac = "e/";
 
-    private static final String PERSON_STRING_REPRESENTATION = "%1$s " // name
-                                                            + PERSON_DATA_PREFIX_PHONE + "%2$s " // phone
-                                                            + PERSON_DATA_PREFIX_EMAIL + "%3$s"; // email
-    private static final String COMMAND_ADD_WORD = "add";
-    private static final String COMMAND_ADD_DESC = "Adds a person to the address book.";
-    private static final String COMMAND_ADD_PARAMETERS = "NAME "
-                                                      + PERSON_DATA_PREFIX_PHONE + "PHONE_NUMBER "
-                                                      + PERSON_DATA_PREFIX_EMAIL + "EMAIL";
-    private static final String COMMAND_ADD_EXAMPLE = COMMAND_ADD_WORD + " John Doe p/98765432 e/johnd@gmail.com";
+    private static final String ad = "%1$s " // name
+                                                            + ab + "%2$s " // phone
+                                                            + ac + "%3$s"; // email
+    private static final String ae = "add";
+    private static final String af = "Adds a person to the address book.";
+    private static final String ag = "NAME "
+                                                      + ab + "PHONE_NUMBER "
+                                                      + ac + "EMAIL";
+    private static final String ah = ae + " John Doe p/98765432 e/johnd@gmail.com";
 
-    private static final String COMMAND_FIND_WORD = "find";
-    private static final String COMMAND_FIND_DESC = "Finds all persons whose names contain any of the specified "
+    private static final String ai = "find";
+    private static final String aj = "Finds all persons whose names contain any of the specified "
                                         + "keywords (case-sensitive) and displays them as a list with index numbers.";
-    private static final String COMMAND_FIND_PARAMETERS = "KEYWORD [MORE_KEYWORDS]";
-    private static final String COMMAND_FIND_EXAMPLE = COMMAND_FIND_WORD + " alice bob charlie";
+    private static final String ak = "KEYWORD [MORE_KEYWORDS]";
+    private static final String al = ai + " alice bob charlie";
 
-    private static final String COMMAND_LIST_WORD = "list";
-    private static final String COMMAND_LIST_DESC = "Displays all persons as a list with index numbers.";
-    private static final String COMMAND_LIST_EXAMPLE = COMMAND_LIST_WORD;
+    private static final String am = "list";
+    private static final String an = "Displays all persons as a list with index numbers.";
+    private static final String ao = am;
 
-    private static final String COMMAND_DELETE_WORD = "delete";
-    private static final String COMMAND_DELETE_DESC = "Deletes a person identified by the index number used in "
+    private static final String ap = "delete";
+    private static final String aq = "Deletes a person identified by the index number used in "
                                                     + "the last find/list call.";
-    private static final String COMMAND_DELETE_PARAMETER = "INDEX";
-    private static final String COMMAND_DELETE_EXAMPLE = COMMAND_DELETE_WORD + " 1";
+    private static final String ar = "INDEX";
+    private static final String as = ap + " 1";
 
-    private static final String COMMAND_CLEAR_WORD = "clear";
-    private static final String COMMAND_CLEAR_DESC = "Clears address book permanently.";
-    private static final String COMMAND_CLEAR_EXAMPLE = COMMAND_CLEAR_WORD;
+    private static final String at = "clear";
+    private static final String au = "Clears address book permanently.";
+    private static final String av = at;
 
-    private static final String COMMAND_HELP_WORD = "help";
-    private static final String COMMAND_HELP_DESC = "Shows program usage instructions.";
-    private static final String COMMAND_HELP_EXAMPLE = COMMAND_HELP_WORD;
+    private static final String aw = "help";
+    private static final String ax = "Shows program usage instructions.";
+    private static final String ay = aw;
 
-    private static final String COMMAND_EXIT_WORD = "exit";
-    private static final String COMMAND_EXIT_DESC = "Exits the program.";
-    private static final String COMMAND_EXIT_EXAMPLE = COMMAND_EXIT_WORD;
+    private static final String az = "exit";
+    private static final String ba = "Exits the program.";
+    private static final String bb = az;
 
-    private static final String DIVIDER = "===================================================";
+    private static final String bc = "===================================================";
 
 
     /* We use a String array to store details of a single person.
@@ -136,26 +136,26 @@ public class AddressBook {
      * used by the internal String[] storage format.
      * For example, a person's name is stored as the 0th element in the array.
      */
-    private static final int PERSON_DATA_INDEX_NAME = 0;
-    private static final int PERSON_DATA_INDEX_PHONE = 1;
-    private static final int PERSON_DATA_INDEX_EMAIL = 2;
+    private static final int bd = 0;
+    private static final int be = 1;
+    private static final int bf = 2;
 
     /**
      * The number of data elements for a single person.
      */
-    private static final int PERSON_DATA_COUNT = 3;
+    private static final int bg = 3;
 
     /**
      * Offset required to convert between 1-indexing and 0-indexing.COMMAND_
      */
-    private static final int DISPLAYED_INDEX_OFFSET = 1;
+    private static final int bh = 1;
 
 
 
     /**
      * If the first non-whitespace character in a user's input line is this, that line will be ignored.
      */
-    private static final char INPUT_COMMENT_MARKER = '#';
+    private static final char bi = '#';
 
     /*
      * This variable is declared for the whole class (instead of declaring it
@@ -163,7 +163,7 @@ public class AddressBook {
      * the I/O redirection technique. If not, only the first line of the input
      * text file will be processed.
      */
-    private static final Scanner SCANNER = new Scanner(System.in);
+    private static final Scanner bj = new Scanner(System.in);
     /*
      * ==============NOTE TO STUDENTS======================================================================
      * Note that the type of the variable below can also be declared as List<String[]>, as follows:
@@ -176,7 +176,7 @@ public class AddressBook {
     /**
      * List of all persons in the address book.
      */
-    private static final ArrayList<String[]> ALL_PERSONS = new ArrayList<>();
+    private static final ArrayList<String[]> bk = new ArrayList<>();
 
 
     /**
@@ -184,12 +184,12 @@ public class AddressBook {
      * This is a subset of the full list. Deleting persons in the pull list does not delete
      * those persons from this list.
      */
-    private static ArrayList<String[]> latestPersonListingView = getAllPersonsInAddressBook(); // initial view is of all
+    private static ArrayList<String[]> bl = gap(); // initial view is of all
 
     /**
      * The path to the file used for storing person data.
      */
-    private static String storageFilePath;
+    private static String bm;
 
     /*
      * ==============NOTE TO STUDENTS======================================
@@ -198,53 +198,53 @@ public class AddressBook {
      * method alone.
      * ====================================================================
      */
-    public static void main(String[] args) {
-        String[] message = { DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER };
-		for (String m : message) {
-		    System.out.println(LINE_PREFIX + m);
+    public static void main(String[] bv) {
+        String[] bs = { bc, bc, b, z, bc };
+		for (String m : bs) {
+		    System.out.println(c + m);
 		}
-        if (args.length >= 2) {
-		    String[] message1 = { MESSAGE_INVALID_PROGRAM_ARGS };
-			for (String m1 : message1) {
-			    System.out.println(LINE_PREFIX + m1);
+        if (bv.length >= 2) {
+		    String[] bn = { p };
+			for (String m1 : bn) {
+			    System.out.println(c + m1);
 			}
-		    exitProgram();
+		    bo();
 		}
 		
-		if (args.length == 1) {
-		    String filePath = args[0];
-			if (!isValidFilePath(filePath)) {
-			    String[] message1 = { String.format(MESSAGE_INVALID_FILE, filePath) };
-				for (String m1 : message1) {
-				    System.out.println(LINE_PREFIX + m1);
+		if (bv.length == 1) {
+		    String bq = bv[0];
+			if (!br(bq)) {
+			    String[] bt = { String.format(o, bq) };
+				for (String m1 : bt) {
+				    System.out.println(c + m1);
 				}
-			    exitProgram();
+			    bo();
 			}
 			
-			storageFilePath = filePath;
-			createFileIfMissing(filePath);
+			bm = bq;
+			bw(bq);
 		}
 		
-		if(args.length == 0) {
-		    String[] message1 = { MESSAGE_USING_DEFAULT_FILE };
-			for (String m1 : message1) {
-			    System.out.println(LINE_PREFIX + m1);
+		if(bv.length == 0) {
+		    String[] bx = { aa };
+			for (String m1 : bx) {
+			    System.out.println(c + m1);
 			}
-			storageFilePath = DEFAULT_STORAGE_FILEPATH;
-			createFileIfMissing(storageFilePath);
+			bm = a;
+			bw(bm);
 		}
-        ALL_PERSONS.clear();
-		ALL_PERSONS.addAll(loadPersonsFromFile(storageFilePath));
+        bk.clear();
+		bk.addAll(by(bm));
         while (true) {
-            String userCommand = getUserInput();
-			String[] message1 = { "[Command entered:" + userCommand + "]" };
-            for (String m1 : message1) {
-			    System.out.println(LINE_PREFIX + m1);
+            String az = ca();
+			String[] a = { "[Command entered:" + az + "]" };
+            for (String m1 : a) {
+			    System.out.println(c + m1);
 			}
-            String feedback = executeCommand(userCommand);
-			String[] message2 = { feedback, DIVIDER };
-            for (String m2 : message2) {
-			    System.out.println(LINE_PREFIX + m2);
+            String b = bz(az);
+			String[] z = { b, bc };
+            for (String m2 : z) {
+			    System.out.println(c + m2);
 			}
         }
     }
@@ -256,17 +256,17 @@ public class AddressBook {
      * signature anyway.
      * ====================================================================
      */
-    private static void showWelcomeMessage() {
-        String[] message = { DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER };
+    private static void cb() {
+        String[] message = { bc, bc, b, z, bc };
 		for (String m : message) {
-		    System.out.println(LINE_PREFIX + m);
+		    System.out.println(c + m);
 		}
     }
 
-    private static void showResultToUser(String result) {
-        String[] message = { result, DIVIDER };
-		for (String m : message) {
-		    System.out.println(LINE_PREFIX + m);
+    private static void srtu(String a) {
+        String[] b = { a, bc };
+		for (String m : b) {
+		    System.out.println(c + m);
 		}
     }
 
@@ -280,10 +280,10 @@ public class AddressBook {
     /**
      * Echoes the user input back to the user.
      */
-    private static void echoUserCommand(String userCommand) {
-        String[] message = { "[Command entered:" + userCommand + "]" };
-		for (String m : message) {
-		    System.out.println(LINE_PREFIX + m);
+    private static void euc(String a) {
+        String[] b = { "[Command entered:" + a + "]" };
+		for (String m : b) {
+		    System.out.println(c + m);
 		}
     }
 
@@ -300,23 +300,23 @@ public class AddressBook {
      * If a valid storage file is specified, sets up that file for storage.
      * Otherwise sets up the default file for storage.
      *
-     * @param args full program arguments passed to application main method
+     * @param a full program arguments passed to application main method
      */
-    private static void processProgramArgs(String[] args) {
-        if (args.length >= 2) {
-            String[] message = { MESSAGE_INVALID_PROGRAM_ARGS };
-			for (String m : message) {
-			    System.out.println(LINE_PREFIX + m);
+    private static void pga(String[] a) {
+        if (a.length >= 2) {
+            String[] b = { p };
+			for (String m : b) {
+			    System.out.println(c + m);
 			}
-            exitProgram();
+            bo();
         }
 
-        if (args.length == 1) {
-            setupGivenFileForStorage(args[0]);
+        if (a.length == 1) {
+            sgfs(a[0]);
         }
 
-        if(args.length == 0) {
-            setupDefaultFileForStorage();
+        if(a.length == 0) {
+            sdfs();
         }
     }
 
@@ -325,27 +325,27 @@ public class AddressBook {
      * Creates the file if it is missing.
      * Exits if the file name is not acceptable.
      */
-    private static void setupGivenFileForStorage(String filePath) {
+    private static void sgfs(String a) {
 
-        if (!isValidFilePath(filePath)) {
-            String[] message = { String.format(MESSAGE_INVALID_FILE, filePath) };
+        if (!br(a)) {
+            String[] message = { String.format(o, a) };
 			for (String m : message) {
-			    System.out.println(LINE_PREFIX + m);
+			    System.out.println(c + m);
 			}
-            exitProgram();
+            bo();
         }
 
-        storageFilePath = filePath;
-        createFileIfMissing(filePath);
+        bm = a;
+        bw(a);
     }
 
     /**
      * Displays the goodbye message and exits the runtime.
      */
-    private static void exitProgram() {
-        String[] message = { MESSAGE_GOODBYE, DIVIDER, DIVIDER };
-		for (String m : message) {
-		    System.out.println(LINE_PREFIX + m);
+    private static void bo() {
+        String[] a = { m, bc, bc };
+		for (String m : a) {
+		    System.out.println(c + m);
 		}
         System.exit(0);
     }
@@ -355,13 +355,13 @@ public class AddressBook {
      * Creates file if missing.
      * Exits program if the file cannot be created.
      */
-    private static void setupDefaultFileForStorage() {
-        String[] message = { MESSAGE_USING_DEFAULT_FILE };
-		for (String m : message) {
-		    System.out.println(LINE_PREFIX + m);
+    private static void sdfs() {
+        String[] b = { aa };
+		for (String m : b) {
+		    System.out.println(c + m);
 		}
-        storageFilePath = DEFAULT_STORAGE_FILEPATH;
-        createFileIfMissing(storageFilePath);
+        bm = a;
+        bw(bm);
     }
 
     /**
@@ -369,16 +369,16 @@ public class AddressBook {
      * The file path is acceptable if it ends in '.txt'
      * TODO: Implement a more rigorous validity checking.
      */
-    private static boolean isValidFilePath(String filePath) {
-        return filePath.endsWith(".txt");
+    private static boolean br(String a) {
+        return a.endsWith(".txt");
     }
 
     /**
      * Initialises the in-memory data using the storage file.
      * Assumption: The file exists.
      */
-    private static void loadDataFromStorage() {
-        initialiseAddressBookModel(loadPersonsFromFile(storageFilePath));
+    private static void ldfs() {
+        iab(by(bm));
     }
 
 
@@ -391,30 +391,30 @@ public class AddressBook {
     /**
      * Executes the command as specified by the {@code userInputString}
      *
-     * @param userInputString  raw input from user
+     * @param b  raw input from user
      * @return  feedback about how the command was executed
      */
-    public static String executeCommand(String userInputString) {
-        final String[] commandTypeAndParams = splitCommandWordAndArgs(userInputString);
-        final String commandType = commandTypeAndParams[0];
-        final String commandArgs = commandTypeAndParams[1];
-        switch (commandType) {
-        case COMMAND_ADD_WORD:
-            return executeAddPerson(commandArgs);
-        case COMMAND_FIND_WORD:
-            return executeFindPersons(commandArgs);
-        case COMMAND_LIST_WORD:
-            return executeListAllPersonsInAddressBook();
-        case COMMAND_DELETE_WORD:
-            return executeDeletePerson(commandArgs);
-        case COMMAND_CLEAR_WORD:
-            return executeClearAddressBook();
-        case COMMAND_HELP_WORD:
-            return getUsageInfoForAllCommands();
-        case COMMAND_EXIT_WORD:
-            executeExitProgramRequest();
+    public static String bz(String b) {
+        final String[] a = scwa(b);
+        final String c = a[0];
+        final String d = a[1];
+        switch (c) {
+        case ae:
+            return eaa(d);
+        case ai:
+            return efa(d);
+        case am:
+            return ela();
+        case ap:
+            return edp(d);
+        case at:
+            return eca();
+        case aw:
+            return geuifa();
+        case az:
+            ecpr();
         default:
-            return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
+            return gmfi(c, geuifa());
         }
     }
 
@@ -423,137 +423,137 @@ public class AddressBook {
      *
      * @return  size 2 array; first element is the command type and second element is the arguments string
      */
-    private static String[] splitCommandWordAndArgs(String rawUserInput) {
-        final String[] split =  rawUserInput.trim().split("\\s+", 2);
+    private static String[] scwa(String a) {
+        final String[] split =  a.trim().split("\\s+", 2);
         return split.length == 2 ? split : new String[] { split[0] , "" }; // else case: no parameters
     }
 
     /**
      * Constructs a generic feedback message for an invalid command from user, with instructions for correct usage.
      *
-     * @param correctUsageInfo message showing the correct usage
+     * @param b message showing the correct usage
      * @return invalid command args feedback message
      */
-    private static String getMessageForInvalidCommandInput(String userCommand, String correctUsageInfo) {
-        return String.format(MESSAGE_INVALID_COMMAND_FORMAT, userCommand, correctUsageInfo);
+    private static String gmfi(String a, String b) {
+        return String.format(n, a, b);
     }
 
     /**
      * Adds a person (specified by the command args) to the address book.
      * The entire command arguments string is treated as a string representation of the person to add.
      *
-     * @param commandArgs full command args string from the user
+     * @param a full command args string from the user
      * @return feedback display message for the operation result
      */
-    private static String executeAddPerson(String commandArgs) {
+    private static String eaa(String a) {
         // try decoding a person from the raw args
-        final Optional<String[]> decodeResult = decodePersonFromString(commandArgs);
+        final Optional<String[]> b = dpfs(a);
 
         // checks if args are valid (decode result will not be present if the person is invalid)
-        if (!decodeResult.isPresent()) {
-            return getMessageForInvalidCommandInput(COMMAND_ADD_WORD, String.format(MESSAGE_COMMAND_HELP, COMMAND_ADD_WORD, COMMAND_ADD_DESC) + LS
-			+ String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_ADD_PARAMETERS) + LS
-			+ String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_ADD_EXAMPLE) + LS);
+        if (!b.isPresent()) {
+            return gmfi(ae, String.format(g, ae, af) + d
+			+ String.format(h, ag) + d
+			+ String.format(i, ah) + d);
         }
 
         // add the person as specified
-        final String[] personToAdd = decodeResult.get();
-        addPersonToAddressBook(personToAdd);
-        return getMessageForSuccessfulAddPerson(personToAdd);
+        final String[] pta = b.get();
+        ada(pta);
+        return gemfsa(pta);
     }
 
     /**
      * Constructs a feedback message for a successful add person command execution.
      *
-     * @see #executeAddPerson(String)
-     * @param addedPerson person who was successfully added
+     * @see #eaa(String)
+     * @param a person who was successfully added
      * @return successful add person feedback message
      */
-    private static String getMessageForSuccessfulAddPerson(String[] addedPerson) {
-        return String.format(MESSAGE_ADDED,
-                getNameFromPerson(addedPerson), getPhoneFromPerson(addedPerson), getEmailFromPerson(addedPerson));
+    private static String gemfsa(String[] a) {
+        return String.format(e,
+                gn(a), gp(a), ge(a));
     }
 
     /**
      * Finds and lists all persons in address book whose name contains any of the argument keywords.
      * Keyword matching is case sensitive.
      *
-     * @param commandArgs full command args string from the user
+     * @param a full command args string from the user
      * @return feedback display message for the operation result
      */
-    private static String executeFindPersons(String commandArgs) {
-        final Set<String> keywords = extractKeywordsFromFindPersonArgs(commandArgs);
-        final ArrayList<String[]> personsFound = getPersonsWithNameContainingAnyKeyword(keywords);
-        showToUser(personsFound);
-        return getMessageForPersonsDisplayedSummary(personsFound);
+    private static String efa(String a) {
+        final Set<String> k = ekffp(a);
+        final ArrayList<String[]> personsFound = gpnck(k);
+        stu(personsFound);
+        return gmfpm(personsFound);
     }
 
     /**
      * Constructs a feedback message to summarise an operation that displayed a listing of persons.
      *
-     * @param personsDisplayed used to generate summary
+     * @param a used to generate summary
      * @return summary message for persons displayed
      */
-    private static String getMessageForPersonsDisplayedSummary(ArrayList<String[]> personsDisplayed) {
-        return String.format(MESSAGE_PERSONS_FOUND_OVERVIEW, personsDisplayed.size());
+    private static String gmfpm(ArrayList<String[]> a) {
+        return String.format(x, a.size());
     }
 
     /**
      * Extract keywords from the command arguments given for the find persons command.
      *
-     * @param findPersonCommandArgs full command args string for the find persons command
+     * @param a full command args string for the find persons command
      * @return set of keywords as specified by args
      */
-    private static Set<String> extractKeywordsFromFindPersonArgs(String findPersonCommandArgs) {
-        return new HashSet<>(splitByWhitespace(findPersonCommandArgs.trim()));
+    private static Set<String> ekffp(String a) {
+        return new HashSet<>(sbw(a.trim()));
     }
 
     /**
      * Retrieve all persons in the full model whose names contain some of the specified keywords.
      *
-     * @param keywords for searching
+     * @param a for searching
      * @return list of persons in full model with name containing some of the keywords
      */
-    private static ArrayList<String[]> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
-        final ArrayList<String[]> matchedPersons = new ArrayList<>();
-        for (String[] person : getAllPersonsInAddressBook()) {
-            final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
-            if (!Collections.disjoint(wordsInName, keywords)) {
-                matchedPersons.add(person);
+    private static ArrayList<String[]> gpnck(Collection<String> a) {
+        final ArrayList<String[]> b = new ArrayList<>();
+        for (String[] d : gap()) {
+            final Set<String> c = new HashSet<>(sbw(gn(d)));
+            if (!Collections.disjoint(c, a)) {
+                b.add(d);
             }
         }
-        return matchedPersons;
+        return b;
     }
 
     /**
      * Deletes person identified using last displayed index.
      *
-     * @param commandArgs full command args string from the user
+     * @param b full command args string from the user
      * @return feedback display message for the operation result
      */
-    private static String executeDeletePerson(String commandArgs) {
-        if (!isDeletePersonArgsValid(commandArgs)) {
-            return getMessageForInvalidCommandInput(COMMAND_DELETE_WORD, getUsageInfoForDeleteCommand());
+    private static String edp(String b) {
+        if (!idav(b)) {
+            return gmfi(ap, guifdc());
         }
-        final int targetVisibleIndex = extractTargetIndexFromDeletePersonArgs(commandArgs);
-        if (!isDisplayIndexValidForLastPersonListingView(targetVisibleIndex)) {
-            return MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
+        final int a = etifdp(b);
+        if (!idiv(a)) {
+            return q;
         }
-        final String[] targetInModel = latestPersonListingView.get(targetVisibleIndex - DISPLAYED_INDEX_OFFSET);
-        return deletePersonFromAddressBook(targetInModel) ? getMessageForSuccessfulDelete(targetInModel) // success
-                                                          : MESSAGE_PERSON_NOT_IN_ADDRESSBOOK; // not found
+        final String[] c = bl.get(a - bh);
+        return dpab(c) ? gmfsd(c) // success
+        		: s; // not found
     }
 
     /**
      * Checks validity of delete person argument string's format.
      *
-     * @param rawArgs raw command args string for the delete person command
+     * @param b raw command args string for the delete person command
      * @return whether the input args string is valid
      */
-    private static boolean isDeletePersonArgsValid(String rawArgs) {
+    private static boolean idav(String b) {
         try {
-            final int extractedIndex = Integer.parseInt(rawArgs.trim()); // use standard libraries to parse
-            return extractedIndex >= DISPLAYED_INDEX_OFFSET;
+            final int a = Integer.parseInt(b.trim()); // use standard libraries to parse
+            return a >= bh;
         } catch (NumberFormatException nfe) {
             return false;
         }
@@ -562,33 +562,33 @@ public class AddressBook {
     /**
      * Extracts the target's index from the raw delete person args string
      *
-     * @param rawArgs raw command args string for the delete person command
+     * @param a raw command args string for the delete person command
      * @return extracted index
      */
-    private static int extractTargetIndexFromDeletePersonArgs(String rawArgs) {
-        return Integer.parseInt(rawArgs.trim());
+    private static int etifdp(String a) {
+        return Integer.parseInt(a.trim());
     }
 
     /**
      * Checks that the given index is within bounds and valid for the last shown person list view.
      *
-     * @param index to check
+     * @param a to check
      * @return whether it is valid
      */
-    private static boolean isDisplayIndexValidForLastPersonListingView(int index) {
-        return index >= DISPLAYED_INDEX_OFFSET && index < getLatestPersonListingView().size() + DISPLAYED_INDEX_OFFSET;
+    private static boolean idiv(int a) {
+        return a >= bh && a < glfpv().size() + bh;
     }
 
     /**
      * Constructs a feedback message for a successful delete person command execution.
      *
-     * @see #executeDeletePerson(String)
-     * @param deletedPerson successfully deleted
+     * @see #edp(String)
+     * @param a successfully deleted
      * @return successful delete person feedback message
      */
-    private static String getMessageForSuccessfulDelete(String[] deletedPerson) {
-        return String.format(MESSAGE_DELETE_PERSON_SUCCESS, String.format(MESSAGE_DISPLAY_PERSON_DATA,
-		getNameFromPerson(deletedPerson), getPhoneFromPerson(deletedPerson), getEmailFromPerson(deletedPerson)));
+    private static String gmfsd(String[] a) {
+        return String.format(j, String.format(k,
+		gn(a), gp(a), ge(a)));
     }
 
     /**
@@ -596,9 +596,9 @@ public class AddressBook {
      *
      * @return feedback display message for the operation result
      */
-    private static String executeClearAddressBook() {
-        clearAddressBook();
-        return MESSAGE_ADDRESSBOOK_CLEARED;
+    private static String eca() {
+        cab();
+        return f;
     }
 
     /**
@@ -606,10 +606,10 @@ public class AddressBook {
      *
      * @return feedback display message for the operation result
      */
-    private static String executeListAllPersonsInAddressBook() {
-        ArrayList<String[]> toBeDisplayed = getAllPersonsInAddressBook();
-        showToUser(toBeDisplayed);
-        return getMessageForPersonsDisplayedSummary(toBeDisplayed);
+    private static String ela() {
+        ArrayList<String[]> a = gap();
+        stu(a);
+        return gmfpm(a);
     }
 
     /**
@@ -617,8 +617,8 @@ public class AddressBook {
      *
      * @return feedback display message for the operation result
      */
-    private static void executeExitProgramRequest() {
-        exitProgram();
+    private static void ecpr() {
+        bo();
     }
 
     /*
@@ -629,18 +629,18 @@ public class AddressBook {
 
     /**
      * Prompts for the command and reads the text entered by the user.
-     * Ignores lines with first non-whitespace char equal to {@link #INPUT_COMMENT_MARKER} (considered comments)
+     * Ignores lines with first non-whitespace char equal to {@link #bi} (considered comments)
      *
      * @return full line entered by the user
      */
-    private static String getUserInput() {
-        System.out.print(LINE_PREFIX + "Enter command: ");
-        String inputLine = SCANNER.nextLine();
+    private static String ca() {
+        System.out.print(c + "Enter command: ");
+        String a = bj.nextLine();
         // silently consume all blank and comment lines
-        while (inputLine.trim().isEmpty() || inputLine.trim().charAt(0) == INPUT_COMMENT_MARKER) {
-            inputLine = SCANNER.nextLine();
+        while (a.trim().isEmpty() || a.trim().charAt(0) == bi) {
+            a = bj.nextLine();
         }
-        return inputLine;
+        return a;
     }
 
    /**
@@ -648,48 +648,48 @@ public class AddressBook {
      * The list will be indexed, starting from 1.
      *
      */
-    private static void showToUser(ArrayList<String[]> persons) {
-        String listAsString = getDisplayString(persons);
-		String[] message = { listAsString };
+    private static void stu(ArrayList<String[]> p) {
+        String l = gds(p);
+		String[] message = { l };
         for (String m : message) {
-		    System.out.println(LINE_PREFIX + m);
+		    System.out.println(c + m);
 		}
         // clone to insulate from future changes to arg list
-		latestPersonListingView = new ArrayList<>(persons);
+		bl = new ArrayList<>(p);
     }
 
     /**
      * Returns the display string representation of the list of persons.
      */
-    private static String getDisplayString(ArrayList<String[]> persons) {
-        final StringBuilder messageAccumulator = new StringBuilder();
+    private static String gds(ArrayList<String[]> persons) {
+        final StringBuilder ma = new StringBuilder();
         for (int i = 0; i < persons.size(); i++) {
             final String[] person = persons.get(i);
-            final int displayIndex = i + DISPLAYED_INDEX_OFFSET;
-            messageAccumulator.append('\t')
-                              .append(getIndexedPersonListElementMessage(displayIndex, person))
-                              .append(LS);
+            final int a = i + bh;
+            ma.append('\t')
+                              .append(giplm(a, person))
+                              .append(d);
         }
-        return messageAccumulator.toString();
+        return ma.toString();
     }
 
     /**
      * Constructs a prettified listing element message to represent a person and their data.
      *
-     * @param visibleIndex visible index for this listing
-     * @param person to show
+     * @param a visible index for this listing
+     * @param b to show
      * @return formatted listing message with index
      */
-    private static String getIndexedPersonListElementMessage(int visibleIndex, String[] person) {
-        return String.format(MESSAGE_DISPLAY_LIST_ELEMENT_INDEX, visibleIndex) + String.format(MESSAGE_DISPLAY_PERSON_DATA,
-		getNameFromPerson(person), getPhoneFromPerson(person), getEmailFromPerson(person));
+    private static String giplm(int a, String[] b) {
+        return String.format(l, a) + String.format(k,
+		gn(b), gp(b), ge(b));
     }
 
     /**
      * @return unmodifiable list view of the last person listing view
      */
-    private static ArrayList<String[]> getLatestPersonListingView() {
-        return latestPersonListingView;
+    private static ArrayList<String[]> glfpv() {
+        return bl;
     }
 
 
@@ -702,31 +702,31 @@ public class AddressBook {
     /**
      * Creates storage file if it does not exist. Shows feedback to user.
      *
-     * @param filePath file to create if not present
+     * @param a file to create if not present
      */
-    private static void createFileIfMissing(String filePath) {
-        final File storageFile = new File(filePath);
-        if (storageFile.exists()) {
+    private static void bw(String a) {
+        final File b = new File(a);
+        if (b.exists()) {
             return;
         }
-		String[] message = { String.format(MESSAGE_ERROR_MISSING_STORAGE_FILE, filePath) };
+		String[] me = { String.format(u, a) };
 
-        for (String m : message) {
-		    System.out.println(LINE_PREFIX + m);
+        for (String m : me) {
+		    System.out.println(c + m);
 		}
 
         try {
-            storageFile.createNewFile();
-			String[] message1 = { String.format(MESSAGE_STORAGE_FILE_CREATED, filePath) };
-            for (String m : message1) {
-			    System.out.println(LINE_PREFIX + m);
+            b.createNewFile();
+			String[] me2 = { String.format(y, a) };
+            for (String m : me2) {
+			    System.out.println(c + m);
 			}
         } catch (IOException ioe) {
-            String[] message1 = { String.format(MESSAGE_ERROR_CREATING_STORAGE_FILE, filePath) };
-			for (String m : message1) {
-			    System.out.println(LINE_PREFIX + m);
+            String[] me2 = { String.format(t, a) };
+			for (String m : me2) {
+			    System.out.println(c + m);
 			}
-            exitProgram();
+            bo();
         }
     }
 
@@ -737,14 +737,14 @@ public class AddressBook {
      * @param filePath file to load from
      * @return the list of decoded persons
      */
-    private static ArrayList<String[]> loadPersonsFromFile(String filePath) {
-        final Optional<ArrayList<String[]>> successfullyDecoded = decodePersonsFromStrings(getLinesInFile(filePath));
+    private static ArrayList<String[]> by(String filePath) {
+        final Optional<ArrayList<String[]>> successfullyDecoded = dp(glif(filePath));
         if (!successfullyDecoded.isPresent()) {
-            String[] message = { MESSAGE_INVALID_STORAGE_FILE_CONTENT };
+            String[] message = { r };
 			for (String m : message) {
-			    System.out.println(LINE_PREFIX + m);
+			    System.out.println(c + m);
 			}
-            exitProgram();
+            bo();
         }
         return successfullyDecoded.get();
     }
@@ -753,24 +753,24 @@ public class AddressBook {
      * Gets all lines in the specified file as a list of strings. Line separators are removed.
      * Shows error messages and exits program if unable to read from file.
      */
-    private static ArrayList<String> getLinesInFile(String filePath) {
-        ArrayList<String> lines = null;
+    private static ArrayList<String> glif(String a) {
+        ArrayList<String> b = null;
         try {
-            lines = new ArrayList(Files.readAllLines(Paths.get(filePath)));
+            b = new ArrayList(Files.readAllLines(Paths.get(a)));
         } catch (FileNotFoundException fnfe) {
-            String[] message = { String.format(MESSAGE_ERROR_MISSING_STORAGE_FILE, filePath) };
+            String[] message = { String.format(u, a) };
 			for (String m : message) {
-			    System.out.println(LINE_PREFIX + m);
+			    System.out.println(c + m);
 			}
-            exitProgram();
+            bo();
         } catch (IOException ioe) {
-            String[] message = { String.format(MESSAGE_ERROR_READING_FROM_FILE, filePath) };
+            String[] message = { String.format(v, a) };
 			for (String m : message) {
-			    System.out.println(LINE_PREFIX + m);
+			    System.out.println(c + m);
 			}
-            exitProgram();
+            bo();
         }
-        return lines;
+        return b;
     }
 
     /**
@@ -779,16 +779,16 @@ public class AddressBook {
      *
      * @param filePath file for saving
      */
-    private static void savePersonsToFile(ArrayList<String[]> persons, String filePath) {
-        final ArrayList<String> linesToWrite = encodePersonsToStrings(persons);
+    private static void sptf(ArrayList<String[]> persons, String filePath) {
+        final ArrayList<String> linesToWrite = epts2(persons);
         try {
-            Files.write(Paths.get(storageFilePath), linesToWrite);
+            Files.write(Paths.get(bm), linesToWrite);
         } catch (IOException ioe) {
-            String[] message = { String.format(MESSAGE_ERROR_WRITING_TO_FILE, filePath) };
+            String[] message = { String.format(w, filePath) };
 			for (String m : message) {
-			    System.out.println(LINE_PREFIX + m);
+			    System.out.println(c + m);
 			}
-            exitProgram();
+            bo();
         }
     }
 
@@ -804,20 +804,20 @@ public class AddressBook {
      *
      * @param person to add
      */
-    private static void addPersonToAddressBook(String[] person) {
-        ALL_PERSONS.add(person);
-        savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
+    private static void ada(String[] person) {
+        bk.add(person);
+        sptf(gap(), bm);
     }
 
     /**
      * Deletes a person from the address book, target is identified by it's absolute index in the full list.
      * Saves changes to storage file.
      *
-     * @param index absolute index of person to delete (index within {@link #ALL_PERSONS})
+     * @param index absolute index of person to delete (index within {@link #bk})
      */
-    private static void deletePersonFromAddressBook(int index) {
-        ALL_PERSONS.remove(index);
-        savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
+    private static void dpfa(int index) {
+        bk.remove(index);
+        sptf(gap(), bm);
     }
 
     /**
@@ -826,10 +826,10 @@ public class AddressBook {
      * @param exactPerson the actual person inside the address book (exactPerson == the person to delete in the full list)
      * @return true if the given person was found and deleted in the model
      */
-    private static boolean deletePersonFromAddressBook(String[] exactPerson) {
-        final boolean changed = ALL_PERSONS.remove(exactPerson);
+    private static boolean dpab(String[] exactPerson) {
+        final boolean changed = bk.remove(exactPerson);
         if (changed) {
-            savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
+            sptf(gap(), bm);
         }
         return changed;
     }
@@ -837,16 +837,16 @@ public class AddressBook {
     /**
      * @return unmodifiable list view of all persons in the address book
      */
-    private static ArrayList<String[]> getAllPersonsInAddressBook() {
-        return ALL_PERSONS;
+    private static ArrayList<String[]> gap() {
+        return bk;
     }
 
     /**
      * Clears all persons in the address book and saves changes to file.
      */
-    private static void clearAddressBook() {
-        ALL_PERSONS.clear();
-        savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
+    private static void cab() {
+        bk.clear();
+        sptf(gap(), bm);
     }
 
     /**
@@ -854,9 +854,9 @@ public class AddressBook {
      *
      * @param persons list of persons to initialise the model with
      */
-    private static void initialiseAddressBookModel(ArrayList<String[]> persons) {
-        ALL_PERSONS.clear();
-        ALL_PERSONS.addAll(persons);
+    private static void iab(ArrayList<String[]> persons) {
+        bk.clear();
+        bk.addAll(persons);
     }
 
 
@@ -870,24 +870,24 @@ public class AddressBook {
      * @param person whose name you want
      * @return person's name
      */
-    private static String getNameFromPerson(String[] person) {
-        return person[PERSON_DATA_INDEX_NAME];
+    private static String gn(String[] person) {
+        return person[bd];
     }
 
     /**
      * @param person whose phone number you want
      * @return person's phone number
      */
-    private static String getPhoneFromPerson(String[] person) {
-        return person[PERSON_DATA_INDEX_PHONE];
+    private static String gp(String[] person) {
+        return person[be];
     }
 
     /**
      * @param person whose email you want
      * @return person's email
      */
-    private static String getEmailFromPerson(String[] person) {
-        return person[PERSON_DATA_INDEX_EMAIL];
+    private static String ge(String[] person) {
+        return person[bf];
     }
 
     /**
@@ -898,11 +898,11 @@ public class AddressBook {
      * @param email without data prefix
      * @return constructed person
      */
-    private static String[] makePersonFromData(String name, String phone, String email) {
-        final String[] person = new String[PERSON_DATA_COUNT];
-        person[PERSON_DATA_INDEX_NAME] = name;
-        person[PERSON_DATA_INDEX_PHONE] = phone;
-        person[PERSON_DATA_INDEX_EMAIL] = email;
+    private static String[] mpfd(String name, String phone, String email) {
+        final String[] person = new String[bg];
+        person[bd] = name;
+        person[be] = phone;
+        person[bf] = email;
         return person;
     }
 
@@ -912,9 +912,9 @@ public class AddressBook {
      * @param person to be encoded
      * @return encoded string
      */
-    private static String encodePersonToString(String[] person) {
-        return String.format(PERSON_STRING_REPRESENTATION,
-                getNameFromPerson(person), getPhoneFromPerson(person), getEmailFromPerson(person));
+    private static String epts(String[] person) {
+        return String.format(ad,
+                gn(person), gp(person), ge(person));
     }
 
     /**
@@ -923,10 +923,10 @@ public class AddressBook {
      * @param persons to be encoded
      * @return encoded strings
      */
-    private static ArrayList<String> encodePersonsToStrings(ArrayList<String[]> persons) {
+    private static ArrayList<String> epts2(ArrayList<String[]> persons) {
         final ArrayList<String> encoded = new ArrayList<>();
         for (String[] person : persons) {
-            encoded.add(encodePersonToString(person));
+            encoded.add(epts(person));
         }
         return encoded;
     }
@@ -944,18 +944,18 @@ public class AddressBook {
      * @return if cannot decode: empty Optional
      *         else: Optional containing decoded person
      */
-    private static Optional<String[]> decodePersonFromString(String encoded) {
+    private static Optional<String[]> dpfs(String encoded) {
         // check that we can extract the parts of a person from the encoded string
-        if (!isPersonDataExtractableFrom(encoded)) {
+        if (!ipef(encoded)) {
             return Optional.empty();
         }
-        final String[] decodedPerson = makePersonFromData(
-                extractNameFromPersonString(encoded),
-                extractPhoneFromPersonString(encoded),
-                extractEmailFromPersonString(encoded)
+        final String[] decodedPerson = mpfd(
+                enp(encoded),
+                ep(encoded),
+                eefp(encoded)
         );
         // check that the constructed person is valid
-        return isPersonDataValid(decodedPerson) ? Optional.of(decodedPerson) : Optional.empty();
+        return ipdv(decodedPerson) ? Optional.of(decodedPerson) : Optional.empty();
     }
 
     /**
@@ -965,10 +965,10 @@ public class AddressBook {
      * @return if cannot decode any: empty Optional
      *         else: Optional containing decoded persons
      */
-    private static Optional<ArrayList<String[]>> decodePersonsFromStrings(ArrayList<String> encodedPersons) {
+    private static Optional<ArrayList<String[]>> dp(ArrayList<String> encodedPersons) {
         final ArrayList<String[]> decodedPersons = new ArrayList<>();
         for (String encodedPerson : encodedPersons) {
-            final Optional<String[]> decodedPerson = decodePersonFromString(encodedPerson);
+            final Optional<String[]> decodedPerson = dpfs(encodedPerson);
             if (!decodedPerson.isPresent()) {
                 return Optional.empty();
             }
@@ -984,8 +984,8 @@ public class AddressBook {
      * @param personData person string representation
      * @return whether format of add command arguments allows parsing into individual arguments
      */
-    private static boolean isPersonDataExtractableFrom(String personData) {
-        final String matchAnyPersonDataPrefix = PERSON_DATA_PREFIX_PHONE + '|' + PERSON_DATA_PREFIX_EMAIL;
+    private static boolean ipef(String personData) {
+        final String matchAnyPersonDataPrefix = ab + '|' + ac;
         final String[] splitArgs = personData.trim().split(matchAnyPersonDataPrefix);
         return splitArgs.length == 3 // 3 arguments
                 && !splitArgs[0].isEmpty() // non-empty arguments
@@ -996,15 +996,15 @@ public class AddressBook {
     /**
      * Extracts substring representing person name from person string representation
      *
-     * @param encoded person string representation
+     * @param a person string representation
      * @return name argument
      */
-    private static String extractNameFromPersonString(String encoded) {
-        final int indexOfPhonePrefix = encoded.indexOf(PERSON_DATA_PREFIX_PHONE);
-        final int indexOfEmailPrefix = encoded.indexOf(PERSON_DATA_PREFIX_EMAIL);
+    private static String enp(String a) {
+        final int b = a.indexOf(ab);
+        final int c = a.indexOf(ac);
         // name is leading substring up to first data prefix symbol
-        int indexOfFirstPrefix = Math.min(indexOfEmailPrefix, indexOfPhonePrefix);
-        return encoded.substring(0, indexOfFirstPrefix).trim();
+        int d = Math.min(c, b);
+        return a.substring(0, d).trim();
     }
 
     /**
@@ -1013,43 +1013,43 @@ public class AddressBook {
      * @param encoded person string representation
      * @return phone number argument WITHOUT prefix
      */
-    private static String extractPhoneFromPersonString(String encoded) {
-        final int indexOfPhonePrefix = encoded.indexOf(PERSON_DATA_PREFIX_PHONE);
-        final int indexOfEmailPrefix = encoded.indexOf(PERSON_DATA_PREFIX_EMAIL);
+    private static String ep(String encoded) {
+        final int a = encoded.indexOf(ab);
+        final int b = encoded.indexOf(ac);
 
         // phone is last arg, target is from prefix to end of string
-        if (indexOfPhonePrefix > indexOfEmailPrefix) {
-            return removePrefixSign(encoded.substring(indexOfPhonePrefix, encoded.length()).trim(),
-                    PERSON_DATA_PREFIX_PHONE);
+        if (a > b) {
+            return rps(encoded.substring(a, encoded.length()).trim(),
+                    ab);
 
         // phone is middle arg, target is from own prefix to next prefix
         } else {
-            return removePrefixSign(
-                    encoded.substring(indexOfPhonePrefix, indexOfEmailPrefix).trim(),
-                    PERSON_DATA_PREFIX_PHONE);
+            return rps(
+                    encoded.substring(a, b).trim(),
+                    ab);
         }
     }
 
     /**
      * Extracts substring representing email from person string representation
      *
-     * @param encoded person string representation
+     * @param a person string representation
      * @return email argument WITHOUT prefix
      */
-    private static String extractEmailFromPersonString(String encoded) {
-        final int indexOfPhonePrefix = encoded.indexOf(PERSON_DATA_PREFIX_PHONE);
-        final int indexOfEmailPrefix = encoded.indexOf(PERSON_DATA_PREFIX_EMAIL);
+    private static String eefp(String a) {
+        final int b = a.indexOf(ab);
+        final int c = a.indexOf(ac);
 
         // email is last arg, target is from prefix to end of string
-        if (indexOfEmailPrefix > indexOfPhonePrefix) {
-            return removePrefixSign(encoded.substring(indexOfEmailPrefix, encoded.length()).trim(),
-                    PERSON_DATA_PREFIX_EMAIL);
+        if (c > b) {
+            return rps(a.substring(c, a.length()).trim(),
+                    ac);
 
         // email is middle arg, target is from own prefix to next prefix
         } else {
-            return removePrefixSign(
-                    encoded.substring(indexOfEmailPrefix, indexOfPhonePrefix).trim(),
-                    PERSON_DATA_PREFIX_EMAIL);
+            return rps(
+                    a.substring(c, b).trim(),
+                    ac);
         }
     }
 
@@ -1059,10 +1059,10 @@ public class AddressBook {
      * @param person String array representing the person (used in internal data)
      * @return whether the given person has valid data
      */
-    private static boolean isPersonDataValid(String[] person) {
-        return isPersonNameValid(person[PERSON_DATA_INDEX_NAME])
-                && isPersonPhoneValid(person[PERSON_DATA_INDEX_PHONE])
-                && isPersonEmailValid(person[PERSON_DATA_INDEX_EMAIL]);
+    private static boolean ipdv(String[] person) {
+        return ipnv(person[bd])
+                && ippv(person[be])
+                && ipev(person[bf]);
     }
 
     /*
@@ -1078,7 +1078,7 @@ public class AddressBook {
      * @param name to be validated
      * @return whether arg is a valid person name
      */
-    private static boolean isPersonNameValid(String name) {
+    private static boolean ipnv(String name) {
         return name.matches("(\\w|\\s)+");  // name is nonempty mixture of alphabets and whitespace
         //TODO: implement a more permissive validation
     }
@@ -1089,7 +1089,7 @@ public class AddressBook {
      * @param phone to be validated
      * @return whether arg is a valid person phone number
      */
-    private static boolean isPersonPhoneValid(String phone) {
+    private static boolean ippv(String phone) {
         return phone.matches("\\d+");    // phone nonempty sequence of digits
         //TODO: implement a more permissive validation
     }
@@ -1100,7 +1100,7 @@ public class AddressBook {
      * @param email to be validated
      * @return whether arg is a valid person email
      */
-    private static boolean isPersonEmailValid(String email) {
+    private static boolean ipev(String email) {
         return email.matches("\\S+@\\S+\\.\\S+"); // email is [non-whitespace]@[non-whitespace].[non-whitespace]
         //TODO: implement a more permissive validation
     }
@@ -1115,18 +1115,18 @@ public class AddressBook {
     /**
      * @return  Usage info for all commands
      */
-    private static String getUsageInfoForAllCommands() {
-        return String.format(MESSAGE_COMMAND_HELP, COMMAND_ADD_WORD, COMMAND_ADD_DESC) + LS
-		+ String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_ADD_PARAMETERS) + LS
-		+ String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_ADD_EXAMPLE) + LS + LS
-                + String.format(MESSAGE_COMMAND_HELP, COMMAND_FIND_WORD, COMMAND_FIND_DESC) + LS
-				+ String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_FIND_PARAMETERS) + LS
-				+ String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_FIND_EXAMPLE) + LS + LS
-                + getUsageInfoForViewCommand() + LS
-                + getUsageInfoForDeleteCommand() + LS
-                + getUsageInfoForClearCommand() + LS
-                + getUsageInfoForExitCommand() + LS
-                + getUsageInfoForHelpCommand();
+    private static String geuifa() {
+        return String.format(g, ae, af) + d
+		+ String.format(h, ag) + d
+		+ String.format(i, ah) + d + d
+                + String.format(g, ai, aj) + d
+				+ String.format(h, ak) + d
+				+ String.format(i, al) + d + d
+                + guiv() + d
+                + guifdc() + d
+                + guii() + d
+                + guife() + d
+                + guifh();
     }
 
     /**
@@ -1134,10 +1134,10 @@ public class AddressBook {
      *
      * @return  'delete' command usage instruction
      */
-    private static String getUsageInfoForDeleteCommand() {
-        return String.format(MESSAGE_COMMAND_HELP, COMMAND_DELETE_WORD, COMMAND_DELETE_DESC) + LS
-                + String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_DELETE_PARAMETER) + LS
-                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_DELETE_EXAMPLE) + LS;
+    private static String guifdc() {
+        return String.format(g, ap, aq) + d
+                + String.format(h, ar) + d
+                + String.format(i, as) + d;
     }
 
     /**
@@ -1145,9 +1145,9 @@ public class AddressBook {
      *
      * @return  'clear' command usage instruction
      */
-    private static String getUsageInfoForClearCommand() {
-        return String.format(MESSAGE_COMMAND_HELP, COMMAND_CLEAR_WORD, COMMAND_CLEAR_DESC) + LS
-                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_CLEAR_EXAMPLE) + LS;
+    private static String guii() {
+        return String.format(g, at, au) + d
+                + String.format(i, av) + d;
     }
 
     /**
@@ -1155,9 +1155,9 @@ public class AddressBook {
      *
      * @return  'view' command usage instruction
      */
-    private static String getUsageInfoForViewCommand() {
-        return String.format(MESSAGE_COMMAND_HELP, COMMAND_LIST_WORD, COMMAND_LIST_DESC) + LS
-                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_LIST_EXAMPLE) + LS;
+    private static String guiv() {
+        return String.format(g, am, an) + d
+                + String.format(i, ao) + d;
     }
 
     /**
@@ -1165,9 +1165,9 @@ public class AddressBook {
      *
      * @return  'help' command usage instruction
      */
-    private static String getUsageInfoForHelpCommand() {
-        return String.format(MESSAGE_COMMAND_HELP, COMMAND_HELP_WORD, COMMAND_HELP_DESC)
-                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_HELP_EXAMPLE);
+    private static String guifh() {
+        return String.format(g, aw, ax)
+                + String.format(i, ay);
     }
 
     /**
@@ -1175,9 +1175,9 @@ public class AddressBook {
      *
      * @return  'exit' command usage instruction
      */
-    private static String getUsageInfoForExitCommand() {
-        return String.format(MESSAGE_COMMAND_HELP, COMMAND_EXIT_WORD, COMMAND_EXIT_DESC)
-                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_EXIT_EXAMPLE);
+    private static String guife() {
+        return String.format(g, az, ba)
+                + String.format(i, bb);
     }
 
 
@@ -1195,7 +1195,7 @@ public class AddressBook {
      *
      * @return  Priority string without p/
      */
-    private static String removePrefixSign(String s, String sign) {
+    private static String rps(String s, String sign) {
         return s.replace(sign, "");
     }
 
@@ -1205,7 +1205,7 @@ public class AddressBook {
      * @param toSplit source string
      * @return split by whitespace
      */
-    private static ArrayList<String> splitByWhitespace(String toSplit) {
+    private static ArrayList<String> sbw(String toSplit) {
         return new ArrayList(Arrays.asList(toSplit.trim().split("\\s+")));
     }
 
