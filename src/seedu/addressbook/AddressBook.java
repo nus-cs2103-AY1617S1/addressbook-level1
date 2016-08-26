@@ -458,12 +458,26 @@ public class AddressBook {
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
         for (String[] person : getAllPersonsInAddressBook()) {
             final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
-            if (!Collections.disjoint(wordsInName, keywords)) {
-                matchedPersons.add(person);
-            }
+            compareKeywordsWithNames(keywords, matchedPersons, person, wordsInName);
+            //if (!Collections.disjoint(wordsInName, keywords)) {
+            //    matchedPersons.add(person);
+            //}
         }
-        return matchedPersons;
-    }
+    return matchedPersons;
+}
+
+	private static void compareKeywordsWithNames(Collection<String> keywords, final ArrayList<String[]> matchedPersons,
+			String[] person, final Set<String> wordsInName) {
+		boolean isPresent = false;
+		for (String key: keywords) {
+			for (String word: wordsInName) {
+				if (key.equalsIgnoreCase(word))
+					isPresent = true;
+			}
+		}
+		if (isPresent == true)
+			matchedPersons.add(person);
+	}
 
     /**
      * Deletes person identified using last displayed index.
