@@ -250,6 +250,13 @@ public class AddressBook {
      * ====================================================================
      */
 
+    /* 
+     * Constants for processProgramArgs() Method
+     */
+    private static final int ARG_LENGTH_EXIT = 2;
+    private static final int ARG_LENGTH_SETUP = 1;
+    private static final int ARG_LENGTH_STORAGE = 0;
+    
     /**
      * Processes the program main method run arguments.
      * If a valid storage file is specified, sets up that file for storage.
@@ -258,16 +265,16 @@ public class AddressBook {
      * @param args full program arguments passed to application main method
      */
     private static void processProgramArgs(String[] args) {
-        if (args.length >= 2) {
+        if (args.length >= ARG_LENGTH_EXIT) {
             showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
             exitProgram();
         }
 
-        if (args.length == 1) {
+        if (args.length == ARG_LENGTH_SETUP) {
             setupGivenFileForStorage(args[0]);
         }
 
-        if(args.length == 0) {
+        if(args.length == ARG_LENGTH_STORAGE) {
             setupDefaultFileForStorage();
         }
     }
