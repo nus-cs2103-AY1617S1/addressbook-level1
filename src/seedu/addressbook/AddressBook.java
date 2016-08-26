@@ -569,9 +569,19 @@ public class AddressBook {
     
     private static String executeListAllSortedPersonsInAddressBook() {
         ArrayList<String[]> toBeDisplayed = getAllPersonsInAddressBook();
+        sortArray(toBeDisplayed);
         showToUser(toBeDisplayed);
         return getMessageForPersonsDisplayedSummary(toBeDisplayed);
     }
+
+
+	private static void sortArray(ArrayList<String[]> toBeDisplayed) {
+		Collections.sort(toBeDisplayed, new Comparator<String[]>() {
+            public int compare(String[] person1, String[] person2){
+            return person1[PERSON_DATA_INDEX_NAME].compareTo(person2[PERSON_DATA_INDEX_NAME]);
+            }
+        });
+	}
 
     /**
      * Request to terminate the program.
