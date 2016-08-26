@@ -109,6 +109,14 @@ public class AddressBook {
     private static final String COMMAND_LIST_WORD = "list";
     private static final String COMMAND_LIST_DESC = "Displays all persons as a list with index numbers.";
     private static final String COMMAND_LIST_EXAMPLE = COMMAND_LIST_WORD;
+    
+    private static final String COMMAND_SORT_WORD = "sort";
+    private static final String COMMAND_SORT_DESC = "Displays all persons as a list with index numbers in alphabetical order.";
+    private static final String COMMAND_SORT_EXAMPLE = COMMAND_SORT_WORD;
+    
+    private static final String COMMAND_EDIT_WORD = "edit";
+    private static final String COMMAND_EDIT_DESC = "Edit a contact.";
+    private static final String COMMAND_EDIT_EXAMPLE = COMMAND_EDIT_WORD + " 1 " + " John Moe";
 
     private static final String COMMAND_DELETE_WORD = "delete";
     private static final String COMMAND_DELETE_DESC = "Deletes a person identified by the index number used in "
@@ -331,6 +339,8 @@ public class AddressBook {
             return executeFindPersons(commandArgs);
         case COMMAND_LIST_WORD:
             return executeListAllPersonsInAddressBook();
+        case COMMAND_SORT_WORD:
+            return executeSortAllPersonsInAddressBook();
         case COMMAND_DELETE_WORD:
             return executeDeletePerson(commandArgs);
         case COMMAND_CLEAR_WORD:
@@ -534,6 +544,56 @@ public class AddressBook {
         showToUser(toBeDisplayed);
         return getMessageForPersonsDisplayedSummary(toBeDisplayed);
     }
+    
+    /**
+     * Displays all persons in the address book to the user; in alphabetical order.
+     *
+     * @return feedback display message for the operation result
+     */
+    private static String executeSortAllPersonsInAddressBook() {
+        ArrayList<Person> allPersons = getAllPersonsInAddressBook();
+        ArrayList<Person> toBeDisplayed = new ArrayList<Person>();
+        
+        int lexiSmallestIndex = 0;
+        Person lexiSmallestPerson;
+        Person currentPerson;
+        
+        while(!allPersons.isEmpty()) {
+        	lexiSmallestPerson = allPersons.get(0);
+        	
+        	for(int i=1; i<allPersons.size(); i++) {
+        		currentPerson = allPersons.get(i);
+        		
+            	if(currentPerson.getName().compareTo(lexiSmallestPerson.getName()) == -1) {
+            		lexiSmallestIndex = i;
+            		lexiSmallestPerson = currentPerson;
+            	}
+            }
+        	
+        	toBeDisplayed.add(lexiSmallestPerson);
+        	allPersons.remove(lexiSmallestIndex);
+        }
+        
+        showToUser(toBeDisplayed);
+        return getMessageForPersonsDisplayedSummary(toBeDisplayed);
+    }
+    
+    /**
+     * Displays all persons in the address book to the user; in added order.
+     *
+     * @return feedback display message for the operation result
+     */
+    
+    /*
+    private static String executeEditPerson() {
+        ArrayList<Person> allPersons = getAllPersonsInAddressBook();
+        ArrayList<Person> 
+        
+        
+        showToUser(toBeDisplayed);
+        return String.format(MESSAGE_DELETE_PERSON_SUCCESS, getMessageForFormattedPersonData(deletedPerson));
+    }
+    */
 
     /**
      * Request to terminate the program.
@@ -1095,8 +1155,8 @@ public class AddressBook {
      * @return  'view' command usage instruction
      */
     private static String getUsageInfoForViewCommand() {
-        return String.format(MESSAGE_COMMAND_HELP, COMMAND_LIST_WORD, COMMAND_LIST_DESC) + LS
-                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_LIST_EXAMPLE) + LS;
+        return String.format(MESSAGE_COMMAND_HELP, COMMAND_LIST_WORD, COMMAND_SORT_WORD, COMMAND_LIST_DESC, COMMAND_SORT_DESC) + LS
+                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_LIST_EXAMPLE, COMMAND_SORT_EXAMPLE) + LS;
     }
 
     /**
