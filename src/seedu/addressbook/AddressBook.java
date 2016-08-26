@@ -653,8 +653,7 @@ public class AddressBook {
 
 			@Override
 			public int compare(HashMap<PersonProperty, String> o1, HashMap<PersonProperty, String> o2) {
-				// TODO Auto-generated method stub
-				return o1.get(PersonProperty.NAME).compareTo(o2.get(PersonProperty.NAME));
+				return o1.get(PersonProperty.NAME).compareToIgnoreCase(o2.get(PersonProperty.NAME));
 			}
         	
         });
