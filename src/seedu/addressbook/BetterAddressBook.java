@@ -30,9 +30,9 @@ import java.util.Set;
  * This class is used to maintain a list of person data which are saved
  * in a text file.
  * 
- * 
+ * Make arguments case insensitive
  **/
-public class AddressBook {
+public class BetterAddressBook {
     
     /**
      * Provides an enumeration of person property
@@ -498,9 +498,9 @@ public class AddressBook {
      */
     private static Set<String> extractKeywordsFromFindPersonArgs(String findPersonCommandArgs) {
     	
-    	String findPersonCommandArgsTrimmed = findPersonCommandArgs.trim();
+    	String findPersonCommandArgsTrimmedSmallCase = findPersonCommandArgs.trim().toLowerCase();
     	
-    	ArrayList<String> keywords = splitByWhitespace(findPersonCommandArgsTrimmed);
+    	ArrayList<String> keywords = splitByWhitespace(findPersonCommandArgsTrimmedSmallCase);
     	
         return new HashSet<>(keywords);
     }
@@ -517,7 +517,7 @@ public class AddressBook {
         
         for (HashMap<PersonProperty, String> person : getAllPersonsInAddressBook()) {
         	        	
-            final Set<String> splittedNameComponents = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
+            final Set<String> splittedNameComponents = new HashSet<>(splitByWhitespace(getNameFromPerson(person).toLowerCase()));
             
             boolean hasNameComponent = !Collections.disjoint(splittedNameComponents, keywords);
             
@@ -661,7 +661,9 @@ public class AddressBook {
             inputLine = SCANNER.nextLine();
         }
         
-        return inputLine;
+        String smallCaseInput = inputLine.toLowerCase();
+        
+        return smallCaseInput;
     }
 
    /* ==============NOTE TO STUDENTS======================================
