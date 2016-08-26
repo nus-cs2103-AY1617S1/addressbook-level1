@@ -200,7 +200,7 @@ public class AddressBook {
      */
     public static void main(String[] args) {
         showToUser(DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER);
-
+        
         if (args.length == 1) {
             setupGivenFileForStorage(args[0]);
         }else if (args.length == 0) {
