@@ -126,6 +126,42 @@
 || 
 || 5 persons found!
 || ===================================================
+|| Enter command: || [Command entered:	sort]
+|| Invalid command format: sort 
+|| sort: Sorts all persons either by ascending or descending
+|| 	Example: sort a
+|| 
+|| ===================================================
+|| Enter command: || [Command entered:	sort b]
+|| Invalid command format: sort 
+|| sort: Sorts all persons either by ascending or descending
+|| 	Example: sort a
+|| 
+|| ===================================================
+|| Enter command: || [Command entered:	sort baba]
+|| Invalid command format: sort 
+|| sort: Sorts all persons either by ascending or descending
+|| 	Example: sort a
+|| 
+|| ===================================================
+|| Enter command: || [Command entered:  sort a]
+|| 	1. Adam Brown  Phone Number: 111111  Email: adam@gmail.com
+|| 	2. Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
+|| 	3. Charlie Dickson  Phone Number: 333333  Email: charlie.d@nus.edu.sg
+|| 	4. Dickson Ee  Phone Number: 444444  Email: dickson@nus.edu.sg
+|| 	5. Esther Potato  Phone Number: 555555  Email: esther@notreal.potato
+|| 
+|| 5 persons found!
+|| ===================================================
+|| Enter command: || [Command entered:  sort d]
+|| 	1. Esther Potato  Phone Number: 555555  Email: esther@notreal.potato
+|| 	2. Dickson Ee  Phone Number: 444444  Email: dickson@nus.edu.sg
+|| 	3. Charlie Dickson  Phone Number: 333333  Email: charlie.d@nus.edu.sg
+|| 	4. Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
+|| 	5. Adam Brown  Phone Number: 111111  Email: adam@gmail.com
+|| 
+|| 5 persons found!
+|| ===================================================
 || Enter command: || [Command entered:  find]
 || 
 || 0 persons found!
@@ -139,8 +175,9 @@
 || 0 persons found!
 || ===================================================
 || Enter command: || [Command entered:  find betsy]
+|| 	1. Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
 || 
-|| 0 persons found!
+|| 1 persons found!
 || ===================================================
 || Enter command: || [Command entered:  find Betsy]
 || 	1. Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
@@ -220,6 +257,36 @@
 || Enter command: || [Command entered:  list]
 || 	1. Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
 || 	2. Dickson Ee  Phone Number: 444444  Email: dickson@nus.edu.sg
+|| 
+|| 2 persons found!
+|| ===================================================
+|| Enter command: || [Command entered:  edit betsy p/1111]
+|| Person edited: Betsy Choo, Phone: 1111, Email: benchoo@nus.edu.sg
+|| ===================================================
+|| Enter command: || [Command entered:  list]
+|| 	1. Betsy Choo  Phone Number: 1111  Email: benchoo@nus.edu.sg
+|| 	2. Dickson Ee  Phone Number: 444444  Email: dickson@nus.edu.sg
+|| 
+|| 2 persons found!
+|| ===================================================
+|| Enter command: || [Command entered:  edit betsy e/betsy@gmail.com]
+|| Person edited: Betsy Choo, Phone: 1111, Email: betsy@gmail.com
+|| ===================================================
+|| Enter command: || [Command entered:  list]
+|| 	1. Betsy Choo  Phone Number: 1111  Email: betsy@gmail.com
+|| 	2. Dickson Ee  Phone Number: 444444  Email: dickson@nus.edu.sg
+|| 
+|| 2 persons found!
+|| ===================================================
+|| Enter command: || [Command entered:  edit ee p/333 e/dick@gmail.com]
+|| Person edited: Dickson Ee, Phone: 333, Email: dick@gmail.com
+|| ===================================================
+|| Enter command: || [Command entered:  edit ee e/hihi@gmail.com p/12345]
+|| Person edited: Dickson Ee, Phone: 12345, Email: hihi@gmail.com
+|| ===================================================
+|| Enter command: || [Command entered:  list]
+|| 	1. Betsy Choo  Phone Number: 1111  Email: betsy@gmail.com
+|| 	2. Dickson Ee  Phone Number: 12345  Email: hihi@gmail.com
 || 
 || 2 persons found!
 || ===================================================

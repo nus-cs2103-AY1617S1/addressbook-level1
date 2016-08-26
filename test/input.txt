@@ -40,6 +40,13 @@
   list
   add Esther Potato p/555555 e/esther@notreal.potato
   list
+  
+  # Should catch invalid sort command
+  sort
+  sort b
+  sort baba
+  sort a
+  sort d
 
 ##########################################################
 # test find persons command
@@ -82,7 +89,7 @@
 
   # should have deleted based on last active view's index
   list
-
+  
   # deletes correct person
   delete 4
   list
@@ -91,6 +98,21 @@
   delete 1
   list
 
+##########################################################
+# test edit command
+##########################################################
+
+  # edit betsy's phone number to 111
+  edit betsy p/1111
+  list
+  
+  edit betsy e/betsy@gmail.com
+  list
+  
+  edit ee p/333 e/dick@gmail.com
+  edit ee e/hihi@gmail.com p/12345
+  list
+ 
 ##########################################################
 # test clear command
 ##########################################################
