@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.Comparator;
 
 /* ==============NOTE TO STUDENTS======================================
  * This class header comment below is brief because details of how to
@@ -127,6 +128,7 @@ public class AddressBook {
     private static final String COMMAND_EXIT_WORD = "exit";
     private static final String COMMAND_EXIT_DESC = "Exits the program.";
     private static final String COMMAND_EXIT_EXAMPLE = COMMAND_EXIT_WORD;
+    private static final String COMMAND_SORT = "sort";
 
     private static final String DIVIDER = "===================================================";
 
@@ -149,7 +151,6 @@ public class AddressBook {
      * Offset required to convert between 1-indexing and 0-indexing.COMMAND_
      */
     private static final int DISPLAYED_INDEX_OFFSET = 1;
-
 
 
     /**
@@ -338,7 +339,11 @@ public class AddressBook {
         final String[] commandTypeAndParams = splitCommandWordAndArgs(userInputString);
         final String commandType = commandTypeAndParams[0];
         final String commandArgs = commandTypeAndParams[1];
-        switch (commandType) {
+        return switchCommandType(commandType, commandArgs);
+    }
+
+	private static String switchCommandType(final String commandType, final String commandArgs) {
+		switch (commandType) {
         case COMMAND_ADD_WORD:
             return executeAddPerson(commandArgs);
         case COMMAND_FIND_WORD:
@@ -353,11 +358,26 @@ public class AddressBook {
             return getUsageInfoForAllCommands();
         case COMMAND_EXIT_WORD:
             executeExitProgramRequest();
+        case COMMAND_SORT:
+        	sortNameList();
         default:
             return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
         }
+	}
+    
+    /**
+     * This method sorts the names in the address book alphabetically.
+     * 
+     */
+    private static void sortNameList() {
+    	ALL_PERSONS.subList(0, ALL_PERSONS.size());
+    	Collections.sort(ALL_PERSONS, new Comparator<String[]>() {
+    		public int compare (String[] person2, String[] person1) {
+    			return person2[PERSON_DATA_INDEX_NAME].compareToIgnoreCase(person1[PERSON_DATA_INDEX_NAME]);
+    		}
+    	});
     }
-
+    
     /**
      * Splits raw user input into command word and command arguments string
      *
