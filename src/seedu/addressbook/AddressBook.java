@@ -199,21 +199,53 @@ public class AddressBook {
      * ====================================================================
      */
     public static void main(String[] args) {
-        showWelcomeMessage();
+        String[] message = { DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER };
+		for (String m : message) {
+		    System.out.println(LINE_PREFIX + m);
+		}
         if (args.length >= 2) {
-		    showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
-		    exitProgram();
+		    String[] message1 = { MESSAGE_INVALID_PROGRAM_ARGS };
+			for (String m1 : message1) {
+			    System.out.println(LINE_PREFIX + m1);
+			}
+			String[] message2 = { MESSAGE_GOODBYE, DIVIDER, DIVIDER };
+		    for (String m2 : message2) {
+			    System.out.println(LINE_PREFIX + m2);
+			}
+			System.exit(0);
 		}
 		
 		if (args.length == 1) {
-		    setupGivenFileForStorage(args[0]);
+		    String filePath = args[0];
+			if (!isValidFilePath(filePath)) {
+			    showToUser(String.format(MESSAGE_INVALID_FILE, filePath));
+			    exitProgram();
+			}
+			
+			storageFilePath = filePath;
+			createFileIfMissing(filePath);
 		}
 		
 		if(args.length == 0) {
-		    setupDefaultFileForStorage();
+		    showToUser(MESSAGE_USING_DEFAULT_FILE);
+			storageFilePath = DEFAULT_STORAGE_FILEPATH;
+			createFileIfMissing(storageFilePath);
 		}
-        loadDataFromStorage();
-        runProgram();
+		ArrayList<String[]> persons = loadPersonsFromFile(storageFilePath);
+        persons.clear();
+		persons.addAll(persons);
+        while (true) {
+		    String userCommand = getUserInput();
+			String[] message1 = { "[Command entered:" + userCommand + "]" };
+		    for (String m1 : message1) {
+			    System.out.println(LINE_PREFIX + m1);
+			}
+		    String feedback = executeCommand(userCommand);
+			String[] message2 = { feedback, DIVIDER };
+		    for (String m2 : message2) {
+			    System.out.println(LINE_PREFIX + m2);
+			}
+		}
     }
 
 	private static void runProgram() {
