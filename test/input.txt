@@ -51,8 +51,12 @@
   find bet
   # does not match if none have keyword
   find 23912039120
-  # matching should be case-sensitive
+
+  # matching should not be case-sensitive
   find betsy
+  find bEtSy
+  find BETSY
+  find BetsY
 
   # find unique keyword
   find Betsy
@@ -60,6 +64,7 @@
   find Dickson
   # find multiple with some keywords
   find Charlie Betsy
+
 
 ##########################################################
 # test delete person command
@@ -106,3 +111,4 @@
   # exits properly
   exit
   list
+
