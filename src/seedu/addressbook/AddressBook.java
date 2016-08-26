@@ -200,15 +200,22 @@ public class AddressBook {
      */
     public static void main(String[] args) {
         showWelcomeMessage();
-        processProgramArgs(args);
+        if (args.length >= 2) {
+		    showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
+		    exitProgram();
+		}
+		
+		if (args.length == 1) {
+		    setupGivenFileForStorage(args[0]);
+		}
+		
+		if(args.length == 0) {
+		    setupDefaultFileForStorage();
+		}
         loadDataFromStorage();
-        while (true) {
-            String userCommand = getUserInput();
-            echoUserCommand(userCommand);
-            String feedback = executeCommand(userCommand);
-            showResultToUser(feedback);
-        }
+        executeUserCommandTillExit();
     }
+
 
     /*
      * ==============NOTE TO STUDENTS======================================
@@ -238,6 +245,16 @@ public class AddressBook {
     private static void echoUserCommand(String userCommand) {
         showToUser("[Command entered:" + userCommand + "]");
     }
+    
+
+	private static void executeUserCommandTillExit() {
+		while (true) {
+            String userCommand = getUserInput();
+            echoUserCommand(userCommand);
+            String feedback = executeCommand(userCommand);
+            showResultToUser(feedback);
+        }
+	}
 
     /*
      * ==============NOTE TO STUDENTS==========================================
@@ -276,14 +293,19 @@ public class AddressBook {
      */
     private static void setupGivenFileForStorage(String filePath) {
 
-        if (!isValidFilePath(filePath)) {
-            showToUser(String.format(MESSAGE_INVALID_FILE, filePath));
-            exitProgram();
-        }
+        exitIfNotValidFilePath(filePath);
 
         storageFilePath = filePath;
         createFileIfMissing(filePath);
     }
+
+
+	private static void exitIfNotValidFilePath(String filePath) {
+		if (!isValidFilePath(filePath)) {
+            showToUser(String.format(MESSAGE_INVALID_FILE, filePath));
+            exitProgram();
+        }
+	}
 
     /**
      * Displays the goodbye message and exits the runtime.
