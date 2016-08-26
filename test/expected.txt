@@ -230,6 +230,14 @@
 || 
 || 0 persons found!
 || ===================================================
+|| Enter command: || [Command entered:  add James Teo p/91189487 e/teojm37@hotmail.com]
+|| New person added: James Teo, Phone: 91189487, Email: teojm37@hotmail.com
+|| ===================================================
+|| Enter command: || [Command entered:  list]
+|| 	1. James Teo  Phone Number: 91189487  Email: teojm37@hotmail.com
+|| 
+|| 1 persons found!
+|| ===================================================
 || Enter command: || [Command entered:  exit]
 || Exiting Address Book... Good bye!
 || ===================================================
