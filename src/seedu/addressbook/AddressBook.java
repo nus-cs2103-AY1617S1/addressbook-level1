@@ -202,14 +202,17 @@ public class AddressBook {
         showWelcomeMessage();
         processProgramArgs(args);
         loadDataFromStorage();
-        while (true) {
+        readAndProcessCommand();
+    }
+
+    private static void readAndProcessCommand(){
+    	while (true) {
             String userCommand = getUserInput();
             echoUserCommand(userCommand);
             String feedback = executeCommand(userCommand);
             showResultToUser(feedback);
         }
     }
-
     /*
      * ==============NOTE TO STUDENTS======================================
      * The method header comment can be omitted if the method is trivial
@@ -1180,7 +1183,7 @@ public class AddressBook {
      * @return split by whitespace
      */
     private static ArrayList<String> splitByWhitespace(String toSplit) {
-        return new ArrayList(Arrays.asList(toSplit.trim().split("\\s+")));
+        return new ArrayList(Arrays.asList(toSplit.toLowerCase().trim().split("\\s+")));
     }
 
 }
