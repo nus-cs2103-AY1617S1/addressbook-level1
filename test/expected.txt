@@ -10,7 +10,7 @@
 || 	Parameters: NAME p/PHONE_NUMBER e/EMAIL
 || 	Example: add John Doe p/98765432 e/johnd@gmail.com
 || 
-|| find: Finds all persons whose names contain any of the specified keywords (case-sensitive) and displays them as a list with index numbers.
+|| find: Finds all persons whose names contain any of the specified keywords (case-insensitive) and displays them as a list with index numbers.
 || 	Parameters: KEYWORD [MORE_KEYWORDS]
 || 	Example: find alice bob charlie
 || 
@@ -21,8 +21,15 @@
 || 	Parameters: INDEX
 || 	Example: delete 1
 || 
+|| edit: Edit a person identified by the index number used in the last find/list call.
+|| 	Parameters: INDEX n/NAME p/PHONE_NUMBER e/EMAIL
+|| 	Example: edit 1 n/Jay Nathan p/98765432 e/jaynat@gmail.com
+|| 
 || clear: Clears address book permanently.
 || 	Example: clear
+|| 
+|| sort: Sorts and displays all persons as a list in alphabetical order.
+|| 	Example: sort
 || 
 || exit: Exits the program.	Example: exit
 || help: Shows program usage instructions.	Example: help
@@ -139,8 +146,9 @@
 || 0 persons found!
 || ===================================================
 || Enter command: || [Command entered:  find betsy]
+|| 	1. Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
 || 
-|| 0 persons found!
+|| 1 persons found!
 || ===================================================
 || Enter command: || [Command entered:  find Betsy]
 || 	1. Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
@@ -222,6 +230,135 @@
 || 	2. Dickson Ee  Phone Number: 444444  Email: dickson@nus.edu.sg
 || 
 || 2 persons found!
+|| ===================================================
+|| Enter command: || [Command entered:  add Alpha Ben p/987654 e/alpha@benisreal.potato]
+|| New person added: Alpha Ben, Phone: 987654, Email: alpha@benisreal.potato
+|| ===================================================
+|| Enter command: || [Command entered:  list]
+|| 	1. Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
+|| 	2. Dickson Ee  Phone Number: 444444  Email: dickson@nus.edu.sg
+|| 	3. Alpha Ben  Phone Number: 987654  Email: alpha@benisreal.potato
+|| 
+|| 3 persons found!
+|| ===================================================
+|| Enter command: || [Command entered:  sort]
+|| 	1. Alpha Ben  Phone Number: 987654  Email: alpha@benisreal.potato
+|| 	2. Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
+|| 	3. Dickson Ee  Phone Number: 444444  Email: dickson@nus.edu.sg
+|| 
+|| 3 persons found!
+|| ===================================================
+|| Enter command: || [Command entered:  edit wrong args wrong args]
+|| Invalid command format: edit 
+|| edit: Edit a person identified by the index number used in the last find/list call.
+|| 	Parameters: INDEX n/NAME p/PHONE_NUMBER e/EMAIL
+|| 	Example: edit 1 n/Jay Nathan p/98765432 e/jaynat@gmail.com
+|| 
+|| ===================================================
+|| Enter command: || [Command entered:  edit n/ValidName p/123456 e/valid@email.butNoIndex]
+|| Invalid command format: edit 
+|| edit: Edit a person identified by the index number used in the last find/list call.
+|| 	Parameters: INDEX n/NAME p/PHONE_NUMBER e/EMAIL
+|| 	Example: edit 1 n/Jay Nathan p/98765432 e/jaynat@gmail.com
+|| 
+|| ===================================================
+|| Enter command: || [Command entered:  edit 1 NameButNoPrefix p/12345 valid@email.butNoPrefix]
+|| Invalid command format: edit 
+|| edit: Edit a person identified by the index number used in the last find/list call.
+|| 	Parameters: INDEX n/NAME p/PHONE_NUMBER e/EMAIL
+|| 	Example: edit 1 n/Jay Nathan p/98765432 e/jaynat@gmail.com
+|| 
+|| ===================================================
+|| Enter command: || [Command entered:  edit 1 n/Valid Name e/valid@email.butPhonePrefixMissing 12345]
+|| Invalid command format: edit 
+|| edit: Edit a person identified by the index number used in the last find/list call.
+|| 	Parameters: INDEX n/NAME p/PHONE_NUMBER e/EMAIL
+|| 	Example: edit 1 n/Jay Nathan p/98765432 e/jaynat@gmail.com
+|| 
+|| ===================================================
+|| Enter command: || [Command entered:  edit 1 n/[]\[;] p/12345 e/valid@e.mail]
+|| Invalid command format: edit 
+|| edit: Edit a person identified by the index number used in the last find/list call.
+|| 	Parameters: INDEX n/NAME p/PHONE_NUMBER e/EMAIL
+|| 	Example: edit 1 n/Jay Nathan p/98765432 e/jaynat@gmail.com
+|| 
+|| ===================================================
+|| Enter command: || [Command entered:  edit 1 n/Valid Name p/not_numbers e/valid@e.mail]
+|| Invalid command format: edit 
+|| edit: Edit a person identified by the index number used in the last find/list call.
+|| 	Parameters: INDEX n/NAME p/PHONE_NUMBER e/EMAIL
+|| 	Example: edit 1 n/Jay Nathan p/98765432 e/jaynat@gmail.com
+|| 
+|| ===================================================
+|| Enter command: || [Command entered:  edit 1 n/Valid Name p/12345 e/notAnEmail]
+|| Invalid command format: edit 
+|| edit: Edit a person identified by the index number used in the last find/list call.
+|| 	Parameters: INDEX n/NAME p/PHONE_NUMBER e/EMAIL
+|| 	Example: edit 1 n/Jay Nathan p/98765432 e/jaynat@gmail.com
+|| 
+|| ===================================================
+|| Enter command: || [Command entered:  edit 4 n/Valid Name]
+|| The person index provided is invalid
+|| ===================================================
+|| Enter command: || [Command entered:  edit 1 n/Adam Brown]
+|| Edited Person: Adam Brown  Phone Number: 987654  Email: alpha@benisreal.potato
+|| ===================================================
+|| Enter command: || [Command entered:  list]
+|| 	1. Adam Brown  Phone Number: 987654  Email: alpha@benisreal.potato
+|| 	2. Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
+|| 	3. Dickson Ee  Phone Number: 444444  Email: dickson@nus.edu.sg
+|| 
+|| 3 persons found!
+|| ===================================================
+|| Enter command: || [Command entered:  edit 2 p/222222]
+|| Edited Person: Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
+|| ===================================================
+|| Enter command: || [Command entered:  list]
+|| 	1. Adam Brown  Phone Number: 987654  Email: alpha@benisreal.potato
+|| 	2. Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
+|| 	3. Dickson Ee  Phone Number: 444444  Email: dickson@nus.edu.sg
+|| 
+|| 3 persons found!
+|| ===================================================
+|| Enter command: || [Command entered:  edit 3 e/adamb@e.mail]
+|| Edited Person: Dickson Ee  Phone Number: 444444  Email: adamb@e.mail
+|| ===================================================
+|| Enter command: || [Command entered:  list]
+|| 	1. Adam Brown  Phone Number: 987654  Email: alpha@benisreal.potato
+|| 	2. Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
+|| 	3. Dickson Ee  Phone Number: 444444  Email: adamb@e.mail
+|| 
+|| 3 persons found!
+|| ===================================================
+|| Enter command: || [Command entered:  edit 1 n/Charlie Dickson e/charlie.d@nus.edu.sg p/333333]
+|| Edited Person: Charlie Dickson  Phone Number: 333333  Email: charlie.d@nus.edu.sg
+|| ===================================================
+|| Enter command: || [Command entered:  list]
+|| 	1. Charlie Dickson  Phone Number: 333333  Email: charlie.d@nus.edu.sg
+|| 	2. Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
+|| 	3. Dickson Ee  Phone Number: 444444  Email: adamb@e.mail
+|| 
+|| 3 persons found!
+|| ===================================================
+|| Enter command: || [Command entered:  edit 2 e/betsy@nus.edu.sg p/444444 n/Betsy Lim]
+|| Edited Person: Betsy Lim  Phone Number: 444444  Email: betsy@nus.edu.sg
+|| ===================================================
+|| Enter command: || [Command entered:  list]
+|| 	1. Charlie Dickson  Phone Number: 333333  Email: charlie.d@nus.edu.sg
+|| 	2. Betsy Lim  Phone Number: 444444  Email: betsy@nus.edu.sg
+|| 	3. Dickson Ee  Phone Number: 444444  Email: adamb@e.mail
+|| 
+|| 3 persons found!
+|| ===================================================
+|| Enter command: || [Command entered:  edit 1 p/555555 n/Esther Potato]
+|| Edited Person: Esther Potato  Phone Number: 555555  Email: charlie.d@nus.edu.sg
+|| ===================================================
+|| Enter command: || [Command entered:  list]
+|| 	1. Esther Potato  Phone Number: 555555  Email: charlie.d@nus.edu.sg
+|| 	2. Betsy Lim  Phone Number: 444444  Email: betsy@nus.edu.sg
+|| 	3. Dickson Ee  Phone Number: 444444  Email: adamb@e.mail
+|| 
+|| 3 persons found!
 || ===================================================
 || Enter command: || [Command entered:  clear]
 || Address book has been cleared!
