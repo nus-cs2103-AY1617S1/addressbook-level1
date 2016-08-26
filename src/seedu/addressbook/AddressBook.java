@@ -1020,8 +1020,11 @@ public class AddressBook {
                 extractPhoneFromPersonString(encoded),
                 extractEmailFromPersonString(encoded));
         // check that the constructed person is valid
-        return isPersonDataValid(decodedPerson) ? Optional.of(decodedPerson)
-                : Optional.empty();
+        if(isPersonDataValid(decodedPerson)) {
+            return Optional.of(decodedPerson);
+        } else {
+            return Optional.empty();
+        }
     }
 
     /**
