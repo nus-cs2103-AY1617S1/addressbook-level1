@@ -202,13 +202,17 @@ public class AddressBook {
         showWelcomeMessage();
         processProgramArgs(args);
         loadDataFromStorage();
-        while (true) {
+        processUserCommandUntilExit();
+    }
+
+	private static void processUserCommandUntilExit() {
+		while (true) {
             String userCommand = getUserInput();
             echoUserCommand(userCommand);
             String feedback = executeCommand(userCommand);
             showResultToUser(feedback);
         }
-    }
+	}
 
     /*
      * ==============NOTE TO STUDENTS======================================
@@ -454,14 +458,19 @@ public class AddressBook {
      */
     private static ArrayList<String[]> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
-        for (String[] person : getAllPersonsInAddressBook()) {
+        makeListOfMatchedPersons(keywords, matchedPersons);
+        return matchedPersons;
+    }
+
+	private static void makeListOfMatchedPersons(Collection<String> keywords,
+			final ArrayList<String[]> matchedPersons) {
+		for (String[] person : getAllPersonsInAddressBook()) {
             final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
             if (!Collections.disjoint(wordsInName, keywords)) {
                 matchedPersons.add(person);
             }
         }
-        return matchedPersons;
-    }
+	}
 
     /**
      * Deletes person identified using last displayed index.
@@ -610,15 +619,20 @@ public class AddressBook {
      */
     private static String getDisplayString(ArrayList<String[]> persons) {
         final StringBuilder messageAccumulator = new StringBuilder();
-        for (int i = 0; i < persons.size(); i++) {
+        accummulatePersonsforMessage(persons, messageAccumulator);
+        return messageAccumulator.toString();
+    }
+
+	private static void accummulatePersonsforMessage(ArrayList<String[]> persons,
+			final StringBuilder messageAccumulator) {
+		for (int i = 0; i < persons.size(); i++) {
             final String[] person = persons.get(i);
             final int displayIndex = i + DISPLAYED_INDEX_OFFSET;
             messageAccumulator.append('\t')
                               .append(getIndexedPersonListElementMessage(displayIndex, person))
                               .append(LS);
         }
-        return messageAccumulator.toString();
-    }
+	}
 
     /**
      * Constructs a prettified listing element message to represent a person and their data.
