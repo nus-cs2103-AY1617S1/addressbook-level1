@@ -350,21 +350,63 @@ public class AddressBook {
         final String commandArgs = commandTypeAndParams[1];
         switch (commandType) {
 	        case COMMAND_ADD_WORD:
-	            return executeAddPerson(commandArgs);
+	        	// try decoding a person from the raw args
+	            final Optional<String[]> decodeResult = decodePersonFromString(commandArgs);
+
+	            // checks if args are valid (decode result will not be present if the person is invalid)
+	            if (!decodeResult.isPresent()) {
+	                return getMessageForInvalidCommandInput(COMMAND_ADD_WORD, getUsageInfoForAddCommand());
+	            }
+
+	            // add the person as specified
+	            final String[] personToAdd = decodeResult.get();
+	            addPersonToAddressBook(personToAdd);
+	            return String.format(MESSAGE_ADDED,
+	                 getNameFromPerson(personToAdd), getPhoneFromPerson(personToAdd), getEmailFromPerson(personToAdd));
 	        case COMMAND_FIND_WORD:
-	            return executeFindPersons(commandArgs);
+	        	 final Set<String> keywords = extractKeywordsFromFindPersonArgs(commandArgs);
+	             final ArrayList<String[]> personsFound = getPersonsWithNameContainingAnyKeyword(keywords);
+	             showToUser(personsFound);
+	             return getMessageForPersonsDisplayedSummary(personsFound);
 	        case COMMAND_LIST_WORD:
-	            return executeListAllPersonsInAddressBook();
+	        	 ArrayList<String[]> toBeDisplayed = getAllPersonsInAddressBook();
+	             showToUser(toBeDisplayed);
+	             return getMessageForPersonsDisplayedSummary(toBeDisplayed);
 	        case COMMAND_DELETE_WORD:
-	            return executeDeletePerson(commandArgs);
+	        	if (!isDeletePersonArgsValid(commandArgs)) {
+	                return getMessageForInvalidCommandInput(COMMAND_DELETE_WORD, getUsageInfoForDeleteCommand());
+	            }
+	            final int targetVisibleIndex = extractTargetIndexFromDeletePersonArgs(commandArgs);
+	            if (!isDisplayIndexValidForLastPersonListingView(targetVisibleIndex)) {
+	                return MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
+	            }
+	            final String[] targetInModel = getPersonByLastVisibleIndex(targetVisibleIndex);
+	            return deletePersonFromAddressBook(targetInModel) ? getMessageForSuccessfulDelete(targetInModel) // success
+	                                                              : MESSAGE_PERSON_NOT_IN_ADDRESSBOOK; // not found
 	        case COMMAND_CLEAR_WORD:
-	            return executeClearAddressBook();
+	        	clearAddressBook();
+	            return MESSAGE_ADDRESSBOOK_CLEARED;
 	        case COMMAND_HELP_WORD:
-	            return getUsageInfoForAllCommands();
+	        	 return getUsageInfoForAddCommand() + LINE_SEPARATOR
+	                     + getUsageInfoForFindCommand() + LINE_SEPARATOR
+	                     + getUsageInfoForViewCommand() + LINE_SEPARATOR
+	                     + getUsageInfoForDeleteCommand() + LINE_SEPARATOR
+	                     + getUsageInfoForClearCommand() + LINE_SEPARATOR
+	                     + getUsageInfoForExitCommand() + LINE_SEPARATOR
+	                     + getUsageInfoForHelpCommand();
 	        case COMMAND_EXIT_WORD:
-	            executeExitProgramRequest();
+	        	showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
+	        	System.exit(0);
 	        default:
-	            return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
+	        	String correctUsageInfo =
+	        			   getUsageInfoForAddCommand() + LINE_SEPARATOR
+	                     + getUsageInfoForFindCommand() + LINE_SEPARATOR
+	                     + getUsageInfoForViewCommand() + LINE_SEPARATOR
+	                     + getUsageInfoForDeleteCommand() + LINE_SEPARATOR
+	                     + getUsageInfoForClearCommand() + LINE_SEPARATOR
+	                     + getUsageInfoForExitCommand() + LINE_SEPARATOR
+	                     + getUsageInfoForHelpCommand();
+	        	return String.format(MESSAGE_INVALID_COMMAND_FORMAT, commandType, correctUsageInfo);
 	        }
     }
 
