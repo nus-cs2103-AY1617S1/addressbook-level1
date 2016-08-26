@@ -199,14 +199,14 @@ public class AddressBook {
      * ====================================================================
      */
     public static void main(String[] args) {
-        showWelcomeMessage();
+        showToUser(DIVIDER,DIVIDER,VERSION,MESSAGE_WELCOME,DIVIDER);
         processProgramArgs(args);
         loadDataFromStorage();
         while (true) {
             String userCommand = getUserInput();
-            echoUserCommand(userCommand);
+            showToUser("[Command entered:"+ userCommand+"]");
             String feedback = executeCommand(userCommand);
-            showResultToUser(feedback);
+            showToUser(feedback,DIVIDER);
         }
     }
 
@@ -217,14 +217,7 @@ public class AddressBook {
      * signature anyway.
      * ====================================================================
      */
-    private static void showWelcomeMessage() {
-        showToUser(DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER);
-    }
-
-    private static void showResultToUser(String result) {
-        showToUser(result, DIVIDER);
-    }
-
+    
     /*
      * ==============NOTE TO STUDENTS======================================
      * Parameter description can be omitted from the method header comment
@@ -235,9 +228,7 @@ public class AddressBook {
     /**
      * Echoes the user input back to the user.
      */
-    private static void echoUserCommand(String userCommand) {
-        showToUser("[Command entered:" + userCommand + "]");
-    }
+   
 
     /*
      * ==============NOTE TO STUDENTS==========================================
