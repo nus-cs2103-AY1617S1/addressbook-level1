@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Scanner;
@@ -69,6 +70,7 @@ public class AddressBook {
     private static final String MESSAGE_DISPLAY_PERSON_DATA = "%1$s  Phone Number: %2$s  Email: %3$s";
     private static final String MESSAGE_DISPLAY_LIST_ELEMENT_INDEX = "%1$d. ";
     private static final String MESSAGE_GOODBYE = "Exiting Address Book... Good bye!";
+    private static final String MESSAGE_SORT_ADDRESSBOOK_SUCCESS = "Sort successful.";
     private static final String MESSAGE_INVALID_COMMAND_FORMAT = "Invalid command format: %1$s " + LS + "%2$s";
     private static final String MESSAGE_INVALID_FILE = "The given file name [%1$s] is not a valid file name!";
     private static final String MESSAGE_INVALID_PROGRAM_ARGS = "Too many parameters! Correct program argument format:"
@@ -81,6 +83,7 @@ public class AddressBook {
     private static final String MESSAGE_ERROR_MISSING_STORAGE_FILE = "Storage file missing: %1$s";
     private static final String MESSAGE_ERROR_READING_FROM_FILE = "Unexpected error: unable to read from file: %1$s";
     private static final String MESSAGE_ERROR_WRITING_TO_FILE = "Unexpected error: unable to write to file: %1$s";
+    private static final String MESSAGE_ERROR_SORTING_ADDRESSBOOK = "Unexcpeted error: unable to sort address book";
     private static final String MESSAGE_PERSONS_FOUND_OVERVIEW = "%1$d persons found!";
     private static final String MESSAGE_STORAGE_FILE_CREATED = "Created new empty storage file: %1$s";
     private static final String MESSAGE_WELCOME = "Welcome to your Address Book!";
@@ -127,6 +130,10 @@ public class AddressBook {
     private static final String COMMAND_EXIT_WORD = "exit";
     private static final String COMMAND_EXIT_DESC = "Exits the program.";
     private static final String COMMAND_EXIT_EXAMPLE = COMMAND_EXIT_WORD;
+    
+    private static final String COMMAND_SORT_WORD = "sort";
+    private static final String COMMAND_SORT_DESC = "Sorts address book in alphabetical order";
+    private static final String COMMAND_SORT_EXAMPLE = COMMAND_SORT_WORD;
 
     private static final String DIVIDER = "===================================================";
 
@@ -199,26 +206,34 @@ public class AddressBook {
      * ====================================================================
      */
     public static void main(String[] args) {
-        showWelcomeMessage();
-        processProgramArgs(args);
-        loadDataFromStorage();
+        String[] message = { DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER };
+		for (String m : message) {
+		    System.out.println(LINE_PREFIX + m);
+		}
+        
+        // Inlining processProgramArgs(args)
+        if (args.length >= 2) {
+		    showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
+		    exitProgram();
+		}
+		
+		if (args.length == 1) {
+		    setupGivenFileForStorage(args[0]);
+		}
+		
+		if(args.length == 0) {
+		    setupDefaultFileForStorage();
+		}
+		// End of inline
+		
+		ALL_PERSONS.clear();
+		ALL_PERSONS.addAll(loadPersonsFromFile(storageFilePath));
         while (true) {
             String userCommand = getUserInput();
             echoUserCommand(userCommand);
             String feedback = executeCommand(userCommand);
             showResultToUser(feedback);
         }
-    }
-
-    /*
-     * ==============NOTE TO STUDENTS======================================
-     * The method header comment can be omitted if the method is trivial
-     * and the header comment is going to be almost identical to the method
-     * signature anyway.
-     * ====================================================================
-     */
-    private static void showWelcomeMessage() {
-        showToUser(DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER);
     }
 
     private static void showResultToUser(String result) {
@@ -246,28 +261,6 @@ public class AddressBook {
      * that is referenced by the method above.
      * ====================================================================
      */
-
-    /**
-     * Processes the program main method run arguments.
-     * If a valid storage file is specified, sets up that file for storage.
-     * Otherwise sets up the default file for storage.
-     *
-     * @param args full program arguments passed to application main method
-     */
-    private static void processProgramArgs(String[] args) {
-        if (args.length >= 2) {
-            showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
-            exitProgram();
-        }
-
-        if (args.length == 1) {
-            setupGivenFileForStorage(args[0]);
-        }
-
-        if(args.length == 0) {
-            setupDefaultFileForStorage();
-        }
-    }
 
     /**
      * Sets up the storage file based on the supplied file path.
@@ -313,15 +306,6 @@ public class AddressBook {
         return filePath.endsWith(".txt");
     }
 
-    /**
-     * Initialises the in-memory data using the storage file.
-     * Assumption: The file exists.
-     */
-    private static void loadDataFromStorage() {
-        initialiseAddressBookModel(loadPersonsFromFile(storageFilePath));
-    }
-
-
     /*
      * ===========================================
      *           COMMAND LOGIC
@@ -337,7 +321,7 @@ public class AddressBook {
     public static String executeCommand(String userInputString) {
         final String[] commandTypeAndParams = splitCommandWordAndArgs(userInputString);
         final String commandType = commandTypeAndParams[0];
-        final String commandArgs = commandTypeAndParams[1];
+        final String commandArgs = commandTypeAndParams[1].toLowerCase();
         switch (commandType) {
         case COMMAND_ADD_WORD:
             return executeAddPerson(commandArgs);
@@ -350,7 +334,9 @@ public class AddressBook {
         case COMMAND_CLEAR_WORD:
             return executeClearAddressBook();
         case COMMAND_HELP_WORD:
-            return getUsageInfoForAllCommands();
+            return getUsageInfoForAllCommands();        
+        case COMMAND_SORT_WORD:
+        	return executeSortAddressBook();
         case COMMAND_EXIT_WORD:
             executeExitProgramRequest();
         default:
@@ -359,6 +345,18 @@ public class AddressBook {
     }
 
     /**
+     * Sorts the address book in alphabetical order.
+     * @return feedback display message for the operation result, along with the address book if successful.
+     */
+    private static String executeSortAddressBook() {
+    	if (sortAddressBook()) {    		
+    		executeListAllPersonsInAddressBook();
+    		return MESSAGE_SORT_ADDRESSBOOK_SUCCESS ;
+    	}
+    	return MESSAGE_ERROR_SORTING_ADDRESSBOOK;
+	}
+
+	/**
      * Splits raw user input into command word and command arguments string
      *
      * @return  size 2 array; first element is the command type and second element is the arguments string
@@ -409,7 +407,9 @@ public class AddressBook {
      */
     private static String getMessageForSuccessfulAddPerson(String[] addedPerson) {
         return String.format(MESSAGE_ADDED,
-                getNameFromPerson(addedPerson), getPhoneFromPerson(addedPerson), getEmailFromPerson(addedPerson));
+                getNameFromPerson(addedPerson), 
+                getPhoneFromPerson(addedPerson), 
+                getEmailFromPerson(addedPerson));
     }
 
     /**
@@ -478,8 +478,9 @@ public class AddressBook {
             return MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
         }
         final String[] targetInModel = getPersonByLastVisibleIndex(targetVisibleIndex);
-        return deletePersonFromAddressBook(targetInModel) ? getMessageForSuccessfulDelete(targetInModel) // success
-                                                          : MESSAGE_PERSON_NOT_IN_ADDRESSBOOK; // not found
+        return deletePersonFromAddressBook(targetInModel) ? 
+        		getMessageForSuccessfulDelete(targetInModel) // success
+        		: MESSAGE_PERSON_NOT_IN_ADDRESSBOOK; // not found
     }
 
     /**
@@ -514,7 +515,9 @@ public class AddressBook {
      * @return whether it is valid
      */
     private static boolean isDisplayIndexValidForLastPersonListingView(int index) {
-        return index >= DISPLAYED_INDEX_OFFSET && index < getLatestPersonListingView().size() + DISPLAYED_INDEX_OFFSET;
+        return index >= DISPLAYED_INDEX_OFFSET 
+        		&& index < getLatestPersonListingView().size() 
+        		+ DISPLAYED_INDEX_OFFSET;
     }
 
     /**
@@ -525,7 +528,8 @@ public class AddressBook {
      * @return successful delete person feedback message
      */
     private static String getMessageForSuccessfulDelete(String[] deletedPerson) {
-        return String.format(MESSAGE_DELETE_PERSON_SUCCESS, getMessageForFormattedPersonData(deletedPerson));
+        return String.format(MESSAGE_DELETE_PERSON_SUCCESS, 
+        		getMessageForFormattedPersonData(deletedPerson));
     }
 
     /**
@@ -628,7 +632,8 @@ public class AddressBook {
      * @return formatted listing message with index
      */
     private static String getIndexedPersonListElementMessage(int visibleIndex, String[] person) {
-        return String.format(MESSAGE_DISPLAY_LIST_ELEMENT_INDEX, visibleIndex) + getMessageForFormattedPersonData(person);
+        return String.format(MESSAGE_DISPLAY_LIST_ELEMENT_INDEX, visibleIndex) 
+        		+ getMessageForFormattedPersonData(person);
     }
 
     /**
@@ -706,7 +711,8 @@ public class AddressBook {
      * @return the list of decoded persons
      */
     private static ArrayList<String[]> loadPersonsFromFile(String filePath) {
-        final Optional<ArrayList<String[]>> successfullyDecoded = decodePersonsFromStrings(getLinesInFile(filePath));
+        final Optional<ArrayList<String[]>> successfullyDecoded = decodePersonsFromStrings(
+        		getLinesInFile(filePath));
         if (!successfullyDecoded.isPresent()) {
             showToUser(MESSAGE_INVALID_STORAGE_FILE_CONTENT);
             exitProgram();
@@ -721,7 +727,7 @@ public class AddressBook {
     private static ArrayList<String> getLinesInFile(String filePath) {
         ArrayList<String> lines = null;
         try {
-            lines = new ArrayList(Files.readAllLines(Paths.get(filePath)));
+            lines = new ArrayList<String>(Files.readAllLines(Paths.get(filePath)));
         } catch (FileNotFoundException fnfe) {
             showToUser(String.format(MESSAGE_ERROR_MISSING_STORAGE_FILE, filePath));
             exitProgram();
@@ -754,6 +760,24 @@ public class AddressBook {
      *        INTERNAL ADDRESS BOOK DATA METHODS
      * ================================================================================
      */
+    
+	/**
+	 * Sorts the address book in alphabetical order.
+	 * @return a boolean indicating if the operation was successful.
+	 */
+    private static boolean sortAddressBook() {
+    	try {
+    		Collections.sort(ALL_PERSONS.subList(0, ALL_PERSONS.size()), new Comparator<String[]>() {
+    			public int compare(String[] person2, String[] person1) {
+    				return person2[PERSON_DATA_INDEX_NAME].compareToIgnoreCase(person1[PERSON_DATA_INDEX_NAME]);
+    			}
+    		});
+    	} catch (Exception e) {
+    		return false;
+    	}
+    	savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
+    	return true;
+	}
 
     /**
      * Adds a person to the address book. Saves changes to storage file.
@@ -1077,11 +1101,22 @@ public class AddressBook {
                 + getUsageInfoForViewCommand() + LS
                 + getUsageInfoForDeleteCommand() + LS
                 + getUsageInfoForClearCommand() + LS
+                + getUsageInforForSortCommand() + LS
                 + getUsageInfoForExitCommand() + LS
                 + getUsageInfoForHelpCommand();
     }
 
     /**
+     * Builds string for showing 'sort' command usage instruction
+     * 
+     * @return 'sort' command usage instruction
+     */
+    private static String getUsageInforForSortCommand() {
+		return String.format(MESSAGE_COMMAND_HELP, COMMAND_SORT_WORD, COMMAND_SORT_DESC) + LS
+				+ String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_SORT_EXAMPLE) + LS;
+	}
+
+	/**
      * Builds string for showing 'add' command usage instruction
      *
      * @return  'add' command usage instruction
@@ -1180,7 +1215,7 @@ public class AddressBook {
      * @return split by whitespace
      */
     private static ArrayList<String> splitByWhitespace(String toSplit) {
-        return new ArrayList(Arrays.asList(toSplit.trim().split("\\s+")));
+        return new ArrayList<String>(Arrays.asList(toSplit.trim().split("\\s+")));
     }
 
 }
