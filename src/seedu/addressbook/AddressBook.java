@@ -44,7 +44,7 @@ public class AddressBook {
     /**
      * A decorative prefix added to the beginning of lines printed by AddressBook
      */
-    private static final String LINE_PREFIX = "|| ";
+    public static final String LINE_PREFIX = "|| ";
 
     /**
      * A platform independent line separator.
@@ -260,11 +260,11 @@ public class AddressBook {
             exitProgram();
         }
 
-        else if (args.length == 1) {
+        if (args.length == 1) {
             setupGivenFileForStorage(args[0]);
         }
 
-        else if (args.length == 0) {
+        if(args.length == 0) {
             setupDefaultFileForStorage();
         }
     }
@@ -514,17 +514,7 @@ public class AddressBook {
      * @return whether it is valid
      */
     private static boolean isDisplayIndexValidForLastPersonListingView(int index) {
-        //return index >= DISPLAYED_INDEX_OFFSET && index < getLatestPersonListingView().size() + DISPLAYED_INDEX_OFFSET;
-    	
-    	boolean isLargerThanOffset = (index >= DISPLAYED_INDEX_OFFSET);
-    	boolean isSmallerThanOffsetPlusSize = index < (getLatestPersonListingView().size() + DISPLAYED_INDEX_OFFSET);
-    	
-    	if(isLargerThanOffset == true && isSmallerThanOffsetPlusSize == true) {
-    		return true;
-    	}
-    	else{
-    		return false;
-    	}
+        return index >= DISPLAYED_INDEX_OFFSET && index < getLatestPersonListingView().size() + DISPLAYED_INDEX_OFFSET;
     }
 
     /**
