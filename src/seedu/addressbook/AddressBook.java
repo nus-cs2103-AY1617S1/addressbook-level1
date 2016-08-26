@@ -14,10 +14,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /* ==============NOTE TO STUDENTS======================================
  * This class header comment below is brief because details of how to
@@ -127,6 +129,10 @@ public class AddressBook {
     private static final String COMMAND_EXIT_WORD = "exit";
     private static final String COMMAND_EXIT_DESC = "Exits the program.";
     private static final String COMMAND_EXIT_EXAMPLE = COMMAND_EXIT_WORD;
+    
+    private static final String COMMAND_SORT_WORD = "sort";
+    private static final String COMMAND_SORT_DESC = "List the persons in alphabetical order.";
+    private static final String COMMAND_SORT_EXAMPLE = COMMAND_SORT_WORD;
 
     private static final String DIVIDER = "===================================================";
 
@@ -353,12 +359,21 @@ public class AddressBook {
             return getUsageInfoForAllCommands();
         case COMMAND_EXIT_WORD:
             executeExitProgramRequest();
+        case COMMAND_SORT_WORD:
+        	return executeSortPersons();
         default:
             return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
         }
     }
 
-    /**
+    private static String executeSortPersons() {
+    	ArrayList<String[]> toBeDisplayed = getAllPersonsInAddressBook();
+		toBeDisplayed.sort(Comparator.comparing(person -> getNameFromPerson(person)));;
+        showToUser(toBeDisplayed);
+        return getMessageForPersonsDisplayedSummary(toBeDisplayed);
+    }
+
+	/**
      * Splits raw user input into command word and command arguments string
      *
      * @return  size 2 array; first element is the command type and second element is the arguments string
@@ -445,6 +460,11 @@ public class AddressBook {
     private static Set<String> extractKeywordsFromFindPersonArgs(String findPersonCommandArgs) {
         return new HashSet<>(splitByWhitespace(findPersonCommandArgs.trim()));
     }
+    
+    private static Collection<String> lowercased(Collection<String> collection) {
+    	Collection<String> newCollection = collection.stream().map(String::toLowerCase).collect(Collectors.toList());
+        return newCollection;
+    }
 
     /**
      * Retrieve all persons in the full model whose names contain some of the specified keywords.
@@ -456,7 +476,7 @@ public class AddressBook {
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
         for (String[] person : getAllPersonsInAddressBook()) {
             final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
-            if (!Collections.disjoint(wordsInName, keywords)) {
+            if (!Collections.disjoint(lowercased(wordsInName), lowercased(keywords))) {
                 matchedPersons.add(person);
             }
         }
@@ -1075,6 +1095,7 @@ public class AddressBook {
         return getUsageInfoForAddCommand() + LS
                 + getUsageInfoForFindCommand() + LS
                 + getUsageInfoForViewCommand() + LS
+                + getUsageInfoForSortCommand() + LS
                 + getUsageInfoForDeleteCommand() + LS
                 + getUsageInfoForClearCommand() + LS
                 + getUsageInfoForExitCommand() + LS
@@ -1132,6 +1153,17 @@ public class AddressBook {
     private static String getUsageInfoForViewCommand() {
         return String.format(MESSAGE_COMMAND_HELP, COMMAND_LIST_WORD, COMMAND_LIST_DESC) + LS
                 + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_LIST_EXAMPLE) + LS;
+    }
+    
+    /**
+     * Builds string for showing 'sort' command usage instruction
+     * 
+     * @return 'sort' command usage instruction
+     */
+    
+    private static String getUsageInfoForSortCommand() {
+        return String.format(MESSAGE_COMMAND_HELP, COMMAND_SORT_WORD, COMMAND_SORT_DESC) + LS
+                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_SORT_EXAMPLE) + LS;
     }
 
     /**
