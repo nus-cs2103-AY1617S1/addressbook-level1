@@ -776,7 +776,6 @@ public class AddressBook {
      * @param index absolute index of person to delete (index within {@link #ALL_PERSONS})
      */
     
-	*/
     /**
      * Deletes the specified person from the addressbook if it is inside. Saves any changes to storage file.
      *
