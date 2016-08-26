@@ -51,7 +51,7 @@
   find bet
   # does not match if none have keyword
   find 23912039120
-  # matching should be case-sensitive
+  # matching need not be case-sensitive after enhancement
   find betsy
 
   # find unique keyword
@@ -98,6 +98,33 @@
   # clears all
   clear
   list
+
+##########################################################
+# test sort and edit persons command
+##########################################################
+
+  # add persons to sort
+  add Cedric Tan p/345 e/345@gmail.com
+  add Aaron Lee p/123 e/123@gmail.com
+  add Barry Lim p/454 e/454@gmail.com
+  
+  # should sort address book
+  sort
+  # should show sorted address book
+  list
+  
+
+  # edit all three details in n/ p/ e/ order
+  edit 1 n/Adam Lee p/912 e/912@gmail.com
+  # edit all three in random order
+  edit 2 p/233 e/barryng@gmail.com n/Barry Ng
+  # edit name only
+  edit 3 n/Cedric Ang B C
+
+  # verify edits
+  list
+  # clears all
+  clear
 
 ##########################################################
 # test exit command
