@@ -29,7 +29,7 @@ import java.util.Set;
  * This class is used to maintain a list of person data which are saved
  * in a text file.
  **/
-public class AddressBook {
+public class AddressBookT2 {
 
     /**
      * Default file path used if the user doesn't provide the file name.
@@ -257,7 +257,15 @@ public class AddressBook {
      * @param args full program arguments passed to application main method
      */
     private static void processProgramArgs(String[] args) {
-        if (args.length >= 2) {
+        checkLengthOfName(args);
+    }
+
+	/**
+	 * @param args
+	 * Checks the length of name and executes accordingly
+	 */
+	private static void checkLengthOfName(String[] args) {
+		if (args.length >= 2) {
             showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
             exitProgram();
         }
@@ -269,7 +277,7 @@ public class AddressBook {
         if(args.length == 0) {
             setupDefaultFileForStorage();
         }
-    }
+	}
 
     /**
      * Sets up the storage file based on the supplied file path.
@@ -340,7 +348,16 @@ public class AddressBook {
         final String[] commandTypeAndParams = splitCommandWordAndArgs(userInputString);
         final String commandType = commandTypeAndParams[0];
         final String commandArgs = commandTypeAndParams[1];
-        switch (commandType) {
+        return executeCommands(commandType, commandArgs);
+    }
+
+	/**
+	 * @param commandType
+	 * @param commandArgs
+	 * @return
+	 */
+	private static String executeCommands(final String commandType, final String commandArgs) {
+		switch (commandType) {
         case COMMAND_ADD_WORD:
             return executeAddPerson(commandArgs);
         case COMMAND_FIND_WORD:
@@ -358,7 +375,7 @@ public class AddressBook {
         default:
             return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
         }
-    }
+	}
 
     /**
      * Splits raw user input into command word and command arguments string
@@ -459,12 +476,23 @@ public class AddressBook {
         changeToLowerCase(keywords);
         for (String[] person : getAllPersonsInAddressBook()) {
             final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
-            if (!Collections.disjoint(wordsInName, keywords)) {
-                matchedPersons.add(person);
-            }
+            compareCollectionsAndAdd(keywords, matchedPersons, person, wordsInName);
         }
         return matchedPersons;
     }
+
+	/**
+	 * @param keywords
+	 * @param matchedPersons
+	 * @param person
+	 * @param wordsInName
+	 */
+	private static void compareCollectionsAndAdd(Collection<String> keywords, final ArrayList<String[]> matchedPersons,
+			String[] person, final Set<String> wordsInName) {
+		if (!Collections.disjoint(wordsInName, keywords)) {
+		    matchedPersons.add(person);
+		}
+	}
     
     /**
      * Replaces the keywords with lower case characters to make the search case in sensitive
@@ -586,11 +614,20 @@ public class AddressBook {
         System.out.print(LINE_PREFIX + "Enter command: ");
         String inputLine = SCANNER.nextLine();
         // silently consume all blank and comment lines
-        while (inputLine.trim().isEmpty() || inputLine.trim().charAt(0) == INPUT_COMMENT_MARKER) {
-            inputLine = SCANNER.nextLine();
-        }
+        inputLine = readInFromInput(inputLine);
         return inputLine;
     }
+
+	/**
+	 * @param inputLine
+	 * @return the correct string from Scanner
+	 */
+	private static String readInFromInput(String inputLine) {
+		while (inputLine.trim().isEmpty() || inputLine.trim().charAt(0) == INPUT_COMMENT_MARKER) {
+            inputLine = SCANNER.nextLine();
+        }
+		return inputLine;
+	}
 
    /* ==============NOTE TO STUDENTS======================================
     * Note how the method below uses Java 'Varargs' feature so that the
@@ -625,12 +662,22 @@ public class AddressBook {
         for (int i = 0; i < persons.size(); i++) {
             final String[] person = persons.get(i);
             final int displayIndex = i + DISPLAYED_INDEX_OFFSET;
-            messageAccumulator.append('\t')
-                              .append(getIndexedPersonListElementMessage(displayIndex, person))
-                              .append(LINE_SEPARATOR);
+            appendMessage(messageAccumulator, person, displayIndex);
         }
         return messageAccumulator.toString();
     }
+
+	/**
+	 * @param messageAccumulator
+	 * @param person
+	 * @param displayIndex
+	 */
+	private static void appendMessage(final StringBuilder messageAccumulator, final String[] person,
+			final int displayIndex) {
+		messageAccumulator.append('\t')
+		                  .append(getIndexedPersonListElementMessage(displayIndex, person))
+		                  .append(LINE_SEPARATOR);
+	}
 
     /**
      * Constructs a prettified listing element message to represent a person and their data.
@@ -893,11 +940,19 @@ public class AddressBook {
      */
     private static ArrayList<String> encodePersonsToStrings(ArrayList<String[]> persons) {
         final ArrayList<String> encoded = new ArrayList<>();
-        for (String[] person : persons) {
-            encoded.add(encodePersonToString(person));
-        }
+        convertStringArraysToStrings(persons, encoded);
         return encoded;
     }
+
+	/**
+	 * @param persons
+	 * @param encoded
+	 */
+	private static void convertStringArraysToStrings(ArrayList<String[]> persons, final ArrayList<String> encoded) {
+		for (String[] person : persons) {
+            encoded.add(encodePersonToString(person));
+        }
+	}
 
     /*
      * ==============NOTE TO STUDENTS======================================
