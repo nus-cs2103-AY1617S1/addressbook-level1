@@ -202,13 +202,20 @@ public class AddressBook {
         showWelcomeMessage();
         processProgramArgs(args);
         loadDataFromStorage();
-        while (true) {
+        processInputExecuteCommand();
+    }
+    
+    /**
+     * Processes the series of user inputs and execute corresponding commands.
+     */
+	public static void processInputExecuteCommand() {
+		while (true) {
             String userCommand = getUserInput();
             echoUserCommand(userCommand);
             String feedback = executeCommand(userCommand);
             showResultToUser(feedback);
         }
-    }
+	}
 
     /*
      * ==============NOTE TO STUDENTS======================================
@@ -456,12 +463,25 @@ public class AddressBook {
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
         for (String[] person : getAllPersonsInAddressBook()) {
             final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
-            if (!Collections.disjoint(wordsInName, keywords)) {
-                matchedPersons.add(person);
-            }
+            compareKeywordsWithNames(keywords, matchedPersons, person, wordsInName);
         }
-        return matchedPersons;
-    }
+    return matchedPersons;
+}
+    /**
+     * Check keywords and names case-insensitive-ly.
+     */
+	private static void compareKeywordsWithNames(Collection<String> keywords, final ArrayList<String[]> matchedPersons,
+			String[] person, final Set<String> wordsInName) {
+		boolean isPresent = false;
+		for (String key: keywords) {
+			for (String word: wordsInName) {
+				if (key.equalsIgnoreCase(word))
+					isPresent = true;
+			}
+		}
+		if (isPresent == true)
+			matchedPersons.add(person);
+	}
 
     /**
      * Deletes person identified using last displayed index.
@@ -721,7 +741,7 @@ public class AddressBook {
     private static ArrayList<String> getLinesInFile(String filePath) {
         ArrayList<String> lines = null;
         try {
-            lines = new ArrayList(Files.readAllLines(Paths.get(filePath)));
+            lines = new ArrayList<String>(Files.readAllLines(Paths.get(filePath)));
         } catch (FileNotFoundException fnfe) {
             showToUser(String.format(MESSAGE_ERROR_MISSING_STORAGE_FILE, filePath));
             exitProgram();
@@ -783,11 +803,11 @@ public class AddressBook {
      * @return true if the given person was found and deleted in the model
      */
     private static boolean deletePersonFromAddressBook(String[] exactPerson) {
-        final boolean changed = ALL_PERSONS.remove(exactPerson);
-        if (changed) {
+        final boolean isChanged = ALL_PERSONS.remove(exactPerson);
+        if (isChanged) {
             savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
         }
-        return changed;
+        return isChanged;
     }
 
     /**
@@ -1180,7 +1200,7 @@ public class AddressBook {
      * @return split by whitespace
      */
     private static ArrayList<String> splitByWhitespace(String toSplit) {
-        return new ArrayList(Arrays.asList(toSplit.trim().split("\\s+")));
+        return new ArrayList<String>(Arrays.asList(toSplit.trim().split("\\s+")));
     }
 
 }
