@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Scanner;
@@ -69,6 +70,7 @@ public class AddressBook {
     private static final String MESSAGE_DISPLAY_PERSON_DATA = "%1$s  Phone Number: %2$s  Email: %3$s";
     private static final String MESSAGE_DISPLAY_LIST_ELEMENT_INDEX = "%1$d. ";
     private static final String MESSAGE_GOODBYE = "Exiting Address Book... Good bye!";
+    private static final String MESSAGE_SORT_SUCCESSFUL = "Address book sorted successfully"; //sort
     private static final String MESSAGE_INVALID_COMMAND_FORMAT = "Invalid command format: %1$s " + LS + "%2$s";
     private static final String MESSAGE_INVALID_FILE = "The given file name [%1$s] is not a valid file name!";
     private static final String MESSAGE_INVALID_PROGRAM_ARGS = "Too many parameters! Correct program argument format:"
@@ -85,6 +87,8 @@ public class AddressBook {
     private static final String MESSAGE_STORAGE_FILE_CREATED = "Created new empty storage file: %1$s";
     private static final String MESSAGE_WELCOME = "Welcome to your Address Book!";
     private static final String MESSAGE_USING_DEFAULT_FILE = "Using default storage file : " + DEFAULT_STORAGE_FILEPATH;
+    private static final String MESSAGE_INVALID_SORT = "Address book failed to sort"; //sort
+    
 
     // These are the prefix strings to define the data type of a command parameter
     private static final String PERSON_DATA_PREFIX_PHONE = "p/";
@@ -99,6 +103,7 @@ public class AddressBook {
                                                       + PERSON_DATA_PREFIX_PHONE + "PHONE_NUMBER "
                                                       + PERSON_DATA_PREFIX_EMAIL + "EMAIL";
     private static final String COMMAND_ADD_EXAMPLE = COMMAND_ADD_WORD + " John Doe p/98765432 e/johnd@gmail.com";
+    private static final String COMMAND_SORT_DATA = "sort";//sort 
 
     private static final String COMMAND_FIND_WORD = "find";
     private static final String COMMAND_FIND_DESC = "Finds all persons whose names contain any of the specified "
@@ -161,9 +166,9 @@ public class AddressBook {
      * This variable is declared for the whole class (instead of declaring it
      * inside the readUserCommand() method to facilitate automated testing using
      * the I/O redirection technique. If not, only the first line of the input
-     * text file will be processed.
+     * text file will be ed.
      */
-    private static final Scanner scanner = new Scanner(System.in);
+    private static final Scanner SCANNER = new Scanner(System.in);
     /*
      * ==============NOTE TO STUDENTS======================================================================
      * Note that the type of the variable below can also be declared as List<String[]>, as follows:
@@ -199,7 +204,7 @@ public class AddressBook {
      * ====================================================================
      */
     public static void main(String[] args) {
-        showWelcomeMessage();
+        showToUser(DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER);
         if (args.length >= 2) {
 		    showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
 		    exitProgram();
@@ -212,7 +217,7 @@ public class AddressBook {
 		if(args.length == 0) {
 		    setupDefaultFileForStorage();
 		}
-        loadDataFromStorage();
+        initialiseAddressBookModel(loadPersonsFromFile(storageFilePath));
         while (true) {
             String userCommand = getUserInput();
             echoUserCommand(userCommand);
@@ -259,13 +264,13 @@ public class AddressBook {
      */
 
     /**
-     * Processes the program main method run arguments.
+     * es the program main method run arguments.
      * If a valid storage file is specified, sets up that file for storage.
      * Otherwise sets up the default file for storage.
      *
      * @param args full program arguments passed to application main method
      */
-    private static void processProgramArgs(String[] args) {
+    private static void ProgramArgs(String[] args) {
         if (args.length >= 2) {
             showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
             exitProgram();
@@ -348,7 +353,7 @@ public class AddressBook {
     public static String executeCommand(String userInputString) {
         final String[] commandTypeAndParams = splitCommandWordAndArgs(userInputString);
         final String commandType = commandTypeAndParams[0];
-        final String commandArgs = commandTypeAndParams[1];
+        final String commandArgs = commandTypeAndParams[1].toLowerCase(); // to make the find function case insensitive
         switch (commandType) {
         case COMMAND_ADD_WORD:
             return executeAddPerson(commandArgs);
@@ -362,14 +367,28 @@ public class AddressBook {
             return executeClearAddressBook();
         case COMMAND_HELP_WORD:
             return getUsageInfoForAllCommands();
+        case COMMAND_SORT_DATA:
+        	return sortAddressBook();
+        	
         case COMMAND_EXIT_WORD:
             executeExitProgramRequest();
         default:
             return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
         }
     }
+    //sorting method
+    private static String sortAddressBook() {
+    	Collections.sort(allPersons.subList(0, allPersons.size()), new Comparator<String[]>() {
+    		public int compare(String[] person2, String[] person1) {
+    			return person2[PERSON_DATA_INDEX_NAME].compareToIgnoreCase(person1[PERSON_DATA_INDEX_NAME]);
+    		}
+    	});
+    	savePersonsToFile(allPersons, storageFilePath);
+    	executeListAllPersonsInAddressBook();
+		return MESSAGE_SORT_SUCCESSFUL;
+	}
 
-    /**
+	/**
      * Splits raw user input into command word and command arguments string
      *
      * @return  size 2 array; first element is the command type and second element is the arguments string
@@ -583,10 +602,10 @@ public class AddressBook {
      */
     private static String getUserInput() {
         System.out.print(LINE_PREFIX + "Enter command: ");
-        String inputLine = scanner.nextLine();
+        String inputLine = SCANNER.nextLine();
         // silently consume all blank and comment lines
         while (inputLine.trim().isEmpty() || inputLine.trim().charAt(0) == INPUT_COMMENT_MARKER) {
-            inputLine = scanner.nextLine();
+            inputLine = SCANNER.nextLine();
         }
         return inputLine;
     }
@@ -794,11 +813,11 @@ public class AddressBook {
      * @return true if the given person was found and deleted in the model
      */
     private static boolean deletePersonFromAddressBook(String[] exactPerson) {
-        final boolean changed = allPersons.remove(exactPerson);
-        if (changed) {
+        final boolean is_Changed = allPersons.remove(exactPerson);
+        if (is_Changed) {
             savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
         }
-        return changed;
+        return is_Changed;
     }
 
     /**
