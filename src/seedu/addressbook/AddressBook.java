@@ -214,9 +214,25 @@ public class AddressBook {
     }
 
 	private static void startProgram(String[] args) {
-		showWelcomeMessage();
-		processProgramArgs(args);
-		loadDataFromStorage();
+		// inline of showWelcomeMessage()
+		showToUser(DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER);
+		
+		// inline this next method processProgramArgs()
+		if (args.length >= INVALID_NUMBER_PROGRAM_ARGS) {
+		    showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
+		    exitProgram();
+		}
+		
+		if (args.length == VALID_NUMBER_PROGRAM_ARGS) {
+		    setupGivenFileForStorage(args[0]);
+		}
+		
+		if(args.length == NO_PROGRAM_ARGS) {
+		    setupDefaultFileForStorage();
+		}
+		
+		// inline loadDataFromStorage()
+		initialiseAddressBookModel(loadPersonsFromFile(storageFilePath));
 	}
 
 	private static void processCommand() {
@@ -277,21 +293,6 @@ public class AddressBook {
     private static final int VALID_NUMBER_PROGRAM_ARGS = 1;
     private static final int NO_PROGRAM_ARGS = 0;
     
-    private static void processProgramArgs(String[] args) {
-        if (args.length >= INVALID_NUMBER_PROGRAM_ARGS) {
-            showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
-            exitProgram();
-        }
-
-        if (args.length == VALID_NUMBER_PROGRAM_ARGS) {
-            setupGivenFileForStorage(args[0]);
-        }
-
-        if(args.length == NO_PROGRAM_ARGS) {
-            setupDefaultFileForStorage();
-        }
-    }
-
     /**
      * Sets up the storage file based on the supplied file path.
      * Creates the file if it is missing.
