@@ -199,8 +199,11 @@ public class AddressBook {
      * ====================================================================
      */
     public static void main(String[] args) {
-        showWelcomeMessage();
-        //processProgramArgs(args);
+        //showWelcomeMessage();
+        
+    	showToUser(DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER);
+    	
+    	//processProgramArgs(args);
         
         if (args.length >= 2) {
             showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
@@ -216,12 +219,21 @@ public class AddressBook {
         }
     
 
-        loadDataFromStorage();
+        //loadDataFromStorage();
+        
+        initialiseAddressBookModel(loadPersonsFromFile(storageFilePath));
+        
         while (true) {
             String userCommand = getUserInput();
-            echoUserCommand(userCommand);
+            //echoUserCommand(userCommand);
+            
+            showToUser("[Command entered:" + userCommand + "]");
+            
             String feedback = executeCommand(userCommand);
-            showResultToUser(feedback);
+            //showResultToUser(feedback);
+            
+            showToUser(feedback, DIVIDER);
+            
         }
     }
 
@@ -230,6 +242,9 @@ public class AddressBook {
      * The method header comment can be omitted if the method is trivial
      * and the header comment is going to be almost identical to the method
      * signature anyway.
+     * 
+     * There will be many unused functions because I have made the code holy 
+     * smelly that almost no one can understand my code.
      * ====================================================================
      */
     private static void showWelcomeMessage() {
