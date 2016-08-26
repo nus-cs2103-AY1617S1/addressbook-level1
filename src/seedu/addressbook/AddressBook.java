@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Scanner;
@@ -119,6 +120,10 @@ public class AddressBook {
     private static final String COMMAND_CLEAR_WORD = "clear";
     private static final String COMMAND_CLEAR_DESC = "Clears address book permanently.";
     private static final String COMMAND_CLEAR_EXAMPLE = COMMAND_CLEAR_WORD;
+    
+    private static final String COMMAND_SORT_WORD = "sort";
+    private static final String COMMAND_SORT_DESC = "List all persons in alphabetic order.";
+    private static final String COMMAND_SORT_EXAMPLE = COMMAND_SORT_WORD;
 
     private static final String COMMAND_HELP_WORD = "help";
     private static final String COMMAND_HELP_DESC = "Shows program usage instructions.";
@@ -202,13 +207,20 @@ public class AddressBook {
         showWelcomeMessage();
         processProgramArgs(args);
         loadDataFromStorage();
-        while (true) {
+        processInputExecuteCommand();
+    }
+    
+    /**
+     * Processes series of user inputs and execute accordingly
+     */
+	public static void processInputExecuteCommand() {
+		while (true) {
             String userCommand = getUserInput();
             echoUserCommand(userCommand);
             String feedback = executeCommand(userCommand);
             showResultToUser(feedback);
         }
-    }
+	}
 
     /*
      * ==============NOTE TO STUDENTS======================================
@@ -349,6 +361,8 @@ public class AddressBook {
             return executeDeletePerson(commandArgs);
         case COMMAND_CLEAR_WORD:
             return executeClearAddressBook();
+        case COMMAND_SORT_WORD:
+        	return executeSortAllPersonsInAddressBook();
         case COMMAND_HELP_WORD:
             return getUsageInfoForAllCommands();
         case COMMAND_EXIT_WORD:
@@ -409,7 +423,9 @@ public class AddressBook {
      */
     private static String getMessageForSuccessfulAddPerson(String[] addedPerson) {
         return String.format(MESSAGE_ADDED,
-                getNameFromPerson(addedPerson), getPhoneFromPerson(addedPerson), getEmailFromPerson(addedPerson));
+                getNameFromPerson(addedPerson), 
+                getPhoneFromPerson(addedPerson), 
+                getEmailFromPerson(addedPerson));
     }
 
     /**
@@ -456,12 +472,25 @@ public class AddressBook {
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
         for (String[] person : getAllPersonsInAddressBook()) {
             final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
-            if (!Collections.disjoint(wordsInName, keywords)) {
-                matchedPersons.add(person);
-            }
+            compareKeywordsWithNames(keywords, matchedPersons, person, wordsInName);
         }
-        return matchedPersons;
-    }
+    return matchedPersons;
+}
+    /**
+     * Compare keywords with names case insensitively
+     */
+	private static void compareKeywordsWithNames(Collection<String> keywords, final ArrayList<String[]> matchedPersons,
+			String[] person, final Set<String> wordsInName) {
+		boolean isPresent = false;
+		for (String key: keywords) {
+			for (String word: wordsInName) {
+				if (key.equalsIgnoreCase(word))
+					isPresent = true;
+			}
+		}
+		if (isPresent == true)
+			matchedPersons.add(person);
+	}
 
     /**
      * Deletes person identified using last displayed index.
@@ -537,7 +566,7 @@ public class AddressBook {
         clearAddressBook();
         return MESSAGE_ADDRESSBOOK_CLEARED;
     }
-
+    
     /**
      * Displays all persons in the address book to the user; in added order.
      *
@@ -547,6 +576,18 @@ public class AddressBook {
         ArrayList<String[]> toBeDisplayed = getAllPersonsInAddressBook();
         showToUser(toBeDisplayed);
         return getMessageForPersonsDisplayedSummary(toBeDisplayed);
+    }
+    
+    /**
+     * List all persons in the address book in an alphabetic order.
+     * 
+     * @return feedback display message for the operation result
+     */
+    private static String executeSortAllPersonsInAddressBook() {
+    	ArrayList<String[]> toBeDisplayed = getAllPersonsInAddressBook();
+    	Collections.sort(toBeDisplayed, alphabeticComparator());
+    	showToUser(toBeDisplayed);
+    	return getMessageForPersonsDisplayedSummary(toBeDisplayed);
     }
 
     /**
@@ -721,7 +762,7 @@ public class AddressBook {
     private static ArrayList<String> getLinesInFile(String filePath) {
         ArrayList<String> lines = null;
         try {
-            lines = new ArrayList(Files.readAllLines(Paths.get(filePath)));
+            lines = new ArrayList<String>(Files.readAllLines(Paths.get(filePath)));
         } catch (FileNotFoundException fnfe) {
             showToUser(String.format(MESSAGE_ERROR_MISSING_STORAGE_FILE, filePath));
             exitProgram();
@@ -1152,8 +1193,21 @@ public class AddressBook {
     private static String getUsageInfoForExitCommand() {
         return String.format(MESSAGE_COMMAND_HELP, COMMAND_EXIT_WORD, COMMAND_EXIT_DESC)
                 + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_EXIT_EXAMPLE);
+    }  
+    
+    /**
+     * Creates a comparator that compare Strings in alphabetic order.
+     * 
+     * @return an alphabetic comparator
+     */
+    private static Comparator<String[]> alphabeticComparator() {
+    	return new Comparator<String[]>() {
+    		@Override
+    		public int compare(String[] o1, String[] o2) {
+    			return o1[0].toUpperCase().charAt(0) - o2[0].toUpperCase().charAt(0);
+    		}
+    	};
     }
-
 
     /*
      * ============================
@@ -1180,7 +1234,7 @@ public class AddressBook {
      * @return split by whitespace
      */
     private static ArrayList<String> splitByWhitespace(String toSplit) {
-        return new ArrayList(Arrays.asList(toSplit.trim().split("\\s+")));
+        return new ArrayList<String>(Arrays.asList(toSplit.trim().split("\\s+")));
     }
 
 }
