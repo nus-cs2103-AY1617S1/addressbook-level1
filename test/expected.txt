@@ -93,24 +93,24 @@
 || 
 || 2 persons found!
 || ===================================================
-|| Enter command: || [Command entered:  add Charlie Dickson e/charlie.d@nus.edu.sg p/333333]
-|| New person added: Charlie Dickson, Phone: 333333, Email: charlie.d@nus.edu.sg
-|| ===================================================
-|| Enter command: || [Command entered:  list]
-|| 	1. Adam Brown  Phone Number: 111111  Email: adam@gmail.com
-|| 	2. Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
-|| 	3. Charlie Dickson  Phone Number: 333333  Email: charlie.d@nus.edu.sg
-|| 
-|| 3 persons found!
-|| ===================================================
 || Enter command: || [Command entered:  add Dickson Ee e/dickson@nus.edu.sg p/444444]
 || New person added: Dickson Ee, Phone: 444444, Email: dickson@nus.edu.sg
 || ===================================================
 || Enter command: || [Command entered:  list]
 || 	1. Adam Brown  Phone Number: 111111  Email: adam@gmail.com
 || 	2. Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
-|| 	3. Charlie Dickson  Phone Number: 333333  Email: charlie.d@nus.edu.sg
-|| 	4. Dickson Ee  Phone Number: 444444  Email: dickson@nus.edu.sg
+|| 	3. Dickson Ee  Phone Number: 444444  Email: dickson@nus.edu.sg
+|| 
+|| 3 persons found!
+|| ===================================================
+|| Enter command: || [Command entered:  add Charlie Dickson e/charlie.d@nus.edu.sg p/333333]
+|| New person added: Charlie Dickson, Phone: 333333, Email: charlie.d@nus.edu.sg
+|| ===================================================
+|| Enter command: || [Command entered:  list]
+|| 	1. Adam Brown  Phone Number: 111111  Email: adam@gmail.com
+|| 	2. Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
+|| 	3. Dickson Ee  Phone Number: 444444  Email: dickson@nus.edu.sg
+|| 	4. Charlie Dickson  Phone Number: 333333  Email: charlie.d@nus.edu.sg
 || 
 || 4 persons found!
 || ===================================================
@@ -118,6 +118,15 @@
 || New person added: Esther Potato, Phone: 555555, Email: esther@notreal.potato
 || ===================================================
 || Enter command: || [Command entered:  list]
+|| 	1. Adam Brown  Phone Number: 111111  Email: adam@gmail.com
+|| 	2. Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
+|| 	3. Dickson Ee  Phone Number: 444444  Email: dickson@nus.edu.sg
+|| 	4. Charlie Dickson  Phone Number: 333333  Email: charlie.d@nus.edu.sg
+|| 	5. Esther Potato  Phone Number: 555555  Email: esther@notreal.potato
+|| 
+|| 5 persons found!
+|| ===================================================
+|| Enter command: || [Command entered:  sort]
 || 	1. Adam Brown  Phone Number: 111111  Email: adam@gmail.com
 || 	2. Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
 || 	3. Charlie Dickson  Phone Number: 333333  Email: charlie.d@nus.edu.sg
@@ -139,8 +148,9 @@
 || 0 persons found!
 || ===================================================
 || Enter command: || [Command entered:  find betsy]
+|| 	1. Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
 || 
-|| 0 persons found!
+|| 1 persons found!
 || ===================================================
 || Enter command: || [Command entered:  find Betsy]
 || 	1. Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
