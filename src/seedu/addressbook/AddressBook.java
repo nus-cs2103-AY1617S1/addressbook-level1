@@ -420,6 +420,11 @@ public class AddressBook {
      * @return feedback display message for the operation result
      */
     private static String executeFindPersons(String commandArgs) {
+    	char[] arr=commandArgs.toCharArray();
+    	for(char c:arr){
+    	    Character.toUpperCase(c);
+    	}
+    	commandArgs=arr.toString();
         final Set<String> keywords = extractKeywordsFromFindPersonArgs(commandArgs);
         final ArrayList<String[]> personsFound = getPersonsWithNameContainingAnyKeyword(keywords);
         showToUser(personsFound);
