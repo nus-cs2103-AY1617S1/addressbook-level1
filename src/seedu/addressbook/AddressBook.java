@@ -31,7 +31,23 @@ import java.util.Set;
  **/
 public class AddressBook {
 
-    /**
+	private static final String WHITESPACE_STRING = "\\s+";
+
+	private static final String VALID_PERSON_EMAIL_REGEX_MATCH = "\\S+@\\S+\\.\\S+";
+
+	private static final String VALID_PERSON_PHONE_REGEX_MATCH = "\\d+";
+
+	private static final String VALID_PERSON_NAME_REGEX_MATCH = "(\\w|\\s)+";
+
+	private static final String EMPTY_STRING = "";
+
+	/**
+	 * This is the file extension of the text file used to validate
+	 * the file path.
+	 */
+    private static final String FILE_EXTENSION = ".txt";
+
+	/**
      * Default file path used if the user doesn't provide the file name.
      */
     private static final String DEFAULT_STORAGE_FILEPATH = "addressbook.txt";
@@ -310,7 +326,7 @@ public class AddressBook {
      * TODO: Implement a more rigorous validity checking.
      */
     private static boolean isValidFilePath(String filePath) {
-        return filePath.endsWith(".txt");
+        return filePath.endsWith(FILE_EXTENSION);
     }
 
     /**
@@ -364,8 +380,11 @@ public class AddressBook {
      * @return  size 2 array; first element is the command type and second element is the arguments string
      */
     private static String[] splitCommandWordAndArgs(String rawUserInput) {
-        final String[] split =  rawUserInput.trim().split("\\s+", 2);
-        return split.length == 2 ? split : new String[] { split[0] , "" }; // else case: no parameters
+        final String[] split =  rawUserInput.trim().split(WHITESPACE_STRING, 2);
+        if (split.length == 2)
+        	return split;
+        else
+        	return new String[] { split[0] , EMPTY_STRING }; // else case: no parameters 
     }
 
     /**
@@ -478,8 +497,10 @@ public class AddressBook {
             return MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
         }
         final String[] targetInModel = getPersonByLastVisibleIndex(targetVisibleIndex);
-        return deletePersonFromAddressBook(targetInModel) ? getMessageForSuccessfulDelete(targetInModel) // success
-                                                          : MESSAGE_PERSON_NOT_IN_ADDRESSBOOK; // not found
+        if (deletePersonFromAddressBook(targetInModel))
+        	return getMessageForSuccessfulDelete(targetInModel); // success
+        else
+        	return MESSAGE_PERSON_NOT_IN_ADDRESSBOOK; // not found 
     }
 
     /**
@@ -721,7 +742,7 @@ public class AddressBook {
     private static ArrayList<String> getLinesInFile(String filePath) {
         ArrayList<String> lines = null;
         try {
-            lines = new ArrayList(Files.readAllLines(Paths.get(filePath)));
+            lines = new ArrayList<String>(Files.readAllLines(Paths.get(filePath)));
         } catch (FileNotFoundException fnfe) {
             showToUser(String.format(MESSAGE_ERROR_MISSING_STORAGE_FILE, filePath));
             exitProgram();
@@ -911,7 +932,10 @@ public class AddressBook {
                 extractEmailFromPersonString(encoded)
         );
         // check that the constructed person is valid
-        return isPersonDataValid(decodedPerson) ? Optional.of(decodedPerson) : Optional.empty();
+        if (isPersonDataValid(decodedPerson))
+        	return Optional.of(decodedPerson);
+        else
+        	return Optional.empty();
     }
 
     /**
@@ -1035,7 +1059,7 @@ public class AddressBook {
      * @return whether arg is a valid person name
      */
     private static boolean isPersonNameValid(String name) {
-        return name.matches("(\\w|\\s)+");  // name is nonempty mixture of alphabets and whitespace
+        return name.matches(VALID_PERSON_NAME_REGEX_MATCH);  // name is nonempty mixture of alphabets and whitespace
         //TODO: implement a more permissive validation
     }
 
@@ -1046,7 +1070,7 @@ public class AddressBook {
      * @return whether arg is a valid person phone number
      */
     private static boolean isPersonPhoneValid(String phone) {
-        return phone.matches("\\d+");    // phone nonempty sequence of digits
+        return phone.matches(VALID_PERSON_PHONE_REGEX_MATCH);    // phone nonempty sequence of digits
         //TODO: implement a more permissive validation
     }
 
@@ -1057,7 +1081,7 @@ public class AddressBook {
      * @return whether arg is a valid person email
      */
     private static boolean isPersonEmailValid(String email) {
-        return email.matches("\\S+@\\S+\\.\\S+"); // email is [non-whitespace]@[non-whitespace].[non-whitespace]
+        return email.matches(VALID_PERSON_EMAIL_REGEX_MATCH); // email is [non-whitespace]@[non-whitespace].[non-whitespace]
         //TODO: implement a more permissive validation
     }
 
@@ -1170,7 +1194,7 @@ public class AddressBook {
      * @return  Priority string without p/
      */
     private static String removePrefixSign(String s, String sign) {
-        return s.replace(sign, "");
+        return s.replace(sign, EMPTY_STRING);
     }
 
     /**
@@ -1180,7 +1204,7 @@ public class AddressBook {
      * @return split by whitespace
      */
     private static ArrayList<String> splitByWhitespace(String toSplit) {
-        return new ArrayList(Arrays.asList(toSplit.trim().split("\\s+")));
+        return new ArrayList<String>(Arrays.asList(toSplit.trim().split(WHITESPACE_STRING)));
     }
 
 }
