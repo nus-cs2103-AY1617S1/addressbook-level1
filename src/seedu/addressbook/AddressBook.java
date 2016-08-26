@@ -202,12 +202,7 @@ public class AddressBook {
         showWelcomeMessage();
         processProgramArgs(args);
         loadDataFromStorage();
-        while (true) {
-            String userCommand = getUserInput();
-            echoUserCommand(userCommand);
-            String feedback = executeCommand(userCommand);
-            showResultToUser(feedback);
-        }
+        ifTrue();
     }
 
     /*
@@ -217,6 +212,7 @@ public class AddressBook {
      * signature anyway.
      * ====================================================================
      */
+     
     private static void showWelcomeMessage() {
         showToUser(DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER);
     }
@@ -224,7 +220,16 @@ public class AddressBook {
     private static void showResultToUser(String result) {
         showToUser(result, DIVIDER);
     }
-
+    
+     private static void ifTrue(){
+        while(true){
+            String userCommand = getUserInput();
+            echoUserCommand(UserCommand);
+            String feedback = executeCommand(userCommand);
+            showResultToUser(feedback);
+        }
+    } 
+    
     /*
      * ==============NOTE TO STUDENTS======================================
      * Parameter description can be omitted from the method header comment
@@ -275,16 +280,18 @@ public class AddressBook {
      * Exits if the file name is not acceptable.
      */
     private static void setupGivenFileForStorage(String filePath) {
-
-        if (!isValidFilePath(filePath)) {
-            showToUser(String.format(MESSAGE_INVALID_FILE, filePath));
-            exitProgram();
-        }
-
+        checkForFilePath();
         storageFilePath = filePath;
         createFileIfMissing(filePath);
     }
-
+    
+    private static void checkForFilePath(){
+         if (!isValidFilePath(filePath)) {
+            showToUser(String.format(MESSAGE_INVALID_FILE, filePath));
+            exitProgram();
+        }
+    }
+    
     /**
      * Displays the goodbye message and exits the runtime.
      */
@@ -338,6 +345,10 @@ public class AddressBook {
         final String[] commandTypeAndParams = splitCommandWordAndArgs(userInputString);
         final String commandType = commandTypeAndParams[0];
         final String commandArgs = commandTypeAndParams[1];
+        checkForCommandType();
+    }
+    
+    private static void checkForCommandType(){
         switch (commandType) {
         case COMMAND_ADD_WORD:
             return executeAddPerson(commandArgs);
@@ -388,13 +399,18 @@ public class AddressBook {
     private static String executeAddPerson(String commandArgs) {
         // try decoding a person from the raw args
         final Optional<String[]> decodeResult = decodePersonFromString(commandArgs);
-
         // checks if args are valid (decode result will not be present if the person is invalid)
+        ifArgsAreValid();
+        // add the person as specified
+        addPerson();
+    
+    private static void ifArgsAreValid(){
         if (!decodeResult.isPresent()) {
             return getMessageForInvalidCommandInput(COMMAND_ADD_WORD, getUsageInfoForAddCommand());
         }
-
-        // add the person as specified
+    } 
+    
+    private static void addPerson(){
         final String[] personToAdd = decodeResult.get();
         addPersonToAddressBook(personToAdd);
         return getMessageForSuccessfulAddPerson(personToAdd);
@@ -454,15 +470,19 @@ public class AddressBook {
      */
     private static ArrayList<String[]> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
+        checkAllPersonsInAddressBook();
+        return matchedPersons;
+    }
+    
+    private static void checkAllPersonsInAddressBook(){
         for (String[] person : getAllPersonsInAddressBook()) {
             final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
             if (!Collections.disjoint(wordsInName, keywords)) {
                 matchedPersons.add(person);
             }
         }
-        return matchedPersons;
     }
-
+    
     /**
      * Deletes person identified using last displayed index.
      *
@@ -574,10 +594,14 @@ public class AddressBook {
         System.out.print(LINE_PREFIX + "Enter command: ");
         String inputLine = SCANNER.nextLine();
         // silently consume all blank and comment lines
-        while (inputLine.trim().isEmpty() || inputLine.trim().charAt(0) == INPUT_COMMENT_MARKER) {
+       consumeBlackAndCommentLines();
+        return inputLine;
+    }
+    
+    private static void consumeBlackAndCommentLines(){
+         while (inputLine.trim().isEmpty() || inputLine.trim().charAt(0) == INPUT_COMMENT_MARKER) {
             inputLine = SCANNER.nextLine();
         }
-        return inputLine;
     }
 
    /* ==============NOTE TO STUDENTS======================================
@@ -610,6 +634,11 @@ public class AddressBook {
      */
     private static String getDisplayString(ArrayList<String[]> persons) {
         final StringBuilder messageAccumulator = new StringBuilder();
+        goThroughListOfPersons();
+        return messageAccumulator.toString();
+    }
+    
+    private static void goThroughListOfPersons(){
         for (int i = 0; i < persons.size(); i++) {
             final String[] person = persons.get(i);
             final int displayIndex = i + DISPLAYED_INDEX_OFFSET;
@@ -617,7 +646,6 @@ public class AddressBook {
                               .append(getIndexedPersonListElementMessage(displayIndex, person))
                               .append(LS);
         }
-        return messageAccumulator.toString();
     }
 
     /**
@@ -923,6 +951,11 @@ public class AddressBook {
      */
     private static Optional<ArrayList<String[]>> decodePersonsFromStrings(ArrayList<String> encodedPersons) {
         final ArrayList<String[]> decodedPersons = new ArrayList<>();
+        decodePerson();
+        return Optional.of(decodedPersons);
+    }
+    
+    private static void decodePerson(){
         for (String encodedPerson : encodedPersons) {
             final Optional<String[]> decodedPerson = decodePersonFromString(encodedPerson);
             if (!decodedPerson.isPresent()) {
@@ -930,7 +963,6 @@ public class AddressBook {
             }
             decodedPersons.add(decodedPerson.get());
         }
-        return Optional.of(decodedPersons);
     }
 
     /**
