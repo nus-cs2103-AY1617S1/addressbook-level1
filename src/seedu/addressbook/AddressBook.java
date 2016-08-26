@@ -31,6 +31,7 @@ import java.util.Set;
  **/
 public class AddressBook {
 
+    private static final String EMPTY_STRING = "";
     /**
      * Regular expression patterns for various usage
      * @author darren
@@ -391,7 +392,7 @@ public class AddressBook {
             return split;
         } else {
             // no parameters
-            return new String[] { split[0], "" };
+            return new String[] { split[0], EMPTY_STRING };
         }
 
     }
@@ -1333,7 +1334,7 @@ public class AddressBook {
      * @return Priority string without p/
      */
     private static String removePrefixSign(String s, String sign) {
-        return s.replace(sign, "");
+        return s.replace(sign, EMPTY_STRING);
     }
 
     /**
