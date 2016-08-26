@@ -202,13 +202,20 @@ public class AddressBook {
         showWelcomeMessage();
         processProgramArgs(args);
         loadDataFromStorage();
-        while (true) {
+        processInputExecuteCommand();
+    }
+    
+    /**
+     * Processes series of user inputs and execute accordingly
+     */
+	public static void processInputExecuteCommand() {
+		while (true) {
             String userCommand = getUserInput();
             echoUserCommand(userCommand);
             String feedback = executeCommand(userCommand);
             showResultToUser(feedback);
         }
-    }
+	}
 
     /*
      * ==============NOTE TO STUDENTS======================================
@@ -459,13 +466,12 @@ public class AddressBook {
         for (String[] person : getAllPersonsInAddressBook()) {
             final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
             compareKeywordsWithNames(keywords, matchedPersons, person, wordsInName);
-            //if (!Collections.disjoint(wordsInName, keywords)) {
-            //    matchedPersons.add(person);
-            //}
         }
     return matchedPersons;
 }
-
+    /**
+     * Compare keywords with names case insensitively
+     */
 	private static void compareKeywordsWithNames(Collection<String> keywords, final ArrayList<String[]> matchedPersons,
 			String[] person, final Set<String> wordsInName) {
 		boolean isPresent = false;
