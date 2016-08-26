@@ -204,16 +204,29 @@ public class AddressBook {
 		    System.out.println(LINE_PREFIX + m);
 		}
         if (args.length >= 2) {
-		    showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
-		    showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
+		    String[] message1 = { MESSAGE_INVALID_PROGRAM_ARGS };
+			for (String m1 : message1) {
+			    System.out.println(LINE_PREFIX + m1);
+			}
+			String[] message2 = { MESSAGE_GOODBYE, DIVIDER, DIVIDER };
+		    for (String m2 : message2) {
+			    System.out.println(LINE_PREFIX + m2);
+			}
 			System.exit(0);
 		}
 		
 		if (args.length == 1) {
 		    String filePath = args[0];
 			if (!isValidFilePath(filePath)) {
-			    showToUser(String.format(MESSAGE_INVALID_FILE, filePath));
-			    exitProgram();
+			    String[] message1 = { String.format(MESSAGE_INVALID_FILE, filePath) };
+				for (String m1 : message1) {
+				    System.out.println(LINE_PREFIX + m1);
+				}
+				String[] message2 = { MESSAGE_GOODBYE, DIVIDER, DIVIDER };
+			    for (String m2 : message2) {
+				    System.out.println(LINE_PREFIX + m2);
+				}
+				System.exit(0);
 			}
 			
 			storageFilePath = filePath;
@@ -221,16 +234,31 @@ public class AddressBook {
 		}
 		
 		if(args.length == 0) {
-		    showToUser(MESSAGE_USING_DEFAULT_FILE);
+		    String[] message1 = { MESSAGE_USING_DEFAULT_FILE };
+			for (String m1 : message1) {
+			    System.out.println(LINE_PREFIX + m1);
+			}
 			storageFilePath = DEFAULT_STORAGE_FILEPATH;
 			createFileIfMissing(storageFilePath);
 		}
         loadDataFromStorage();
         while (true) {
-            String userCommand = getUserInput();
-            echoUserCommand(userCommand);
+            System.out.print(LINE_PREFIX + "Enter command: ");
+			String inputLine = SCANNER.nextLine();
+			// silently consume all blank and comment lines
+			while (inputLine.trim().isEmpty() || inputLine.trim().charAt(0) == INPUT_COMMENT_MARKER) {
+			    inputLine = SCANNER.nextLine();
+			}
+			String userCommand = inputLine;
+			String[] message2 = { "[Command entered:" + userCommand + "]" };
+            for (String m2 : message2) {
+			    System.out.println(LINE_PREFIX + m2);
+			}
             String feedback = executeCommand(userCommand);
-            showResultToUser(feedback);
+			String[] message1 = { feedback, DIVIDER };
+            for (String m1 : message1) {
+			    System.out.println(LINE_PREFIX + m1);
+			}
         }
     }
 
