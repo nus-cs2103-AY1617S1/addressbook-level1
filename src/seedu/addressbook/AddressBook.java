@@ -32,6 +32,12 @@ import java.util.Set;
 public class AddressBook {
 
     /**
+     * Regular expression patterns for various usage
+     * @author darren
+     */
+    private static final String REGEX_PERSON_NAME = "(\\w|\\s)+";
+
+    /**
      * Default file path used if the user doesn't provide the file name.
      */
     private static final String DEFAULT_STORAGE_FILEPATH = "addressbook.txt";
@@ -1154,7 +1160,7 @@ public class AddressBook {
      * @return whether arg is a valid person name
      */
     private static boolean isPersonNameValid(String name) {
-        return name.matches("(\\w|\\s)+"); // name is nonempty mixture of
+        return name.matches(REGEX_PERSON_NAME); // name is nonempty mixture of
                                            // alphabets and whitespace
         // TODO: implement a more permissive validation
     }
