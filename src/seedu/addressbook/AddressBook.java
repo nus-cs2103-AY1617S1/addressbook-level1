@@ -771,10 +771,6 @@ public class AddressBook {
      *
      * @param person to add
      */
-    private static void addPersonToAddressBook(String[] person) {
-        ALL_PERSONS.add(person);
-        savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
-    }
 
     /**
      * Deletes a person from the address book, target is identified by it's absolute index in the full list.
