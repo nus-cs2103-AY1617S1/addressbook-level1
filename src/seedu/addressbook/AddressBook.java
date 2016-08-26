@@ -400,7 +400,8 @@ public class AddressBook {
         // add the person as specified
         final String[] personToAdd = decodeResult.get();
         addPersonToAddressBook(personToAdd);
-        return getMessageForSuccessfulAddPerson(personToAdd);
+        return String.format(MESSAGE_ADDED,
+             getNameFromPerson(personToAdd), getPhoneFromPerson(personToAdd), getEmailFromPerson(personToAdd));
     }
 
     /**
