@@ -54,7 +54,7 @@ public class AddressBook {
     /*
      * ==============NOTE TO STUDENTS======================================
      * These messages shown to the user are defined in one place for convenient
-     * editing and proof reading. Such messages are considered part of the UI
+     * editing and pXXroof reading. Such messages are considered part of the UI
      * and may be subjected to review by UI experts or technical writers. Note
      * that Some of the strings below include '%1$s' etc to mark the locations
      * at which java String.format(...) method can insert values.
@@ -201,6 +201,19 @@ public class AddressBook {
     public static void main(String[] args) {
         showWelcomeMessage();
         processProgramArgs(args);
+        
+        if (args.length >= 2) {
+            showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
+            exitProgram();
+        }
+
+        if (args.length == 1) {
+            setupGivenFileForStorage(args[0]);
+        }
+
+        if(args.length == 0) {
+            setupDefaultFileForStorage();
+        }
         loadDataFromStorage();
         while (true) {
             String userCommand = getUserInput();
@@ -454,13 +467,32 @@ public class AddressBook {
      */
     private static ArrayList<String[]> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
+        
         for (String[] person : getAllPersonsInAddressBook()) {
+        	
+        	
             final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
+            
+            replace1(wordsInName);
+            replace1(keywords);
+            
             if (!Collections.disjoint(wordsInName, keywords)) {
                 matchedPersons.add(person);
             }
         }
         return matchedPersons;
+    }
+    
+    
+    public static void replace1(Collection<String> strings)
+    {
+        String[] stringsArray = strings.toArray(new String[0]);
+        for (int i=0; i<stringsArray.length; ++i)
+        {
+            stringsArray[i] = stringsArray[i].toLowerCase();
+        }
+        strings.clear();
+        strings.addAll(Arrays.asList(stringsArray));
     }
 
     /**
@@ -721,7 +753,7 @@ public class AddressBook {
     private static ArrayList<String> getLinesInFile(String filePath) {
         ArrayList<String> lines = null;
         try {
-            lines = new ArrayList(Files.readAllLines(Paths.get(filePath)));
+            lines = new ArrayList<String>(Files.readAllLines(Paths.get(filePath)));
         } catch (FileNotFoundException fnfe) {
             showToUser(String.format(MESSAGE_ERROR_MISSING_STORAGE_FILE, filePath));
             exitProgram();
@@ -1180,7 +1212,7 @@ public class AddressBook {
      * @return split by whitespace
      */
     private static ArrayList<String> splitByWhitespace(String toSplit) {
-        return new ArrayList(Arrays.asList(toSplit.trim().split("\\s+")));
+        return new ArrayList<String>(Arrays.asList(toSplit.trim().split("\\s+")));
     }
 
 }
