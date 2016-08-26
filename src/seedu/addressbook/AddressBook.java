@@ -36,6 +36,7 @@ public class AddressBook {
      * @author darren
      */
     private static final String REGEX_PERSON_NAME = "(\\w|\\s)+";
+    private static final String REGEX_PERSON_PHONE = "\\d+";
 
     /**
      * Default file path used if the user doesn't provide the file name.
@@ -1173,7 +1174,7 @@ public class AddressBook {
      * @return whether arg is a valid person phone number
      */
     private static boolean isPersonPhoneValid(String phone) {
-        return phone.matches("\\d+"); // phone nonempty sequence of digits
+        return phone.matches(REGEX_PERSON_PHONE); // phone nonempty sequence of digits
         // TODO: implement a more permissive validation
     }
 
