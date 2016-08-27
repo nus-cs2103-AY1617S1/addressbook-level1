@@ -360,7 +360,6 @@ public class AddressBook {
             return executeClearAddressBook();
         case COMMAND_HELP_WORD:
             return getUsageInfoForAllCommands();
-        
         case COMMAND_EXIT_WORD:
             exitProgram();
         default:
@@ -472,7 +471,14 @@ public class AddressBook {
         }
         return matchedPersons;
     }
-
+    
+    /**
+     * Edit a person (specified by the command args) in the address book.
+     * The person is identified using last displayed index.
+     *s
+     * @param commandArgs full command args string from the user
+     * @return feedback display message for the operation result
+     */
     private static String executeEditPerson(String commandArgs){
     	if(!isEditPersonArgsValid(commandArgs)){
     		return getMessageForInvalidCommandInput(COMMAND_EDIT_WORD, getUsageInfoForEditCommand());
@@ -496,8 +502,6 @@ public class AddressBook {
         
         deletePersonFromAddressBook(targetInModel);
         addPersonToAddressBook(personToEdit);
-        System.out.println(targetInModel[0] + targetInModel[1] + targetInModel[2]);
-        System.out.println(personToEdit[0] + personToEdit[1] + personToEdit[2]);
         
         return getMessageForSuccessfulEditPerson(targetInModel, personToEdit);
         
@@ -624,7 +628,7 @@ public class AddressBook {
         ArrayList<String[]> toBeDisplayed = getAllPersonsInAddressBook();
         
         if(wantSorted){
-        	Collections.sort(toBeDisplayed, (a, b) -> a[0].compareTo(b[0]));
+        	Collections.sort(toBeDisplayed, (a, b) -> a[0].toLowerCase().compareTo(b[0].toLowerCase()));
         }
         showToUser(toBeDisplayed);
  
