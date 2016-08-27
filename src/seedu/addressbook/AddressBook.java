@@ -199,7 +199,7 @@ public class AddressBook {
      * ====================================================================
      */
     public static void main(String[] args) {
-        showWelcomeMessage();
+    	showToUser(DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER);
             if (args.length >= 2) {
                 showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
                 exitProgram();
@@ -225,9 +225,6 @@ public class AddressBook {
      * signature anyway.
      * ====================================================================
      */
-    private static void showWelcomeMessage() {
-        showToUser(DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER);
-    }
 
     private static void showResultToUser(String result) {
         showToUser(result, DIVIDER);
@@ -597,26 +594,9 @@ public class AddressBook {
         ALL_PERSONS.clear();
         ALL_PERSONS.addAll(persons);
     }
-
-
-    /*
-     * ===========================================
-     *             PERSON METHODS
-     * ===========================================
-     */
-
-    /**
-     * @param person whose name you want
-     * @return person's name
-     */
     private static String getNameFromPerson(String[] person) {
         return person[PERSON_DATA_INDEX_NAME];
     }
-
-    /**
-     * @param person whose phone number you want
-     * @return person's phone number
-     */
     private static String getPhoneFromPerson(String[] person) {
         return person[PERSON_DATA_INDEX_PHONE];
     }
@@ -936,32 +916,9 @@ public class AddressBook {
         return String.format(MESSAGE_COMMAND_HELP, COMMAND_EXIT_WORD, COMMAND_EXIT_DESC)
                 + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_EXIT_EXAMPLE);
     }
-
-
-    /*
-     * ============================
-     *         UTILITY METHODS
-     * ============================
-     */
-
-    /**
-     * Removes sign(p/, d/, etc) from parameter string
-     *
-     * @param s  Parameter as a string
-     * @param sign  Parameter sign to be removed
-     *
-     * @return  Priority string without p/
-     */
     private static String removePrefixSign(String s, String sign) {
         return s.replace(sign, "");
     }
-
-    /**
-     * Splits a source string into the list of substrings that were separated by whitespace.
-     *
-     * @param toSplit source string
-     * @return split by whitespace
-     */
     private static ArrayList<String> splitByWhitespace(String toSplit) {
         return new ArrayList(Arrays.asList(toSplit.trim().split("\\s+")));
     }
