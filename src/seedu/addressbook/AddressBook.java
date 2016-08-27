@@ -258,13 +258,9 @@ public class AddressBook {
         if (args.length >= 2) {
             showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
             exitProgram();
-        }
-
-        if (args.length == 1) {
+        }else if (args.length == 1) {
             setupGivenFileForStorage(args[0]);
-        }
-
-        if(args.length == 0) {
+        }else if(args.length == 0) {
             setupDefaultFileForStorage();
         }
     }
@@ -341,20 +337,28 @@ public class AddressBook {
         switch (commandType) {
         case COMMAND_ADD_WORD:
             return executeAddPerson(commandArgs);
+            // Fallthrough
         case COMMAND_FIND_WORD:
             return executeFindPersons(commandArgs);
+            // Fallthrough         
         case COMMAND_LIST_WORD:
             return executeListAllPersonsInAddressBook();
+            // Fallthrough
         case COMMAND_DELETE_WORD:
             return executeDeletePerson(commandArgs);
+            // Fallthrough
         case COMMAND_CLEAR_WORD:
             return executeClearAddressBook();
+            // Fallthrough
         case COMMAND_HELP_WORD:
             return getUsageInfoForAllCommands();
+            // Fallthrough
         case COMMAND_EXIT_WORD:
             executeExitProgramRequest();
+            // Fallthrough
         default:
             return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
+            // Fallthrough
         }
     }
 
@@ -721,7 +725,7 @@ public class AddressBook {
     private static ArrayList<String> getLinesInFile(String filePath) {
         ArrayList<String> lines = null;
         try {
-            lines = new ArrayList(Files.readAllLines(Paths.get(filePath)));
+            lines = new ArrayList<String>(Files.readAllLines(Paths.get(filePath)));
         } catch (FileNotFoundException fnfe) {
             showToUser(String.format(MESSAGE_ERROR_MISSING_STORAGE_FILE, filePath));
             exitProgram();
@@ -1180,7 +1184,7 @@ public class AddressBook {
      * @return split by whitespace
      */
     private static ArrayList<String> splitByWhitespace(String toSplit) {
-        return new ArrayList(Arrays.asList(toSplit.trim().split("\\s+")));
+        return new ArrayList<String>(Arrays.asList(toSplit.trim().split("\\s+")));
     }
 
 }
