@@ -496,77 +496,35 @@ public class AddressBook {
     }
     private static String getDisplayString(ArrayList<String[]> persons) {
         final StringBuilder messageAccumulator = new StringBuilder();
-        for (int i = 0; i < persons.size(); i++) {
+        int i = 0;
+        while (i < persons.size()) {
             final String[] person = persons.get(i);
             final int displayIndex = i + DISPLAYED_INDEX_OFFSET;
             messageAccumulator.append('\t')
                               .append(getIndexedPersonListElementMessage(displayIndex, person))
                               .append(LS);
+            i++;
         }
         return messageAccumulator.toString();
     }
-
-    /**
-     * Constructs a prettified listing element message to represent a person and their data.
-     *
-     * @param visibleIndex visible index for this listing
-     * @param person to show
-     * @return formatted listing message with index
-     */
     private static String getIndexedPersonListElementMessage(int visibleIndex, String[] person) {
         return String.format(MESSAGE_DISPLAY_LIST_ELEMENT_INDEX, visibleIndex) + getMessageForFormattedPersonData(person);
     }
 
-    /**
-     * Constructs a prettified string to show the user a person's data.
-     *
-     * @param person to show
-     * @return formatted message showing internal state
-     */
     private static String getMessageForFormattedPersonData(String[] person) {
         return String.format(MESSAGE_DISPLAY_PERSON_DATA,
                 getNameFromPerson(person), getPhoneFromPerson(person), getEmailFromPerson(person));
     }
-
-    /**
-     * Updates the latest person listing view the user has seen.
-     *
-     * @param newListing the new listing of persons
-     */
     private static void updateLatestViewedPersonListing(ArrayList<String[]> newListing) {
         // clone to insulate from future changes to arg list
         latestPersonListingView = new ArrayList<>(newListing);
     }
-
-    /**
-     * Retrieves the person identified by the displayed index from the last shown listing of persons.
-     *
-     * @param lastVisibleIndex displayed index from last shown person listing
-     * @return the actual person object in the last shown person listing
-     */
     private static String[] getPersonByLastVisibleIndex(int lastVisibleIndex) {
        return latestPersonListingView.get(lastVisibleIndex - DISPLAYED_INDEX_OFFSET);
     }
-
-    /**
-     * @return unmodifiable list view of the last person listing view
-     */
     private static ArrayList<String[]> getLatestPersonListingView() {
         return latestPersonListingView;
     }
-
-
-    /*
-     * ===========================================
-     *             STORAGE LOGIC
-     * ===========================================
-     */
-
-    /**
-     * Creates storage file if it does not exist. Shows feedback to user.
-     *
-     * @param filePath file to create if not present
-     */
     private static void createFileIfMissing(String filePath) {
         final File storageFile = new File(filePath);
         if (storageFile.exists()) {
@@ -583,14 +541,6 @@ public class AddressBook {
             exitProgram();
         }
     }
-
-    /**
-     * Converts contents of a file into a list of persons.
-     * Shows error messages and exits program if any errors in reading or decoding was encountered.
-     *
-     * @param filePath file to load from
-     * @return the list of decoded persons
-     */
     private static ArrayList<String[]> loadPersonsFromFile(String filePath) {
         final Optional<ArrayList<String[]>> successfullyDecoded = decodePersonsFromStrings(getLinesInFile(filePath));
         if (!successfullyDecoded.isPresent()) {
@@ -599,11 +549,6 @@ public class AddressBook {
         }
         return successfullyDecoded.get();
     }
-
-    /**
-     * Gets all lines in the specified file as a list of strings. Line separators are removed.
-     * Shows error messages and exits program if unable to read from file.
-     */
     private static ArrayList<String> getLinesInFile(String filePath) {
         ArrayList<String> lines = null;
         try {
@@ -617,13 +562,6 @@ public class AddressBook {
         }
         return lines;
     }
-
-    /**
-     * Saves all data to the file.
-     * Exits program if there is an error saving to file.
-     *
-     * @param filePath file for saving
-     */
     private static void savePersonsToFile(ArrayList<String[]> persons, String filePath) {
         final ArrayList<String> linesToWrite = encodePersonsToStrings(persons);
         try {
@@ -633,41 +571,14 @@ public class AddressBook {
             exitProgram();
         }
     }
-
-
-    /*
-     * ================================================================================
-     *        INTERNAL ADDRESS BOOK DATA METHODS
-     * ================================================================================
-     */
-
-    /**
-     * Adds a person to the address book. Saves changes to storage file.
-     *
-     * @param person to add
-     */
     private static void addPersonToAddressBook(String[] person) {
         ALL_PERSONS.add(person);
         savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
     }
-
-    /**
-     * Deletes a person from the address book, target is identified by it's absolute index in the full list.
-     * Saves changes to storage file.
-     *
-     * @param index absolute index of person to delete (index within {@link #ALL_PERSONS})
-     */
     private static void deletePersonFromAddressBook(int index) {
         ALL_PERSONS.remove(index);
         savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
     }
-
-    /**
-     * Deletes the specified person from the addressbook if it is inside. Saves any changes to storage file.
-     *
-     * @param exactPerson the actual person inside the address book (exactPerson == the person to delete in the full list)
-     * @return true if the given person was found and deleted in the model
-     */
     private static boolean deletePersonFromAddressBook(String[] exactPerson) {
         final boolean changed = ALL_PERSONS.remove(exactPerson);
         if (changed) {
@@ -675,27 +586,13 @@ public class AddressBook {
         }
         return changed;
     }
-
-    /**
-     * @return unmodifiable list view of all persons in the address book
-     */
     private static ArrayList<String[]> getAllPersonsInAddressBook() {
         return ALL_PERSONS;
     }
-
-    /**
-     * Clears all persons in the address book and saves changes to file.
-     */
     private static void clearAddressBook() {
         ALL_PERSONS.clear();
         savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
     }
-
-    /**
-     * Resets the internal model with the given data. Does not save to file.
-     *
-     * @param persons list of persons to initialise the model with
-     */
     private static void initialiseAddressBookModel(ArrayList<String[]> persons) {
         ALL_PERSONS.clear();
         ALL_PERSONS.addAll(persons);
