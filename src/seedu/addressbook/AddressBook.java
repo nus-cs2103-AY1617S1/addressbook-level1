@@ -15,9 +15,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.Comparator;
 
 /* ==============NOTE TO STUDENTS======================================
  * This class header comment below is brief because details of how to
@@ -85,7 +87,9 @@ public class AddressBook {
     private static final String MESSAGE_STORAGE_FILE_CREATED = "Created new empty storage file: %1$s";
     private static final String MESSAGE_WELCOME = "Welcome to your Address Book!";
     private static final String MESSAGE_USING_DEFAULT_FILE = "Using default storage file : " + DEFAULT_STORAGE_FILEPATH;
-
+    private static final String MESSAGE_SORT_SUCCESSFUL = "Sorted!";
+    private static final String MESSAGE_SORT_UNSUCCESSFUL = "There are no items to sort!";
+    
     // These are the prefix strings to define the data type of a command parameter
     private static final String PERSON_DATA_PREFIX_PHONE = "p/";
     private static final String PERSON_DATA_PREFIX_EMAIL = "e/";
@@ -116,6 +120,10 @@ public class AddressBook {
     private static final String COMMAND_DELETE_PARAMETER = "INDEX";
     private static final String COMMAND_DELETE_EXAMPLE = COMMAND_DELETE_WORD + " 1";
 
+    private static final String COMMAND_SORT_WORD = "sort";
+    private static final String COMMAND_SORT_DESC = "Sorts the address book in alphabetical order";
+    private static final String COMMAND_SORT_EXAMPLE = "sort";
+    
     private static final String COMMAND_CLEAR_WORD = "clear";
     private static final String COMMAND_CLEAR_DESC = "Clears address book permanently.";
     private static final String COMMAND_CLEAR_EXAMPLE = COMMAND_CLEAR_WORD;
@@ -347,6 +355,8 @@ public class AddressBook {
             return executeListAllPersonsInAddressBook();
         case COMMAND_DELETE_WORD:
             return executeDeletePerson(commandArgs);
+        case COMMAND_SORT_WORD:
+        	return executeSort();
         case COMMAND_CLEAR_WORD:
             return executeClearAddressBook();
         case COMMAND_HELP_WORD:
@@ -455,13 +465,56 @@ public class AddressBook {
     private static ArrayList<String[]> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
         for (String[] person : getAllPersonsInAddressBook()) {
-            final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
-            if (!Collections.disjoint(wordsInName, keywords)) {
+            Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
+            wordsInName = (Set<String>) makeCaseInsensitive(wordsInName);
+            if (!Collections.disjoint(makeCaseInsensitive(wordsInName), makeCaseInsensitive(keywords))) {
                 matchedPersons.add(person);
             }
         }
         return matchedPersons;
     }
+    
+    /**
+     * Sort and display all person in alphabetical order of names without altering the actual list
+     * 
+     * @return message showing whether sort is successful or not
+     * */
+    
+    private static String executeSort() {
+    	if(ALL_PERSONS.isEmpty()) {
+    		return MESSAGE_SORT_UNSUCCESSFUL;
+    	}
+    	
+    	List<String[]> listToBeSorted = new ArrayList<String[]>(ALL_PERSONS);
+    	NameComparator comparePersonName = new NameComparator();
+    	Collections.sort(listToBeSorted, comparePersonName);
+        showToUser((ArrayList<String[]>) listToBeSorted);
+ 
+    	return MESSAGE_SORT_SUCCESSFUL;
+    }
+    
+    /**
+     * A custom comparator class used to compare two names is the AddressBook. Used in sorting.
+     *  
+     * */
+  
+    private static class NameComparator implements Comparator<String[]> {
+    	public int compare(String[] firstPerson, String[] secondPerson) {
+    		return firstPerson[0].compareTo(secondPerson[0]); 
+    	}
+    	
+    	public boolean equals(Object obj) { 
+    		return this == obj;
+    	}
+    }
+	
+    private static Collection<String> makeCaseInsensitive(Collection<String> keywords) {
+		Collection<String> caseInsensitiveString = new ArrayList<String>();
+		for (String stringToBeTransformed : keywords) {
+			caseInsensitiveString.add(stringToBeTransformed.toLowerCase());
+        }
+		return caseInsensitiveString;
+	}
 
     /**
      * Deletes person identified using last displayed index.
@@ -528,6 +581,7 @@ public class AddressBook {
         return String.format(MESSAGE_DELETE_PERSON_SUCCESS, getMessageForFormattedPersonData(deletedPerson));
     }
 
+    
     /**
      * Clears all persons in the address book.
      *
