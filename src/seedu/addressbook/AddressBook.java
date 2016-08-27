@@ -5,19 +5,10 @@ package seedu.addressbook;
  * ====================================================================
  */
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Scanner;
-import java.util.Set;
+import java.util.*;
 
 /* ==============NOTE TO STUDENTS======================================
  * This class header comment below is brief because details of how to
@@ -49,7 +40,7 @@ public class AddressBook {
     /**
      * A platform independent line separator.
      */
-    private static final String LS = System.lineSeparator() + LINE_PREFIX;
+    private static final String LINE_SEPARATOR = System.lineSeparator() + LINE_PREFIX;
 
     /*
      * ==============NOTE TO STUDENTS======================================
@@ -93,40 +84,40 @@ public class AddressBook {
     private static final String PERSON_STRING_REPRESENTATION = "%1$s " // name
                                                             + PERSON_DATA_PREFIX_PHONE + "%2$s " // phone
                                                             + PERSON_DATA_PREFIX_EMAIL + "%3$s"; // email
-    private static final String COMMAND_ADD_WORD = "add";
+    private static final String COMMAND_WORD_ADD = "add";
     private static final String COMMAND_ADD_DESC = "Adds a person to the address book.";
     private static final String COMMAND_ADD_PARAMETERS = "NAME "
                                                       + PERSON_DATA_PREFIX_PHONE + "PHONE_NUMBER "
                                                       + PERSON_DATA_PREFIX_EMAIL + "EMAIL";
-    private static final String COMMAND_ADD_EXAMPLE = COMMAND_ADD_WORD + " John Doe p/98765432 e/johnd@gmail.com";
+    private static final String COMMAND_ADD_EXAMPLE = COMMAND_WORD_ADD + " John Doe p/98765432 e/johnd@gmail.com";
 
-    private static final String COMMAND_FIND_WORD = "find";
+    private static final String COMMAND_WORD_FIND = "find";
     private static final String COMMAND_FIND_DESC = "Finds all persons whose names contain any of the specified "
                                         + "keywords (case-sensitive) and displays them as a list with index numbers.";
     private static final String COMMAND_FIND_PARAMETERS = "KEYWORD [MORE_KEYWORDS]";
-    private static final String COMMAND_FIND_EXAMPLE = COMMAND_FIND_WORD + " alice bob charlie";
+    private static final String COMMAND_FIND_EXAMPLE = COMMAND_WORD_FIND + " alice bob charlie";
 
-    private static final String COMMAND_LIST_WORD = "list";
+    private static final String COMMAND_WORD_LIST = "list";
     private static final String COMMAND_LIST_DESC = "Displays all persons as a list with index numbers.";
-    private static final String COMMAND_LIST_EXAMPLE = COMMAND_LIST_WORD;
+    private static final String COMMAND_LIST_EXAMPLE = COMMAND_WORD_LIST;
 
-    private static final String COMMAND_DELETE_WORD = "delete";
+    private static final String COMMAND_WORD_DELETE = "delete";
     private static final String COMMAND_DELETE_DESC = "Deletes a person identified by the index number used in "
                                                     + "the last find/list call.";
     private static final String COMMAND_DELETE_PARAMETER = "INDEX";
-    private static final String COMMAND_DELETE_EXAMPLE = COMMAND_DELETE_WORD + " 1";
+    private static final String COMMAND_DELETE_EXAMPLE = COMMAND_WORD_DELETE + " 1";
 
-    private static final String COMMAND_CLEAR_WORD = "clear";
+    private static final String COMMAND_WORD_CLEAR = "clear";
     private static final String COMMAND_CLEAR_DESC = "Clears address book permanently.";
-    private static final String COMMAND_CLEAR_EXAMPLE = COMMAND_CLEAR_WORD;
+    private static final String COMMAND_CLEAR_EXAMPLE = COMMAND_WORD_CLEAR;
 
-    private static final String COMMAND_HELP_WORD = "help";
+    private static final String COMMAND_WORD_HELP = "help";
     private static final String COMMAND_HELP_DESC = "Shows program usage instructions.";
-    private static final String COMMAND_HELP_EXAMPLE = COMMAND_HELP_WORD;
+    private static final String COMMAND_HELP_EXAMPLE = COMMAND_WORD_HELP;
 
-    private static final String COMMAND_EXIT_WORD = "exit";
+    private static final String COMMAND_WORD_EXIT = "exit";
     private static final String COMMAND_EXIT_DESC = "Exits the program.";
-    private static final String COMMAND_EXIT_EXAMPLE = COMMAND_EXIT_WORD;
+    private static final String COMMAND_EXIT_EXAMPLE = COMMAND_WORD_EXIT;
 
     private static final String DIVIDER = "===================================================";
 
@@ -187,6 +178,11 @@ public class AddressBook {
     private static ArrayList<String[]> latestPersonListingView = getAllPersonsInAddressBook(); // initial view is of all
 
     /**
+     * Latest command entered by the user.
+     */
+    private static String userCommand;
+
+    /**
      * The path to the file used for storing person data.
      */
     private static String storageFilePath;
@@ -200,10 +196,21 @@ public class AddressBook {
      */
     public static void main(String[] args) {
         showWelcomeMessage();
-        processProgramArgs(args);
+        if (args.length >= 2) {
+		    showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
+		    exitProgram();
+		}
+		
+		if (args.length == 1) {
+		    setupGivenFileForStorage(args[0]);
+		}
+		
+		if(args.length == 0) {
+		    setupDefaultFileForStorage();
+		}
         loadDataFromStorage();
         while (true) {
-            String userCommand = getUserInput();
+            userCommand = getUserInput();
             echoUserCommand(userCommand);
             String feedback = executeCommand(userCommand);
             showResultToUser(feedback);
@@ -251,7 +258,7 @@ public class AddressBook {
      * Processes the program main method run arguments.
      * If a valid storage file is specified, sets up that file for storage.
      * Otherwise sets up the default file for storage.
-     *
+     * 
      * @param args full program arguments passed to application main method
      */
     private static void processProgramArgs(String[] args) {
@@ -276,14 +283,18 @@ public class AddressBook {
      */
     private static void setupGivenFileForStorage(String filePath) {
 
-        if (!isValidFilePath(filePath)) {
+        isValid(filePath);
+    }
+
+	private static void isValid(String filePath) {
+		if (!isValidFilePath(filePath)) {
             showToUser(String.format(MESSAGE_INVALID_FILE, filePath));
             exitProgram();
         }
 
         storageFilePath = filePath;
         createFileIfMissing(filePath);
-    }
+	}
 
     /**
      * Displays the goodbye message and exits the runtime.
@@ -329,8 +340,8 @@ public class AddressBook {
      */
 
     /**
-     * Executes the command as specified by the {@code userInputString}
-     *
+     * Checks which command the user want to trigger, then run the corresponding function
+     * 
      * @param userInputString  raw input from user
      * @return  feedback about how the command was executed
      */
@@ -339,22 +350,23 @@ public class AddressBook {
         final String commandType = commandTypeAndParams[0];
         final String commandArgs = commandTypeAndParams[1];
         switch (commandType) {
-        case COMMAND_ADD_WORD:
+        case COMMAND_WORD_ADD:
             return executeAddPerson(commandArgs);
-        case COMMAND_FIND_WORD:
+        case COMMAND_WORD_FIND:
             return executeFindPersons(commandArgs);
-        case COMMAND_LIST_WORD:
+        case COMMAND_WORD_LIST:
             return executeListAllPersonsInAddressBook();
-        case COMMAND_DELETE_WORD:
+        case COMMAND_WORD_DELETE:
             return executeDeletePerson(commandArgs);
-        case COMMAND_CLEAR_WORD:
+        case COMMAND_WORD_CLEAR:
             return executeClearAddressBook();
-        case COMMAND_HELP_WORD:
+        case COMMAND_WORD_HELP:
             return getUsageInfoForAllCommands();
-        case COMMAND_EXIT_WORD:
+            break;
+        case COMMAND_WORD_EXIT:
             executeExitProgramRequest();
         default:
-            return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
+            return getMessageForInvalidCommandInput(getUsageInfoForAllCommands());
         }
     }
 
@@ -374,7 +386,7 @@ public class AddressBook {
      * @param correctUsageInfo message showing the correct usage
      * @return invalid command args feedback message
      */
-    private static String getMessageForInvalidCommandInput(String userCommand, String correctUsageInfo) {
+    private static String getMessageForInvalidCommandInput(String correctUsageInfo) {
         return String.format(MESSAGE_INVALID_COMMAND_FORMAT, userCommand, correctUsageInfo);
     }
 
@@ -388,14 +400,14 @@ public class AddressBook {
     private static String executeAddPerson(String commandArgs) {
         // try decoding a person from the raw args
         final Optional<String[]> decodeResult = decodePersonFromString(commandArgs);
-
+        final String[] personToAdd = decodeResult.get();
         // checks if args are valid (decode result will not be present if the person is invalid)
         if (!decodeResult.isPresent()) {
-            return getMessageForInvalidCommandInput(COMMAND_ADD_WORD, getUsageInfoForAddCommand());
+            return getMessageForInvalidCommandInput(getUsageInfoForAddCommand());
         }
 
         // add the person as specified
-        final String[] personToAdd = decodeResult.get();
+        
         addPersonToAddressBook(personToAdd);
         return getMessageForSuccessfulAddPerson(personToAdd);
     }
@@ -415,7 +427,7 @@ public class AddressBook {
     /**
      * Finds and lists all persons in address book whose name contains any of the argument keywords.
      * Keyword matching is case sensitive.
-     *
+     * 
      * @param commandArgs full command args string from the user
      * @return feedback display message for the operation result
      */
@@ -453,7 +465,15 @@ public class AddressBook {
      * @return list of persons in full model with name containing some of the keywords
      */
     private static ArrayList<String[]> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
-        final ArrayList<String[]> matchedPersons = new ArrayList<>();
+        return isValidPerson(keywords);
+    }
+
+	/**
+	 * @param keywords
+	 * @return
+	 */
+	private static ArrayList<String[]> isValidPerson(Collection<String> keywords) {
+		final ArrayList<String[]> matchedPersons = new ArrayList<>();
         for (String[] person : getAllPersonsInAddressBook()) {
             final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
             if (!Collections.disjoint(wordsInName, keywords)) {
@@ -461,23 +481,25 @@ public class AddressBook {
             }
         }
         return matchedPersons;
-    }
+	}
 
     /**
      * Deletes person identified using last displayed index.
-     *
+     * 
      * @param commandArgs full command args string from the user
      * @return feedback display message for the operation result
      */
     private static String executeDeletePerson(String commandArgs) {
-        if (!isDeletePersonArgsValid(commandArgs)) {
-            return getMessageForInvalidCommandInput(COMMAND_DELETE_WORD, getUsageInfoForDeleteCommand());
-        }
         final int targetVisibleIndex = extractTargetIndexFromDeletePersonArgs(commandArgs);
+        final String[] targetInModel = getPersonByLastVisibleIndex(targetVisibleIndex);
+        if (!isDeletePersonArgsValid(commandArgs)) {
+            return getMessageForInvalidCommandInput(getUsageInfoForDeleteCommand());
+        }
+       
         if (!isDisplayIndexValidForLastPersonListingView(targetVisibleIndex)) {
             return MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
         }
-        final String[] targetInModel = getPersonByLastVisibleIndex(targetVisibleIndex);
+        
         return deletePersonFromAddressBook(targetInModel) ? getMessageForSuccessfulDelete(targetInModel) // success
                                                           : MESSAGE_PERSON_NOT_IN_ADDRESSBOOK; // not found
     }
@@ -530,7 +552,7 @@ public class AddressBook {
 
     /**
      * Clears all persons in the address book.
-     *
+     * 
      * @return feedback display message for the operation result
      */
     private static String executeClearAddressBook() {
@@ -815,7 +837,7 @@ public class AddressBook {
         ALL_PERSONS.addAll(persons);
     }
 
-
+    
     /*
      * ===========================================
      *             PERSON METHODS
@@ -1083,11 +1105,11 @@ public class AddressBook {
 
     /**
      * Builds string for showing 'add' command usage instruction
-     *
+     * 
      * @return  'add' command usage instruction
      */
     private static String getUsageInfoForAddCommand() {
-        return String.format(MESSAGE_COMMAND_HELP, COMMAND_ADD_WORD, COMMAND_ADD_DESC) + LS
+        return String.format(MESSAGE_COMMAND_HELP, COMMAND_WORD_ADD, COMMAND_ADD_DESC) + LS
                 + String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_ADD_PARAMETERS) + LS
                 + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_ADD_EXAMPLE) + LS;
     }
@@ -1098,7 +1120,7 @@ public class AddressBook {
      * @return  'find' command usage instruction
      */
     private static String getUsageInfoForFindCommand() {
-        return String.format(MESSAGE_COMMAND_HELP, COMMAND_FIND_WORD, COMMAND_FIND_DESC) + LS
+        return String.format(MESSAGE_COMMAND_HELP, COMMAND_WORD_FIND, COMMAND_FIND_DESC) + LS
                 + String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_FIND_PARAMETERS) + LS
                 + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_FIND_EXAMPLE) + LS;
     }
@@ -1109,7 +1131,7 @@ public class AddressBook {
      * @return  'delete' command usage instruction
      */
     private static String getUsageInfoForDeleteCommand() {
-        return String.format(MESSAGE_COMMAND_HELP, COMMAND_DELETE_WORD, COMMAND_DELETE_DESC) + LS
+        return String.format(MESSAGE_COMMAND_HELP, COMMAND_WORD_DELETE, COMMAND_DELETE_DESC) + LS
                 + String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_DELETE_PARAMETER) + LS
                 + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_DELETE_EXAMPLE) + LS;
     }
@@ -1120,7 +1142,7 @@ public class AddressBook {
      * @return  'clear' command usage instruction
      */
     private static String getUsageInfoForClearCommand() {
-        return String.format(MESSAGE_COMMAND_HELP, COMMAND_CLEAR_WORD, COMMAND_CLEAR_DESC) + LS
+        return String.format(MESSAGE_COMMAND_HELP, COMMAND_WORD_CLEAR, COMMAND_CLEAR_DESC) + LS
                 + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_CLEAR_EXAMPLE) + LS;
     }
 
@@ -1130,7 +1152,7 @@ public class AddressBook {
      * @return  'view' command usage instruction
      */
     private static String getUsageInfoForViewCommand() {
-        return String.format(MESSAGE_COMMAND_HELP, COMMAND_LIST_WORD, COMMAND_LIST_DESC) + LS
+        return String.format(MESSAGE_COMMAND_HELP, COMMAND_WORD_LIST, COMMAND_LIST_DESC) + LS
                 + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_LIST_EXAMPLE) + LS;
     }
 
@@ -1140,7 +1162,7 @@ public class AddressBook {
      * @return  'help' command usage instruction
      */
     private static String getUsageInfoForHelpCommand() {
-        return String.format(MESSAGE_COMMAND_HELP, COMMAND_HELP_WORD, COMMAND_HELP_DESC)
+        return String.format(MESSAGE_COMMAND_HELP, COMMAND_WORD_HELP, COMMAND_HELP_DESC)
                 + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_HELP_EXAMPLE);
     }
 
@@ -1150,7 +1172,7 @@ public class AddressBook {
      * @return  'exit' command usage instruction
      */
     private static String getUsageInfoForExitCommand() {
-        return String.format(MESSAGE_COMMAND_HELP, COMMAND_EXIT_WORD, COMMAND_EXIT_DESC)
+        return String.format(MESSAGE_COMMAND_HELP, COMMAND_WORD_EXIT, COMMAND_EXIT_DESC)
                 + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_EXIT_EXAMPLE);
     }
 
@@ -1163,10 +1185,10 @@ public class AddressBook {
 
     /**
      * Removes sign(p/, d/, etc) from parameter string
-     *
+     * 
      * @param s  Parameter as a string
      * @param sign  Parameter sign to be removed
-     *
+     * 
      * @return  Priority string without p/
      */
     private static String removePrefixSign(String s, String sign) {
