@@ -215,7 +215,20 @@ public class AddressBook {
 
 	private static void startProgram(String[] args) {
 		showWelcomeMessage();
-		processProgramArgs(args);
+		
+		//T2A3 - Inline this method
+		if (args.length >= INVALID_NUMBER_PROGRAM_ARGS) {
+		    showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
+		    exitProgram();
+		}
+		
+		if (args.length == VALID_NUMBER_PROGRAM_ARGS) {
+		    setupGivenFileForStorage(args[0]);
+		}
+		
+		if(args.length == NO_PROGRAM_ARGS) {
+		    setupDefaultFileForStorage();
+		}
 		loadDataFromStorage();
 	}
 
