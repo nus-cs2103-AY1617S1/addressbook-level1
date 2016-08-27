@@ -880,11 +880,11 @@ public class AddressBook {
      * @return encoded strings
      */
     private static ArrayList<String> encodePersonsToStrings(ArrayList<String[]> persons) {
-        final ArrayList<String> encoded = new ArrayList<>();
-        for (String[] person : persons) {
-            encoded.add(encodePersonToString(person));
+        final ArrayList<String> encodedPersons = new ArrayList<>();
+        for (String[] encodedPerson : persons) {
+            encodedPerson.add(encodePersonToString(encodedPerson));
         }
-        return encoded;
+        return encodedPersons;
     }
 
     /*
