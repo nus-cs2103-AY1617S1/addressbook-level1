@@ -200,7 +200,18 @@ public class AddressBook {
      */
     public static void main(String[] args) {
         showWelcomeMessage();
-        processProgramArgs(args);
+        if (args.length >= 2) {
+            showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
+            exitProgram();
+        }
+
+        if (args.length == 1) {
+            setupGivenFileForStorage(args[0]);
+        }
+
+        if(args.length == 0) {
+            setupDefaultFileForStorage();
+        }
         loadDataFromStorage();
         while (true) {
             String userCommand = getUserInput();
@@ -338,24 +349,30 @@ public class AddressBook {
         final String[] commandTypeAndParams = splitCommandWordAndArgs(userInputString);
         final String commandType = commandTypeAndParams[0];
         final String commandArgs = commandTypeAndParams[1];
-        switch (commandType) {
-        case COMMAND_ADD_WORD:
+        
+        if (commandType.compareToIgnoreCase(COMMAND_ADD_WORD) >= 0){
             return executeAddPerson(commandArgs);
-        case COMMAND_FIND_WORD:
-            return executeFindPersons(commandArgs);
-        case COMMAND_LIST_WORD:
-            return executeListAllPersonsInAddressBook();
-        case COMMAND_DELETE_WORD:
-            return executeDeletePerson(commandArgs);
-        case COMMAND_CLEAR_WORD:
-            return executeClearAddressBook();
-        case COMMAND_HELP_WORD:
-            return getUsageInfoForAllCommands();
-        case COMMAND_EXIT_WORD:
-            executeExitProgramRequest();
-        default:
-            return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
         }
+        else if (commandType.compareToIgnoreCase(COMMAND_FIND_WORD) >= 0){
+            return executeFindPersons(commandArgs);
+        }
+        else if (commandType.compareToIgnoreCase(COMMAND_LIST_WORD) >= 0){
+	        return executeListAllPersonsInAddressBook();
+        }
+	    else if (commandType.compareToIgnoreCase(COMMAND_DELETE_WORD) >= 0){
+	        return executeDeletePerson(commandArgs);
+	    }
+	    else if (commandType.compareToIgnoreCase(COMMAND_CLEAR_WORD) >= 0){
+	        return executeClearAddressBook();
+	    }
+	    else if (commandType.compareToIgnoreCase(COMMAND_HELP_WORD) >= 0){
+	        return getUsageInfoForAllCommands();
+	    }
+	    else if (commandType.compareToIgnoreCase(COMMAND_EXIT_WORD) >= 0){
+	        executeExitProgramRequest();
+	    }
+	        
+       return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
     }
 
     /**
