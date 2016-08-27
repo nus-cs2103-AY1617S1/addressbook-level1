@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Scanner;
@@ -109,6 +110,7 @@ public class AddressBook {
     private static final String COMMAND_LIST_WORD = "list";
     private static final String COMMAND_LIST_DESC = "Displays all persons as a list with index numbers.";
     private static final String COMMAND_LIST_EXAMPLE = COMMAND_LIST_WORD;
+    private static final String COMMAND_SORT_WORD = "sort";
 
     private static final String COMMAND_DELETE_WORD = "delete";
     private static final String COMMAND_DELETE_DESC = "Deletes a person identified by the index number used in "
@@ -353,11 +355,26 @@ public class AddressBook {
             return getUsageInfoForAllCommands();
         case COMMAND_EXIT_WORD:
             executeExitProgramRequest();
+        case COMMAND_SORT_WORD:
+        	sortNameList();
         default:
             return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
         }
     }
 
+    /**
+     * This method sorts the names in the address book alphabetically.
+     * 
+     */
+    private static void sortNameList() {
+    	ALL_PERSONS.subList(0, ALL_PERSONS.size());
+    	Collections.sort(ALL_PERSONS, new Comparator<String[]>() {
+    		public int compare (String[] person2, String[] person1) {
+    			return person2[PERSON_DATA_INDEX_NAME].compareToIgnoreCase(person1[PERSON_DATA_INDEX_NAME]);
+    		}
+    	});
+    }
+    
     /**
      * Splits raw user input into command word and command arguments string
      *
