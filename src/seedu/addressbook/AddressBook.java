@@ -199,11 +199,14 @@ public class AddressBook {
      * ====================================================================
      */
     public static void main(String[] args) {
-        showWelcomeMessage();
+        //showWelcomeMessage();
+    	showToUser(DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER);
         //processProgramArgs(args);
         if (args.length >= 2) {
             showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
-            exitProgram();
+            //exitProgram();
+            showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
+            System.exit(0);
         }
 
         if (args.length == 1) {
@@ -211,10 +214,15 @@ public class AddressBook {
         }
 
         if(args.length == 0) {
-            setupDefaultFileForStorage();
+            //setupDefaultFileForStorage();
+        	showToUser(MESSAGE_USING_DEFAULT_FILE);
+            storageFilePath = DEFAULT_STORAGE_FILEPATH;
+            createFileIfMissing(storageFilePath);
         }
         
-        loadDataFromStorage();
+        //loadDataFromStorage();
+        initialiseAddressBookModel(loadPersonsFromFile(storageFilePath));
+        
         while (true) {
             String userCommand = getUserInput();
             echoUserCommand(userCommand);
