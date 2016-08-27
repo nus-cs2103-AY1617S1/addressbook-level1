@@ -454,13 +454,31 @@ public class AddressBook {
      */
     private static ArrayList<String[]> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
+        final Set<String> keywordsInLowerCase = convertToLowerCase(keywords);
+        
         for (String[] person : getAllPersonsInAddressBook()) {
-            final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
-            if (!Collections.disjoint(wordsInName, keywords)) {
+            final Set<String> wordsInNameInLowerCase = convertToLowerCase(
+            		  new HashSet<>(splitByWhitespace(getNameFromPerson(person))));
+            if (!Collections.disjoint(wordsInNameInLowerCase, keywordsInLowerCase)) {
                 matchedPersons.add(person);
             }
         }
+        
         return matchedPersons;
+    }
+    
+    /**
+     * Convert all strings in the collection to lower case
+     * 
+     * 
+     */
+    private static Set<String> convertToLowerCase(Collection<String> words) {
+    	Set<String> wordsInLowerCase = new HashSet<String>();
+    	for (String w : word) {
+    		wordsInLowerCase.add(w.toLowerCase)
+    	}
+    	
+    	return wordsInLowerCase;
     }
 
     /**
