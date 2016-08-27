@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Scanner;
@@ -127,6 +128,10 @@ public class AddressBook {
     private static final String COMMAND_EXIT_WORD = "exit";
     private static final String COMMAND_EXIT_DESC = "Exits the program.";
     private static final String COMMAND_EXIT_EXAMPLE = COMMAND_EXIT_WORD;
+    
+    private static final String COMMAND_SORT_WORD = "sort";
+    private static final String COMMAND_SORT_DESC = "Sorts the persons in alphebatically order.";
+    private static final String COMMAND_SORT_EXAMPLE = COMMAND_SORT_WORD;
 
     private static final String DIVIDER = "===================================================";
 
@@ -202,13 +207,21 @@ public class AddressBook {
         showWelcomeMessage();
         processProgramArgs(args);
         loadDataFromStorage();
-        while (true) {
-            String userCommand = getUserInput();
-            echoUserCommand(userCommand);
-            String feedback = executeCommand(userCommand);
-            showResultToUser(feedback);
-        }
+        dealCommand();
     }
+
+
+
+	private static void dealCommand() {
+		while (true) {
+		    String userCommand = getUserInput();
+		    echoUserCommand(userCommand);
+		    String feedback = executeCommand(userCommand);
+		    showResultToUser(feedback);
+		}
+	}
+
+
 
     /*
      * ==============NOTE TO STUDENTS======================================
@@ -353,6 +366,10 @@ public class AddressBook {
             return getUsageInfoForAllCommands();
         case COMMAND_EXIT_WORD:
             executeExitProgramRequest();
+        case COMMAND_SORT_WORD:
+            return executeSortPersons();
+
+        	
         default:
             return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
         }
@@ -425,7 +442,31 @@ public class AddressBook {
         showToUser(personsFound);
         return getMessageForPersonsDisplayedSummary(personsFound);
     }
+    /**
+     * A comparator that compare the first string in the list first and then second string. 
+     */
+    private static class StringComparator implements Comparator<String[]> {
+        public int compare(String[] a, String[] b) {
+            int Comparison = a[0].toLowerCase().compareTo(b[0].toLowerCase());
+            return Comparison == 0 ? a[1].compareTo(b[1]) : Comparison;
+        }
+    }
 
+    
+    /**
+     * Sort the list of persons in alphabetically order.
+     *
+     * @return feedback display message for the operation result
+     */
+    
+    private static String executeSortPersons() {
+        ArrayList<String[]> toBeDisplayed = getAllPersonsInAddressBook();
+        Collections.sort(toBeDisplayed, new StringComparator());
+        showToUser(toBeDisplayed);
+        return getMessageForPersonsDisplayedSummary(toBeDisplayed);
+    	
+    }
+    
     /**
      * Constructs a feedback message to summarise an operation that displayed a listing of persons.
      *
@@ -1074,6 +1115,7 @@ public class AddressBook {
     private static String getUsageInfoForAllCommands() {
         return getUsageInfoForAddCommand() + LS
                 + getUsageInfoForFindCommand() + LS
+                + getUsageInfoForSortCommand() + LS
                 + getUsageInfoForViewCommand() + LS
                 + getUsageInfoForDeleteCommand() + LS
                 + getUsageInfoForClearCommand() + LS
@@ -1102,7 +1144,16 @@ public class AddressBook {
                 + String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_FIND_PARAMETERS) + LS
                 + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_FIND_EXAMPLE) + LS;
     }
-
+    
+    /**
+     * Builds string for showing 'sort' command usage instruction
+     *
+     * @return  'sort' command usage instruction
+     */
+    private static String getUsageInfoForSortCommand() {
+        return String.format(MESSAGE_COMMAND_HELP, COMMAND_SORT_WORD, COMMAND_SORT_DESC) + LS
+                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_SORT_EXAMPLE) + LS;
+    }
     /**
      * Builds string for showing 'delete' command usage instruction
      *
