@@ -199,9 +199,20 @@ public class AddressBook {
      * ====================================================================
      */
     public static void main(String[] args) {
-        showWelcomeMessage();
-        processProgramArgs(args);
-        loadDataFromStorage();
+        showToUser(DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER);
+        if (args.length >= 2) {
+		    showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
+		    exitProgram();
+		}
+		
+		if (args.length == 1) {
+		    setupGivenFileForStorage(args[0]);
+		}
+		
+		if(args.length == 0) {
+		    setupDefaultFileForStorage();
+		}
+        initialiseAddressBookModel(loadPersonsFromFile(storageFilePath));
         while (true) {
             String userCommand = getUserInput();
             echoUserCommand(userCommand);
@@ -256,16 +267,28 @@ public class AddressBook {
      */
     private static void processProgramArgs(String[] args) {
         if (args.length >= 2) {
-            showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
+            String[] message = { MESSAGE_INVALID_PROGRAM_ARGS };
+			for (String m : message) {
+			    System.out.println(LINE_PREFIX + m);
+			}
             exitProgram();
         }
 
         if (args.length == 1) {
-            setupGivenFileForStorage(args[0]);
+            String filePath = args[0];
+			if (!isValidFilePath(filePath)) {
+			    showToUser(String.format(MESSAGE_INVALID_FILE, filePath));
+			    exitProgram();
+			}
+			
+			storageFilePath = filePath;
+			createFileIfMissing(filePath);
         }
 
         if(args.length == 0) {
-            setupDefaultFileForStorage();
+            showToUser(MESSAGE_USING_DEFAULT_FILE);
+			storageFilePath = DEFAULT_STORAGE_FILEPATH;
+			createFileIfMissing(storageFilePath);
         }
     }
 
@@ -340,21 +363,53 @@ public class AddressBook {
         final String commandArgs = commandTypeAndParams[1];
         switch (commandType) {
         case COMMAND_ADD_WORD:
-            return executeAddPerson(commandArgs);
+            // try decoding a person from the raw args
+			final Optional<String[]> decodeResult = decodePersonFromString(commandArgs);
+			
+			// checks if args are valid (decode result will not be present if the person is invalid)
+			if (!decodeResult.isPresent()) {
+			    return getMessageForInvalidCommandInput(COMMAND_ADD_WORD, getUsageInfoForAddCommand());
+			}
+			
+			// add the person as specified
+			final String[] personToAdd = decodeResult.get();
+			addPersonToAddressBook(personToAdd);
+			return getMessageForSuccessfulAddPerson(personToAdd);
         case COMMAND_FIND_WORD:
-            return executeFindPersons(commandArgs);
+            final Set<String> keywords = extractKeywordsFromFindPersonArgs(commandArgs);
+			final ArrayList<String[]> personsFound = getPersonsWithNameContainingAnyKeyword(keywords);
+			showToUser(personsFound);
+			return getMessageForPersonsDisplayedSummary(personsFound);
         case COMMAND_LIST_WORD:
-            return executeListAllPersonsInAddressBook();
+            ArrayList<String[]> toBeDisplayed = getAllPersonsInAddressBook();
+			showToUser(toBeDisplayed);
+			return getMessageForPersonsDisplayedSummary(toBeDisplayed);
         case COMMAND_DELETE_WORD:
-            return executeDeletePerson(commandArgs);
+            if (!isDeletePersonArgsValid(commandArgs)) {
+			    return getMessageForInvalidCommandInput(COMMAND_DELETE_WORD, getUsageInfoForDeleteCommand());
+			}
+			final int targetVisibleIndex = extractTargetIndexFromDeletePersonArgs(commandArgs);
+			if (!isDisplayIndexValidForLastPersonListingView(targetVisibleIndex)) {
+			    return MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
+			}
+			final String[] targetInModel = getPersonByLastVisibleIndex(targetVisibleIndex);
+			return deletePersonFromAddressBook(targetInModel) ? getMessageForSuccessfulDelete(targetInModel) // success
+			                                                  : MESSAGE_PERSON_NOT_IN_ADDRESSBOOK; // not found
         case COMMAND_CLEAR_WORD:
-            return executeClearAddressBook();
+            clearAddressBook();
+			return MESSAGE_ADDRESSBOOK_CLEARED;
         case COMMAND_HELP_WORD:
-            return getUsageInfoForAllCommands();
+            return getUsageInfoForAddCommand() + LS
+			+ getUsageInfoForFindCommand() + LS
+			+ getUsageInfoForViewCommand() + LS
+			+ getUsageInfoForDeleteCommand() + LS
+			+ getUsageInfoForClearCommand() + LS
+			+ getUsageInfoForExitCommand() + LS
+			+ getUsageInfoForHelpCommand();
         case COMMAND_EXIT_WORD:
-            executeExitProgramRequest();
+            exitProgram();
         default:
-            return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
+            return String.format(MESSAGE_INVALID_COMMAND_FORMAT, commandType, getUsageInfoForAllCommands());
         }
     }
 
@@ -526,16 +581,6 @@ public class AddressBook {
      */
     private static String getMessageForSuccessfulDelete(String[] deletedPerson) {
         return String.format(MESSAGE_DELETE_PERSON_SUCCESS, getMessageForFormattedPersonData(deletedPerson));
-    }
-
-    /**
-     * Clears all persons in the address book.
-     *
-     * @return feedback display message for the operation result
-     */
-    private static String executeClearAddressBook() {
-        clearAddressBook();
-        return MESSAGE_ADDRESSBOOK_CLEARED;
     }
 
     /**
