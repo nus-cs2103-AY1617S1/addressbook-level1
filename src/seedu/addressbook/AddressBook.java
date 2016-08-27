@@ -200,7 +200,18 @@ public class AddressBook {
      */
     public static void main(String[] args) {
         showWelcomeMessage();
-        processProgramArgs(args);
+        if (args.length >= 2) {
+            showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
+            exitProgram();
+        }
+
+        else if (args.length == 1) {
+            setupGivenFileForStorage(args[0]);
+        }
+
+        else if(args.length == 0) {
+            setupDefaultFileForStorage();
+        }
         loadDataFromStorage();
         while (true) {
             String userCommand = getUserInput();
@@ -248,28 +259,6 @@ public class AddressBook {
      */
 
     /**
-     * Processes the program main method run arguments.
-     * If a valid storage file is specified, sets up that file for storage.
-     * Otherwise sets up the default file for storage.
-     *
-     * @param args full program arguments passed to application main method
-     */
-    private static void processProgramArgs(String[] args) {
-        if (args.length >= 2) {
-            showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
-            exitProgram();
-        }
-
-        if (args.length == 1) {
-            setupGivenFileForStorage(args[0]);
-        }
-
-        if(args.length == 0) {
-            setupDefaultFileForStorage();
-        }
-    }
-
-    /**
      * Sets up the storage file based on the supplied file path.
      * Creates the file if it is missing.
      * Exits if the file name is not acceptable.
@@ -290,7 +279,7 @@ public class AddressBook {
      */
     private static void exitProgram() {
         showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
-        System.exit(0);
+        Runtime.getRuntime().exit(0);
     }
 
     /**
@@ -338,7 +327,11 @@ public class AddressBook {
         final String[] commandTypeAndParams = splitCommandWordAndArgs(userInputString);
         final String commandType = commandTypeAndParams[0];
         final String commandArgs = commandTypeAndParams[1];
-        switch (commandType) {
+        return determineCommandType(commandType, commandArgs);
+    }
+
+	private static String determineCommandType(final String commandType, final String commandArgs) {
+		switch (commandType) {
         case COMMAND_ADD_WORD:
             return executeAddPerson(commandArgs);
         case COMMAND_FIND_WORD:
@@ -356,7 +349,7 @@ public class AddressBook {
         default:
             return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
         }
-    }
+	}
 
     /**
      * Splits raw user input into command word and command arguments string
@@ -689,14 +682,18 @@ public class AddressBook {
 
         showToUser(String.format(MESSAGE_ERROR_MISSING_STORAGE_FILE, filePath));
 
-        try {
+        createNewFile(filePath, storageFile);
+    }
+
+	private static void createNewFile(String filePath, final File storageFile) {
+		try {
             storageFile.createNewFile();
             showToUser(String.format(MESSAGE_STORAGE_FILE_CREATED, filePath));
         } catch (IOException ioe) {
             showToUser(String.format(MESSAGE_ERROR_CREATING_STORAGE_FILE, filePath));
             exitProgram();
         }
-    }
+	}
 
     /**
      * Converts contents of a file into a list of persons.
