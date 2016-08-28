@@ -198,10 +198,24 @@ public class AddressBook {
      * method alone.
      * ====================================================================
      */
-    public static void main(String[] args) {
-        showWelcomeMessage();
-        processProgramArgs(args);
-        loadDataFromStorage();
+    public static void main(String[] args) 
+    {
+        show();
+        
+        if (args.length >= 2) {
+            showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
+            exitProgram();
+        }
+
+        if (args.length == 1) {
+            setupGivenFileForStorage(args[0]);
+        }
+
+        if(args.length == 0) {
+            setupDefaultFileForStorage();
+        }
+        
+        LOADDATAFROMSTORAGE();
         while (true) {
             String userCommand = getUserInput();
             echoUserCommand(userCommand);
@@ -217,11 +231,13 @@ public class AddressBook {
      * signature anyway.
      * ====================================================================
      */
-    private static void showWelcomeMessage() {
+    private static void show() 
+    {
         showToUser(DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER);
     }
 
-    private static void showResultToUser(String result) {
+    private static void showResultToUser(String result) 
+    {
         showToUser(result, DIVIDER);
     }
 
@@ -235,7 +251,8 @@ public class AddressBook {
     /**
      * Echoes the user input back to the user.
      */
-    private static void echoUserCommand(String userCommand) {
+    private static void echoUserCommand(String userCommand)
+    {
         showToUser("[Command entered:" + userCommand + "]");
     }
 
@@ -254,27 +271,15 @@ public class AddressBook {
      *
      * @param args full program arguments passed to application main method
      */
-    private static void processProgramArgs(String[] args) {
-        if (args.length >= 2) {
-            showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
-            exitProgram();
-        }
 
-        if (args.length == 1) {
-            setupGivenFileForStorage(args[0]);
-        }
-
-        if(args.length == 0) {
-            setupDefaultFileForStorage();
-        }
-    }
 
     /**
      * Sets up the storage file based on the supplied file path.
      * Creates the file if it is missing.
      * Exits if the file name is not acceptable.
      */
-    private static void setupGivenFileForStorage(String filePath) {
+    private static void setupGivenFileForStorage(String filePath)
+    {
 
         if (!isValidFilePath(filePath)) {
             showToUser(String.format(MESSAGE_INVALID_FILE, filePath));
@@ -288,7 +293,8 @@ public class AddressBook {
     /**
      * Displays the goodbye message and exits the runtime.
      */
-    private static void exitProgram() {
+    private static void exitProgram()
+    {
         showToUser(MESSAGE_GOODBYE, DIVIDER, DIVIDER);
         System.exit(0);
     }
@@ -298,7 +304,8 @@ public class AddressBook {
      * Creates file if missing.
      * Exits program if the file cannot be created.
      */
-    private static void setupDefaultFileForStorage() {
+    private static void setupDefaultFileForStorage() 
+    {
         showToUser(MESSAGE_USING_DEFAULT_FILE);
         storageFilePath = DEFAULT_STORAGE_FILEPATH;
         createFileIfMissing(storageFilePath);
@@ -317,7 +324,8 @@ public class AddressBook {
      * Initialises the in-memory data using the storage file.
      * Assumption: The file exists.
      */
-    private static void loadDataFromStorage() {
+    private static void LOADDATAFROMSTORAGE() 
+    {
         initialiseAddressBookModel(loadPersonsFromFile(storageFilePath));
     }
 
@@ -334,7 +342,8 @@ public class AddressBook {
      * @param userInputString  raw input from user
      * @return  feedback about how the command was executed
      */
-    public static String executeCommand(String userInputString) {
+    public static String executeCommand(String userInputString)
+    {
         final String[] commandTypeAndParams = splitCommandWordAndArgs(userInputString);
         final String commandType = commandTypeAndParams[0];
         final String commandArgs = commandTypeAndParams[1];
@@ -363,7 +372,8 @@ public class AddressBook {
      *
      * @return  size 2 array; first element is the command type and second element is the arguments string
      */
-    private static String[] splitCommandWordAndArgs(String rawUserInput) {
+    private static String[] splitCommandWordAndArgs(String rawUserInput) 
+    {
         final String[] split =  rawUserInput.trim().split("\\s+", 2);
         return split.length == 2 ? split : new String[] { split[0] , "" }; // else case: no parameters
     }
@@ -374,7 +384,8 @@ public class AddressBook {
      * @param correctUsageInfo message showing the correct usage
      * @return invalid command args feedback message
      */
-    private static String getMessageForInvalidCommandInput(String userCommand, String correctUsageInfo) {
+    private static String getMessageForInvalidCommandInput(String userCommand, String correctUsageInfo)
+    {
         return String.format(MESSAGE_INVALID_COMMAND_FORMAT, userCommand, correctUsageInfo);
     }
 
@@ -390,7 +401,8 @@ public class AddressBook {
         final Optional<String[]> decodeResult = decodePersonFromString(commandArgs);
 
         // checks if args are valid (decode result will not be present if the person is invalid)
-        if (!decodeResult.isPresent()) {
+        if (!decodeResult.isPresent())
+        {
             return getMessageForInvalidCommandInput(COMMAND_ADD_WORD, getUsageInfoForAddCommand());
         }
 
@@ -407,7 +419,8 @@ public class AddressBook {
      * @param addedPerson person who was successfully added
      * @return successful add person feedback message
      */
-    private static String getMessageForSuccessfulAddPerson(String[] addedPerson) {
+    private static String getMessageForSuccessfulAddPerson(String[] addedPerson)
+    {
         return String.format(MESSAGE_ADDED,
                 getNameFromPerson(addedPerson), getPhoneFromPerson(addedPerson), getEmailFromPerson(addedPerson));
     }
@@ -442,7 +455,8 @@ public class AddressBook {
      * @param findPersonCommandArgs full command args string for the find persons command
      * @return set of keywords as specified by args
      */
-    private static Set<String> extractKeywordsFromFindPersonArgs(String findPersonCommandArgs) {
+    private static Set<String> extractKeywordsFromFindPersonArgs(String findPersonCommandArgs)
+    {
         return new HashSet<>(splitByWhitespace(findPersonCommandArgs.trim()));
     }
 
@@ -469,7 +483,8 @@ public class AddressBook {
      * @param commandArgs full command args string from the user
      * @return feedback display message for the operation result
      */
-    private static String executeDeletePerson(String commandArgs) {
+    private static String executeDeletePerson(String commandArgs)
+    {
         if (!isDeletePersonArgsValid(commandArgs)) {
             return getMessageForInvalidCommandInput(COMMAND_DELETE_WORD, getUsageInfoForDeleteCommand());
         }
@@ -488,7 +503,8 @@ public class AddressBook {
      * @param rawArgs raw command args string for the delete person command
      * @return whether the input args string is valid
      */
-    private static boolean isDeletePersonArgsValid(String rawArgs) {
+    private static boolean isDeletePersonArgsValid(String rawArgs)
+    {
         try {
             final int extractedIndex = Integer.parseInt(rawArgs.trim()); // use standard libraries to parse
             return extractedIndex >= DISPLAYED_INDEX_OFFSET;
@@ -503,7 +519,8 @@ public class AddressBook {
      * @param rawArgs raw command args string for the delete person command
      * @return extracted index
      */
-    private static int extractTargetIndexFromDeletePersonArgs(String rawArgs) {
+    private static int extractTargetIndexFromDeletePersonArgs(String rawArgs)
+    {
         return Integer.parseInt(rawArgs.trim());
     }
 
@@ -513,7 +530,8 @@ public class AddressBook {
      * @param index to check
      * @return whether it is valid
      */
-    private static boolean isDisplayIndexValidForLastPersonListingView(int index) {
+    private static boolean isDisplayIndexValidForLastPersonListingView(int index)
+    {
         return index >= DISPLAYED_INDEX_OFFSET && index < getLatestPersonListingView().size() + DISPLAYED_INDEX_OFFSET;
     }
 
@@ -524,7 +542,8 @@ public class AddressBook {
      * @param deletedPerson successfully deleted
      * @return successful delete person feedback message
      */
-    private static String getMessageForSuccessfulDelete(String[] deletedPerson) {
+    private static String getMessageForSuccessfulDelete(String[] deletedPerson)
+    {
         return String.format(MESSAGE_DELETE_PERSON_SUCCESS, getMessageForFormattedPersonData(deletedPerson));
     }
 
@@ -533,7 +552,8 @@ public class AddressBook {
      *
      * @return feedback display message for the operation result
      */
-    private static String executeClearAddressBook() {
+    private static String executeClearAddressBook() 
+    {
         clearAddressBook();
         return MESSAGE_ADDRESSBOOK_CLEARED;
     }
@@ -543,7 +563,8 @@ public class AddressBook {
      *
      * @return feedback display message for the operation result
      */
-    private static String executeListAllPersonsInAddressBook() {
+    private static String executeListAllPersonsInAddressBook()
+    {
         ArrayList<String[]> toBeDisplayed = getAllPersonsInAddressBook();
         showToUser(toBeDisplayed);
         return getMessageForPersonsDisplayedSummary(toBeDisplayed);
