@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Scanner;
@@ -109,7 +110,9 @@ public class AddressBook {
     private static final String COMMAND_LIST_WORD = "list";
     private static final String COMMAND_LIST_DESC = "Displays all persons as a list with index numbers.";
     private static final String COMMAND_LIST_EXAMPLE = COMMAND_LIST_WORD;
-
+    
+    private static final String COMMAND_SORT_WORD = "sort";
+    
     private static final String COMMAND_DELETE_WORD = "delete";
     private static final String COMMAND_DELETE_DESC = "Deletes a person identified by the index number used in "
                                                     + "the last find/list call.";
@@ -345,6 +348,8 @@ public class AddressBook {
             return executeFindPersons(commandArgs);
         case COMMAND_LIST_WORD:
             return executeListAllPersonsInAddressBook();
+        case COMMAND_SORT_WORD:
+        	return executeSortAllPersonsInAddressBook();
         case COMMAND_DELETE_WORD:
             return executeDeletePerson(commandArgs);
         case COMMAND_CLEAR_WORD:
@@ -357,6 +362,29 @@ public class AddressBook {
             return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
         }
     }
+    
+    /**
+    * Displays and sorts all persons in the address book to the user; in alphabetical order.
+    * 
+    * @return feedback display message for the operation result
+    */
+   private static String executeSortAllPersonsInAddressBook() {
+       sortAddressBook();
+       return executeListAllPersonsInAddressBook();
+   }
+   
+   /**
+    * Sorts all persons in the address book to the user; in alphabetical order.
+    * 
+    * @return persons in the address book in sorted order for the operation result
+    */
+   private static void sortAddressBook(){
+       Collections.sort(ALL_PERSONS, new Comparator<String[]>() {
+           public int compare(String[] firstPerson, String[] secondPerson) {
+               return firstPerson[PERSON_DATA_INDEX_NAME].compareTo(secondPerson[PERSON_DATA_INDEX_NAME]);
+           }
+       });
+   }
 
     /**
      * Splits raw user input into command word and command arguments string
