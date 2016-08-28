@@ -202,7 +202,7 @@ public class AddressBook {
         showWelcomeMessage();
         processProgramArgs(args);
         loadDataFromStorage();
-        showResultToUser();
+        runAddressBook();
     }
 
 	private static void runAddressBook() {
