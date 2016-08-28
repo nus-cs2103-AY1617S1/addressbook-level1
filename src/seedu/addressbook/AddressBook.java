@@ -200,6 +200,7 @@ public class AddressBook {
      */
     public static void main(String[] args) {
         showWelcomeMessage();
+        loadDataFromStorage();
         if (args.length >= 2) {
             showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
             exitProgram();
