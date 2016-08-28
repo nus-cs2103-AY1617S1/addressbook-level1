@@ -205,7 +205,7 @@ public class AddressBook {
         showResultToUser();
     }
 
-	private static void showResultToUser() {
+	private static void runAddressBook() {
 		while (true) {
             String userCommand = getUserInput();
             echoUserCommand(userCommand);
