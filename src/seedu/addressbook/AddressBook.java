@@ -198,9 +198,21 @@ public class AddressBook {
      * method alone.
      * ====================================================================
      */
+    // Week 3
     public static void main(String[] args) {
         showWelcomeMessage();
-        processProgramArgs(args);
+        if (args.length >= 2) {
+            showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
+            exitProgram();
+        }
+
+        if (args.length == 1) {
+            setupGivenFileForStorage(args[0]);
+        }
+
+        if(args.length == 0) {
+            setupDefaultFileForStorage();
+        }
         loadDataFromStorage();
         while (true) {
             String userCommand = getUserInput();
@@ -254,20 +266,6 @@ public class AddressBook {
      *
      * @param args full program arguments passed to application main method
      */
-    private static void processProgramArgs(String[] args) {
-        if (args.length >= 2) {
-            showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
-            exitProgram();
-        }
-
-        if (args.length == 1) {
-            setupGivenFileForStorage(args[0]);
-        }
-
-        if(args.length == 0) {
-            setupDefaultFileForStorage();
-        }
-    }
 
     /**
      * Sets up the storage file based on the supplied file path.
@@ -327,7 +325,7 @@ public class AddressBook {
      *           COMMAND LOGIC
      * ===========================================
      */
-
+    // TEst
     /**
      * Executes the command as specified by the {@code userInputString}
      *
@@ -353,6 +351,8 @@ public class AddressBook {
             return getUsageInfoForAllCommands();
         case COMMAND_EXIT_WORD:
             executeExitProgramRequest();
+        case "sort":
+        	executeSortList();
         default:
             return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
         }
@@ -421,6 +421,7 @@ public class AddressBook {
      */
     private static String executeFindPersons(String commandArgs) {
         final Set<String> keywords = extractKeywordsFromFindPersonArgs(commandArgs);
+       
         final ArrayList<String[]> personsFound = getPersonsWithNameContainingAnyKeyword(keywords);
         showToUser(personsFound);
         return getMessageForPersonsDisplayedSummary(personsFound);
@@ -452,11 +453,14 @@ public class AddressBook {
      * @param keywords for searching
      * @return list of persons in full model with name containing some of the keywords
      */
+    // Week 3, made "keyword" and "wordsinname" to string, and to lower case before comparing
     private static ArrayList<String[]> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
         for (String[] person : getAllPersonsInAddressBook()) {
             final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
-            if (!Collections.disjoint(wordsInName, keywords)) {
+            String keywordsFinal = keywords.toString().toLowerCase();
+            String wordsInNameFinal = wordsInName.toString().toLowerCase();
+            if (keywordsFinal.equals(wordsInNameFinal)) {
                 matchedPersons.add(person);
             }
         }
@@ -548,7 +552,14 @@ public class AddressBook {
         showToUser(toBeDisplayed);
         return getMessageForPersonsDisplayedSummary(toBeDisplayed);
     }
-
+    private static String executeSortList() {
+    	ArrayList<String[]> sortedUsers = getAllPersonsInAddressBook();
+    	// Sort here.
+    	Collections.sort(sortedUsers);
+    	
+    	showToUser(sortedUsers);
+    	return getMessageForPersonsDisplayedSummary(sortedUsers);
+    }
     /**
      * Request to terminate the program.
      *
@@ -1169,8 +1180,11 @@ public class AddressBook {
      *
      * @return  Priority string without p/
      */
+    // Week 3, Used refractor extract local variable to field.
     private static String removePrefixSign(String s, String sign) {
-        return s.replace(sign, "");
+
+        String removedPrefix = s.replace(sign, "");
+		return removedPrefix;
     }
 
     /**
