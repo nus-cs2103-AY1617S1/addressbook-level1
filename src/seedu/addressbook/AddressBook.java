@@ -18,6 +18,8 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.Collections;
+import java.util.Comparator;
 
 /* ==============NOTE TO STUDENTS======================================
  * This class header comment below is brief because details of how to
@@ -85,7 +87,7 @@ public class AddressBook {
     private static final String MESSAGE_STORAGE_FILE_CREATED = "Created new empty storage file: %1$s";
     private static final String MESSAGE_WELCOME = "Welcome to your Address Book!";
     private static final String MESSAGE_USING_DEFAULT_FILE = "Using default storage file : " + DEFAULT_STORAGE_FILEPATH;
-
+    private static final String MESSAGE_RESULT_SORTED = "Result Sorted!";
     // These are the prefix strings to define the data type of a command parameter
     private static final String PERSON_DATA_PREFIX_PHONE = "p/";
     private static final String PERSON_DATA_PREFIX_EMAIL = "e/";
@@ -109,6 +111,8 @@ public class AddressBook {
     private static final String COMMAND_LIST_WORD = "list";
     private static final String COMMAND_LIST_DESC = "Displays all persons as a list with index numbers.";
     private static final String COMMAND_LIST_EXAMPLE = COMMAND_LIST_WORD;
+    
+    private static final String COMMAND_SORT_WORD = "sort";
 
     private static final String COMMAND_DELETE_WORD = "delete";
     private static final String COMMAND_DELETE_DESC = "Deletes a person identified by the index number used in "
@@ -345,6 +349,8 @@ public class AddressBook {
             return executeFindPersons(commandArgs);
         case COMMAND_LIST_WORD:
             return executeListAllPersonsInAddressBook();
+        case COMMAND_SORT_WORD:
+        	return sortDisplayList();
         case COMMAND_DELETE_WORD:
             return executeDeletePerson(commandArgs);
         case COMMAND_CLEAR_WORD:
@@ -547,6 +553,17 @@ public class AddressBook {
         ArrayList<String[]> toBeDisplayed = getAllPersonsInAddressBook();
         showToUser(toBeDisplayed);
         return getMessageForPersonsDisplayedSummary(toBeDisplayed);
+    }
+    
+    /*Sort all person in the displayed list; in alphabetical order*/
+    private static String sortDisplayList() {
+    	Collections.sort(latestPersonListingView,new Comparator<String[]>() {
+    		public int compare(String[] strings, String[] otherStrings) {
+    			return strings[0].compareTo(otherStrings[0]);
+    		}
+    	});
+    	showToUser(latestPersonListingView);
+    	return MESSAGE_RESULT_SORTED;
     }
 
     /**
