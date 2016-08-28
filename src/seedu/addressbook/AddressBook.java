@@ -184,7 +184,7 @@ public class AddressBook {
      * This is a subset of the full list. Deleting persons in the pull list does not delete
      * those persons from this list.
      */
-    private static ArrayList<String[]> latestPersonListingView = getAllPersonsInAddressBook(); // initial view is of all
+    private static ArrayList<String[]> latestPersonsList = getAllPersonsInAddressBook(); // initial view is of all
 
     /**
      * The path to the file used for storing person data.
@@ -364,7 +364,8 @@ public class AddressBook {
      * @return  size 2 array; first element is the command type and second element is the arguments string
      */
     private static String[] splitCommandWordAndArgs(String rawUserInput) {
-        final String[] split =  rawUserInput.trim().split("\\s+", 2);
+    	final String WHITESPACE = "\\s+";
+        final String[] split =  rawUserInput.trim().split(WHITESPACE, 2);
         return split.length == 2 ? split : new String[] { split[0] , "" }; // else case: no parameters
     }
 
@@ -514,7 +515,7 @@ public class AddressBook {
      * @return whether it is valid
      */
     private static boolean isDisplayIndexValidForLastPersonListingView(int index) {
-        return index >= DISPLAYED_INDEX_OFFSET && index < getLatestPersonListingView().size() + DISPLAYED_INDEX_OFFSET;
+        return index >= DISPLAYED_INDEX_OFFSET && index < getLatestPersonsList().size() + DISPLAYED_INDEX_OFFSET;
     }
 
     /**
@@ -649,7 +650,7 @@ public class AddressBook {
      */
     private static void updateLatestViewedPersonListing(ArrayList<String[]> newListing) {
         // clone to insulate from future changes to arg list
-        latestPersonListingView = new ArrayList<>(newListing);
+        latestPersonsList = new ArrayList<>(newListing);
     }
 
     /**
@@ -659,14 +660,14 @@ public class AddressBook {
      * @return the actual person object in the last shown person listing
      */
     private static String[] getPersonByLastVisibleIndex(int lastVisibleIndex) {
-       return latestPersonListingView.get(lastVisibleIndex - DISPLAYED_INDEX_OFFSET);
+       return latestPersonsList.get(lastVisibleIndex - DISPLAYED_INDEX_OFFSET);
     }
 
     /**
      * @return unmodifiable list view of the last person listing view
      */
-    private static ArrayList<String[]> getLatestPersonListingView() {
-        return latestPersonListingView;
+    private static ArrayList<String[]> getLatestPersonsList() {
+        return latestPersonsList;
     }
 
 
@@ -762,17 +763,6 @@ public class AddressBook {
      */
     private static void addPersonToAddressBook(String[] person) {
         ALL_PERSONS.add(person);
-        savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
-    }
-
-    /**
-     * Deletes a person from the address book, target is identified by it's absolute index in the full list.
-     * Saves changes to storage file.
-     *
-     * @param index absolute index of person to delete (index within {@link #ALL_PERSONS})
-     */
-    private static void deletePersonFromAddressBook(int index) {
-        ALL_PERSONS.remove(index);
         savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
     }
 
@@ -1035,7 +1025,8 @@ public class AddressBook {
      * @return whether arg is a valid person name
      */
     private static boolean isPersonNameValid(String name) {
-        return name.matches("(\\w|\\s)+");  // name is nonempty mixture of alphabets and whitespace
+    	final String NONEMPTYALPHAWHITESPACE = "(\\w|\\s)+";
+        return name.matches(NONEMPTYALPHAWHITESPACE);
         //TODO: implement a more permissive validation
     }
 
@@ -1046,7 +1037,8 @@ public class AddressBook {
      * @return whether arg is a valid person phone number
      */
     private static boolean isPersonPhoneValid(String phone) {
-        return phone.matches("\\d+");    // phone nonempty sequence of digits
+    	final String NONEMPTYDIGITS = "\\d+";
+        return phone.matches(NONEMPTYDIGITS);
         //TODO: implement a more permissive validation
     }
 
@@ -1057,7 +1049,8 @@ public class AddressBook {
      * @return whether arg is a valid person email
      */
     private static boolean isPersonEmailValid(String email) {
-        return email.matches("\\S+@\\S+\\.\\S+"); // email is [non-whitespace]@[non-whitespace].[non-whitespace]
+    	final String VALIDEMAIL = "\\S+@\\S+\\.\\S+"; // email is [non-whitespace]@[non-whitespace].[non-whitespace]
+        return email.matches(VALIDEMAIL);
         //TODO: implement a more permissive validation
     }
 
@@ -1180,7 +1173,8 @@ public class AddressBook {
      * @return split by whitespace
      */
     private static ArrayList<String> splitByWhitespace(String toSplit) {
-        return new ArrayList(Arrays.asList(toSplit.trim().split("\\s+")));
+    	final String WHITESPACE = "\\s+";
+        return new ArrayList(Arrays.asList(toSplit.trim().split(WHITESPACE)));
     }
 
 }
