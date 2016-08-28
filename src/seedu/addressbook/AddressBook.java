@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Scanner;
@@ -109,7 +110,9 @@ public class AddressBook {
     private static final String COMMAND_LIST_WORD = "list";
     private static final String COMMAND_LIST_DESC = "Displays all persons as a list with index numbers.";
     private static final String COMMAND_LIST_EXAMPLE = COMMAND_LIST_WORD;
-
+    
+    private static final String COMMAND_SORT_WORD = "sort";
+    
     private static final String COMMAND_DELETE_WORD = "delete";
     private static final String COMMAND_DELETE_DESC = "Deletes a person identified by the index number used in "
                                                     + "the last find/list call.";
@@ -345,6 +348,8 @@ public class AddressBook {
             return executeFindPersons(commandArgs);
         case COMMAND_LIST_WORD:
             return executeListAllPersonsInAddressBook();
+        case COMMAND_SORT_WORD:
+        	return executeSortAllPersonsInAddressBook();
         case COMMAND_DELETE_WORD:
             return executeDeletePerson(commandArgs);
         case COMMAND_CLEAR_WORD:
@@ -357,6 +362,29 @@ public class AddressBook {
             return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
         }
     }
+    
+    /**
+    * Displays and sorts all persons in the address book to the user; in alphabetical order.
+    * 
+    * @return feedback display message for the operation result
+    */
+   private static String executeSortAllPersonsInAddressBook() {
+       sortAddressBook();
+       return executeListAllPersonsInAddressBook();
+   }
+   
+   /**
+    * Sorts all persons in the address book to the user; in alphabetical order.
+    * 
+    * @return persons in the address book in sorted order for the operation result
+    */
+   private static void sortAddressBook(){
+       Collections.sort(ALL_PERSONS, new Comparator<String[]>() {
+           public int compare(String[] firstPerson, String[] secondPerson) {
+               return firstPerson[PERSON_DATA_INDEX_NAME].compareTo(secondPerson[PERSON_DATA_INDEX_NAME]);
+           }
+       });
+   }
 
     /**
      * Splits raw user input into command word and command arguments string
@@ -421,9 +449,24 @@ public class AddressBook {
      */
     private static String executeFindPersons(String commandArgs) {
         final Set<String> keywords = extractKeywordsFromFindPersonArgs(commandArgs);
-        final ArrayList<String[]> personsFound = getPersonsWithNameContainingAnyKeyword(keywords);
+        final Set<String> caseInsensitiveKeywords = changeToLowerCase(keywords);
+        final ArrayList<String[]> personsFound = getPersonsWithNameContainingAnyKeyword(caseInsensitiveKeywords);
         showToUser(personsFound);
         return getMessageForPersonsDisplayedSummary(personsFound);
+    }
+    
+    /**
+     * Changes string to lower case to cater to case insensitivity
+     * 
+     * @param keywords
+     * @return lower case keywords
+     */
+    private static Set<String> changeToLowerCase(Collection<String> keywords) {
+      	Set<String> lowerCaseStrings = new HashSet<String>();
+    	for (String i: keywords){
+    		lowerCaseStrings.add(i.toLowerCase());
+    	}
+    	return lowerCaseStrings;
     }
 
     /**
@@ -456,7 +499,8 @@ public class AddressBook {
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
         for (String[] person : getAllPersonsInAddressBook()) {
             final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
-            if (!Collections.disjoint(wordsInName, keywords)) {
+            final Set<String> lowerCaseInName = changeToLowerCase(wordsInName);
+            if (!Collections.disjoint(lowerCaseInName, keywords)) {
                 matchedPersons.add(person);
             }
         }
@@ -721,7 +765,7 @@ public class AddressBook {
     private static ArrayList<String> getLinesInFile(String filePath) {
         ArrayList<String> lines = null;
         try {
-            lines = new ArrayList(Files.readAllLines(Paths.get(filePath)));
+            lines = new ArrayList<>(Files.readAllLines(Paths.get(filePath)));
         } catch (FileNotFoundException fnfe) {
             showToUser(String.format(MESSAGE_ERROR_MISSING_STORAGE_FILE, filePath));
             exitProgram();
@@ -771,10 +815,6 @@ public class AddressBook {
      *
      * @param index absolute index of person to delete (index within {@link #ALL_PERSONS})
      */
-    private static void deletePersonFromAddressBook(int index) {
-        ALL_PERSONS.remove(index);
-        savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
-    }
 
     /**
      * Deletes the specified person from the addressbook if it is inside. Saves any changes to storage file.
@@ -1180,7 +1220,7 @@ public class AddressBook {
      * @return split by whitespace
      */
     private static ArrayList<String> splitByWhitespace(String toSplit) {
-        return new ArrayList(Arrays.asList(toSplit.trim().split("\\s+")));
+        return new ArrayList<>(Arrays.asList(toSplit.trim().split("\\s+")));
     }
 
 }
