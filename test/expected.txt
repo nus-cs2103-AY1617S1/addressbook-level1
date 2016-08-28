@@ -10,15 +10,19 @@
 || 	Parameters: NAME p/PHONE_NUMBER e/EMAIL
 || 	Example: add John Doe p/98765432 e/johnd@gmail.com
 || 
+|| edit: Edits a person's details in the address book based on index in addressbook.
+|| 	Parameters: INDEX NAMEp/PHONE_NUMBER e/EMAIL
+|| 	Example: edit 1 John Doe p/12345678 e/johnd@gmail.com
+|| 
 || find: Finds all persons whose names contain any of the specified keywords (case-sensitive) and displays them as a list with index numbers.
 || 	Parameters: KEYWORD [MORE_KEYWORDS]
 || 	Example: find alice bob charlie
 || 
-|| list: Displays all persons as a list with index numbers.
-|| 	Example: list
-|| 
 || sort: Displays all persons as a sorted list with index numbers.
 || 	Example: sort
+|| 
+|| list: Displays all persons as a list with index numbers.
+|| 	Example: list
 || 
 || delete: Deletes a person identified by the index number used in the last find/list call.
 || 	Parameters: INDEX
@@ -27,8 +31,12 @@
 || clear: Clears address book permanently.
 || 	Example: clear
 || 
-|| exit: Exits the program.	Example: exit
-|| help: Shows program usage instructions.	Example: help
+|| exit: Exits the program.
+|| 	Example: exit
+|| 
+|| help: Shows program usage instructions.
+|| 	Example: help
+|| 
 || ===================================================
 || Enter command: || [Command entered:  clear]
 || Address book has been cleared!
@@ -212,18 +220,18 @@
 || Enter command: || [Command entered:  list]
 || 	1. Adam Brown  Phone Number: 111111  Email: adam@gmail.com
 || 	2. Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
-|| 	3. Dickson Ee  Phone Number: 444444  Email: dickson@nus.edu.sg
-|| 	4. Esther Potato  Phone Number: 555555  Email: esther@notreal.potato
+|| 	3. Esther Potato  Phone Number: 555555  Email: esther@notreal.potato
+|| 	4. Dickson Ee  Phone Number: 444444  Email: dickson@nus.edu.sg
 || 
 || 4 persons found!
 || ===================================================
 || Enter command: || [Command entered:  delete 4]
-|| Deleted Person: Esther Potato  Phone Number: 555555  Email: esther@notreal.potato
+|| Deleted Person: Dickson Ee  Phone Number: 444444  Email: dickson@nus.edu.sg
 || ===================================================
 || Enter command: || [Command entered:  list]
 || 	1. Adam Brown  Phone Number: 111111  Email: adam@gmail.com
 || 	2. Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
-|| 	3. Dickson Ee  Phone Number: 444444  Email: dickson@nus.edu.sg
+|| 	3. Esther Potato  Phone Number: 555555  Email: esther@notreal.potato
 || 
 || 3 persons found!
 || ===================================================
@@ -232,7 +240,16 @@
 || ===================================================
 || Enter command: || [Command entered:  list]
 || 	1. Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
-|| 	2. Dickson Ee  Phone Number: 444444  Email: dickson@nus.edu.sg
+|| 	2. Esther Potato  Phone Number: 555555  Email: esther@notreal.potato
+|| 
+|| 2 persons found!
+|| ===================================================
+|| Enter command: || [Command entered:  edit 1 Fanny Lee p/88771122 e/fannyl@gmail.com]
+|| Person edited: Fanny Lee, Phone: 88771122, Email: fannyl@gmail.com
+|| ===================================================
+|| Enter command: || [Command entered:  list]
+|| 	1. Fanny Lee  Phone Number: 88771122  Email: fannyl@gmail.com
+|| 	2. Esther Potato  Phone Number: 555555  Email: esther@notreal.potato
 || 
 || 2 persons found!
 || ===================================================

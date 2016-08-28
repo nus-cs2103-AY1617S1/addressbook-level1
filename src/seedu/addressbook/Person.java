@@ -33,4 +33,17 @@ public class Person {
     public String getEmail() {
         return this._email;
     }
+    
+    public void updateName(String name) {
+    	this._name = name;
+    }
+    
+    public void updatePhone(String phone) {
+    	this._phone = phone;
+    }
+    
+    public void updateEmail(String email) {
+    	this._email = email;
+    }
+    
 }
