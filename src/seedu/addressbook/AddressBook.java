@@ -421,9 +421,24 @@ public class AddressBook {
      */
     private static String executeFindPersons(String commandArgs) {
         final Set<String> keywords = extractKeywordsFromFindPersonArgs(commandArgs);
-        final ArrayList<String[]> personsFound = getPersonsWithNameContainingAnyKeyword(keywords);
+        final Set<String> caseInsensitiveKeywords = changeToLowerCase(keywords);
+        final ArrayList<String[]> personsFound = getPersonsWithNameContainingAnyKeyword(caseInsensitiveKeywords);
         showToUser(personsFound);
         return getMessageForPersonsDisplayedSummary(personsFound);
+    }
+    
+    /**
+     * Changes string to lower case to cater to case insensitivity
+     * 
+     * @param keywords
+     * @return lower case keywords
+     */
+    private static Set<String> changeToLowerCase(Collection<String> keywords) {
+      	Set<String> lowerCaseStrings = new HashSet<String>();
+    	for (String i: keywords){
+    		lowerCaseStrings.add(i.toLowerCase());
+    	}
+    	return lowerCaseStrings;
     }
 
     /**
@@ -456,7 +471,8 @@ public class AddressBook {
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
         for (String[] person : getAllPersonsInAddressBook()) {
             final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
-            if (!Collections.disjoint(wordsInName, keywords)) {
+            final Set<String> lowerCaseInName = changeToLowerCase(wordsInName);
+            if (!Collections.disjoint(lowerCaseInName, keywords)) {
                 matchedPersons.add(person);
             }
         }
