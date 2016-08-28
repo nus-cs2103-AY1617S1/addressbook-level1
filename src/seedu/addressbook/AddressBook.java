@@ -414,13 +414,14 @@ public class AddressBook {
 
     /**
      * Finds and lists all persons in address book whose name contains any of the argument keywords.
-     * Keyword matching is case sensitive.
+     * Keyword matching is case insensitive.
      *
      * @param commandArgs full command args string from the user
      * @return feedback display message for the operation result
      */
     private static String executeFindPersons(String commandArgs) {
         final Set<String> keywords = extractKeywordsFromFindPersonArgs(commandArgs);
+        
         final ArrayList<String[]> personsFound = getPersonsWithNameContainingAnyKeyword(keywords);
         showToUser(personsFound);
         return getMessageForPersonsDisplayedSummary(personsFound);
@@ -455,7 +456,7 @@ public class AddressBook {
     private static ArrayList<String[]> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
         for (String[] person : getAllPersonsInAddressBook()) {
-            final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
+            final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getLowerCaseNameFromPerson(person)));
             if (!Collections.disjoint(wordsInName, keywords)) {
                 matchedPersons.add(person);
             }
@@ -829,6 +830,10 @@ public class AddressBook {
     private static String getNameFromPerson(String[] person) {
         return person[PERSON_DATA_INDEX_NAME];
     }
+    
+    private static String getLowerCaseNameFromPerson(String[] person) {
+        return person[PERSON_DATA_INDEX_NAME].toLowerCase();
+    }
 
     /**
      * @param person whose phone number you want
@@ -911,7 +916,7 @@ public class AddressBook {
                 extractEmailFromPersonString(encoded)
         );
         // check that the constructed person is valid
-        return isPersonDataValid(decodedPerson) ? Optional.of(decodedPerson) : Optional.empty();
+        return (Optional<String[]>) (isPersonDataValid(decodedPerson) ? Optional.of(decodedPerson) : Optional.empty());
     }
 
     /**
@@ -1180,6 +1185,7 @@ public class AddressBook {
      * @return split by whitespace
      */
     private static ArrayList<String> splitByWhitespace(String toSplit) {
+    	toSplit = toSplit.toLowerCase();
         return new ArrayList(Arrays.asList(toSplit.trim().split("\\s+")));
     }
 
