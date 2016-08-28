@@ -199,16 +199,24 @@ public class AddressBook {
      * ====================================================================
      */
     public static void main(String[] args) {
-        showWelcomeMessage();
+        runProgram(args);
+    }
+
+	private static void runProgram(String[] args) {
+		showWelcomeMessage();
         processProgramArgs(args);
         loadDataFromStorage();
-        while (true) {
+        executeProgram();
+	}
+
+	private static void executeProgram() {
+		while (true) {
             String userCommand = getUserInput();
             echoUserCommand(userCommand);
             String feedback = executeCommand(userCommand);
             showResultToUser(feedback);
         }
-    }
+	}
 
     /*
      * ==============NOTE TO STUDENTS======================================
@@ -420,7 +428,7 @@ public class AddressBook {
      * @return feedback display message for the operation result
      */
     private static String executeFindPersons(String commandArgs) {
-        final Set<String> keywords = extractKeywordsFromFindPersonArgs(commandArgs);
+        final Set<String> keywords = extractKeywordsFromFindPersonArgs(commandArgs.toLowerCase());
         final ArrayList<String[]> personsFound = getPersonsWithNameContainingAnyKeyword(keywords);
         showToUser(personsFound);
         return getMessageForPersonsDisplayedSummary(personsFound);
@@ -761,9 +769,16 @@ public class AddressBook {
      * @param person to add
      */
     private static void addPersonToAddressBook(String[] person) {
+    	makePersonInformationLowerCase(person);
         ALL_PERSONS.add(person);
         savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
     }
+
+	private static void makePersonInformationLowerCase(String[] person) {
+		for(String p: person) {
+    		p.toLowerCase();
+    	}
+	}
 
     /**
      * Deletes a person from the address book, target is identified by it's absolute index in the full list.
