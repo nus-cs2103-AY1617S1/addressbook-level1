@@ -36,10 +36,12 @@
   # order of phone and email should not matter
   add Charlie Dickson e/charlie.d@nus.edu.sg p/333333
   list
-  add Dickson Ee e/dickson@nus.edu.sg p/444444
-  list
   add Esther Potato p/555555 e/esther@notreal.potato
   list
+  add Dickson Ee e/dickson@nus.edu.sg p/444444
+  list
+  # will list all persons in sorted state
+  sort
 
 ##########################################################
 # test find persons command
@@ -51,7 +53,7 @@
   find bet
   # does not match if none have keyword
   find 23912039120
-  # matching should be case-sensitive
+  # matching is not case-sensitive
   find betsy
 
   # find unique keyword
@@ -89,6 +91,13 @@
 
   # listing indexes get updated on next request
   delete 1
+  list
+
+##########################################################
+# test edit command
+##########################################################
+  # listing indexes get updated on next request
+  edit 1 Fanny Lee p/88771122 e/fannyl@gmail.com
   list
 
 ##########################################################
