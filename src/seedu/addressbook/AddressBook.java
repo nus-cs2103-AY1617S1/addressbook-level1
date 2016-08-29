@@ -199,14 +199,31 @@ public class AddressBook {
      * ====================================================================
      */
     public static void main(String[] args) {
-        showWelcomeMessage();
-        processProgramArgs(args);
-        loadDataFromStorage();
+//        showWelcomeMessage();
+    	showToUser(DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER);
+//        processProgramArgs(args);
+    	if (args.length >= 2) {
+            showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
+            exitProgram();
+        }
+
+        if (args.length == 1) {
+            setupGivenFileForStorage(args[0]);
+        }
+
+        if(args.length == 0) {
+            setupDefaultFileForStorage();
+        }
+        
+//        loadDataFromStorage();
+        initialiseAddressBookModel(loadPersonsFromFile(storageFilePath));
         while (true) {
             String userCommand = getUserInput();
-            echoUserCommand(userCommand);
+//            echoUserCommand(userCommand);
+            showToUser("[Command entered:" + userCommand + "]");
             String feedback = executeCommand(userCommand);
-            showResultToUser(feedback);
+//            showResultToUser(feedback);
+            showToUser(result, DIVIDER);
         }
     }
 
@@ -217,13 +234,13 @@ public class AddressBook {
      * signature anyway.
      * ====================================================================
      */
-    private static void showWelcomeMessage() {
-        showToUser(DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER);
-    }
+//    private static void showWelcomeMessage() {
+//        showToUser(DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER);
+//    }
 
-    private static void showResultToUser(String result) {
-        showToUser(result, DIVIDER);
-    }
+//    private static void showResultToUser(String result) {
+//        showToUser(result, DIVIDER);
+//    }
 
     /*
      * ==============NOTE TO STUDENTS======================================
@@ -235,9 +252,9 @@ public class AddressBook {
     /**
      * Echoes the user input back to the user.
      */
-    private static void echoUserCommand(String userCommand) {
-        showToUser("[Command entered:" + userCommand + "]");
-    }
+//    private static void echoUserCommand(String userCommand) {
+//        showToUser("[Command entered:" + userCommand + "]");
+//    }
 
     /*
      * ==============NOTE TO STUDENTS==========================================
@@ -254,20 +271,20 @@ public class AddressBook {
      *
      * @param args full program arguments passed to application main method
      */
-    private static void processProgramArgs(String[] args) {
-        if (args.length >= 2) {
-            showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
-            exitProgram();
-        }
-
-        if (args.length == 1) {
-            setupGivenFileForStorage(args[0]);
-        }
-
-        if(args.length == 0) {
-            setupDefaultFileForStorage();
-        }
-    }
+//    private static void processProgramArgs(String[] args) {
+//        if (args.length >= 2) {
+//            showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
+//            exitProgram();
+//        }
+//
+//        if (args.length == 1) {
+//            setupGivenFileForStorage(args[0]);
+//        }
+//
+//        if(args.length == 0) {
+//            setupDefaultFileForStorage();
+//        }
+//    }
 
     /**
      * Sets up the storage file based on the supplied file path.
@@ -317,9 +334,9 @@ public class AddressBook {
      * Initialises the in-memory data using the storage file.
      * Assumption: The file exists.
      */
-    private static void loadDataFromStorage() {
-        initialiseAddressBookModel(loadPersonsFromFile(storageFilePath));
-    }
+//    private static void loadDataFromStorage() {
+//        initialiseAddressBookModel(loadPersonsFromFile(storageFilePath));
+//    }
 
 
     /*
