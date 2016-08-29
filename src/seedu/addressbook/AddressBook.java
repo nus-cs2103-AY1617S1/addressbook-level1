@@ -202,13 +202,20 @@ public class AddressBook {
         showWelcomeMessage();
         processProgramArgs(args);
         loadDataFromStorage();
-        while (true) {
+        processUserInput();
+    }
+
+	/**
+	 * This method process inputs from the user until the user exits
+	 */
+	private static void processUserInput() {
+		while (true) {
             String userCommand = getUserInput();
             echoUserCommand(userCommand);
             String feedback = executeCommand(userCommand);
             showResultToUser(feedback);
         }
-    }
+	}
 
     /*
      * ==============NOTE TO STUDENTS======================================
