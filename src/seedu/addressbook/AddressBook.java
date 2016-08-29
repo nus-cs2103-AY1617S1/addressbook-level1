@@ -71,6 +71,7 @@ public class AddressBook {
     private static final String MESSAGE_DISPLAY_LIST_ELEMENT_INDEX = "%1$d. ";
     private static final String MESSAGE_EDITED = "New details: %1$s, Phone: %2$s, Email: %3$s";
     private static final String MESSAGE_GOODBYE = "Exiting Address Book... Good bye!";
+    private static final String MESSAGE_INPUT_NEW_DETAILS = "Input new details: ";
     private static final String MESSAGE_INVALID_COMMAND_FORMAT = "Invalid command format: %1$s " + LS + "%2$s";
     private static final String MESSAGE_INVALID_FILE = "The given file name [%1$s] is not a valid file name!";
     private static final String MESSAGE_INVALID_PROGRAM_ARGS = "Too many parameters! Correct program argument format:"
@@ -118,6 +119,10 @@ public class AddressBook {
     private static final String COMMAND_SORT_EXAMPLE = COMMAND_SORT_WORD;
     
     private static final String COMMAND_EDIT_WORD = "edit";
+    private static final String COMMAND_EDIT_DESC = "Edits a person identified by the index number used in "
+                                                    + "the last find/list call.";
+    private static final String COMMAND_EDIT_PARAMETER = "INDEX";
+    private static final String COMMAND_EDIT_EXAMPLE = COMMAND_EDIT_WORD + " 1";
 
     private static final String COMMAND_DELETE_WORD = "delete";
     private static final String COMMAND_DELETE_DESC = "Deletes a person identified by the index number used in "
@@ -186,6 +191,8 @@ public class AddressBook {
      * List of all persons in the address book.
      */
     private static final ArrayList<String[]> ALL_PERSONS = new ArrayList<>();
+
+    
 
 	
 
@@ -373,11 +380,71 @@ public class AddressBook {
         }
     }
 
+    /**
+     * Given the last displayed index, delete the person from address book
+     * and adds the new person
+     * 
+     * @return feedback display message for the operation result
+     */
     private static String executeEdit(String commandArgs) {
-    	final Optional<String[]> decodeResult = decodePersonFromString(commandArgs);
-    	final String[] personToAdd = decodeResult.get();
+        String message = checkIfEditUserExists(commandArgs);
+        if(message.equals(MESSAGE_INPUT_NEW_DETAILS)){
+            String newDetails = inputNewDetails(message);
+            return addEditPerson(newDetails);
+        }
+        else{
+            return message;
+        }
+    }
+
+    private static String addEditPerson(String newDetails) {
+        // try decoding a person from the raw args
+        final Optional<String[]> decodeResult = decodePersonFromString(newDetails);
+
+        // checks if args are valid (decode result will not be present if the person is invalid)
+        if (!decodeResult.isPresent()) {
+            return getMessageForInvalidCommandInput(COMMAND_EDIT_WORD, getUsageInfoForEditCommand());
+        }
+
+        // add the person as specified
+        final String[] personToAdd = decodeResult.get();
         addPersonToAddressBook(personToAdd);
-        return getMessageForSuccessfulAddPerson(personToAdd);
+        return getMessageForSuccessfulEditPerson(personToAdd);
+    }
+
+    /**
+     * Prompts for the command and reads the text entered by the user.
+     * Ignores lines with first non-whitespace char equal to {@link #INPUT_COMMENT_MARKER} (considered comments)
+     *
+     * @return full line entered by the user
+     */
+    private static String inputNewDetails(String message) {
+        System.out.print(LINE_PREFIX + message);
+        String inputLine = SCANNER.nextLine();
+        // silently consume all blank and comment lines
+        while (inputLine.trim().isEmpty() || inputLine.trim().charAt(0) == INPUT_COMMENT_MARKER) {
+            inputLine = SCANNER.nextLine();
+        }
+        return inputLine;
+    }
+
+    /**
+     * Deletes person identified using last displayed index.
+     *
+     * @param commandArgs full command args string from the user
+     * @return feedback display message for the operation result
+     */
+    private static String checkIfEditUserExists(String commandArgs) {
+        if (!isDeletePersonArgsValid(commandArgs)) {
+            return getMessageForInvalidCommandInput(COMMAND_EDIT_WORD, getUsageInfoForEditCommand());
+        }
+        final int targetVisibleIndex = extractTargetIndexFromDeletePersonArgs(commandArgs);
+        if (!isDisplayIndexValidForLastPersonListingView(targetVisibleIndex)) {
+            return MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
+        }
+        final String[] targetInModel = getPersonByLastVisibleIndex(targetVisibleIndex);
+        return deletePersonFromAddressBook(targetInModel) ? MESSAGE_INPUT_NEW_DETAILS // success
+                                                          : MESSAGE_PERSON_NOT_IN_ADDRESSBOOK; // not found
     }
 
     /**
@@ -615,6 +682,7 @@ public class AddressBook {
      */
     private static String getUserInput() {
         System.out.print(LINE_PREFIX + "Enter command: ");
+        
         String inputLine = SCANNER.nextLine();
         // silently consume all blank and comment lines
         while (inputLine.trim().isEmpty() || inputLine.trim().charAt(0) == INPUT_COMMENT_MARKER) {
@@ -1166,6 +1234,17 @@ public class AddressBook {
         return String.format(MESSAGE_COMMAND_HELP, COMMAND_DELETE_WORD, COMMAND_DELETE_DESC) + LS
                 + String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_DELETE_PARAMETER) + LS
                 + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_DELETE_EXAMPLE) + LS;
+    }
+    
+    /**
+     * Builds string for showing 'edit' command usage instruction
+     *
+     * @return  'delete' command usage instruction
+     */
+    private static String getUsageInfoForEditCommand() {
+        return String.format(MESSAGE_COMMAND_HELP, COMMAND_EDIT_WORD, COMMAND_EDIT_DESC) + LS
+                + String.format(MESSAGE_COMMAND_HELP_PARAMETERS, COMMAND_EDIT_PARAMETER) + LS
+                + String.format(MESSAGE_COMMAND_HELP_EXAMPLE, COMMAND_EDIT_EXAMPLE) + LS;
     }
 
     /**
