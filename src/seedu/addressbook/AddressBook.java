@@ -202,6 +202,9 @@ public class AddressBook {
         showWelcomeMessage();
         processProgramArgs(args);
         loadDataFromStorage();
+        readAndProcess();
+    }
+    private static void readAndProcess(){
         while (true) {
             String userCommand = getUserInput();
             echoUserCommand(userCommand);
