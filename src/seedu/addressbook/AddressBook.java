@@ -520,6 +520,7 @@ public class AddressBook {
 																			// parse
 			return extractedIndex >= DISPLAYED_INDEX_OFFSET;
 		} catch (NumberFormatException nfe) {
+			System.out.println(nfe.getMessage());
 			return false;
 		}
 	}
