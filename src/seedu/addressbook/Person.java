@@ -8,13 +8,19 @@ package seedu.addressbook;
  *
  */
 public class Person {
-    private static final String PERSON_STRING_REPRESENTATION = "%1$s " // name
+    private static final String PERSON_EMAIL_VALIDATION_REGEX = "\\S+@\\S+\\.\\S+";
+	private static final String PERSON_PHONE_VALIDATION_REGEX = "\\d+";
+	private static final String PERSON_NAME_VALIDATION_REGEX = "(\\w|\\s)+";
+
+	private static final String PERSON_STRING_REPRESENTATION = "%1$s " // name
             + AddressBook.PERSON_DATA_PREFIX_PHONE + "%2$s " // phone
             + AddressBook.PERSON_DATA_PREFIX_EMAIL + "%3$s"; // email
 	
 	private final String name_;
 	private final String email_;
 	private final String phone_;
+	
+
 	
 	public Person(String name, String phone, String email){
 		name_=name;
@@ -58,7 +64,7 @@ public class Person {
      * @return whether name is a valid person name
      */
     private boolean isNameValid() {
-        return name_.matches("(\\w|\\s)+");  // name is nonempty mixture of alphabets and whitespace
+        return name_.matches(PERSON_NAME_VALIDATION_REGEX);  // name is nonempty mixture of alphabets and whitespace
         //TODO: implement a more permissive validation
     }
     
@@ -68,7 +74,7 @@ public class Person {
      * @return whether phone is a valid person phone number
      */
     private boolean isPhoneValid() {
-        return phone_.matches("\\d+");    // phone nonempty sequence of digits
+        return phone_.matches(PERSON_PHONE_VALIDATION_REGEX);    // phone nonempty sequence of digits
         //TODO: implement a more permissive validation
     }
     
@@ -78,7 +84,7 @@ public class Person {
      * @return whether email is a valid person email
      */
     private boolean isEmailValid() {
-        return email_.matches("\\S+@\\S+\\.\\S+"); // email is [non-whitespace]@[non-whitespace].[non-whitespace]
+        return email_.matches(PERSON_EMAIL_VALIDATION_REGEX); // email is [non-whitespace]@[non-whitespace].[non-whitespace]
         //TODO: implement a more permissive validation
     }
 	
