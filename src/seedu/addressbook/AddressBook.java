@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Scanner;
@@ -546,6 +547,25 @@ public class AddressBook {
      */
     private static void executeExitProgramRequest() {
         exitProgram();
+    }
+    
+    /**
+     * Displays all persons in the address book to the user; in alphabetical order.
+     *
+     * @return feedback display message for the operation result
+     */
+    private static String executeSortPersons(){
+    	Comparator<Person> personComparator= new Comparator<Person>(){
+			@Override
+			public int compare(Person o1, Person o2) {
+				return o1.getName().compareToIgnoreCase(o2.getName());
+			}
+    	};
+        ArrayList<Person> toBeDisplayed = (ArrayList<Person>) getAllPersonsInAddressBook().clone();
+        toBeDisplayed.sort(personComparator);
+        
+        showToUser(toBeDisplayed);
+        return getMessageForPersonsDisplayedSummary(toBeDisplayed);
     }
 
     /*
