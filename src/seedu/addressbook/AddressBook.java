@@ -30,7 +30,7 @@ import java.util.Set;
  * This class is used to maintain a list of person data which are saved in a
  * text file.
  **/
-public class AddressBookT2A4 {
+public class AddressBook {
 
     private enum PersonProperty {
         NAME, PHONE, EMAIL
