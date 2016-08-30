@@ -10,12 +10,15 @@
 || 	Parameters: NAME p/PHONE_NUMBER e/EMAIL
 || 	Example: add John Doe p/98765432 e/johnd@gmail.com
 || 
-|| find: Finds all persons whose names contain any of the specified keywords (case-sensitive) and displays them as a list with index numbers.
+|| find: Finds all persons whose names contain any of the specified keywords (not case-sensitive) and displays them as a list with index numbers.
 || 	Parameters: KEYWORD [MORE_KEYWORDS]
 || 	Example: find alice bob charlie
 || 
 || list: Displays all persons as a list with index numbers.
 || 	Example: list
+|| 
+|| sort: Displays all persons as a sorted list with index numbers.
+||  Example: sort
 || 
 || delete: Deletes a person identified by the index number used in the last find/list call.
 || 	Parameters: INDEX
@@ -153,7 +156,7 @@
 || 
 || 2 persons found!
 || ===================================================
-|| Enter command: || [Command entered:  find Charlie Betsy]
+|| Enter command: || [Command entered:  find charlie betsy]
 || 	1. Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
 || 	2. Charlie Dickson  Phone Number: 333333  Email: charlie.d@nus.edu.sg
 || 
@@ -222,6 +225,23 @@
 || 	2. Dickson Ee  Phone Number: 444444  Email: dickson@nus.edu.sg
 || 
 || 2 persons found!
+|| ===================================================
+|| Enter command: || [Command entered:  add Adam Brown p/111111 e/adam@gmail.com]
+|| New person added: Adam Brown, Phone: 111111, Email: adam@gmail.com
+|| ===================================================
+|| Enter command: || [Command entered:  list]
+||  1. Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
+||  2. Dickson Ee  Phone Number: 444444  Email: dickson@nus.edu.sg
+||  3. Adam Brown  Phone Number: 111111  Email: adam@gmail.com
+|| 
+|| 3 persons found!
+|| ===================================================
+|| Enter command: || [Command entered:  sort]
+||  1. Adam Brown  Phone Number: 111111  Email: adam@gmail.com
+||  2. Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
+||  3. Dickson Ee  Phone Number: 444444  Email: dickson@nus.edu.sg
+|| 
+|| 3 persons found!
 || ===================================================
 || Enter command: || [Command entered:  clear]
 || Address book has been cleared!
