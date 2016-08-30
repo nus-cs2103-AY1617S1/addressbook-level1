@@ -14,7 +14,7 @@
   list
 
 ##########################################################
-# test add person command, setup state for futuer tests
+# test add person command, setup state for future tests
 ##########################################################
 
   # should catch invalid args format
@@ -40,6 +40,20 @@
   list
   add Esther Potato p/555555 e/esther@notreal.potato
   list
+
+##########################################################
+# test sort persons command
+##########################################################
+  
+  add Betsy Choo p/222222 e/benchoo@nus.edu.sg
+  list
+  add Charlie Dickson e/charlie.d@nus.edu.sg p/333333
+  list
+  add Adam Brown p/111111 e/adam@gmail.com
+  list
+  
+  # will list all persons in sorted state
+  sort 
 
 ##########################################################
 # test find persons command
