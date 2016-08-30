@@ -24,6 +24,9 @@
 || clear: Clears address book permanently.
 || 	Example: clear
 || 
+|| sort: List the persons in alphabetical order.
+|| 	Example: sort
+|| 
 || exit: Exits the program.	Example: exit
 || help: Shows program usage instructions.	Example: help
 || ===================================================
@@ -126,6 +129,28 @@
 || 
 || 5 persons found!
 || ===================================================
+|| Enter command: || [Command entered:  sort]
+|| 	1. Adam Brown  Phone Number: 111111  Email: adam@gmail.com
+|| 	2. Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
+|| 	3. Charlie Dickson  Phone Number: 333333  Email: charlie.d@nus.edu.sg
+|| 	4. Dickson Ee  Phone Number: 444444  Email: dickson@nus.edu.sg
+|| 	5. Esther Potato  Phone Number: 555555  Email: esther@notreal.potato
+|| 
+|| 5 persons found!
+|| ===================================================
+|| Enter command: || [Command entered:  add aiden p/555555 e/aaaidss@oh.no]
+|| New person added: aiden, Phone: 555555, Email: aaaidss@oh.no
+|| ===================================================
+|| Enter command: || [Command entered:  sort]
+|| 	1. Adam Brown  Phone Number: 111111  Email: adam@gmail.com
+|| 	2. aiden  Phone Number: 555555  Email: aaaidss@oh.no
+|| 	3. Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
+|| 	4. Charlie Dickson  Phone Number: 333333  Email: charlie.d@nus.edu.sg
+|| 	5. Dickson Ee  Phone Number: 444444  Email: dickson@nus.edu.sg
+|| 	6. Esther Potato  Phone Number: 555555  Email: esther@notreal.potato
+|| 
+|| 6 persons found!
+|| ===================================================
 || Enter command: || [Command entered:  find]
 || 
 || 0 persons found!
@@ -139,8 +164,9 @@
 || 0 persons found!
 || ===================================================
 || Enter command: || [Command entered:  find betsy]
+|| 	1. Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
 || 
-|| 0 persons found!
+|| 1 persons found!
 || ===================================================
 || Enter command: || [Command entered:  find Betsy]
 || 	1. Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
@@ -155,6 +181,18 @@
 || ===================================================
 || Enter command: || [Command entered:  find Charlie Betsy]
 || 	1. Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
+|| 	2. Charlie Dickson  Phone Number: 333333  Email: charlie.d@nus.edu.sg
+|| 
+|| 2 persons found!
+|| ===================================================
+|| Enter command: || [Command entered:  find dickson]
+|| 	1. Charlie Dickson  Phone Number: 333333  Email: charlie.d@nus.edu.sg
+|| 	2. Dickson Ee  Phone Number: 444444  Email: dickson@nus.edu.sg
+|| 
+|| 2 persons found!
+|| ===================================================
+|| Enter command: || [Command entered:  find charlie brown]
+|| 	1. Adam Brown  Phone Number: 111111  Email: adam@gmail.com
 || 	2. Charlie Dickson  Phone Number: 333333  Email: charlie.d@nus.edu.sg
 || 
 || 2 persons found!
@@ -201,11 +239,15 @@
 || 	2. Betsy Choo  Phone Number: 222222  Email: benchoo@nus.edu.sg
 || 	3. Dickson Ee  Phone Number: 444444  Email: dickson@nus.edu.sg
 || 	4. Esther Potato  Phone Number: 555555  Email: esther@notreal.potato
+|| 	5. aiden  Phone Number: 555555  Email: aaaidss@oh.no
 || 
-|| 4 persons found!
+|| 5 persons found!
 || ===================================================
 || Enter command: || [Command entered:  delete 4]
 || Deleted Person: Esther Potato  Phone Number: 555555  Email: esther@notreal.potato
+|| ===================================================
+|| Enter command: || [Command entered:  delete 5]
+|| Deleted Person: aiden  Phone Number: 555555  Email: aaaidss@oh.no
 || ===================================================
 || Enter command: || [Command entered:  list]
 || 	1. Adam Brown  Phone Number: 111111  Email: adam@gmail.com

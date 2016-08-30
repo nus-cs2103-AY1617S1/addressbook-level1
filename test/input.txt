@@ -41,6 +41,10 @@
   add Esther Potato p/555555 e/esther@notreal.potato
   list
 
+  # sort
+  sort
+  add aiden p/555555 e/aaaidss@oh.no
+  sort
 ##########################################################
 # test find persons command
 ##########################################################
@@ -51,7 +55,7 @@
   find bet
   # does not match if none have keyword
   find 23912039120
-  # matching should be case-sensitive
+  # matching should be case-insensitive
   find betsy
 
   # find unique keyword
@@ -60,6 +64,11 @@
   find Dickson
   # find multiple with some keywords
   find Charlie Betsy
+
+  # find multiple with same keyword, case-insensitive
+  find dickson
+  # find multiple with some keywords, case-insensitive
+  find charlie brown
 
 ##########################################################
 # test delete person command
@@ -85,6 +94,7 @@
 
   # deletes correct person
   delete 4
+  delete 5
   list
 
   # listing indexes get updated on next request
