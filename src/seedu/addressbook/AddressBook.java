@@ -341,7 +341,7 @@ public class AddressBook {
         case COMMAND_HELP_WORD:
             return getUsageInfoForAllCommands();
         case COMMAND_SORT_WORD:
-        	return "";
+        	return executeSortPersons();
         case COMMAND_EXIT_WORD:
             executeExitProgramRequest();
         default:

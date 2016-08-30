@@ -41,6 +41,10 @@
   add Esther Potato p/555555 e/esther@notreal.potato
   list
 
+  # sort
+  sort
+  add aiden p/555555 e/aaaidss@oh.no
+  sort
 ##########################################################
 # test find persons command
 ##########################################################
@@ -90,6 +94,7 @@
 
   # deletes correct person
   delete 4
+  delete 5
   list
 
   # listing indexes get updated on next request
