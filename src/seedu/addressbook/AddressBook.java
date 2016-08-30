@@ -111,6 +111,9 @@ public class AddressBook {
     private static final String COMMAND_LIST_EXAMPLE = COMMAND_LIST_WORD;
     
     private static final String COMMAND_SORT_WORD = "sort";
+    
+    private static final String COMMAND_EDIT_WORD = "edit";
+
 
     private static final String COMMAND_DELETE_WORD = "delete";
     private static final String COMMAND_DELETE_DESC = "Deletes a person identified by the index number used in "
@@ -345,6 +348,8 @@ public class AddressBook {
             return executeAddPerson(commandArgs);
         case COMMAND_FIND_WORD:
             return executeFindPersons(commandArgs);
+        case COMMAND_EDIT_WORD:
+        	return executeEditPerson(commandArgs);
         case COMMAND_LIST_WORD:
             return executeListAllPersonsInAddressBook();
         case COMMAND_SORT_WORD:
@@ -428,6 +433,21 @@ public class AddressBook {
         final ArrayList<String[]> personsFound = getPersonsWithNameContainingAnyKeyword(keywords);
         showToUser(personsFound);
         return getMessageForPersonsDisplayedSummary(personsFound);
+    }
+    
+    private static String executeEditPerson(String commandArgs) {
+        final Set<String> keywords = extractKeywordsFromFindPersonArgs(commandArgs.toLowerCase());
+        final ArrayList<String[]> personsFound = getPersonsWithNameContainingAnyKeyword(keywords);   
+        // try decoding a person from the raw args
+        final Optional<String[]> decodeResult = decodePersonFromString(commandArgs);
+        if (personsFound.size() == 1) {
+        	personsFound.get(0)[1] = decodeResult.get()[1];
+        	personsFound.get(0)[2] = decodeResult.get()[2];
+        }
+        else {
+        	return ("Please enter a more specific name.");
+        }
+        return "Person edited";
     }
 
     /**
