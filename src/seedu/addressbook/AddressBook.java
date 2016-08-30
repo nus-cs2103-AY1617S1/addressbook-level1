@@ -398,7 +398,7 @@ public class AddressBook {
 
     /**
      * Finds and lists all persons in address book whose name contains any of the argument keywords.
-     * Keyword matching is case sensitive.
+     * Keyword matching is case insensitive.
      *
      * @param commandArgs full command args string from the user
      * @return feedback display message for the operation result
