@@ -204,23 +204,15 @@ public class AddressBook {
      * ====================================================================
      */
     public static void main(String[] args) {
-        initProgram(args);
-        while (true) {
-            runProgram();
-        }
-    }
-
-    private static void initProgram(String[] args) {
         showWelcomeMessage();
         processProgramArgs(args);
         loadDataFromStorage();
-    }
-
-    private static void runProgram() {
-        String userCommand = getUserInput();
-        echoUserCommand(userCommand);
-        String feedback = executeCommand(userCommand);
-        showResultToUser(feedback);
+        while (true) {
+            String userCommand = getUserInput();
+            echoUserCommand(userCommand);
+            String feedback = executeCommand(userCommand);
+            showResultToUser(feedback);
+        }
     }
 
     /*
@@ -872,7 +864,7 @@ public class AddressBook {
      * @param email without data prefix
      * @return constructed person
      */
-    private static HashMap<PersonProperty, String> createPersonFromData(String name, String phone, String email) {
+    private static HashMap<PersonProperty, String> makePersonFromData(String name, String phone, String email) {
         final HashMap<PersonProperty, String> person = new HashMap<>();
         person.put(PersonProperty.NAME, name);
         person.put(PersonProperty.PHONE, phone);
@@ -923,7 +915,7 @@ public class AddressBook {
         if (!isPersonDataExtractableFrom(encoded)) {
             return Optional.empty();
         }
-        final HashMap<PersonProperty, String> decodedPerson = createPersonFromData(
+        final HashMap<PersonProperty, String> decodedPerson = makePersonFromData(
                 extractNameFromPersonString(encoded),
                 extractPhoneFromPersonString(encoded),
                 extractEmailFromPersonString(encoded)
