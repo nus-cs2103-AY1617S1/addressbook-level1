@@ -199,12 +199,42 @@ public class AddressBook {
      * ====================================================================
      */
     public static void main(String[] args) {
-        showWelcomeMessage();
-        processProgramArgs(args);
+    	showToUser(DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER);
+        if (args.length >= 2) {
+            showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
+            exitProgram();
+        }
+
+        if (args.length == 1) {
+            if (!isValidFilePath(args[0])) {
+                showToUser(String.format(MESSAGE_INVALID_FILE, args[0]));
+                exitProgram();
+            }
+
+            storageFilePath = args[0];
+            final File storageFile = new File(args[0]);
+            if (storageFile.exists()) {
+                return;
+            }
+
+            showToUser(String.format(MESSAGE_ERROR_MISSING_STORAGE_FILE, args[0]));
+
+            try {
+                storageFile.createNewFile();
+                showToUser(String.format(MESSAGE_STORAGE_FILE_CREATED, args[0]));
+            } catch (IOException ioe) {
+                showToUser(String.format(MESSAGE_ERROR_CREATING_STORAGE_FILE, args[0]));
+                exitProgram();
+            }
+        }
+
+        if(args.length == 0) {
+            setupDefaultFileForStorage();
+        }
         loadDataFromStorage();
         while (true) {
             String userCommand = getUserInput();
-            echoUserCommand(userCommand);
+            showToUser("[Command entered:" + userCommand + "]");
             String feedback = executeCommand(userCommand);
             showResultToUser(feedback);
         }
@@ -217,9 +247,6 @@ public class AddressBook {
      * signature anyway.
      * ====================================================================
      */
-    private static void showWelcomeMessage() {
-        showToUser(DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER);
-    }
 
     private static void showResultToUser(String result) {
         showToUser(result, DIVIDER);
@@ -232,12 +259,6 @@ public class AddressBook {
      * In the method below, '@param userInput' comment has been omitted.
      * ====================================================================
      */
-    /**
-     * Echoes the user input back to the user.
-     */
-    private static void echoUserCommand(String userCommand) {
-        showToUser("[Command entered:" + userCommand + "]");
-    }
 
     /*
      * ==============NOTE TO STUDENTS==========================================
@@ -254,36 +275,8 @@ public class AddressBook {
      *
      * @param args full program arguments passed to application main method
      */
-    private static void processProgramArgs(String[] args) {
-        if (args.length >= 2) {
-            showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
-            exitProgram();
-        }
 
-        if (args.length == 1) {
-            setupGivenFileForStorage(args[0]);
-        }
 
-        if(args.length == 0) {
-            setupDefaultFileForStorage();
-        }
-    }
-
-    /**
-     * Sets up the storage file based on the supplied file path.
-     * Creates the file if it is missing.
-     * Exits if the file name is not acceptable.
-     */
-    private static void setupGivenFileForStorage(String filePath) {
-
-        if (!isValidFilePath(filePath)) {
-            showToUser(String.format(MESSAGE_INVALID_FILE, filePath));
-            exitProgram();
-        }
-
-        storageFilePath = filePath;
-        createFileIfMissing(filePath);
-    }
 
     /**
      * Displays the goodbye message and exits the runtime.
@@ -301,7 +294,21 @@ public class AddressBook {
     private static void setupDefaultFileForStorage() {
         showToUser(MESSAGE_USING_DEFAULT_FILE);
         storageFilePath = DEFAULT_STORAGE_FILEPATH;
-        createFileIfMissing(storageFilePath);
+        final File storageFile = new File(storageFilePath);
+        if (storageFile.exists()) {
+            return;
+        }
+
+        showToUser(String.format(MESSAGE_ERROR_MISSING_STORAGE_FILE, storageFilePath));
+
+        try {
+            storageFile.createNewFile();
+            showToUser(String.format(MESSAGE_STORAGE_FILE_CREATED, storageFilePath));
+        } catch (IOException ioe) {
+            showToUser(String.format(MESSAGE_ERROR_CREATING_STORAGE_FILE, storageFilePath));
+            exitProgram();
+        }
+        
     }
 
     /**
@@ -676,27 +683,6 @@ public class AddressBook {
      * ===========================================
      */
 
-    /**
-     * Creates storage file if it does not exist. Shows feedback to user.
-     *
-     * @param filePath file to create if not present
-     */
-    private static void createFileIfMissing(String filePath) {
-        final File storageFile = new File(filePath);
-        if (storageFile.exists()) {
-            return;
-        }
-
-        showToUser(String.format(MESSAGE_ERROR_MISSING_STORAGE_FILE, filePath));
-
-        try {
-            storageFile.createNewFile();
-            showToUser(String.format(MESSAGE_STORAGE_FILE_CREATED, filePath));
-        } catch (IOException ioe) {
-            showToUser(String.format(MESSAGE_ERROR_CREATING_STORAGE_FILE, filePath));
-            exitProgram();
-        }
-    }
 
     /**
      * Converts contents of a file into a list of persons.
