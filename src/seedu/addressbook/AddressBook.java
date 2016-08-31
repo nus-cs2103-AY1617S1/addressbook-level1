@@ -212,8 +212,7 @@ public class AddressBook {
 		//processProgramArgs(args);
 		
 		if (args.length >= 2) {
-			//showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
-			System.out.println("MESSAGE_INVALID_PROGRAM_ARGS");
+			showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
 			exitProgram();
 		}
 
