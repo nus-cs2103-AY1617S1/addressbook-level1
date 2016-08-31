@@ -236,8 +236,8 @@ public class AddressBook {
         loadDataFromStorage();
         while (true) {
             String userCommand = getUserInput();
-            echoUserCommand(userCommand);
-            String echo[] = {"[Command entered:", userCommand , "]"};
+            
+            String echo[] = {"[Command entered:" + userCommand + "]"};
             for (String m : echo) {
                 System.out.println(LINE_PREFIX + m);
             }
@@ -461,7 +461,7 @@ public class AddressBook {
      * @return feedback display message for the operation result
      */
     private static String executeFindPersons(String commandArgs) {
-        final Set<String> keywords = extractKeywordsFromFindPersonArgs(commandArgs);
+        final Set<String> keywords = extractKeywordsFromFindPersonArgs(commandArgs.toLowerCase());
         final ArrayList<String[]> personsFound = getPersonsWithNameContainingAnyKeyword(keywords);
         showToUser(personsFound);
         return getMessageForPersonsDisplayedSummary(personsFound);
@@ -1221,7 +1221,7 @@ public class AddressBook {
      * @return split by whitespace
      */
     private static ArrayList<String> splitByWhitespace(String toSplit) {
-        return new ArrayList(Arrays.asList(toSplit.trim().split("\\s+")));
+        return new ArrayList(Arrays.asList(toSplit.trim().toLowerCase().split("\\s+")));
     }
 
 }
