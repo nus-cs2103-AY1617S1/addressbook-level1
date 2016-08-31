@@ -414,13 +414,15 @@ public class AddressBook {
 
     /**
      * Finds and lists all persons in address book whose name contains any of the argument keywords.
-     * Keyword matching is case sensitive.
+     * Command Arguments are converted to lower case.
+     * Keywords extracted are lower case.
+     * 
      *
      * @param commandArgs full command args string from the user
      * @return feedback display message for the operation result
      */
     private static String executeFindPersons(String commandArgs) {
-        final Set<String> keywords = extractKeywordsFromFindPersonArgs(commandArgs);
+        final Set<String> keywords = extractKeywordsFromFindPersonArgs(commandArgs.toLowerCase());
         final ArrayList<String[]> personsFound = getPersonsWithNameContainingAnyKeyword(keywords);
         showToUser(personsFound);
         return getMessageForPersonsDisplayedSummary(personsFound);
@@ -438,6 +440,7 @@ public class AddressBook {
 
     /**
      * Extract keywords from the command arguments given for the find persons command.
+     * Convert keywords to lower case.
      *
      * @param findPersonCommandArgs full command args string for the find persons command
      * @return set of keywords as specified by args
@@ -1175,12 +1178,13 @@ public class AddressBook {
 
     /**
      * Splits a source string into the list of substrings that were separated by whitespace.
+     * Convert substrings to lower case.
      *
      * @param toSplit source string
      * @return split by whitespace
      */
     private static ArrayList<String> splitByWhitespace(String toSplit) {
-        return new ArrayList(Arrays.asList(toSplit.trim().split("\\s+")));
+        return new ArrayList(Arrays.asList(toSplit.trim().toLowerCase().split("\\s+")));
     }
 
 }
