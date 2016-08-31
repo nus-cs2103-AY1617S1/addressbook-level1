@@ -199,20 +199,57 @@ public class AddressBook {
      * ====================================================================
      */
     public static void main(String[] args) {
-        showWelcomeMessage();
-        processProgramArgs(args);
-        loadDataFromStorage();
-        getUserInputContinuously();
-    }
+        
+        String welcomeMessage[] = {DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER};
+        for (String m : welcomeMessage) {
+            System.out.println(LINE_PREFIX + m);
+        }
+        
+        if (args.length >= 2) {
+            String invalidMessageProgramArgs[] = {MESSAGE_INVALID_PROGRAM_ARGS};
+            for (String m : invalidMessageProgramArgs) {
+                System.out.println(LINE_PREFIX + m);
+            }
+            String exitPorgram[] = {MESSAGE_GOODBYE, DIVIDER, DIVIDER};
+            System.exit(0);
+            
+        }
 
-	private static void getUserInputContinuously() {
-		while (true) {
+        if (args.length == 1) {
+            
+            if (!isValidFilePath(args[0])) {
+            	String messageInvalidFile[] = {MESSAGE_INVALID_FILE,args[0]};
+            	for (String m : messageInvalidFile) {
+                    System.out.println(LINE_PREFIX + m);
+                }
+            	String exitPorgram[] = {MESSAGE_GOODBYE, DIVIDER, DIVIDER};
+                System.exit(0);
+            }
+
+            storageFilePath = args[0];
+            createFileIfMissing(args[0]);
+        }
+
+        if(args.length == 0) {
+            setupDefaultFileForStorage();
+        }
+        loadDataFromStorage();
+        while (true) {
             String userCommand = getUserInput();
             echoUserCommand(userCommand);
+            String echo[] = {"[Command entered:", userCommand , "]"};
+            for (String m : echo) {
+                System.out.println(LINE_PREFIX + m);
+            }
             String feedback = executeCommand(userCommand);
-            showResultToUser(feedback);
+            String result[] = {feedback, DIVIDER};
+            for (String m : result) {
+                System.out.println(LINE_PREFIX + m);
+            }
         }
-	}
+    }
+
+	
 
     /*
      * ==============NOTE TO STUDENTS======================================
