@@ -52,12 +52,12 @@
   # does not match if none have keyword
   find 23912039120
   # matching should be case-sensitive
-  find betsy
+  find betSY
 
   # find unique keyword
   find Betsy
   # find multiple with same keyword
-  find Dickson
+  find DickSON
   # find multiple with some keywords
   find Charlie Betsy
 
