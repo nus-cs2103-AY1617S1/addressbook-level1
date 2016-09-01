@@ -201,8 +201,7 @@ public class AddressBook {
     public static void main(String[] args) {
         showWelcomeMessage();
         if (args.length >= 2) {
-            showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
-            exitProgram();
+            ShOWandeXiT();
         }
 
         if (args.length == 1) {
@@ -220,6 +219,11 @@ public class AddressBook {
             showResultToUser(feedback);
         }
     }
+
+	private static void ShOWandeXiT() {
+		showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
+		exitProgram();
+	}
 
     /*
      * ==============NOTE TO STUDENTS======================================
