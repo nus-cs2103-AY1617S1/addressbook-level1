@@ -214,22 +214,10 @@ public class AddressBook {
 		}
         initialiseAddressBookModel(loadPersonsFromFile(storageFilePath));
         while (true) {
-            System.out.print(LINE_PREFIX + "Enter command: ");
-			String inputLine = SCANNER.nextLine();
-			// silently consume all blank and comment lines
-			while (inputLine.trim().isEmpty() || inputLine.trim().charAt(0) == INPUT_COMMENT_MARKER) {
-			    inputLine = SCANNER.nextLine();
-			}
-			String userCommand = inputLine;
-			String[] message = { "[Command entered:" + userCommand + "]" };
-            for (String m : message) {
-			    System.out.println(LINE_PREFIX + m);
-			}
+            String userCommand = getUserInput();
+            echoUserCommand(userCommand);
             String feedback = executeCommand(userCommand);
-			String[] message1 = { feedback, DIVIDER };
-            for (String m1 : message1) {
-			    System.out.println(LINE_PREFIX + m1);
-			}
+            showResultToUser(feedback);
         }
     }
 
