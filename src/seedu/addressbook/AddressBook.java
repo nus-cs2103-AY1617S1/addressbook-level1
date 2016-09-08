@@ -199,20 +199,39 @@ public class AddressBook {
      * ====================================================================
      */
     public static void main(String[] args) {
-        showWelcomeMessage();
-        processProgramArgs(args);
-        loadDataFromStorage();
+        showToUser(DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER);
+        if (args.length >= 2) {
+		    showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
+		    exitProgram();
+		}
+		
+		if (args.length == 1) {
+		    setupGivenFileForStorage(args[0]);
+		}
+		
+		if(args.length == 0) {
+		    setupDefaultFileForStorage();
+		}
+        initialiseAddressBookModel(loadPersonsFromFile(storageFilePath));
         while (true) {
-            doInput();
+            System.out.print(LINE_PREFIX + "Enter command: ");
+			String inputLine = SCANNER.nextLine();
+			// silently consume all blank and comment lines
+			while (inputLine.trim().isEmpty() || inputLine.trim().charAt(0) == INPUT_COMMENT_MARKER) {
+			    inputLine = SCANNER.nextLine();
+			}
+			String userCommand = inputLine;
+			String[] message = { "[Command entered:" + userCommand + "]" };
+            for (String m : message) {
+			    System.out.println(LINE_PREFIX + m);
+			}
+            String feedback = executeCommand(userCommand);
+			String[] message1 = { feedback, DIVIDER };
+            for (String m1 : message1) {
+			    System.out.println(LINE_PREFIX + m1);
+			}
         }
     }
-
-	private static void doInput() {
-		String userCommand = getUserInput();
-		echoUserCommand(userCommand);
-		String feedback = executeCommand(userCommand);
-		showResultToUser(feedback);
-	}
 
     /*
      * ==============NOTE TO STUDENTS======================================
