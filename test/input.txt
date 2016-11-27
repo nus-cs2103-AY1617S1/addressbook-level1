@@ -6,6 +6,13 @@
   sfdfd
 
 ##########################################################
+# help command
+##########################################################
+
+  # should display help message
+  help
+
+##########################################################
 # clean and check state
 ##########################################################
 
@@ -28,18 +35,75 @@
   add Valid Name p/12345 e/notAnEmail
 
   # should add correctly
-  add Adam Brown p/111111 e/adam@gmail.com
-  list
   add Betsy Choo p/222222 e/benchoo@nus.edu.sg
   list
+  add Adam Brown p/111111 e/adam@gmail.com
+  list
+
+  # should list in alphabetical order
+  sort
 
   # order of phone and email should not matter
   add Charlie Dickson e/charlie.d@nus.edu.sg p/333333
   list
-  add Dickson Ee e/dickson@nus.edu.sg p/444444
-  list
+  sort
   add Esther Potato p/555555 e/esther@notreal.potato
   list
+  sort
+  add Dickson Ee e/dickson@nus.edu.sg p/444444
+  list
+  sort
+
+##########################################################
+# test edit persons command
+##########################################################
+  list
+  # should catch invalid args format
+  edit asdf Xiao Pu
+  edit 1
+
+  # should catch invalid person data
+  edit 1 []/ew
+  edit 1 p/invalid phone
+  edit 1 e/invalid email
+  edit 1 []/ew p/invalid_phone e/invalid_eamil
+  edit 1 []/ew p/12345678 e/acesscp@gmail.com
+
+  # should edit correctly
+  edit 1 Davin p/12345678 e/davin@gmail.com
+  list
+  edit 5 Xiao Pu p/666666 e/xp@gmail.com
+  list
+  edit 4 Ester Egg
+  list
+  edit 3 p/123456
+  list
+  edit 2 e/beechoo1@gmail.com
+  list
+
+  # order of phone and email should not matter
+  edit 1 e/davin1@gmail.com p/12345555
+  list
+  edit 5 Xiao Pu e/xp1@gmail.com
+  list
+  edit 4 Ester Egg Two p/6666667
+  list
+
+  # should catch error if index is invalid
+  edit -1 Xiao Pu
+  edit 10000 xp
+  list
+  edit 6 Xiao Pu
+
+  # should catch error if it is not exist
+  add Xiao Pu Test p/88888888 e/xp8888@gmail.com
+  list
+  delete 6
+  edit 6 Xiao Pu Yes p/12345678
+
+  edit 1 betsy
+  edit 2 Adam Dickson
+  add Xiao Pu Test p/88888888 e/xp8888@gmail.com
 
 ##########################################################
 # test find persons command
@@ -51,7 +115,7 @@
   find bet
   # does not match if none have keyword
   find 23912039120
-  # matching should be case-sensitive
+  # matching should be case insensitive
   find betsy
 
   # find unique keyword
@@ -59,7 +123,7 @@
   # find multiple with same keyword
   find Dickson
   # find multiple with some keywords
-  find Charlie Betsy
+  find Xiao Pu
 
 ##########################################################
 # test delete person command
