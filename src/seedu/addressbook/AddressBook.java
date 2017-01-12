@@ -452,16 +452,31 @@ public class AddressBook {
      * @param keywords for searching
      * @return list of persons in full model with name containing some of the keywords
      */
-    private static ArrayList<String[]> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
+    private static ArrayList<String[]> getPersonsWithNameContainingAnyKeyword(Set<String> keywords) {
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
         for (String[] person : getAllPersonsInAddressBook()) {
-            final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
-            if (!Collections.disjoint(wordsInName, keywords)) {
+            final Set<String> wordsInName = convertToLowerCase(new HashSet<>(splitByWhitespace(getNameFromPerson(person))));
+            Set<String> keywordsInLowerCase = convertToLowerCase(keywords);
+            if (!Collections.disjoint(wordsInName, keywordsInLowerCase)) {
                 matchedPersons.add(person);
             }
         }
         return matchedPersons;
     }
+
+	/**
+	 * @param wordSet Set<String> to be converted to lowercase
+	 * @return Set<String> of lowercase Stringswords
+	 */
+	private static Set<String> convertToLowerCase(Set<String> wordSet) {
+		String[] wordsArray = new String[1];
+		wordsArray = wordSet.toArray(wordsArray);
+		for (int i = 0; i < wordsArray.length; i++) {
+			wordsArray[i] = wordsArray[i].toLowerCase();
+		}
+		wordSet = new HashSet<String>(Arrays.asList(wordsArray));
+		return wordSet;
+	}
 
     /**
      * Deletes person identified using last displayed index.
