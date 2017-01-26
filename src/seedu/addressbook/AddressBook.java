@@ -461,9 +461,9 @@ public class AddressBook {
      */
     private static String executeFindPersons(String commandArgs) {
         final Set<String> KEYWORDS = extractKeywordsFromFindPersonArgs(commandArgs);
-        final ArrayList<String[]> personsFound = getPersonsWithNameContainingAnyKeyword(KEYWORDS);
-        showToUser(personsFound);
-        return getMessageForPersonsDisplayedSummary(personsFound);
+        final ArrayList<String[]> PERSONS_FOUND = getPersonsWithNameContainingAnyKeyword(KEYWORDS);
+        showToUser(PERSONS_FOUND);
+        return getMessageForPersonsDisplayedSummary(PERSONS_FOUND);
     }
 
     /**
@@ -1165,8 +1165,8 @@ public class AddressBook {
      * @param sign  Parameter sign to be removed
      * @return  string without the sign
      */
-    private static String removePrefixSign(String s, String sign) {
-        return s.replace(sign, "");
+    private static String removePrefixSign(String fullString, String prefix) {
+        return fullString.replace(prefix, "");
     }
 
     /**
