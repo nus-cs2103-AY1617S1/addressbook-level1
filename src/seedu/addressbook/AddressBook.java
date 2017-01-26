@@ -210,13 +210,17 @@ public class AddressBook {
         showWelcomeMessage();
         processProgramArgs(args);
         loadDataFromStorage();
-        while (true) {
+        getUserCommand();
+    }
+
+	private static void getUserCommand() {
+		while (true) {
             String userCommand = getUserInput();
             echoUserCommand(userCommand);
             String feedback = executeCommand(userCommand);
             showResultToUser(feedback);
         }
-    }
+	}
 
     /*
      * NOTE : =============================================================
@@ -231,7 +235,7 @@ public class AddressBook {
     }
 
     private static void showResultToUser(String result) {
-        showToUser(result, DIVIDER);
+       showToUser(result, DIVIDER);
     }
 
     /*
@@ -365,18 +369,23 @@ public class AddressBook {
      * @return  feedback about how the command was executed
      */
     private static String executeCommand(String userInputString) {
-        final String[] commandTypeAndParams = splitCommandWordAndArgs(userInputString);
-        final String commandType = commandTypeAndParams[0];
-        final String commandArgs = commandTypeAndParams[1];
-        switch (commandType) {
+        final String[] COMMAND_TYPE_AND_PARAMS = splitCommandWordAndArgs(userInputString);
+        final String COMMAND_TYPE = COMMAND_TYPE_AND_PARAMS[0];
+        final String COMMAND_ARGS = COMMAND_TYPE_AND_PARAMS[1];
+        return specifyCommand(COMMAND_TYPE, COMMAND_ARGS);
+    }
+
+	private static String specifyCommand(final String COMMAND_TYPE,
+			final String COMMAND_ARGS) {
+		switch (COMMAND_TYPE) {
         case COMMAND_ADD_WORD:
-            return executeAddPerson(commandArgs);
+            return executeAddPerson(COMMAND_ARGS);
         case COMMAND_FIND_WORD:
-            return executeFindPersons(commandArgs);
+            return executeFindPersons(COMMAND_ARGS);
         case COMMAND_LIST_WORD:
             return executeListAllPersonsInAddressBook();
         case COMMAND_DELETE_WORD:
-            return executeDeletePerson(commandArgs);
+            return executeDeletePerson(COMMAND_ARGS);
         case COMMAND_CLEAR_WORD:
             return executeClearAddressBook();
         case COMMAND_HELP_WORD:
@@ -384,9 +393,9 @@ public class AddressBook {
         case COMMAND_EXIT_WORD:
             executeExitProgramRequest();
         default:
-            return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
+            return getMessageForInvalidCommandInput(COMMAND_TYPE, getUsageInfoForAllCommands());
         }
-    }
+	}
 
     /**
      * Splits raw user input into command word and command arguments string
@@ -394,8 +403,8 @@ public class AddressBook {
      * @return  size 2 array; first element is the command type and second element is the arguments string
      */
     private static String[] splitCommandWordAndArgs(String rawUserInput) {
-        final String[] split =  rawUserInput.trim().split("\\s+", 2);
-        return split.length == 2 ? split : new String[] { split[0] , "" }; // else case: no parameters
+        final String[] SPLIT =  rawUserInput.trim().split("\\s+", 2);
+        return SPLIT.length == 2 ? SPLIT : new String[] { SPLIT[0] , "" }; // else case: no parameters
     }
 
     /**
@@ -404,7 +413,8 @@ public class AddressBook {
      * @param correctUsageInfo message showing the correct usage
      * @return invalid command args feedback message
      */
-    private static String getMessageForInvalidCommandInput(String userCommand, String correctUsageInfo) {
+    private static String getMessageForInvalidCommandInput(String userCommand, 
+    		String correctUsageInfo) {
         return String.format(MESSAGE_INVALID_COMMAND_FORMAT, userCommand, correctUsageInfo);
     }
 
@@ -417,15 +427,15 @@ public class AddressBook {
      */
     private static String executeAddPerson(String commandArgs) {
         // try decoding a person from the raw args
-        final Optional<String[]> decodeResult = decodePersonFromString(commandArgs);
+        final Optional<String[]> DECODE_RESULT = decodePersonFromString(commandArgs);
 
         // checks if args are valid (decode result will not be present if the person is invalid)
-        if (!decodeResult.isPresent()) {
+        if (!DECODE_RESULT.isPresent()) {
             return getMessageForInvalidCommandInput(COMMAND_ADD_WORD, getUsageInfoForAddCommand());
         }
 
         // add the person as specified
-        final String[] personToAdd = decodeResult.get();
+        final String[] personToAdd = DECODE_RESULT.get();
         addPersonToAddressBook(personToAdd);
         return getMessageForSuccessfulAddPerson(personToAdd);
     }
@@ -450,8 +460,8 @@ public class AddressBook {
      * @return feedback display message for the operation result
      */
     private static String executeFindPersons(String commandArgs) {
-        final Set<String> keywords = extractKeywordsFromFindPersonArgs(commandArgs);
-        final ArrayList<String[]> personsFound = getPersonsWithNameContainingAnyKeyword(keywords);
+        final Set<String> KEYWORDS = extractKeywordsFromFindPersonArgs(commandArgs);
+        final ArrayList<String[]> personsFound = getPersonsWithNameContainingAnyKeyword(KEYWORDS);
         showToUser(personsFound);
         return getMessageForPersonsDisplayedSummary(personsFound);
     }
@@ -640,15 +650,20 @@ public class AddressBook {
      */
     private static String getDisplayString(ArrayList<String[]> persons) {
         final StringBuilder messageAccumulator = new StringBuilder();
-        for (int i = 0; i < persons.size(); i++) {
+        formulateDisplayString(persons, messageAccumulator);
+        return messageAccumulator.toString();
+    }
+
+	private static void formulateDisplayString(ArrayList<String[]> persons,
+			final StringBuilder messageAccumulator) {
+		for (int i = 0; i < persons.size(); i++) {
             final String[] person = persons.get(i);
             final int displayIndex = i + DISPLAYED_INDEX_OFFSET;
             messageAccumulator.append('\t')
                               .append(getIndexedPersonListElementMessage(displayIndex, person))
                               .append(LS);
         }
-        return messageAccumulator.toString();
-    }
+	}
 
     /**
      * Constructs a prettified listing element message to represent a person and their data.
