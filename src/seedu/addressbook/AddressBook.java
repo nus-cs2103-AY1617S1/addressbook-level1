@@ -42,10 +42,7 @@ public class AddressBook {
     /** Version info of the program. */
     private static final String VERSION = "AddessBook Level 1 - Version 1.0";
 
-    /**
-     * A decorative prefix added to the beginning of lines printed by
-     * AddressBook
-     */
+    /** A decorative prefix added to the beginning of lines printed by AddressBook */
     private static final String LINE_PREFIX = "|| ";
 
     /** A platform independent line separator. */
@@ -214,7 +211,7 @@ public class AddressBook {
             String userCommand = getUserInput();
             echoUserCommand(userCommand);
             String feedback = executeCommand(userCommand);
-            showResultToUser(feedback);
+            showToUser(feedback);
         }
     }
 
@@ -228,10 +225,6 @@ public class AddressBook {
 
     private static void showWelcomeMessage() {
         showToUser(DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER);
-    }
-
-    private static void showResultToUser(String result) {
-        showToUser(result, DIVIDER);
     }
 
     /*
@@ -579,7 +572,8 @@ public class AddressBook {
      * @return feedback display message for the operation result
      */
     private static String executeClearAddressBook() {
-        clearAddressBook();
+        ALL_PERSONS.clear();
+        savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
         return MESSAGE_ADDRESSBOOK_CLEARED;
     }
 
@@ -645,8 +639,7 @@ public class AddressBook {
      *
      */
     private static void showToUser(ArrayList<String[]> persons) {
-        String listAsString = getDisplayString(persons);
-        showToUser(listAsString);
+        showToUser(getDisplayString(persons));
         updateLatestViewedPersonListing(persons);
     }
 
@@ -824,14 +817,6 @@ public class AddressBook {
      */
     private static ArrayList<String[]> getAllPersonsInAddressBook() {
         return ALL_PERSONS;
-    }
-
-    /**
-     * Clears all persons in the address book and saves changes to file.
-     */
-    private static void clearAddressBook() {
-        ALL_PERSONS.clear();
-        savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
     }
 
     /**
