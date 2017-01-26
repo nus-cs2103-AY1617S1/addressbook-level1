@@ -42,7 +42,10 @@ public class AddressBook {
     /** Version info of the program. */
     private static final String VERSION = "AddessBook Level 1 - Version 1.0";
 
-    /** A decorative prefix added to the beginning of lines printed by AddressBook */
+    /**
+     * A decorative prefix added to the beginning of lines printed by
+     * AddressBook
+     */
     private static final String LINE_PREFIX = "|| ";
 
     /** A platform independent line separator. */
@@ -66,7 +69,8 @@ public class AddressBook {
     private static final String MESSAGE_DISPLAY_PERSON_DATA = "%1$s  Phone Number: %2$s  Email: %3$s";
     private static final String MESSAGE_DISPLAY_LIST_ELEMENT_INDEX = "%1$d. ";
     private static final String MESSAGE_GOODBYE = "Exiting Address Book... Good bye!";
-    private static final String MESSAGE_INVALID_COMMAND_FORMAT = "Invalid command format: %1$s " + LINE_SEPARATOR + "%2$s";
+    private static final String MESSAGE_INVALID_COMMAND_FORMAT = "Invalid command format: %1$s " + LINE_SEPARATOR
+            + "%2$s";
     private static final String MESSAGE_INVALID_FILE = "The given file name [%1$s] is not a valid file name!";
     private static final String MESSAGE_INVALID_PROGRAM_ARGS = "Too many parameters! Correct program argument format:"
             + LINE_SEPARATOR + "\tjava AddressBook" + LINE_SEPARATOR + "\tjava AddressBook [custom storage file path]";
@@ -651,7 +655,8 @@ public class AddressBook {
         for (int i = 0; i < persons.size(); i++) {
             final String[] person = persons.get(i);
             final int displayIndex = i + DISPLAYED_INDEX_OFFSET;
-            messageAccumulator.append('\t').append(getIndexedPersonListElementMessage(displayIndex, person)).append(LINE_SEPARATOR);
+            messageAccumulator.append('\t').append(getIndexedPersonListElementMessage(displayIndex, person))
+                    .append(LINE_SEPARATOR);
         }
         return messageAccumulator.toString();
     }
@@ -988,17 +993,15 @@ public class AddressBook {
     private static String extractPhoneFromPersonString(String encoded) {
         final int indexOfPhonePrefix = encoded.indexOf(PERSON_DATA_PREFIX_PHONE);
         final int indexOfEmailPrefix = encoded.indexOf(PERSON_DATA_PREFIX_EMAIL);
+        int endIndex = indexOfEmailPrefix; // assume phone is middle arg,
+                                           // target is from own prefix to next
+                                           // prefix
 
         // phone is last arg, target is from prefix to end of string
         if (indexOfPhonePrefix > indexOfEmailPrefix) {
-            return removePrefix(encoded.substring(indexOfPhonePrefix, encoded.length()).trim(),
-                    PERSON_DATA_PREFIX_PHONE);
-
-            // phone is middle arg, target is from own prefix to next prefix
-        } else {
-            return removePrefix(encoded.substring(indexOfPhonePrefix, indexOfEmailPrefix).trim(),
-                    PERSON_DATA_PREFIX_PHONE);
+            endIndex = encoded.length();
         }
+        return removePrefix(encoded.substring(indexOfPhonePrefix, endIndex).trim(), PERSON_DATA_PREFIX_PHONE);
     }
 
     /**
@@ -1010,17 +1013,15 @@ public class AddressBook {
     private static String extractEmailFromPersonString(String encoded) {
         final int indexOfPhonePrefix = encoded.indexOf(PERSON_DATA_PREFIX_PHONE);
         final int indexOfEmailPrefix = encoded.indexOf(PERSON_DATA_PREFIX_EMAIL);
+        int endIndex = indexOfPhonePrefix; // assume email is middle arg,
+                                           // target is from own prefix to next prefix
 
         // email is last arg, target is from prefix to end of string
         if (indexOfEmailPrefix > indexOfPhonePrefix) {
-            return removePrefix(encoded.substring(indexOfEmailPrefix, encoded.length()).trim(),
-                    PERSON_DATA_PREFIX_EMAIL);
-
-            // email is middle arg, target is from own prefix to next prefix
-        } else {
-            return removePrefix(encoded.substring(indexOfEmailPrefix, indexOfPhonePrefix).trim(),
-                    PERSON_DATA_PREFIX_EMAIL);
+            endIndex = encoded.length();
         }
+
+        return removePrefix(encoded.substring(indexOfEmailPrefix, endIndex).trim(), PERSON_DATA_PREFIX_EMAIL);
     }
 
     /**
@@ -1081,9 +1082,10 @@ public class AddressBook {
 
     /** Returns usage info for all commands */
     private static String getUsageInfoForAllCommands() {
-        return getUsageInfoForAddCommand() + LINE_SEPARATOR + getUsageInfoForFindCommand() + LINE_SEPARATOR + getUsageInfoForViewCommand() + LINE_SEPARATOR
-                + getUsageInfoForDeleteCommand() + LINE_SEPARATOR + getUsageInfoForClearCommand() + LINE_SEPARATOR
-                + getUsageInfoForExitCommand() + LINE_SEPARATOR + getUsageInfoForHelpCommand();
+        return getUsageInfoForAddCommand() + LINE_SEPARATOR + getUsageInfoForFindCommand() + LINE_SEPARATOR
+                + getUsageInfoForViewCommand() + LINE_SEPARATOR + getUsageInfoForDeleteCommand() + LINE_SEPARATOR
+                + getUsageInfoForClearCommand() + LINE_SEPARATOR + getUsageInfoForExitCommand() + LINE_SEPARATOR
+                + getUsageInfoForHelpCommand();
     }
 
     /** Returns the string for showing 'add' command usage instruction */
