@@ -14,10 +14,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
+
+
 
 /* ==============NOTE TO STUDENTS======================================
  * This class header comment below is brief because details of how to
@@ -128,6 +132,9 @@ public class AddressBook {
     private static final String COMMAND_EXIT_DESC = "Exits the program.";
     private static final String COMMAND_EXIT_EXAMPLE = COMMAND_EXIT_WORD;
 
+    private static final String COMMAND_SORT_WORD = "sort";
+	private static final String COMMAND_SORT_DESC = "Sorts all persons in the address book";
+	
     private static final String DIVIDER = "===================================================";
 
 
@@ -353,6 +360,8 @@ public class AddressBook {
             return getUsageInfoForAllCommands();
         case COMMAND_EXIT_WORD:
             executeExitProgramRequest();
+        case COMMAND_SORT_WORD:
+        	return executeSortAllPersonsInAddressBook();
         default:
             return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
         }
@@ -454,14 +463,35 @@ public class AddressBook {
      */
     private static ArrayList<String[]> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
-        for (String[] person : getAllPersonsInAddressBook()) {
-            final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
-            if (!Collections.disjoint(wordsInName, keywords)) {
-                matchedPersons.add(person);
-            }
-        }
+        final Set<String> secondaryKeywords= new HashSet<>();
+		findKeywordInUpperAndLowerCase(keywords, secondaryKeywords);
+		matchKeywordsWithPersonsInAddressBook(keywords, matchedPersons, secondaryKeywords);
         return matchedPersons;
     }
+
+	private static void matchKeywordsWithPersonsInAddressBook(Collection<String> keywords,
+			final ArrayList<String[]> matchedPersons, final Set<String> secondaryKeywords) {
+		for (String[] person : getAllPersonsInAddressBook()) {
+			final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
+			if (!Collections.disjoint(wordsInName, keywords)||(!Collections.disjoint(wordsInName, secondaryKeywords))) {
+				matchedPersons.add(person);
+			}
+		}
+	}
+
+	private static void findKeywordInUpperAndLowerCase(Collection<String> keywords,
+			final Set<String> secondaryKeywords) {
+		for(String SearchTerm: keywords){
+			if(SearchTerm.charAt(0)<=90){
+				String FirstLetter=SearchTerm.substring(0,1).toLowerCase();
+				secondaryKeywords.add(FirstLetter+SearchTerm.substring(1));
+			}else if(SearchTerm.charAt(0)>90){
+				String FirstLetter=SearchTerm.substring(0,1).toUpperCase();
+				secondaryKeywords.add(FirstLetter+SearchTerm.substring(1));
+			}
+			
+		}
+	}
 
     /**
      * Deletes person identified using last displayed index.
@@ -545,6 +575,17 @@ public class AddressBook {
      */
     private static String executeListAllPersonsInAddressBook() {
         ArrayList<String[]> toBeDisplayed = getAllPersonsInAddressBook();
+        showToUser(toBeDisplayed);
+        return getMessageForPersonsDisplayedSummary(toBeDisplayed);
+    }
+    
+    /**
+     * Sorts all persons in the address book to the user; in added order.
+     *
+     * @return feedback display message for the operation result
+     */
+    private static String executeSortAllPersonsInAddressBook() {
+        ArrayList<String[]> toBeDisplayed = sortAllPersonsInAddressBook();
         showToUser(toBeDisplayed);
         return getMessageForPersonsDisplayedSummary(toBeDisplayed);
     }
@@ -796,7 +837,18 @@ public class AddressBook {
     private static ArrayList<String[]> getAllPersonsInAddressBook() {
         return ALL_PERSONS;
     }
-
+    /**
+     * @return unmodifiable list view of all persons in the address book
+     */
+    private static ArrayList<String[]> sortAllPersonsInAddressBook() {
+        Collections.sort(ALL_PERSONS,new Comparator<String[]>() {
+            public int compare(String[] strings, String[] otherStrings) {
+                return strings[0].toLowerCase().compareTo(otherStrings[0].toLowerCase());
+            }
+        });
+        return ALL_PERSONS;
+    }
+    
     /**
      * Clears all persons in the address book and saves changes to file.
      */
