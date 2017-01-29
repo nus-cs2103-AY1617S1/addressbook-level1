@@ -211,17 +211,12 @@ public class AddressBook {
         processProgramArgs(args);
         loadDataFromStorage();
         while (true) {
-            manageUserInput();
-        }
-    }
-
-	private static void manageUserInput() {
 		String userCommand = getUserInput();
 		echoUserCommand(userCommand);
 		String feedback = executeCommand(userCommand);
 		showResultToUser(feedback);
-	}
-
+        }
+    }
     /*
      * NOTE : =============================================================
      * The method header comment can be omitted if the method is trivial
@@ -797,12 +792,12 @@ public class AddressBook {
      * @param exactPerson the actual person inside the address book (exactPerson == the person to delete in the full list)
      * @return true if the given person was found and deleted in the model
      */
-    private static boolean deletePersonFromAddressBook(String[] exactPerson) {
-        final boolean changed = ALL_PERSONS.remove(exactPerson);
-        if (changed) {
+    private static boolean hasDeletedPersonFromAddressBook(String[] exactPerson) {
+        final boolean hasChanged = ALL_PERSONS.remove(exactPerson);
+        if (hasChanged) {
             savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
         }
-        return changed;
+        return hasChanged;
     }
 
     /**
