@@ -14,14 +14,14 @@
   list
 
 ##########################################################
-# test add person command, setup state for futuer tests
+# test add person command, setup state for future tests
 ##########################################################
 
   # should catch invalid args format
   add wrong args wrong args
   add Valid Name p/12345 valid@email.butNoPrefix
   add Valid Name 12345 e/valid@email.butPhonePrefixMissing
-  
+
   # should catch invalid person data
   add []\[;] p/12345 e/valid@e.mail
   add Valid Name p/not_numbers e/valid@e.mail
@@ -40,7 +40,28 @@
   list
   add Esther Potato p/555555 e/esther@notreal.potato
   list
+  
+##########################################################
+# test sort persons command
+##########################################################
 
+  # should add correctly
+  add Alan Wake p/32131 e/alanwakem@gmail.com
+  list
+  
+  # should sort according to alphabetical order
+  sort
+  
+##########################################################
+# test edit person command
+##########################################################
+
+  # should not edit when format is wrong
+  edit 2134hhib
+  
+  # should edit correctly when format is right
+  edit 2 Alan Wake Up p/2646262 e/alanwakeup@gmail.com
+  
 ##########################################################
 # test find persons command
 ##########################################################
@@ -51,7 +72,7 @@
   find bet
   # does not match if none have keyword
   find 23912039120
-  # matching should be case-sensitive
+  # matching should not be case-sensitive
   find betsy
 
   # find unique keyword
@@ -85,6 +106,7 @@
 
   # deletes correct person
   delete 4
+  delete 5
   list
 
   # listing indexes get updated on next request
