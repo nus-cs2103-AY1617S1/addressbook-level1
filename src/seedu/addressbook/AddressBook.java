@@ -150,8 +150,6 @@ public class AddressBook {
      */
     private static final int DISPLAYED_INDEX_OFFSET = 1;
 
-
-
     /**
      * If the first non-whitespace character in a user's input line is this, that line will be ignored.
      */
@@ -199,15 +197,11 @@ public class AddressBook {
      * ====================================================================
      */
     public static void main(String[] args) {
-        showWelcomeMessage();
-        processProgramArgs(args);
-        loadDataFromStorage();
-        while (true) {
-            String userCommand = getUserInput();
-            echoUserCommand(userCommand);
-            String feedback = executeCommand(userCommand);
-            showResultToUser(feedback);
-        }
+        showToUser(DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER);if (args.length >= 2) {showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
+            exitProgram();}  if (args.length == 1) {   setupGivenFileForStorage(args[0]); } if(args.length == 0) {
+            setupDefaultFileForStorage();  } initialiseAddressBookModel(loadPersonsFromFile(storageFilePath));
+        while (true) {      String userCommand = getUserInput();     showToUser("[Command entered:" + userCommand + "]");
+            String feedback = executeCommand(userCommand);   showResultToUser(feedback);  }
     }
 
     /*
@@ -217,9 +211,6 @@ public class AddressBook {
      * signature anyway.
      * ====================================================================
      */
-    private static void showWelcomeMessage() {
-        showToUser(DIVIDER, DIVIDER, VERSION, MESSAGE_WELCOME, DIVIDER);
-    }
 
     private static void showResultToUser(String result) {
         showToUser(result, DIVIDER);
@@ -233,11 +224,6 @@ public class AddressBook {
      * ====================================================================
      */
     /**
-     * Echoes the user input back to the user.
-     */
-    private static void echoUserCommand(String userCommand) {
-        showToUser("[Command entered:" + userCommand + "]");
-    }
 
     /*
      * ==============NOTE TO STUDENTS==========================================
@@ -248,26 +234,6 @@ public class AddressBook {
      */
 
     /**
-     * Processes the program main method run arguments.
-     * If a valid storage file is specified, sets up that file for storage.
-     * Otherwise sets up the default file for storage.
-     *
-     * @param args full program arguments passed to application main method
-     */
-    private static void processProgramArgs(String[] args) {
-        if (args.length >= 2) {
-            showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
-            exitProgram();
-        }
-
-        if (args.length == 1) {
-            setupGivenFileForStorage(args[0]);
-        }
-
-        if(args.length == 0) {
-            setupDefaultFileForStorage();
-        }
-    }
 
     /**
      * Sets up the storage file based on the supplied file path.
@@ -312,15 +278,6 @@ public class AddressBook {
     private static boolean isValidFilePath(String filePath) {
         return filePath.endsWith(".txt");
     }
-
-    /**
-     * Initialises the in-memory data using the storage file.
-     * Assumption: The file exists.
-     */
-    private static void loadDataFromStorage() {
-        initialiseAddressBookModel(loadPersonsFromFile(storageFilePath));
-    }
-
 
     /*
      * ===========================================
@@ -783,11 +740,11 @@ public class AddressBook {
      * @return true if the given person was found and deleted in the model
      */
     private static boolean deletePersonFromAddressBook(String[] exactPerson) {
-        final boolean changed = ALL_PERSONS.remove(exactPerson);
-        if (changed) {
+        final boolean hasChanged = ALL_PERSONS.remove(exactPerson);
+        if (hasChanged) {
             savePersonsToFile(getAllPersonsInAddressBook(), storageFilePath);
         }
-        return changed;
+        return hasChanged;
     }
 
     /**
@@ -943,11 +900,15 @@ public class AddressBook {
     private static boolean isPersonDataExtractableFrom(String personData) {
         final String matchAnyPersonDataPrefix = PERSON_DATA_PREFIX_PHONE + '|' + PERSON_DATA_PREFIX_EMAIL;
         final String[] splitArgs = personData.trim().split(matchAnyPersonDataPrefix);
-        return splitArgs.length == 3 // 3 arguments
+        return isRightLengthAndNonEmpty(splitArgs);
+    }
+
+	private static boolean isRightLengthAndNonEmpty(final String[] splitArgs) {
+		return splitArgs.length == 3 // 3 arguments
                 && !splitArgs[0].isEmpty() // non-empty arguments
                 && !splitArgs[1].isEmpty()
                 && !splitArgs[2].isEmpty();
-    }
+	}
 
     /**
      * Extracts substring representing person name from person string representation
